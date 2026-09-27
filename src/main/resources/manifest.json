@@ -26,9 +26,53 @@
         
     },
     "DisabledByDefault": false,
-    "Main": "gaiagauntlet.Main",
+    "Main": "gaiagauntlet.GauntletPlugin",
     "IncludesAssetPack": true,
     "UpdateChecker": {
         "CurseForge": ""
-    }
+    },
+    "SubPlugins": [
+        {
+            "Name": "GameState",
+            "Main": "gaiagauntlet.plugins.gamestate.GameStatePlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "GameStore",
+            "Main": "gaiagauntlet.plugins.gamestore.GameStorePlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "LobbyController",
+            "Main": "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "ProxyChat",
+            "Main": "gaiagauntlet.plugins.proxychat.ProxyChatPlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "Scores",
+            "Main": "gaiagauntlet.plugins.scores.ScoresPlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "Teams",
+            "Main": "gaiagauntlet.plugins.teams.TeamsPlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        }
+    ]
 }

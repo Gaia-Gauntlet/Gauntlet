@@ -1,4 +1,4 @@
-package gaiagauntlet;
+package gaiagauntlet.plugins.proxychat;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -6,26 +6,28 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin {
-
+public class ProxyChatPlugin extends JavaPlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    public Main(JavaPluginInit init) {
+    private static ProxyChatPlugin instance;
+
+    public ProxyChatPlugin(JavaPluginInit init) {
         super(init);
+        instance = this;
     }
 
     @Override
     protected void start() {
-        LOGGER.at(Level.INFO).log("Starting Gauntlet!");
+        LOGGER.at(Level.INFO).log("Starting Gauntlet [PROXY CHAT]!");
     }
 
     @Override
     protected void setup() {
-        LOGGER.at(Level.INFO).log("Setting up Gauntlet!");
+        LOGGER.at(Level.INFO).log("Setting up Gauntlet [PROXY CHAT]!");
     }
 
     @Override
     protected void shutdown() {
-        LOGGER.at(Level.INFO).log("Shutting down Gauntlet!");
+        LOGGER.at(Level.INFO).log("Shutting down Gauntlet [PROXY CHAT]!");
     }
 }

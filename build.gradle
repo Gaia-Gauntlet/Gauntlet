@@ -109,4 +109,11 @@ hytaleTools {
     injectServerJavadocsIntoSources = project.inject_server_javadocs_into_sources.toString().toBoolean()
     generateAssetsBinary = project.generateAssetsBinary.toString().toBoolean()
     patchline = project.patchline.toString()
+
+    subPlugin("GameState", "gaiagauntlet.plugins.gamestate.GameStatePlugin", false, false)
+    subPlugin("GameStore", "gaiagauntlet.plugins.gamestore.GameStorePlugin", false, false)
+    subPlugin("LobbyController", "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin", false, false)
+    subPlugin("ProxyChat", "gaiagauntlet.plugins.proxychat.ProxyChatPlugin", false, false)
+    subPlugin("Scores", "gaiagauntlet.plugins.scores.ScoresPlugin", false, false)
+    subPlugin("Teams", "gaiagauntlet.plugins.teams.TeamsPlugin", false, false)
 }
