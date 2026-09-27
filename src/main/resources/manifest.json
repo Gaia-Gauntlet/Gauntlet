@@ -33,42 +33,56 @@
     },
     "SubPlugins": [
         {
-            "Name": "GameState",
+            "Name": "_Announcer",
+            "Main": "gaiagauntlet.plugins.announcer.AnnouncerPlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "_GameState",
             "Main": "gaiagauntlet.plugins.gamestate.GameStatePlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,
             "ServerVersion": ">=0.6.8 <0.7.0"
         },
         {
-            "Name": "GameStore",
+            "Name": "_GameStore",
             "Main": "gaiagauntlet.plugins.gamestore.GameStorePlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,
             "ServerVersion": ">=0.6.8 <0.7.0"
         },
         {
-            "Name": "LobbyController",
+            "Name": "_LobbyController",
             "Main": "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,
             "ServerVersion": ">=0.6.8 <0.7.0"
         },
         {
-            "Name": "ProxyChat",
+            "Name": "_Settings",
+            "Main": "gaiagauntlet.plugins.settings.SettingsPlugin",
+            "DisabledByDefault": false,
+            "IncludesAssetPack": false,
+            "ServerVersion": ">=0.6.8 <0.7.0"
+        },
+        {
+            "Name": "_ProxyChat",
             "Main": "gaiagauntlet.plugins.proxychat.ProxyChatPlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,
             "ServerVersion": ">=0.6.8 <0.7.0"
         },
         {
-            "Name": "Scores",
+            "Name": "_Scores",
             "Main": "gaiagauntlet.plugins.scores.ScoresPlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,
             "ServerVersion": ">=0.6.8 <0.7.0"
         },
         {
-            "Name": "Teams",
+            "Name": "_Teams",
             "Main": "gaiagauntlet.plugins.teams.TeamsPlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,

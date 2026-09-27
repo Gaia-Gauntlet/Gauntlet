@@ -110,10 +110,13 @@ hytaleTools {
     generateAssetsBinary = project.generateAssetsBinary.toString().toBoolean()
     patchline = project.patchline.toString()
 
-    subPlugin("GameState", "gaiagauntlet.plugins.gamestate.GameStatePlugin", false, false)
-    subPlugin("GameStore", "gaiagauntlet.plugins.gamestore.GameStorePlugin", false, false)
-    subPlugin("LobbyController", "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin", false, false)
-    subPlugin("ProxyChat", "gaiagauntlet.plugins.proxychat.ProxyChatPlugin", false, false)
-    subPlugin("Scores", "gaiagauntlet.plugins.scores.ScoresPlugin", false, false)
-    subPlugin("Teams", "gaiagauntlet.plugins.teams.TeamsPlugin", false, false)
+    // Prefix with underscore to exclude from Creditor.
+    subPlugin("_Announcer", "gaiagauntlet.plugins.announcer.AnnouncerPlugin", false, false)
+    subPlugin("_GameState", "gaiagauntlet.plugins.gamestate.GameStatePlugin", false, false)
+    subPlugin("_GameStore", "gaiagauntlet.plugins.gamestore.GameStorePlugin", false, false)
+    subPlugin("_LobbyController", "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin", false, false)
+    subPlugin("_Settings", "gaiagauntlet.plugins.settings.SettingsPlugin", false, false)
+    subPlugin("_ProxyChat", "gaiagauntlet.plugins.proxychat.ProxyChatPlugin", false, false)
+    subPlugin("_Scores", "gaiagauntlet.plugins.scores.ScoresPlugin", false, false)
+    subPlugin("_Teams", "gaiagauntlet.plugins.teams.TeamsPlugin", false, false)
 }
