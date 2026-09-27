@@ -1,0 +1,30 @@
+{
+    "Group": "com.gaiagauntlet",
+    "Name": "gauntlet",
+    "Version": "0.0.1",
+    "Description": "Abstracted game logic for Gaia Gauntlet.",
+    "Authors": [
+        {
+            "Name": "MelodicAlbuild"
+        },
+        {
+            "Name": "Riprod"
+        },
+        {
+            "Name": "Lordimass|lordimass@lordimass.net|https://lordimass.net"
+        }
+    ],
+    "Website": "https://gaiagauntlet.com",
+    "ServerVersion": ">=0.6.8 <0.7.0",
+    "Dependencies": {
+        "Hytale:AssetModule": "*",
+        "Hytale:EntityModule": "*"
+    },
+    "OptionalDependencies": {},
+    "DisabledByDefault": false,
+    "Main": "gaiagauntlet.Main",
+    "IncludesAssetPack": true,
+    "UpdateChecker": {
+        "CurseForge": ""
+    }
+}
