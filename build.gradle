@@ -117,6 +117,6 @@ hytaleTools {
     subPlugin("_LobbyController", "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin", false, false)
     subPlugin("_Settings", "gaiagauntlet.plugins.settings.SettingsPlugin", false, false)
     subPlugin("_ProxyChat", "gaiagauntlet.plugins.proxychat.ProxyChatPlugin", false, false)
-    subPlugin("_Scores", "gaiagauntlet.plugins.scores.ScoresPlugin", false, false)
+    subPlugin("_Scoring", "gaiagauntlet.plugins.scoring.ScoringPlugin", false, false)
     subPlugin("_Teams", "gaiagauntlet.plugins.teams.TeamsPlugin", false, false)
 }

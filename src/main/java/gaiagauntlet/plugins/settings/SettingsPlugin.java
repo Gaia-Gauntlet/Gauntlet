@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.util.Config;
 import gaiagauntlet.plugins.settings.config.SettingsRegistry;
 import gaiagauntlet.plugins.settings.config.SettingsValues;
 import gaiagauntlet.plugins.settings.constants.Settings;
+import lombok.Getter;
 
 import java.util.logging.Level;
 
@@ -15,7 +16,7 @@ public class SettingsPlugin extends JavaPlugin {
 
     private static SettingsPlugin instance;
 
-    private final SettingsRegistry settings = Settings.create();
+    @Getter private final SettingsRegistry settings = Settings.create();
     // Configs must be declared before setup runs, so they are created with the
     // plugin.
     private final Config<SettingsValues> settingsConfig = withConfig("settings", settings.codec());
@@ -23,6 +24,10 @@ public class SettingsPlugin extends JavaPlugin {
     public SettingsPlugin(JavaPluginInit init) {
         super(init);
         instance = this;
+    }
+
+    public static SettingsPlugin get() {
+        return instance;
     }
 
     @Override

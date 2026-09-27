@@ -9,7 +9,7 @@ public class GgCommand extends AbstractCommandCollection {
         super("gg", "Gaia Gauntlet controls");
         requirePermission(Permissions.ADMIN);
         addAliases("gaiagauntlet");
-        
+
         addSubCommand(new TeamCommands());
     }
 }
