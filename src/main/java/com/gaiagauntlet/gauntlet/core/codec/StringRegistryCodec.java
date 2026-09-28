@@ -45,7 +45,6 @@ public class StringRegistryCodec<T extends SerializableComponent, M extends Map<
         
         for (Map.Entry<String, BsonValue> entry : document.entrySet()) {
             var id = entry.getKey();
-            LOGGER.atInfo().log("Decoding %s", id);
             var codec = registry.getCodec(id);
             BsonValue value = entry.getValue();
 
@@ -75,7 +74,6 @@ public class StringRegistryCodec<T extends SerializableComponent, M extends Map<
             String id = entry.getKey();
             var codec = registry.getCodec(id);
             var value = entry.getValue();
-            LOGGER.atInfo().log("Encoding %s", id);
             
             if (codec == null) {
                 // LOGGER.atWarning().atMostEvery(30, TimeUnit.SECONDS).log("Skipping game
