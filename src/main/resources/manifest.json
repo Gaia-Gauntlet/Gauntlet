@@ -1,6 +1,6 @@
 {
-    "Group": "com.gaiagauntlet",
-    "Name": "gauntlet",
+    "Group": "com.gaiagauntlet.gauntlet",
+    "Name": "Gauntlet",
     "Version": "0.0.1",
     "Description": "Abstracted game logic for Gaia Gauntlet.",
     "Authors": [
@@ -26,64 +26,15 @@
         
     },
     "DisabledByDefault": false,
-    "Main": "gaiagauntlet.GauntletPlugin",
+    "Main": "com.gaiagauntlet.gauntlet.GauntletPlugin",
     "IncludesAssetPack": true,
     "UpdateChecker": {
         "CurseForge": ""
     },
     "SubPlugins": [
         {
-            "Name": "_Announcer",
-            "Main": "gaiagauntlet.plugins.announcer.AnnouncerPlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_GameState",
-            "Main": "gaiagauntlet.plugins.gamestate.GameStatePlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_GameStore",
-            "Main": "gaiagauntlet.plugins.gamestore.GameStorePlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_LobbyController",
-            "Main": "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_Settings",
-            "Main": "gaiagauntlet.plugins.settings.SettingsPlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_ProxyChat",
-            "Main": "gaiagauntlet.plugins.proxychat.ProxyChatPlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_Scores",
-            "Main": "gaiagauntlet.plugins.scores.ScoresPlugin",
-            "DisabledByDefault": false,
-            "IncludesAssetPack": false,
-            "ServerVersion": ">=0.6.8 <0.7.0"
-        },
-        {
-            "Name": "_Teams",
-            "Main": "gaiagauntlet.plugins.teams.TeamsPlugin",
+            "Name": "EliminationZone",
+            "Main": "com.gaiagauntlet.gauntlet.games.EliminationZone.EZGamePlugin",
             "DisabledByDefault": false,
             "IncludesAssetPack": false,
             "ServerVersion": ">=0.6.8 <0.7.0"

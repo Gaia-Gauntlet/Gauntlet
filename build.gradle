@@ -111,12 +111,5 @@ hytaleTools {
     patchline = project.patchline.toString()
 
     // Prefix with underscore to exclude from Creditor.
-    subPlugin("_Announcer", "gaiagauntlet.plugins.announcer.AnnouncerPlugin", false, false)
-    subPlugin("_GameState", "gaiagauntlet.plugins.gamestate.GameStatePlugin", false, false)
-    subPlugin("_GameStore", "gaiagauntlet.plugins.gamestore.GameStorePlugin", false, false)
-    subPlugin("_LobbyController", "gaiagauntlet.plugins.lobbycontroller.LobbyControllerPlugin", false, false)
-    subPlugin("_Settings", "gaiagauntlet.plugins.settings.SettingsPlugin", false, false)
-    subPlugin("_ProxyChat", "gaiagauntlet.plugins.proxychat.ProxyChatPlugin", false, false)
-    subPlugin("_Scoring", "gaiagauntlet.plugins.scoring.ScoringPlugin", false, false)
-    subPlugin("_Teams", "gaiagauntlet.plugins.teams.TeamsPlugin", false, false)
+    subPlugin("EliminationZone", "com.gaiagauntlet.gauntlet.games.EliminationZone.EZGamePlugin", false, false)
 }
