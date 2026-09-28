@@ -24,7 +24,7 @@ public class EZGamePlugin extends JavaPlugin {
     @Override
     protected void setup() {
         LOGGER.atInfo().log("Setting up EZGame!");
-        GameRegistry.register(EZController.ID, EZController::new);
+        GameRegistry.registerGame(EZController.ID, EZController::new);
 
         // Setup each section - keeps the top-level plugin cleaner this way
         EZBosses.setup(this);

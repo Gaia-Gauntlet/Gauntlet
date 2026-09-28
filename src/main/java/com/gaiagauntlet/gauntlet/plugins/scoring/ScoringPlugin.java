@@ -10,7 +10,7 @@ import java.util.logging.Level;
 public class ScoringPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    private static final String ID = "ScoringPlugin";
+    public static final String ID = "ScoringPlugin";
 
     @Override
     public String getId() {

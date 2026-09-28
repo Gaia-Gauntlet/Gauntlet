@@ -32,5 +32,5 @@ public abstract class GameController {
     /** Returns the admin tab for configuring / managing this game */
     public abstract AdminTab getAdminTab();
 
-    public abstract List<GamePlugin> getPlugins();
+    public abstract List<String> getPluginIds();
 }

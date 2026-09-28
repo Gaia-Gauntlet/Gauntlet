@@ -14,7 +14,7 @@ import java.util.logging.Level;
 public class TeamsPlugin  extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-     private static final String ID = "TeamsPlugin";
+     public static final String ID = "TeamsPlugin";
 
     @Override
     public String getId() {

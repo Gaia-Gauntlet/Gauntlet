@@ -10,7 +10,7 @@ import java.util.logging.Level;
 public class ProxyChatPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-     private static final String ID = "ProxyChatPlugin";
+     public static final String ID = "ProxyChatPlugin";
 
     @Override
     public String getId() {

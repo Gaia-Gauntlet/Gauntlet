@@ -42,16 +42,16 @@ public class EZController extends LobbyController {
         throw new UnsupportedOperationException("Unimplemented method 'getAdminTab'");
     }
 
-    @Override
-    public List<GamePlugin> getPlugins() {
+    @Override // temp, just messing around here
+    public List<String> getPluginIds() {
         return List.of(
-                new AnnouncerPlugin(),
-                new GameStatePlugin(),
-                new GameStorePlugin(),
-                new LobbyControllerPlugin(),
-                new ProxyChatPlugin(),
-                new TeamsPlugin(),
-                new ScoringPlugin());
+                AnnouncerPlugin.ID,
+                GameStatePlugin.ID,
+                GameStorePlugin.ID,
+                LobbyControllerPlugin.ID,
+                ProxyChatPlugin.ID,
+                TeamsPlugin.ID,
+                ScoringPlugin.ID);
     }
 
 }

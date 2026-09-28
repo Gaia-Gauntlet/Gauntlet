@@ -11,7 +11,7 @@ import java.util.logging.Level;
 public class GameStatePlugin  extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-     private static final String ID = "GameStatePlugin";
+     public static final String ID = "GameStatePlugin";
 
     @Override
     public String getId() {

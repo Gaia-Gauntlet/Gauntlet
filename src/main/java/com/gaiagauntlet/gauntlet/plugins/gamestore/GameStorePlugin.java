@@ -10,7 +10,7 @@ import com.hypixel.hytale.logger.HytaleLogger;
  */
 public class GameStorePlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final String ID = "GameStore";
+    public static final String ID = "GameStore";
 
     @Override
     public String getId() {
