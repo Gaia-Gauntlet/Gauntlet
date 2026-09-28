@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+
 /**
  * Standardized game controller asset
  * 
@@ -12,17 +14,20 @@ public abstract class GameController {
      * Note: this sets up registries and worlds. This does NOT start the game. The
      * "Start Game" trigger is handled by the game's own implementation
      */
-    abstract void setupGame();
+    public abstract void setupGame();
 
     /**
      * Should be callable at any point to force-end the match that is happening
      */
-    abstract void cleanGame();
+    public abstract void cleanGame();
 
     /** Triggered when a player joins back while in this game */
-    abstract void playerJoin();
+    public abstract void playerJoin();
     
     /** Triggered when a player leaves while in this game */
-    abstract void playerLeave();
+    public abstract void playerLeave();
+
+    /** Returns the admin tab for configuring / managing this game */
+    public abstract AdminTab getAdminTab();
 
 }
