@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
+import java.util.List;
+
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 
 /**
@@ -30,4 +32,5 @@ public abstract class GameController {
     /** Returns the admin tab for configuring / managing this game */
     public abstract AdminTab getAdminTab();
 
+    public abstract List<GamePlugin> getPlugins();
 }

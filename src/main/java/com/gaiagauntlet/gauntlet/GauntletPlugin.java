@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.gaiagauntlet.gauntlet.core.commands.GgCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.session.testing.SessionComponentTest;
@@ -37,6 +38,7 @@ public class GauntletPlugin extends JavaPlugin {
         setupResources();
         setupCommands();
         setupComponents();
+        setupPlugins();
 
     }
 
@@ -55,6 +57,10 @@ public class GauntletPlugin extends JavaPlugin {
         var entityRegistry = getEntityStoreRegistry();
         PlayerComponent.setComponentType(
                 entityRegistry.registerComponent(PlayerComponent.class, PlayerComponent.ID, PlayerComponent.CODEC));
+    }
+
+    private void setupPlugins() {
+        GamePlugin
     }
 
     @Override

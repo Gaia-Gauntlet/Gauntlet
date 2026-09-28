@@ -1,33 +1,28 @@
 package com.gaiagauntlet.gauntlet.plugins.announcer;
 
+import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
 import java.util.logging.Level;
 
-public class AnnouncerPlugin extends JavaPlugin {
+public class AnnouncerPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    private static AnnouncerPlugin instance;
+    private static final String ID = "AnnouncerPlugin";
 
-    public AnnouncerPlugin(JavaPluginInit init) {
-        super(init);
-        instance = this;
+    public AnnouncerPlugin() {
+        
     }
 
     @Override
-    protected void start() {
-        LOGGER.atInfo().log("Starting Gauntlet [ANNOUNCER]!");
+    public String getId() {
+        return ID;
     }
 
     @Override
-    protected void setup() {
-        LOGGER.atInfo().log("Setting up Gauntlet [ANNOUNCER]!");
-    }
-
-    @Override
-    protected void shutdown() {
-        LOGGER.atInfo().log("Shutting down Gauntlet [ANNOUNCER]!");
+    public void install() {
+        //
     }
 }
