@@ -1,12 +1,11 @@
-package com.gaiagauntlet.gauntlet.core.session.registry;
+package com.gaiagauntlet.gauntlet.plugins.gamestore.registry;
 
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.gaiagauntlet.gauntlet.utils.codec.CodecRegistry;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
@@ -17,24 +16,24 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
  * for typesafety. There may be a better way, but this is about as barebones
  * anon MiniECS you can get
  */
-public class SessionRegistry implements CodecRegistry<SessionComponent> {
+public class GameComponentRegistry implements CodecRegistry<GameComponent> {
 
-    private static final Map<String, SessionComponentType<?>> componentRegistry = new ConcurrentHashMap<>();
+    private static final Map<String, GameComponentType<?>> componentRegistry = new ConcurrentHashMap<>();
 
-    public static <T extends SessionComponent> SessionComponentType<T> register(String id, Class<T> cClass,
+    public static <T extends GameComponent> GameComponentType<T> register(String id, Class<T> cClass,
             BuilderCodec<T> codec) {
         if (componentRegistry.containsKey(id)) {
             throw new IllegalArgumentException("Component with ID " + id + " is already registered!");
         }
-        var componentType = new SessionComponentType<T>(id, cClass, codec);
+        var componentType = new GameComponentType<T>(id, cClass, codec);
         componentRegistry.put(id, componentType);
         return componentType;
     }
 
-    public <T extends SessionComponent> BuilderCodec<T> getCodec(String id) {
+    public <T extends GameComponent> BuilderCodec<T> getCodec(String id) {
         if (!componentRegistry.containsKey(id)) return null;
 
-        var component = (SessionComponentType<T>) componentRegistry.get(id);
+        var component = (GameComponentType<T>) componentRegistry.get(id);
         var codec = component.getCodec();
 
         if (codec == null) return null;

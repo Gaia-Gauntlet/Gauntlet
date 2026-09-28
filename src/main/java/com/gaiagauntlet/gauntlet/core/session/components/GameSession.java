@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.core.codec.StringRegistryCodec;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
+import com.gaiagauntlet.gauntlet.utils.codec.StringRegistryCodec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
@@ -19,9 +19,9 @@ import lombok.Setter;
  * 
  * Does NOT hold specific information like players active, rather, only the information necessary to identify a specific game
  */
-public class SessionState {
-    public static BuilderCodec<@NotNull SessionState> CODEC = BuilderCodec
-            .builder(SessionState.class, SessionState::new)
+public class GameSession {
+    public static BuilderCodec<@NotNull GameSession> CODEC = BuilderCodec
+            .builder(GameSession.class, GameSession::new)
             .append(new KeyedCodec<>("Components",
                     new StringRegistryCodec<>(new SessionRegistry(), ConcurrentHashMap::new)),
                     (holder, map) -> holder.sessionComponents = map,

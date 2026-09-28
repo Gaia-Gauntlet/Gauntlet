@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.core.interfaces;
+package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
 /**
  * Standardized game controller asset
@@ -6,6 +6,7 @@ package com.gaiagauntlet.gauntlet.core.interfaces;
  * Holds all of the game-specific setting configurations
  */
 public abstract class GameController {
+    
 
     /**
      * Note: this sets up registries and worlds. This does NOT start the game. The
@@ -18,8 +19,10 @@ public abstract class GameController {
      */
     abstract void cleanGame();
 
-    abstract void addPlayer();
-
-    abstract void removePlayer();
+    /** Triggered when a player joins back while in this game */
+    abstract void playerJoin();
+    
+    /** Triggered when a player leaves while in this game */
+    abstract void playerLeave();
 
 }

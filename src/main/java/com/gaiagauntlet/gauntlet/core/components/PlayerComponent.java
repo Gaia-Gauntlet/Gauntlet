@@ -20,15 +20,15 @@ public class PlayerComponent implements Component<EntityStore> {
     public static final String ID = "GamePlayerComponent";
     public static final BuilderCodec<@NotNull PlayerComponent> CODEC = BuilderCodec
             .builder(PlayerComponent.class, PlayerComponent::new)
-            .append(new KeyedCodec<>("ActiveGameId", Codec.STRING),
-                    (p, v) -> p.activeGame = v,
-                    p -> p.getActiveGame())
+            .append(new KeyedCodec<>("ActiveSession", Codec.STRING),
+                    (p, v) -> p.activeSession = v,
+                    p -> p.getActiveSession())
             .add()
             .build();
 
     @Getter
     @Nullable
-    private String activeGame;
+    private String activeSession;
 
     public PlayerComponent clone() {
         return new PlayerComponent();

@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.core.codec;
+package com.gaiagauntlet.gauntlet.utils.codec;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

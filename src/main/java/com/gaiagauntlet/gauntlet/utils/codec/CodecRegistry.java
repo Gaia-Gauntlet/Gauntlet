@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.core.codec;
+package com.gaiagauntlet.gauntlet.utils.codec;
 
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
