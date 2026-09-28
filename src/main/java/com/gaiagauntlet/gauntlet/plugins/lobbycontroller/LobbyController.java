@@ -7,7 +7,7 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager
 /** Should enforce the implementation of a Lobby-Arena system */
 public abstract class LobbyController extends GameController {
 
-
+    // I'm not sure what the actual implementation here would look like. Correct me if I am wrong *PLEASE* lol
     public abstract LobbyManager getLobbyManager();
     public abstract ArenaManager getArenaManager();
 

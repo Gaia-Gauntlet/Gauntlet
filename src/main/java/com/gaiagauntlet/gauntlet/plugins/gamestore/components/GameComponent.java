@@ -11,8 +11,6 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
  */
 public interface GameComponent extends SerializableComponent {
 
-    // opt-in persistence if wanted. Enforces safety on game crash or restart. My thought is scores / teams will implement this as a fallback for safety
-    public static BuilderCodec<@NotNull GameComponent> ABSTRACT_CODEC = BuilderCodec
-            .abstractBuilder(GameComponent.class)
-            .build();
+    // nothing really to uh... put here... unless we wanted to implement a snapshot system for whatever reason?
+    // All reads should be entirely on-thread though
 }

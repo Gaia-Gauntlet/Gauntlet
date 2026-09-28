@@ -11,8 +11,5 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
  */
 public interface SessionComponent extends SerializableComponent {
 
-    // opt-in persistence if wanted. Enforces safety on game crash or restart. My thought is scores / teams will implement this as a fallback for safety
-    public static BuilderCodec<@NotNull SessionComponent> ABSTRACT_CODEC = BuilderCodec
-            .abstractBuilder(SessionComponent.class)
-            .build();
+    // wasn't anything to uh.... put here.... this is mostly just for typesafety lol
 }
