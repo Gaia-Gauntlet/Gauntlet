@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamAsset;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -26,6 +27,11 @@ public class TeamsPlugin extends GamePlugin {
             .setCodec(TeamAsset.CODEC)
             .setKeyFunction(TeamAsset::getId)
             .build());
+
+        EliminatedComponent.setComponentType(host.getEntityStoreRegistry().registerComponent(
+            EliminatedComponent.class,
+            EliminatedComponent::new
+        ));
     }
 
     @Override
