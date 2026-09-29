@@ -2,7 +2,6 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import java.util.List;
 
-import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
@@ -45,13 +44,13 @@ public class EZController extends LobbyController {
     @Override // temp, just messing around here
     public List<String> getPluginIds() {
         return List.of(
-                AnnouncerPlugin.ID,
-                GameStatePlugin.ID,
-                GameStorePlugin.ID,
-                LobbyControllerPlugin.ID,
-                ProxyChatPlugin.ID,
-                TeamsPlugin.ID,
-                ScoringPlugin.ID);
+                AnnouncerPlugin.Id,
+                GameStatePlugin.Id,
+                GameStorePlugin.Id,
+                LobbyControllerPlugin.Id,
+                ProxyChatPlugin.Id,
+                TeamsPlugin.Id,
+                ScoringPlugin.Id);
     }
 
 }

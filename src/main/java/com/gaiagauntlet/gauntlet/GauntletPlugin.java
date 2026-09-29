@@ -41,7 +41,6 @@ public class GauntletPlugin extends JavaPlugin {
         setupCommands();
         setupComponents();
         setupPlugins();
-
     }
 
     private void setupResources() {
@@ -62,13 +61,13 @@ public class GauntletPlugin extends JavaPlugin {
     }
 
     private void setupPlugins() {
-        GameRegistry.registerPlugin(AnnouncerPlugin.ID, AnnouncerPlugin::new);
-        GameRegistry.registerPlugin(GameStatePlugin.ID, GameStatePlugin::new);
-        GameRegistry.registerPlugin(GameStorePlugin.ID, GameStorePlugin::new);
-        GameRegistry.registerPlugin(LobbyControllerPlugin.ID, LobbyControllerPlugin::new);
-        GameRegistry.registerPlugin(ProxyChatPlugin.ID, ProxyChatPlugin::new);
-        GameRegistry.registerPlugin(TeamsPlugin.ID, TeamsPlugin::new);
-        GameRegistry.registerPlugin(ScoringPlugin.ID, ScoringPlugin::new);
+        GameRegistry.registerPlugin(AnnouncerPlugin.Id, this, AnnouncerPlugin::new);
+        GameRegistry.registerPlugin(GameStatePlugin.Id, this, GameStatePlugin::new);
+        GameRegistry.registerPlugin(GameStorePlugin.Id, this, GameStorePlugin::new);
+        GameRegistry.registerPlugin(LobbyControllerPlugin.Id, this, LobbyControllerPlugin::new);
+        GameRegistry.registerPlugin(ProxyChatPlugin.Id, this, ProxyChatPlugin::new);
+        GameRegistry.registerPlugin(TeamsPlugin.Id, this, TeamsPlugin::new);
+        GameRegistry.registerPlugin(ScoringPlugin.Id, this, ScoringPlugin::new);
     }
 
     @Override

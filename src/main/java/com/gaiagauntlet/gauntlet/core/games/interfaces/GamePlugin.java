@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 /**
  * Standardized plugin interface
@@ -24,6 +25,7 @@ public abstract class GamePlugin {
 
     /** Admin tab or admin configurations */
     public AdminTab getAdminTab() { return null; };
-    
-    // add more as needed, I'm not entirely sure what else to put here.
+
+    /** Initialisation of resources and components on the respective stores */
+    public abstract void setup(JavaPlugin host);
 }
