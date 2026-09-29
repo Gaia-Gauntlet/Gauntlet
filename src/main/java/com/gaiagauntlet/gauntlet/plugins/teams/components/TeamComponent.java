@@ -3,18 +3,19 @@ package com.gaiagauntlet.gauntlet.plugins.teams.components;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamAsset;
 import com.hypixel.hytale.logger.HytaleLogger;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
 @ToString
-public class TeamComponent implements GameComponent {
+public abstract class TeamComponent implements GameComponent {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     @Getter private final String id;
