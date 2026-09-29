@@ -26,8 +26,6 @@ public class GameStore {
             .add()
             .build();
 
-    
-
     @Getter
     private Map<String, GameComponent> sessionComponents = new ConcurrentHashMap<>();
 
