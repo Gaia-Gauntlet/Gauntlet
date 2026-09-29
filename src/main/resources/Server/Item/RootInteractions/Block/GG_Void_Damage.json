@@ -1,0 +1,9 @@
+{
+  "Cooldown": {
+    "Id": "GG_Void_Damage",
+    "Cooldown": 1
+  },
+  "Interactions": [
+    "GG_Void_Damage"
+  ]
+}

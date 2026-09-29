@@ -1,0 +1,9 @@
+{
+  "Type": "SingleTrack",
+  "PlayToCompletion": true,
+  "AudioCategory": "AudioCat_Music",
+  "Track": "Music/zUnused/BattleofGloryLastStandEnd-Loop.ogg",
+  "TransitionType": "Crossfade",
+  "Volume": 0,
+  "LoopCount": 0
+}

@@ -1,0 +1,8 @@
+{
+  "Type": "Variant",
+  "Reference": "Template_Attachments",
+  "NameTranslationKey": "Redjagoon Attachments",
+  "Modify": {
+    "Appearance": "Redjagoon_Attachments"
+  }
+}

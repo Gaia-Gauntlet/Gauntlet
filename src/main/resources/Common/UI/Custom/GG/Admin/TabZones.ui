@@ -1,0 +1,38 @@
+// Zones tab: the closing sequence and the phase pacing.
+$G = "Common.ui";
+
+@Content = Group {
+    LayoutMode: Left;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Closing"; }
+            $G.@Field #ZoneStateField { @Key = "Now"; }
+            $G.@Field #ZoneVoidField  { @Key = "Void"; }
+            $G.@ListPanel #ZoneList {}
+            $G.@ButtonRow {
+                $G.@Action #ZoneSkip   { @Anchor = (Right: 3); Text: "Skip step"; }
+                $G.@Action #ZonePause  { @Anchor = (Left: 3, Right: 3); Text: "Pause"; }
+                $G.@Action #ZoneResume { @Anchor = (Left: 3); Text: "Resume"; }
+            }
+            $G.@PickerRow {
+                $G.@Input #ZoneDelaySeconds { @Anchor = (Right: 6); @Placeholder = "seconds"; }
+                $G.@Go #ZoneDelay { Text: "Delay"; }
+            }
+            $G.@PickerRow {
+                $G.@Picker #ZoneNextPicker { @Anchor = (Right: 6); }
+                $G.@Go #ZoneNext { Text: "Close next"; }
+            }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Phase pacing"; }
+            $G.@Note { @Text = "Close, hold, and warning seconds per round. The last round repeats. Applies to the next match."; }
+            Group #PhaseList { LayoutMode: Top; }
+        }
+    }
+};

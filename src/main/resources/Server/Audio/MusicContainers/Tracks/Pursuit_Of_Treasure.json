@@ -1,0 +1,7 @@
+{
+  "Type": "SingleTrack",
+  "AudioCategory": "AudioCat_Music",
+  "Track": "Music/Pursuit_Of_Treasure.ogg",
+  "Volume": -12.0,
+  "TransitionType": "Crossfade"
+}

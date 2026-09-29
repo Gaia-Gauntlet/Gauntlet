@@ -1,0 +1,111 @@
+{
+  "Quality": "Epic",
+  "Recipe": {
+    "TimeSeconds": 0,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Thorium",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Weapons"
+        ]
+      }
+    ]
+  },
+  "InteractionVars": {
+    "Swing_Down_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Battleaxe_Primary_Swing_Down_Left_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 32.9
+            }
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Battleaxe_T2_Impact",
+            "LocalSoundEventId": "SFX_Battleaxe_T2_Impact"
+          }
+        }
+      ]
+    },
+    "Swing_Down_Right_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Battleaxe_Primary_Swing_Down_Right_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 41.1
+            }
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Battleaxe_T2_Impact",
+            "LocalSoundEventId": "SFX_Battleaxe_T2_Impact"
+          }
+        }
+      ]
+    },
+    "Swing_Down_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Battleaxe_Primary_Swing_Down_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 47.4
+            }
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Battleaxe_T2_Impact",
+            "LocalSoundEventId": "SFX_Battleaxe_T2_Impact"
+          }
+        }
+      ]
+    },
+    "Downstrike_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Battleaxe_Primary_Downstrike_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 52.7
+            }
+          },
+          "EntityStatsOnHit": [
+            {
+              "EntityStatId": "SignatureEnergy",
+              "Amount": 2
+            }
+          ],
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Battleaxe_T2_Impact",
+            "LocalSoundEventId": "SFX_Battleaxe_T2_Impact"
+          }
+        }
+      ]
+    },
+    "Signature_Whirlwind_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Battleaxe_Signature_Whirlwind_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 32.9
+            }
+          },
+          "EntityStatsOnHit": [],
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Battleaxe_T2_Impact",
+            "LocalSoundEventId": "SFX_Battleaxe_T2_Impact"
+          }
+        }
+      ]
+    }
+  }
+}

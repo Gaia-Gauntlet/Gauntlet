@@ -1,0 +1,13 @@
+{
+  "Icon": "Icons/ItemCategories/Hypixel.png",
+  "Order": 5,
+  "Children": [
+    {
+      "Id": "GG_Items2",
+      "Name": "Gaia Gauntlet",
+      "Icon": "Icons/ItemCategories/Bench.png"
+    }
+  ],
+  "Name": "Gaia Gauntlet",
+  "Id": "GG_Items"
+}

@@ -1,0 +1,122 @@
+{
+  "Keyframes": [
+    {
+      "Id": "Keyframe",
+      "RelativeToPlayer": true,
+      "Look": {
+        "Yaw": 0.01
+      },
+      "Position": {
+        "Y": 0,
+        "X": 0,
+        "Z": 0
+      },
+      "Easing": "Linear"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 45,
+        "Y": 145,
+        "Z": -250
+      },
+      "Look": {
+        "Pitch": -6,
+        "Yaw": 100
+      },
+      "Easing": "QuadIn",
+      "Duration": 2
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 45,
+        "Y": 145,
+        "Z": -315
+      },
+      "Look": {
+        "Pitch": -15,
+        "Yaw": 125
+      },
+      "Duration": 2,
+      "Easing": "Linear"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 22.5,
+        "Y": 135,
+        "Z": -320
+      },
+      "Look": {
+        "Pitch": 0.01,
+        "Yaw": 0,
+        "Roll": 0
+      },
+      "Duration": 0,
+      "Easing": "Linear"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 22.5,
+        "Y": 135,
+        "Z": -360
+      },
+      "Look": {
+        "Pitch": 0.01,
+        "Yaw": 0
+      },
+      "Duration": 3.5,
+      "Easing": "Linear",
+      "Fov": 40
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 22.5,
+        "Y": 135,
+        "Z": -360
+      },
+      "Look": {
+        "Pitch": 0.01,
+        "Yaw": 0,
+        "Roll": 10
+      },
+      "Duration": 2.5,
+      "Easing": "QuadOut",
+      "Fov": 10
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 22.5,
+        "Y": 135,
+        "Z": -360
+      },
+      "Look": {
+        "Pitch": 0.01,
+        "Yaw": 0,
+        "Roll": 10
+      },
+      "Duration": 2,
+      "Easing": "Linear",
+      "Fov": 12
+    },
+    {
+      "Id": "Keyframe",
+      "RelativeToPlayer": true,
+      "Position": {
+        "X": 0,
+        "Y": 1.7
+      },
+      "Look": {
+        "Pitch": 0
+      },
+      "Easing": "QuadOut",
+      "Duration": 2
+    }
+  ],
+  "BaseFov": 60,
+  "HideUi": true
+}

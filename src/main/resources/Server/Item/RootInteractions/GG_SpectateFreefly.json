@@ -1,0 +1,10 @@
+{
+  "Interactions": [
+    {
+      "Type": "GG_TeamSpectateControl",
+      "Action": "Freefly"
+    }
+  ],
+  "RequireNewClick": true,
+  "HudInputBindingEntry": "server.hud.inputBinding.spectateFreeCamera"
+}

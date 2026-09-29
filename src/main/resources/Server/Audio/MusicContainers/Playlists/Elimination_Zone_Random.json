@@ -1,0 +1,35 @@
+{
+  "Type": "Random",
+  "AudioCategory": "AudioCat_Music_In_Game",
+  "LoopCount": 0,
+  "Children": [
+    {
+      "Parent": "Gaias_Breakdown",
+      "Weight": 1
+    },
+    {
+      "Parent": "Battle_Of_Glory",
+      "Weight": 1
+    },
+    {
+      "Parent": "Gaias_Willpower",
+      "Weight": 1
+    },
+    {
+      "Parent": "Pursuit_Of_Treasure",
+      "Weight": 1
+    },
+    {
+      "Parent": "Voidfall",
+      "Weight": 1
+    },
+    {
+      "Parent": "Bells",
+      "Weight": 1
+    }
+  ],
+  "Mode": "Shuffle",
+  "TransitionType": "Crossfade",
+  "AvoidRepeatCount": 5,
+  "TransitionDuration": 2
+}

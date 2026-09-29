@@ -1,0 +1,1 @@
+{"Effects": [], "TargetTypes": ["Player"], "IncludeVolumeSettings": true, "RejectionDelayMode": "UseVolumeDelay", "Cooldown": 0.0, "CooldownMode": "PerEntity", "ActivationDelay": 0.0, "ProjectileSource": "Shooter", "KeepLoaded": false, "CancelDelayedOnExit": false}

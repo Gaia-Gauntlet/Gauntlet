@@ -1,0 +1,21 @@
+{
+  "Quality": "Epic",
+  "InteractionVars": {
+    "Spear_Stab_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Spear_Stab_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 8.8
+            },
+            "Type": "Absolute"
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Axe_Special_Impact"
+          }
+        }
+      ]
+    }
+  }
+}

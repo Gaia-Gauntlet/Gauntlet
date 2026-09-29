@@ -1,0 +1,44 @@
+{
+  "TranslationProperties": {
+    "Name": "GG Cone"
+  },
+  "Icon": "Icons/ItemsGenerated/GGCone.png",
+  "Categories": [
+    "GG_Items.GG_Items2"
+  ],
+  "Quality": "Legendary",
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Block_Secondary"
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "CustomModel": "Blocks/GGCone.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/GGCone.png",
+        "Weight": 1
+      }
+    ],
+    "ParticleColor": "#0000f4"
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Debug"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  }
+}

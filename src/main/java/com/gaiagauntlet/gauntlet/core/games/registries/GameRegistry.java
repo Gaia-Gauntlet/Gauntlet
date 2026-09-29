@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.games.registries;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
@@ -20,4 +21,15 @@ public class GameRegistry {
     public static void registerPlugin(String id, Supplier<GamePlugin> plugin) {
         pluginRegistry.put(id, plugin.get());
     }
+
+    public static Optional<GameController> getGame(String id) {
+        return Optional.ofNullable(controllerRegistry.get(id));
+    }
+
+    public static boolean hasGame(String id) {
+        return controllerRegistry.containsKey(id);
+    } 
+    public static boolean hasPlugin(String id) {
+        return pluginRegistry.containsKey(id);
+    } 
 }

@@ -1,0 +1,110 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Void_Branch_Corner.name"
+  },
+  "ItemLevel": 10,
+  "MaxStack": 100,
+  "Icon": "Icons/ItemsGenerated/Void_Pipe_Corner.png",
+  "Categories": [
+    "Tool.TechnicalBlocks"
+  ],
+  "SubCategory": "BlockSets",
+  "PlayerAnimationsId": "Block",
+  "Set": "Build",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Structures/Tubes/Dev_Corner.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Structures/Tubes/Void_Textures/Void.png",
+        "Weight": 1
+      }
+    ],
+    "Group": "Dev",
+    "HitboxType": "Branch_Corner",
+    "Flags": {},
+    "Interactions": {
+      "Collision": "GG_Void_Damage"
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "VariantRotation": "UpDownNESW",
+    "BlockParticleSetId": "Dust",
+    "Support": {
+      "Up": [
+        {
+          "FaceType": "Full",
+          "Rotate": true
+        },
+        {
+          "FaceType": "Branch",
+          "Support": "Ignored"
+        }
+      ],
+      "North": [
+        {
+          "FaceType": "Full",
+          "Rotate": true
+        },
+        {
+          "FaceType": "Branch",
+          "Support": "Ignored"
+        }
+      ]
+    },
+    "Supporting": {
+      "Up": [
+        {
+          "FaceType": "Branch"
+        }
+      ],
+      "North": [
+        {
+          "FaceType": "Branch"
+        }
+      ]
+    },
+    "IgnoreSupportWhenPlaced": true,
+    "FlipType": "Symmetric",
+    "ParticleColor": "#1a1a1a",
+    "BlockSoundSetId": "Soft",
+    "PhysicalMaterialId": "Wool",
+    "MaxSupportDistance": 6,
+    "TextureComputedColor": "#262832"
+  },
+  "Tags": {
+    "Type": [
+      "Wood",
+      "Tree",
+      "Branch"
+    ],
+    "SubType": [
+      "Branch"
+    ],
+    "BranchType": [
+      "Corner"
+    ],
+    "Family": [
+      "Build"
+    ]
+  },
+  "Quality": "Technical",
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  }
+}

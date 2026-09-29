@@ -1,0 +1,9 @@
+{
+  "Type": "SingleTrack",
+  "PlayToCompletion": true,
+  "AudioCategory": "AudioCat_Music",
+  "Track": "Music/zUnused/BattleofGloryVictorySting.ogg",
+  "Volume": 0,
+  "TransitionType": "Immediate",
+  "ResumeMemoryDuration": 0
+}

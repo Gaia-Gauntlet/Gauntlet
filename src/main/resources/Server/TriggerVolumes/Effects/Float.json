@@ -1,0 +1,17 @@
+{
+    "Effects": [
+        {
+            "Type": "SetVelocity",
+            "Event": "TICK",
+            "Interval": 0.0,
+            "Delay": 0.0,
+            "Velocity": {
+                "X": 0.0,
+                "Y": 1.2,
+                "Z": 0.0
+            },
+            "Additive": true,
+            "RelativeMode": "Absolute"
+        }
+    ]
+}

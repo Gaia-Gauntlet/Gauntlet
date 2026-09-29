@@ -1,0 +1,223 @@
+{
+  "CullDistance": 400,
+  "IsImportant": true,
+  "Spawners": [
+    {
+      "SpawnerId": "GG_Beam2",
+      "PositionOffset": {
+        "X": 0,
+        "Z": -13,
+        "Y": -0.8
+      },
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "StartDelay": 0.5
+    },
+    {
+      "SpawnerId": "GG_Beam_Lightning",
+      "StartDelay": 0.5,
+      "PositionOffset": {
+        "X": 0,
+        "Z": -16,
+        "Y": -0.8
+      },
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      }
+    },
+    {
+      "SpawnerId": "GG_Beam",
+      "StartDelay": 0.5,
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "PositionOffset": {
+        "Y": -0.8,
+        "Z": -16
+      }
+    },
+    {
+      "SpawnerId": "GG_Beam_Exposion",
+      "StartDelay": 0.5,
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "PositionOffset": {
+        "Z": -16,
+        "Y": -0.8
+      }
+    },
+    {
+      "SpawnerId": "GG_Beam_Static",
+      "PositionOffset": {
+        "X": 0,
+        "Z": -1.8
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "RotationOffset": {
+        "Pitch": 0,
+        "Yaw": 90
+      }
+    },
+    {
+      "SpawnerId": "GG_Beam_Static2",
+      "PositionOffset": {
+        "X": 0,
+        "Z": -1.8
+      },
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      }
+    },
+    {
+      "SpawnerId": "GG_Beam_Core",
+      "PositionOffset": {
+        "X": 0,
+        "Z": -1.8
+      },
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      }
+    },
+    {
+      "SpawnerId": "GG_Beam_Lightning2",
+      "RotationOffset": {
+        "Yaw": 90
+      },
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      }
+    },
+    {
+      "SpawnerId": "GG_Circle",
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "RotationOffset": {
+        "Pitch": 90
+      }
+    },
+    {
+      "SpawnerId": "GG_CircleSmall",
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "RotationOffset": {
+        "Pitch": 90
+      },
+      "PositionOffset": {
+        "Z": 4
+      }
+    },
+    {
+      "SpawnerId": "GG_CircleSmaller",
+      "InitialVelocity": {
+        "Pitch": {
+          "Min": -3,
+          "Max": -3
+        },
+        "Speed": {
+          "Min": 30,
+          "Max": 30
+        }
+      },
+      "RotationOffset": {
+        "Pitch": 90
+      },
+      "PositionOffset": {
+        "Z": 8
+      }
+    }
+  ]
+}

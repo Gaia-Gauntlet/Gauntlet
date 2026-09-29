@@ -1,0 +1,22 @@
+{
+  "Type": "Variant",
+  "Reference": "Template_Boss",
+  "Modify": {
+    "Appearance": "GG_Sporeback_Mushee",
+    "MaxHealth": 40,
+    "DropList": "Empty",
+    "AttitudeGroup": "GG_Sporeback",
+    "ViewRange": 35,
+    "HearingRange": 35,
+    "AlertedRange": 35,
+    "AbsoluteDetectionRange": 8,
+    "MaxSpeed": 3.5,
+    "CombatMovingRelativeSpeed": 1,
+    "Attack": "Root_NPC_GG_Sporeback_Mushee_Bite",
+    "AttackDistance": 2.25,
+    "AttackPauseRange": [2,3],
+    "TargetRange": 35,
+    "NameTranslationKey": { "Compute": "NameTranslationKey" }
+  },
+  "Parameters": { "NameTranslationKey": { "Value": "gg.npc.sporeback-mushee.name" } }
+}

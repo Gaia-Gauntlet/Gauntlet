@@ -1,0 +1,4451 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "name": "bone",
+      "position": {"x": 0.18935, "y": 43.8805, "z": -14.83678},
+      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+      "shape": {
+        "type": "none",
+        "offset": {"x": 0, "y": 0, "z": 0},
+        "stretch": {"x": 1, "y": 1, "z": 1},
+        "settings": {
+          "isPiece": false
+        },
+        "textureLayout": {},
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      },
+      "children": [
+        {
+          "id": "2",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 150.6615, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "3",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 100.1277, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "5",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "6",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 21.85256, "y": 168.56749, "z": -0.03766},
+          "orientation": {"x": 0.3817, "y": -0.92429, "z": -0.00064, "w": -0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "7",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "8",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 9.3551, "y": -12.52241, "z": 0.57554},
+          "orientation": {"x": 0.36401, "y": 0.93139, "z": -0.00061, "w": 0.00155},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "9",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "10",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -0.19048, "y": 4.75282, "z": -0.01326},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "11",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "12",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -3.96365, "y": -15.59358, "z": -0.01236},
+          "orientation": {"x": 0.32756, "y": -0.94483, "z": -0.00055, "w": -0.00157},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "13",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "14",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 13.3845, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "15",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "16",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -61.0247, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "17",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "18",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 100.1277, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "19",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "20",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 169.662, "z": -0.01326},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "21",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "22",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 75.2924, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "23",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "24",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 75.2924, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "25",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "26",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -15.61898, "y": -177.81928, "z": -0.01236},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "27",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "28",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 13.3845, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "29",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "30",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -27.53037, "y": 172.50052, "z": -0.01753},
+          "orientation": {"x": -0.70788, "y": -0.70633, "z": -0.00117, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "31",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "32",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -3.78618, "y": -25.72258, "z": -0.01326},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "33",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": -1, "z": 1.1},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 24, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 5, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 5, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 5, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 5, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "34",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -31.02637, "y": 158.42158, "z": -0.03766},
+          "orientation": {"x": 0.38111, "y": 0.92453, "z": -0.00064, "w": 0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "35",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "36",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -16.44469, "y": -3.22743, "z": 0.57944},
+          "orientation": {"x": 0.42209, "y": 0.90655, "z": -0.0007, "w": 0.00151},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "37",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "38",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 4.34923, "y": 172.50052, "z": -0.01843},
+          "orientation": {"x": -0.70788, "y": -0.70633, "z": -0.00117, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "39",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -148.2739, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "41",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "42",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -11.3982, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "43",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "44",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 137.8333, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "45",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "46",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 169.8246, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "47",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "48",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 125.2717, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "49",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "50",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 87.6994, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "51",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "52",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -15.61897, "y": 172.50052, "z": -0.01753},
+          "orientation": {"x": -0.70788, "y": -0.70633, "z": -0.00117, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "53",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "54",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 150.6615, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "55",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "56",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -48.3152, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "57",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "58",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79355, "y": -173.4481, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "59",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "60",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -14.01818, "y": -24.60591, "z": -0.01136},
+          "orientation": {"x": -0.78382, "y": -0.62098, "z": 0.00131, "w": -0.00104},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "61",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "62",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -23.823, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "63",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "64",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -7.28477, "y": 172.50052, "z": -0.01843},
+          "orientation": {"x": -0.70788, "y": -0.70633, "z": -0.00117, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "65",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "66",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -27.53038, "y": -177.81928, "z": -0.01236},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "67",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "68",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 30.47636, "y": 160.03829, "z": -0.03766},
+          "orientation": {"x": 0.3817, "y": -0.92429, "z": -0.00064, "w": -0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "69",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "70",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -110.513, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "71",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "72",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 25.6168, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "73",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "74",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -110.513, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "75",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "76",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 26.93443, "y": -20.03721, "z": -0.01236},
+          "orientation": {"x": -0.08301, "y": 0.99655, "z": 0.00014, "w": 0.00166},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "77",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "78",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 62.8786, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "79",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "80",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -23.16184, "y": -171.32351, "z": -0.03766},
+          "orientation": {"x": 0.3817, "y": -0.92429, "z": -0.00064, "w": -0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "81",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "82",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -25.61239, "y": -20.89838, "z": -0.01236},
+          "orientation": {"x": -0.09319, "y": -0.99565, "z": 0.00016, "w": -0.00166},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "83",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "84",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 87.6994, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "85",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "86",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 0.66204, "y": -18.0409, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "87",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": -1, "z": 1},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 24, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 5, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 5, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 5, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 5, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "88",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -85.8701, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "89",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "90",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 138.0247, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "91",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "92",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 13.73423, "y": 172.50052, "z": -0.01753},
+          "orientation": {"x": -0.70788, "y": -0.70633, "z": -0.00117, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "93",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "94",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01484, "y": 150.4871, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "95",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "96",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -98.391, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "97",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "98",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01484, "y": -173.4481, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "99",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "100",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 37.8174, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "101",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "102",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 26.33172, "y": -177.81928, "z": -0.01236},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "103",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "104",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 4.34902, "y": -177.81938, "z": -0.01326},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "105",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "106",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -35.9678, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "107",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "108",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -22.52147, "y": 167.35368, "z": -0.03766},
+          "orientation": {"x": 0.38111, "y": 0.92453, "z": -0.00064, "w": 0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "109",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "110",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -148.2739, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "111",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "112",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 13.73422, "y": -177.81928, "z": -0.01236},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "113",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "114",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 50.3231, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "115",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "116",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 1.3769, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "117",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "118",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -61.0247, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "119",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "120",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -48.3152, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "121",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "122",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -160.7943, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "123",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "124",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 3.45012, "y": -25.72268, "z": -0.01326},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "125",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 1, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 24, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 3, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 3, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 3, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 3, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "126",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -85.8701, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "127",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "128",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -135.6248, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "129",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "130",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -30.88204, "y": -163.47351, "z": -0.03766},
+          "orientation": {"x": 0.3817, "y": -0.92429, "z": -0.00064, "w": -0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "131",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "132",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 0.66234, "y": -8.0106, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "133",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "134",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 37.8174, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "135",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "136",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -160.7943, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "137",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "138",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01534, "y": -35.9678, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "139",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "140",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -73.3957, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "141",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "142",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 18.13243, "y": -2.48551, "z": -0.01236},
+          "orientation": {"x": -0.35788, "y": 0.93377, "z": 0.0006, "w": 0.00156},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "143",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "144",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 112.4647, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "145",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "146",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 5.2418, "y": -16.94881, "z": 0.37244},
+          "orientation": {"x": 0.36401, "y": 0.93139, "z": -0.00061, "w": 0.00155},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "147",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "148",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -7.29398, "y": -177.88878, "z": -0.03476},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "149",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "150",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -98.391, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "151",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "152",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 0.66184, "y": -31.9206, "z": -0.06506},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "153",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "154",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 62.8786, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "155",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "156",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 125.2717, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "157",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "158",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 50.3231, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "159",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "160",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -123.1162, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "161",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "162",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 13.73264, "y": -24.30389, "z": -0.00846},
+          "orientation": {"x": 0.5973, "y": 0.80202, "z": -0.001, "w": 0.00134},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "163",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": -0.1, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "164",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 30.67963, "y": -164.15042, "z": -0.03766},
+          "orientation": {"x": 0.38111, "y": 0.92453, "z": -0.00064, "w": 0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "165",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "166",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -7.39255, "y": -11.52288, "z": 0.09314},
+          "orientation": {"x": 0.32756, "y": -0.94483, "z": -0.00055, "w": -0.00157},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "167",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "168",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -123.1162, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "169",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "170",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 1.3769, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "171",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "172",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 25.6168, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "173",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "174",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79355, "y": 150.4871, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "175",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "176",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 26.33173, "y": 172.50052, "z": -0.01753},
+          "orientation": {"x": -0.70788, "y": -0.70633, "z": -0.00117, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "177",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "178",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -135.6248, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "179",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "180",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -0.19048, "y": -41.91778, "z": -0.01326},
+          "orientation": {"x": 0.70788, "y": 0.70633, "z": -0.00118, "w": 0.00118},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "181",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "box",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 14, "y": 32, "z": 14}
+                },
+                "textureLayout": {
+                  "back": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  },
+                  "right": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 270
+                  },
+                  "front": {
+                    "offset": {"x": 0, "y": 0},
+                    "mirror": {"x": false, "y": true},
+                    "angle": 90
+                  },
+                  "left": {
+                    "offset": {"x": 0, "y": 14},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 270
+                  },
+                  "top": {
+                    "offset": {"x": 14, "y": 28},
+                    "mirror": {"x": true, "y": false},
+                    "angle": 90
+                  },
+                  "bottom": {
+                    "offset": {"x": 0, "y": 28},
+                    "mirror": {"x": true, "y": true},
+                    "angle": 90
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "standard"
+              }
+            }
+          ]
+        },
+        {
+          "id": "182",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 162.6867, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "183",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "184",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": 162.6867, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "185",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "186",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": -35.79415, "y": -73.3957, "z": -0.0177},
+          "orientation": {"x": 0, "y": -1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "187",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "188",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": -11.3982, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "189",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "190",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 22.75783, "y": -172.33262, "z": -0.03766},
+          "orientation": {"x": 0.38111, "y": 0.92453, "z": -0.00064, "w": 0.00154},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "191",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "192",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01544, "y": 112.4647, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "193",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        },
+        {
+          "id": "194",
+          "name": "Rock_Gold_Brick_Beam",
+          "position": {"x": 36.01534, "y": -23.823, "z": -0.01236},
+          "orientation": {"x": 0, "y": 1, "z": 0, "w": 0.00167},
+          "shape": {
+            "type": "none",
+            "offset": {"x": 0, "y": -16, "z": 0},
+            "stretch": {"x": 1, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false
+            },
+            "textureLayout": {},
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "flat"
+          },
+          "children": [
+            {
+              "id": "195",
+              "name": "root1",
+              "position": {"x": 0, "y": 16, "z": 0},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "none",
+                "offset": {"x": 0.8, "y": 0, "z": 1.2},
+                "stretch": {"x": 1, "y": 1, "z": 1},
+                "settings": {
+                  "isPiece": false
+                },
+                "textureLayout": {},
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "format": "prop",
+  "lod": "auto"
+}

@@ -1,0 +1,66 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Void_Trapdoor.name"
+  },
+  "ItemLevel": 10,
+  "MaxStack": 100,
+  "Icon": "Icons/ItemsGenerated/Void_Trapdoor.png",
+  "Categories": [
+    "Tool.TechnicalBlocks"
+  ],
+  "SubCategory": "BlockSets",
+  "PlayerAnimationsId": "Block",
+  "Set": "Build",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Decorative_Sets/Crude/Trapdoor.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Decorative_Sets/Void_Textures/Void_Trapdoor.png",
+        "Weight": 1
+      }
+    ],
+    "Group": "Dev",
+    "HitboxType": "Trapdoor",
+    "Flags": {},
+    "Interactions": {
+      "Collision": "GG_Void_Damage"
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "VariantRotation": "NESW",
+    "BlockParticleSetId": "Dust",
+    "ParticleColor": "#1a1a1a",
+    "BlockSoundSetId": "Soft",
+    "PhysicalMaterialId": "Wool",
+    "SoundOcclusionOpacity": 2.0,
+    "TextureComputedColor": "#272832"
+  },
+  "Tags": {
+    "Type": [
+      "Rock"
+    ],
+    "Family": [
+      "Build"
+    ]
+  },
+  "Quality": "Technical",
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  }
+}

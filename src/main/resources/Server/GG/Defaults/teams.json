@@ -1,0 +1,186 @@
+{
+  "Teams": [
+    {
+      "Id": "Bumbling_Bramblekin",
+      "Name": "Bumbling Bramblekin",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Bramblekin.png",
+      "Color": "#7d3a21",
+      "Members": [
+        "TheDragonFox",
+        "OhRisk",
+        "BrokenMiniFridge"
+      ]
+    },
+    {
+      "Id": "Camera_Crew",
+      "Name": "Camera Crew",
+      "Type": "Camera",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Camera.png",
+      "Color": "#FFFFFF",
+      "Members": [
+        "lxI",
+        "GGAdmin",
+        "Beatrix"
+      ]
+    },
+    {
+      "Id": "Deadly_Dinosaurs",
+      "Name": "Deadly Dinosaurs",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Dinosaur.png",
+      "Color": "#a4e794",
+      "Members": [
+        "Taf",
+        "aemilius",
+        "PacificByte"
+      ]
+    },
+    {
+      "Id": "Fluffy_Ferans",
+      "Name": "Fluffy Ferans",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Feran.png",
+      "Color": "#ffe043",
+      "Members": [
+        "OfficialEv0",
+        "Rea",
+        "Riprod"
+      ]
+    },
+    {
+      "Id": "Goofy_Goblins",
+      "Name": "Goofy Goblins",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Goblin.png",
+      "Color": "#ea84b0",
+      "Members": [
+        "Syprus",
+        "Edilan",
+        "oruuke"
+      ]
+    },
+    {
+      "Id": "Keen_Kweebecs",
+      "Name": "Keen Kweebecs",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Kweebec.png",
+      "Color": "#4b8c37",
+      "Members": [
+        "Gindew",
+        "Evee",
+        "kweebec"
+      ]
+    },
+    {
+      "Id": "Kooky_Klops",
+      "Name": "Kooky Klops",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Klops.png",
+      "Color": "#ad8d26",
+      "Members": [
+        "Oatman5000",
+        "Xspree",
+        "August"
+      ]
+    },
+    {
+      "Id": "Observant_Outlanders",
+      "Name": "Observant Outlanders",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Outlander.png",
+      "Color": "#FFFFFF",
+      "Members": [
+        "Ikari",
+        "TittyBaby",
+        "Gnormal"
+      ]
+    },
+    {
+      "Id": "Saucy_Saurians",
+      "Name": "Saucy Saurians",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Saurian.png",
+      "Color": "#8c9c2e",
+      "Members": [
+        "Matt",
+        "Farren",
+        "Kerp"
+      ]
+    },
+    {
+      "Id": "Scary_Scaraks",
+      "Name": "Scary Scaraks",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Scarak.png",
+      "Color": "#d9a172",
+      "Members": [
+        "Preston",
+        "Brugo",
+        "Hytro"
+      ]
+    },
+    {
+      "Id": "Sleepy_Slothians",
+      "Name": "Sleepy Slothians",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Slothian.png",
+      "Color": "#a89ea8",
+      "Members": [
+        "Chayzur",
+        "Hawkon",
+        "Madcow"
+      ]
+    },
+    {
+      "Id": "Tricky_Trorks",
+      "Name": "Tricky Trorks",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Trork.png",
+      "Color": "#FFFFFF",
+      "Members": [
+        "Lordimass",
+        "thirtyvirus",
+        "CanadianFlash"
+      ]
+    },
+    {
+      "Id": "Varyns_Void",
+      "Name": "Varyn's Void",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Void.png",
+      "Color": "#a73959",
+      "Members": [
+        "dinch",
+        "Kaupenjoe",
+        "RedJagoon"
+      ]
+    },
+    {
+      "Id": "Wacky_Werewolves",
+      "Name": "Wacky Werewolves",
+      "Type": "Participant",
+      "MaxSize": 3,
+      "Icon": "UI/Custom/GG/TeamIcons/Werewolf.png",
+      "Color": "#898ead",
+      "Members": [
+        "ST0RMY",
+        "Slamma",
+        "FoxyCCA"
+      ]
+    }
+  ]
+}

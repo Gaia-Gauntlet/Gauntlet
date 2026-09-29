@@ -1,0 +1,8 @@
+{
+  "Type": "SingleTrack",
+  "AudioCategory": "AudioCat_Music",
+  "Track": "Music/Gaias_Champions.ogg",
+  "Volume": -7.1,
+  "MaxInstance": 1,
+  "TransitionType": "Crossfade"
+}

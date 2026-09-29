@@ -1,0 +1,5 @@
+// One generated text row inside a list panel, capped at two lines.
+Label {
+    Style: (FontSize: 12, TextColor: #c9d1d9, Wrap: true, WrapMaxLines: 2);
+    Anchor: (Bottom: 3);
+}

@@ -1,0 +1,119 @@
+{
+  "Type": "GaiaBoss",
+  "BossScaling": {
+    "DisplayNameKey": "gg.boss.zombie_trex.name",
+    "MiniBoss": true,
+    "ZoneTags": [ "Post Apocalyptic" ],
+    "Enabled": true,
+    "PhysicalScale": 2
+  },
+  "Reference": "Template_Boss",
+  "Modify": {
+    "Appearance": "Zombie_TRex",
+    "AttitudeGroup": "PredatorsBig",
+    "WanderRadius": 8,
+    "ViewRange": 5,
+    "FleeRange": 15,
+    "HearingRange": 20,
+    "MaxSpeed": 9,
+    "Attack": "Root_Zombie_TRex_Bite",
+    "AttackDistance": 3,
+    "TargetRange": 3,
+    "CombatBehaviorDistance": 6,
+    "CombatAlwaysMovingWeight": 1000,
+    "RunThreshold": 0.1,
+    "KnockbackScale": 0.1,
+    "ClimbHeight": 2,
+    "MinJumpHeight": 1.5,
+    "AscentAnimationType": "Walk",
+    "ClimbSpeedMult": 1,
+    "ClimbSpeedPow": 1,
+    "ClimbSpeedConst": 5,
+    "DescendSpeedCompensation": 1,
+    "DescendFlatness": 0.9,
+    "DescentSteepness": 0.9,
+    "DescentBlending": 1.5,
+    "LeashDistance": 60,
+    "HardLeashDistance": 100,
+    "LeashMinPlayerDistance": 15,
+    "LeashTimer": [ 12, 16 ],
+    "AlwaysSleepAtNight": false,
+    "MaxHealth": 1000,
+    "IsMemory": true,
+    "MemoriesCategory": "Reptile",
+    "_InteractionVars": {
+      "Melee_Start": {
+        "Interactions": [
+          {
+            "Parent": "NPC_Attack_Melee_Simple",
+            "$Comment": "Sets animations and delay before hit",
+            "Effects": {
+              "ItemPlayerAnimationsId": "Hyena_Default",
+              "ItemAnimationId": "Bite",
+              "WorldSoundEventId": "SFX_Rex_Bite"
+            },
+            "RunTime": 0.333
+          }
+        ]
+      },
+      "Melee_Damage": {
+        "Interactions": [
+          {
+            "Parent": "NPC_Attack_Melee_Damage",
+            "$Comment": "Sets damage and onhit effects",
+            "DamageCalculator": {
+              "Type": "Absolute",
+              "BaseDamage": {
+                "Physical": 30
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "Effects": {
+              "WorldSoundEventId": "SFX_Bone_Hit"
+            },
+            "DamageEffects": {
+              "Knockback": {
+                "Force": -0.3,
+                "RelativeX": 0,
+                "RelativeZ": 0.8,
+                "VelocityY": 10,
+                "VelocityType": "Set"
+              }
+            }
+          }
+        ]
+      },
+      "Melee_Selector": {
+        "Interactions": [
+          {
+            "Parent": "NPC_Attack_Selector_Left",
+            "$Comment": "Sets Hit shape and padding to allow effect to play and wait till animation is over",
+            "RunTime": 0.152,
+            "Selector": {
+              "Id": "Stab",
+              "TestLineOfSight": true,
+              "ExtendTop": 4.5,
+              "ExtendBottom": 2.4,
+              "ExtendLeft": 1,
+              "ExtendRight": 1,
+              "StartDistance": 4,
+              "EndDistance": 12.5
+            },
+            "Next": {
+              "Type": "Simple",
+              "$Comment": "Pad the interaction length",
+              "RunTime": 0.13
+            }
+          }
+        ]
+      }
+    },
+    "NameTranslationKey": { "Compute": "NameTranslationKey" }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "gg.boss.zombie_trex.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}

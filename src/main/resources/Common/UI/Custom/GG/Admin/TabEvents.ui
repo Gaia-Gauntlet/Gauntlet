@@ -1,0 +1,52 @@
+// Events tab: the live queue, ad hoc events, and the preset.
+$G = "Common.ui";
+
+@Content = Group {
+    LayoutMode: Left;
+
+    $G.@Column {
+        $G.@Card {
+            FlexWeight: 1;
+            $G.@Header { @Text = "Queue"; }
+            $G.@Field #EventClockField { @Key = "Clock"; }
+            $G.@ScrollPanel #EventList {}
+            $G.@ButtonRow {
+                $G.@Action #EventNext   { @Anchor = (Right: 3); Text: "Fire next"; }
+                $G.@Action #EventPause  { @Anchor = (Left: 3, Right: 3); Text: "Pause"; }
+                $G.@Action #EventResume { @Anchor = (Left: 3); Text: "Resume"; }
+            }
+            $G.@PickerRow {
+                $G.@Input #EventDelaySeconds { @Anchor = (Right: 6); @Placeholder = "seconds"; }
+                $G.@Go #EventDelay { Text: "Delay all"; }
+            }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Add an event"; }
+            $G.@PickerRow {
+                $G.@Picker #EventTypePicker { @Anchor = (Right: 6); }
+                $G.@Input #EventArg { @Placeholder = "weather id or boss, empty = random"; }
+            }
+            $G.@PickerRow {
+                $G.@Input #EventInSeconds { @Anchor = (Right: 6); @Placeholder = "seconds from now"; }
+                $G.@Go #EventQueue { @Anchor = (Right: 4); Text: "Queue"; }
+                $G.@GoQuiet #EventForce { Text: "Run now"; }
+            }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Preset"; }
+            $G.@Field #EventPresetField { @Key = "Running"; }
+            $G.@PickerRow {
+                $G.@Picker #EventPresetPicker { @Anchor = (Right: 6); }
+                $G.@Go #EventPresetGame { @Anchor = (Right: 4); Text: "This game"; }
+                $G.@GoQuiet #EventPresetGlobal { Text: "Every game"; }
+            }
+            $G.@ListPanel #PresetList {}
+        }
+    }
+};

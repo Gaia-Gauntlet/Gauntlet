@@ -1,0 +1,40 @@
+{
+  "$Comment": "Single-role Lava Dragon with claw swipes, tail sweep, and fire breath.",
+  "Type": "Variant",
+  "Reference": "Template_Flying_Aggressive",
+  "Modify": {
+    "Appearance": "Lava_Dragon",
+    "MaxHealth": 1250,
+    "DropList": "GG_Boss_Loot",
+    "AttitudeGroup": "PredatorsBig",
+    "ViewRange": 45,
+    "AlertedRange": 45,
+    "HearingRange": 45,
+    "AbsoluteDetectionRange": 8,
+    "CombatBehaviorDistance": 35,
+    "RangedAttack": "Root_NPC_Lava_Dragon_Attack",
+    "RangedAttackDistance": 8,
+    "RangedAttackAimingRange": [ 0, 0 ],
+    "RangedAttackPauseRange": [ 2.0, 2.8 ],
+    "CombatRelativeSpeedFlyMotion": 0.25,
+    "CombatSeekSlowdownDistance": 12,
+    "CombatSeekStopDistance": 5,
+    "TargetRange": 45,
+    "CombatAdditionalBehaviorComponent": "Component_Instruction_GG_Lava_Dragon_Combat",
+    "MotionFlyMaxHorizontalSpeed": 4.8,
+    "MotionFlyMinHeightAboveGround": 0.5,
+    "MotionFlyMaxHeightAboveGround": 1.5,
+    "MotionDesiredAltitudeCombat": [ 0.5, 1.5 ],
+    "MotionDesiredAltitudeSearch": [ 0.5, 1.5 ],
+    "NameTranslationKey": { "Compute": "NameTranslationKey" },
+    "DeathParticles": "Effect_Death_Medium",
+    "_InteractionVars": {
+      "Swipe_Left_Damage": { "Interactions": [ { "Parent": "Bear_Grizzly_Swipe_Left_Damage", "DamageCalculator": { "Type": "Absolute", "BaseDamage": { "Physical": 34 }, "RandomPercentageModifier": 0.1 }, "DamageEffects": { "Knockback": { "Force": 0.5 } } } ] },
+      "Swipe_Right_Damage": { "Interactions": [ { "Parent": "Bear_Grizzly_Swipe_Right_Damage", "DamageCalculator": { "Type": "Absolute", "BaseDamage": { "Physical": 36 }, "RandomPercentageModifier": 0.1 }, "DamageEffects": { "Knockback": { "Force": 0.5 } } } ] },
+      "Tail_Sweep_Damage": { "Interactions": [ { "Parent": "Bear_Grizzly_Swipe_Right_Damage", "DamageCalculator": { "Type": "Absolute", "BaseDamage": { "Physical": 32 } }, "DamageEffects": { "Knockback": { "Force": 5 } }, "Next": { "Type": "ApplyEffect", "EffectId": "GG_Lava_Dragon_Ignite" } } ] }
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": { "Value": "gg.boss.lava_dragon.name", "Description": "Localized Lava Dragon boss name" }
+  }
+}

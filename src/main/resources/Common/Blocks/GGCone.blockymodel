@@ -1,0 +1,282 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Cloth_Block_Wool_Orange",
+      "position": {"x": -1.4385, "y": 40.2859, "z": -1.4789},
+      "orientation": {"x": 0, "y": 0.70956, "z": 0, "w": 0.70465},
+      "shape": {
+        "type": "box",
+        "offset": {"x": 0, "y": -12.8, "z": 0},
+        "stretch": {"x": 0.2, "y": 0.2, "z": 0.2},
+        "settings": {
+          "isPiece": false,
+          "size": {"x": 32, "y": 32, "z": 32}
+        },
+        "textureLayout": {
+          "back": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "right": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "front": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "left": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "top": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "bottom": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          }
+        },
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Cloth_Block_Wool_Orange",
+      "position": {"x": -1.1592, "y": 15.5994, "z": -1.4888},
+      "orientation": {"x": 0, "y": 0.70114, "z": 0, "w": 0.71302},
+      "shape": {
+        "type": "box",
+        "offset": {"x": 0, "y": -7, "z": 0},
+        "stretch": {"x": 0.5, "y": 0.5, "z": 0.5},
+        "settings": {
+          "isPiece": false,
+          "size": {"x": 32, "y": 32, "z": 32}
+        },
+        "textureLayout": {
+          "back": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "right": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "front": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "left": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "top": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "bottom": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          }
+        },
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Cloth_Block_Wool_Orange",
+      "position": {"x": -1.3799, "y": 32.2781, "z": -1.4586},
+      "orientation": {"x": 0, "y": 0.72085, "z": 0, "w": 0.69309},
+      "shape": {
+        "type": "box",
+        "offset": {"x": 0, "y": -11.2, "z": 0},
+        "stretch": {"x": 0.3, "y": 0.3, "z": 0.3},
+        "settings": {
+          "isPiece": false,
+          "size": {"x": 32, "y": 32, "z": 32}
+        },
+        "textureLayout": {
+          "back": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "right": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "front": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "left": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "top": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "bottom": {
+            "offset": {"x": 0, "y": 0},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          }
+        },
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Cloth_Block_Wool_White",
+      "position": {"x": -1.1523, "y": 23.4224, "z": -1.4142},
+      "orientation": {"x": 0, "y": 0.71838, "z": 0, "w": 0.69565},
+      "shape": {
+        "type": "box",
+        "offset": {"x": 0, "y": -8.6, "z": 0},
+        "stretch": {"x": 0.4, "y": 0.4, "z": 0.4},
+        "settings": {
+          "isPiece": false,
+          "size": {"x": 32, "y": 32, "z": 32}
+        },
+        "textureLayout": {
+          "back": {
+            "offset": {"x": 0, "y": 32},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "right": {
+            "offset": {"x": 0, "y": 32},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "front": {
+            "offset": {"x": 0, "y": 32},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "left": {
+            "offset": {"x": 0, "y": 32},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "top": {
+            "offset": {"x": 0, "y": 32},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          },
+          "bottom": {
+            "offset": {"x": 0, "y": 32},
+            "mirror": {"x": false, "y": false},
+            "angle": 0
+          }
+        },
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      }
+    },
+    {
+      "id": "5",
+      "name": "Rock_Slate_Cobble_Half",
+      "position": {"x": -0.5869, "y": 16.2246, "z": -1.3849},
+      "orientation": {"x": 0, "y": 0.70922, "z": 0, "w": 0.70499},
+      "shape": {
+        "type": "none",
+        "offset": {"x": 0, "y": -16, "z": 0},
+        "stretch": {"x": 1, "y": 1, "z": 1},
+        "settings": {
+          "isPiece": false
+        },
+        "textureLayout": {},
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      },
+      "children": [
+        {
+          "id": "6",
+          "name": "StairBase",
+          "position": {"x": 0, "y": 4.8, "z": 0},
+          "orientation": {"x": 0, "y": -0.70711, "z": 0, "w": 0.70711},
+          "shape": {
+            "type": "box",
+            "offset": {"x": 0, "y": 0, "z": 0},
+            "stretch": {"x": 0.6, "y": 0.6, "z": 0.6},
+            "settings": {
+              "isPiece": false,
+              "size": {"x": 32, "y": 16, "z": 32}
+            },
+            "textureLayout": {
+              "back": {
+                "offset": {"x": 0, "y": 80},
+                "mirror": {"x": false, "y": false},
+                "angle": 0
+              },
+              "right": {
+                "offset": {"x": 0, "y": 80},
+                "mirror": {"x": false, "y": false},
+                "angle": 0
+              },
+              "front": {
+                "offset": {"x": 0, "y": 80},
+                "mirror": {"x": false, "y": false},
+                "angle": 0
+              },
+              "left": {
+                "offset": {"x": 0, "y": 80},
+                "mirror": {"x": false, "y": false},
+                "angle": 0
+              },
+              "top": {
+                "offset": {"x": 32, "y": 96},
+                "mirror": {"x": false, "y": false},
+                "angle": 180
+              },
+              "bottom": {
+                "offset": {"x": 0, "y": 64},
+                "mirror": {"x": false, "y": false},
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          }
+        }
+      ]
+    }
+  ],
+  "format": "character",
+  "lod": "auto"
+}

@@ -1,0 +1,20 @@
+{
+  "Recipe": {
+    "Input": [
+      {
+        "Quantity": 4,
+        "ItemId": "Ingredient_Stick"
+      }
+    ],
+    "OutputQuantity": 2,
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Weapons"
+        ],
+        "Id": "Workbench"
+      }
+    ]
+  }
+}

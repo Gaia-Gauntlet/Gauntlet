@@ -1,0 +1,10 @@
+{
+  "Interactions": [
+    {
+      "Type": "GG_TeamSpectateControl",
+      "Action": "Next"
+    }
+  ],
+  "RequireNewClick": true,
+  "HudInputBindingEntry": "server.hud.inputBinding.spectateNextPlayer"
+}

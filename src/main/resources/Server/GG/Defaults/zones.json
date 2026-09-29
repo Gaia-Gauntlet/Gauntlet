@@ -1,0 +1,369 @@
+{
+  "Zones": [
+    {
+      "Id": "Lava Japanese",
+      "CenterX": -98.4839859008789,
+      "CenterY": 51.0,
+      "CenterZ": -0.5322037935256958,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 0.0,
+      "EndAngle": 60.0,
+      "Height": 500.0,
+      "HudSlot": 2,
+      "HudImage": "Lava_Japanese",
+      "LootFountains": [
+        {
+          "Tier": 1,
+          "Enabled": true,
+          "Min": 60,
+          "Max": 60,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 2,
+          "Enabled": true,
+          "Min": 45,
+          "Max": 45,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 3,
+          "Enabled": true,
+          "Min": 30,
+          "Max": 30,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 4,
+          "Enabled": true,
+          "Min": 20,
+          "Max": 20,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 5,
+          "Enabled": true,
+          "Min": 2,
+          "Max": 2,
+          "AlwaysSpawn": []
+        }
+      ]
+    },
+    {
+      "Id": "Ice Kingdom",
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 60.0,
+      "EndAngle": 120.0,
+      "Height": 500.0,
+      "HudSlot": 3,
+      "HudImage": "Ice_Kingdom",
+      "LootFountains": [
+        {
+          "Tier": 1,
+          "Enabled": true,
+          "Min": 60,
+          "Max": 60,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 2,
+          "Enabled": true,
+          "Min": 45,
+          "Max": 45,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 3,
+          "Enabled": true,
+          "Min": 30,
+          "Max": 30,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 4,
+          "Enabled": true,
+          "Min": 20,
+          "Max": 20,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 5,
+          "Enabled": true,
+          "Min": 2,
+          "Max": 2,
+          "AlwaysSpawn": []
+        }
+      ]
+    },
+    {
+      "Id": "Pirate Bay",
+      "CenterX": -98.47794342041016,
+      "CenterY": 30.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 120.0,
+      "EndAngle": 180.0,
+      "Height": 500.0,
+      "HudSlot": 4,
+      "HudImage": "Pirate_Bay",
+      "LootFountains": [
+        {
+          "Tier": 1,
+          "Enabled": true,
+          "Min": 60,
+          "Max": 60,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 2,
+          "Enabled": true,
+          "Min": 45,
+          "Max": 45,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 3,
+          "Enabled": true,
+          "Min": 30,
+          "Max": 30,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 4,
+          "Enabled": true,
+          "Min": 20,
+          "Max": 20,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 5,
+          "Enabled": true,
+          "Min": 2,
+          "Max": 2,
+          "AlwaysSpawn": []
+        }
+      ]
+    },
+    {
+      "Id": "Giant Shroom Jungle",
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 180.0,
+      "EndAngle": 240.0,
+      "Height": 500.0,
+      "HudSlot": 5,
+      "HudImage": "Giant_Shroom_Jungle",
+      "LootFountains": [
+        {
+          "Tier": 1,
+          "Enabled": true,
+          "Min": 60,
+          "Max": 60,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 2,
+          "Enabled": true,
+          "Min": 45,
+          "Max": 45,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 3,
+          "Enabled": true,
+          "Min": 30,
+          "Max": 30,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 4,
+          "Enabled": true,
+          "Min": 20,
+          "Max": 20,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 5,
+          "Enabled": true,
+          "Min": 2,
+          "Max": 2,
+          "AlwaysSpawn": []
+        }
+      ]
+    },
+    {
+      "Id": "Gaia City",
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 240.0,
+      "EndAngle": 300.0,
+      "Height": 500.0,
+      "HudSlot": 0,
+      "HudImage": "Gaia_City",
+      "LootFountains": [
+        {
+          "Tier": 1,
+          "Enabled": true,
+          "Min": 60,
+          "Max": 60,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 2,
+          "Enabled": true,
+          "Min": 45,
+          "Max": 45,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 3,
+          "Enabled": true,
+          "Min": 30,
+          "Max": 30,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 4,
+          "Enabled": true,
+          "Min": 20,
+          "Max": 20,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 5,
+          "Enabled": true,
+          "Min": 2,
+          "Max": 2,
+          "AlwaysSpawn": []
+        }
+      ]
+    },
+    {
+      "Id": "Post Apocalyptic",
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 300.0,
+      "EndAngle": 360.0,
+      "Height": 500.0,
+      "HudSlot": 1,
+      "HudImage": "Post_Apoc",
+      "LootFountains": [
+        {
+          "Tier": 1,
+          "Enabled": true,
+          "Min": 60,
+          "Max": 60,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 2,
+          "Enabled": true,
+          "Min": 45,
+          "Max": 45,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 3,
+          "Enabled": true,
+          "Min": 30,
+          "Max": 30,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 4,
+          "Enabled": true,
+          "Min": 20,
+          "Max": 20,
+          "AlwaysSpawn": []
+        },
+        {
+          "Tier": 5,
+          "Enabled": true,
+          "Min": 2,
+          "Max": 2,
+          "AlwaysSpawn": []
+        }
+      ]
+    }
+  ],
+  "Phases": [
+    {
+      "Name": "Zone 1",
+      "DurationSeconds": 220,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 2",
+      "DurationSeconds": 210,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 3",
+      "DurationSeconds": 170,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 4",
+      "DurationSeconds": 170,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 5",
+      "DurationSeconds": 160,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 6",
+      "DurationSeconds": 150,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    }
+  ],
+  "VoidBlock": "Build_Lightsource_Pink",
+  "VoidBlockMap": {
+    "Default": "Build_Lightsource_Pink",
+    "Solid": "Void_Cube",
+    "Half": "Void_Half",
+    "Stairs": "Void_Stairs",
+    "Fence": "Void_Fence",
+    "Rubble": "Void_Rubble",
+    "Branch": "Void_Branch",
+    "BranchCorner": "Void_Branch_Corner",
+    "Pipe": "Void_Pipe",
+    "PipeCorner": "Void_Pipe_Corner",
+    "Roof": "Void_Roof",
+    "RoofFlat": "Void_Roof_Flat",
+    "RoofShallow": "Void_Roof_Shallow",
+    "RoofSteep": "Void_Roof_Steep",
+    "Plant": "Void_Plant",
+    "PlantGround": "Void_Plant_Ground",
+    "PlantWall": "Void_Plant_Wall",
+    "PlantCeiling": "Void_Plant_Ceiling",
+    "Trapdoor": "Void_Trapdoor",
+    "Light": "Void_Glow_Purple",
+    "LightGround": "Void_Light_Ground",
+    "LightWall": "Void_Light_Wall",
+    "LightCeiling": "Void_Light_Ceiling",
+    "Fluid": "Void_Fluid"
+  }
+}

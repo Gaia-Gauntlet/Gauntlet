@@ -1,0 +1,26 @@
+{
+  "Armor": {
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.02,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.02,
+          "CalculationType": "Percent"
+        }
+      ]
+    },
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 5,
+          "CalculationType": "Additive"
+        }
+      ]
+    }
+  }
+}

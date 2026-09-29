@@ -1,0 +1,69 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Void_Light_Ceiling.name"
+  },
+  "ItemLevel": 10,
+  "MaxStack": 100,
+  "Icon": "Icons/ItemsGenerated/Void_Light_Ceiling.png",
+  "Categories": [
+    "Tool.TechnicalBlocks"
+  ],
+  "SubCategory": "LightSources",
+  "PlayerAnimationsId": "Block",
+  "Set": "Build",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Decorative_Sets/Village/Lantern_Ceiling.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Decorative_Sets/Void_Textures/Void_Lantern.png",
+        "Weight": 1
+      }
+    ],
+    "CustomModelScale": 0.8,
+    "Group": "Dev",
+    "HitboxType": "Lantern_Village_Ceiling",
+    "Flags": {},
+    "Interactions": {
+      "Collision": "GG_Void_Damage"
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Dust",
+    "ParticleColor": "#1a1a1a",
+    "BlockSoundSetId": "Soft",
+    "PhysicalMaterialId": "Wool",
+    "Light": {
+      "Color": "#546",
+      "Radius": 0
+    },
+    "TextureComputedColor": "#272832"
+  },
+  "Tags": {
+    "Type": [
+      "Rock"
+    ],
+    "Family": [
+      "Build"
+    ]
+  },
+  "Quality": "Technical",
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  }
+}

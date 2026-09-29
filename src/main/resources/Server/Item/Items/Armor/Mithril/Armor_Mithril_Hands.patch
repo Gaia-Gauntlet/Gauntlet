@@ -1,0 +1,46 @@
+{
+  "Quality": "Legendary",
+  "Recipe": {
+    "TimeSeconds": 0,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Mithril",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Arcanebench",
+        "Type": "Crafting",
+        "Categories": [
+          "Arcane_Armor"
+        ]
+      }
+    ]
+  },
+  "Armor": {
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.06,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.06,
+          "CalculationType": "Percent"
+        }
+      ]
+    },
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 13,
+          "CalculationType": "Additive"
+        }
+      ]
+    }
+  }
+}

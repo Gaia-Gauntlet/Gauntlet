@@ -1,0 +1,5 @@
+{
+  "Parent": "PlayerAvatar",
+  "Model": "NPC/Avatar/Breadley/Player.blockymodel",
+  "Texture": "NPC/Avatar/Breadley/Texture.png"
+}

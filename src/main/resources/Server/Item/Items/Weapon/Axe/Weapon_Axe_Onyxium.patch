@@ -1,0 +1,76 @@
+{
+  "InteractionVars": {
+    "Axe_Swing_Down_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Axe_Swing_Down_Left_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 33.7
+            },
+            "RandomPercentageModifier": 0.2
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Axe_Crude_Impact"
+          }
+        }
+      ]
+    },
+    "Axe_Swing_Up_Right_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Axe_Swing_Up_Right_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 33.7
+            },
+            "RandomPercentageModifier": 0.2
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Axe_Crude_Impact"
+          }
+        }
+      ]
+    },
+    "Axe_Swing_Left_Charged_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Axe_Swing_Left_Charged_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 58.9
+            },
+            "Type": "Absolute",
+            "RandomPercentageModifier": 0.2
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Axe_Crude_Impact"
+          }
+        }
+      ]
+    },
+    "Axe_Swing_Left_Charged_Effect": {
+      "Interactions": [
+        {
+          "Type": "ChangeStat",
+          "Behaviour": "Add",
+          "ValueType": "Absolute",
+          "StatModifiers": {
+            "Stamina": -2
+          },
+          "Next": {
+            "Type": "ChangeStat",
+            "Behaviour": "Set",
+            "ValueType": "Absolute",
+            "StatModifiers": {
+              "StaminaRegenDelay": -2.5
+            },
+            "Next": "Axe_Swing_Left_Charged_Effect"
+          }
+        }
+      ]
+    }
+  }
+}

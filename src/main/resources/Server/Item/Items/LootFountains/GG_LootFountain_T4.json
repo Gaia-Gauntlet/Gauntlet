@@ -1,0 +1,36 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.GG_LootFountain_T4.name"
+  },
+  "Icon": "Icons/ItemsGenerated/Furniture_Dungeon_Chest_Legendary_Large.png",
+  "Categories": [],
+  "Parent": "GG_LootFountain_Chest",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Dungeons/Chest_Legendary_Texture.png"
+      }
+    ],
+    "CustomModel": "Blocks/Dungeons/Chest_Legendary.blockymodel",
+    "HitboxType": "Chest_Large_Legendary",
+    "Interactions": {
+      "Use": "GG_LootFountain_T4_Open"
+    },
+    "State": {
+      "Definitions": {
+        "Opened": {
+          "InteractionSoundEventId": "SFX_LootFountain_Open_Player",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Open.blockyanim",
+          "Particles": [
+            {
+              "SystemId": "LootFountain_Open",
+              "PositionOffset": {
+                "Y": 0.9
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Food_Vegetable_Cooked",
+          "QuantityMin": 1,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Food_Fish_Grilled",
+          "QuantityMin": 1,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Food_Cheese",
+          "QuantityMin": 1,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Food_Bread",
+          "QuantityMin": 1,
+          "QuantityMax": 3
+        }
+      }
+    ]
+  }
+}

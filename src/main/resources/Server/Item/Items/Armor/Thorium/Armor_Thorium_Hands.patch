@@ -1,0 +1,46 @@
+{
+  "Quality": "Epic",
+  "Recipe": {
+    "TimeSeconds": 0,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Thorium",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Armor"
+        ]
+      }
+    ]
+  },
+  "Armor": {
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.05,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.05,
+          "CalculationType": "Percent"
+        }
+      ]
+    },
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 12,
+          "CalculationType": "Additive"
+        }
+      ]
+    }
+  }
+}

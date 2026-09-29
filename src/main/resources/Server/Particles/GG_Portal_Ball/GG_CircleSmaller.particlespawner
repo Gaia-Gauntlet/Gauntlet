@@ -1,0 +1,72 @@
+{
+  "RenderMode": "Erosion",
+  "ParticleRotationInfluence": "None",
+  "LinearFiltering": false,
+  "LightInfluence": 0,
+  "MaxConcurrentParticles": 1,
+  "ParticleLifeSpan": {
+    "Min": 5,
+    "Max": 5
+  },
+  "ParticleRotateWithSpawner": true,
+  "SpawnRate": {
+    "Min": 100.0,
+    "Max": 100.0
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Circles/Portal_Runic_128.png",
+    "ScaleRatioConstraint": "None",
+    "Animation": {
+      "0": {
+        "Rotation": {
+          "Z": {
+            "Min": 0,
+            "Max": 0
+          }
+        }
+      },
+      "50": {},
+      "100": {
+        "Rotation": {
+          "Z": {
+            "Min": 360,
+            "Max": 360
+          }
+        }
+      }
+    },
+    "InitialAnimationFrame": {
+      "FrameIndex": {
+        "Min": 0,
+        "Max": 0
+      },
+      "Color": "#4cc2ff",
+      "Rotation": {
+        "X": {
+          "Min": 90.0,
+          "Max": 90.0
+        }
+      },
+      "Scale": {
+        "X": {
+          "Min": 0.3,
+          "Max": 0.3
+        },
+        "Y": {
+          "Max": 0.3,
+          "Min": 0.3
+        }
+      }
+    }
+  },
+  "SpawnBurst": false,
+  "CameraOffset": -0.1,
+  "UVMotion": {
+    "Texture": "Particles/Textures/UVMotion/FlowMap3.png",
+    "SpeedX": 0.08,
+    "Strength": 0.0,
+    "SpeedY": -0.08,
+    "Scale": 1.68
+  },
+  "UseEmitDirection": true
+}

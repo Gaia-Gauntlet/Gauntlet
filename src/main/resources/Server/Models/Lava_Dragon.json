@@ -1,0 +1,303 @@
+{
+  "Model": "NPC/Boss/Lava_Dragon/LJP_Dragon.blockymodel",
+  "Texture": "NPC/Boss/Lava_Dragon/LJP_Dragon.png",
+  "IconProperties": {
+    "Scale": 1,
+    "Translation": [ 11, 0 ],
+    "Rotation": [ -0.8, 24.8, 0 ]
+  },
+  "Icon": "Icons/ModelsGenerated/Lava_Dragon.png",
+  "Light": {
+    "Color": "#700",
+    "Radius": 3
+  },
+  "HitBox": {
+    "Min": {
+      "X": -1.552,
+      "Y": 0.03625,
+      "Z": -7.8254
+    },
+    "Max": {
+      "X": 1.552,
+      "Y": 4.50936,
+      "Z": 2
+    }
+  },
+  "EyeHeight": 3.5,
+  "MinScale": 1,
+  "MaxScale": 1,
+  "DefaultAttachments": [
+    {
+      "Model": "NPC/Boss/Lava_Dragon/LJP_Sword.blockymodel",
+      "Texture": "NPC/Boss/Lava_Dragon/LJP_Sword_2.png"
+    }
+  ],
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/FlyIdle.blockyanim",
+          "Looping": true,
+          "Speed": 0.5
+        }
+      ],
+      "NextAnimationDelay": {}
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/FlyIdle.blockyanim",
+          "BlendingDuration": 0.4,
+          "SoundEventId": "SFX_Player_Fall"
+        }
+      ]
+    },
+    "FallFar": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/FlyIdle.blockyanim",
+          "BlendingDuration": 0.1,
+          "SoundEventId": "SFX_Player_Fall"
+        }
+      ]
+    },
+    "GlideIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/FlyIdle.blockyanim",
+          "Speed": 1,
+          "SoundEventId": "SFX_Player_Glide_Stationary"
+        }
+      ]
+    },
+    "Glide": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Fly.blockyanim",
+          "Speed": 1,
+          "SoundEventId": "SFX_Player_Glide_Motion"
+        }
+      ]
+    },
+    "GlideBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Fly.blockyanim",
+          "Speed": 1,
+          "SoundEventId": "SFX_Player_Glide_Motion"
+        }
+      ]
+    },
+    "GlideFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Fly.blockyanim",
+          "Speed": 1,
+          "SoundEventId": "SFX_Player_Glide_Motion"
+        }
+      ]
+    },
+    "FlyIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/FlyIdle.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "Fly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Fly.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "FlyBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Fly.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "FlyFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Fly.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "HurtFly": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Damage/Default/Hurt.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "SoundEventId": "SFX_Player_Hurt"
+        },
+        {
+          "Animation": "Characters/Animations/Damage/Default/Hurt2.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "SoundEventId": "SFX_Player_Hurt"
+        },
+        {
+          "Animation": "Characters/Animations/Damage/Default/Hurt3.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "SoundEventId": "SFX_Player_Hurt"
+        },
+        {
+          "Animation": "Characters/Animations/Damage/Default/Hurt4.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "SoundEventId": "SFX_Player_Hurt"
+        }
+      ]
+    },
+    "DeathFly": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Damage/Fly/Death_Fly.blockyanim",
+          "BlendingDuration": 0.6,
+          "SoundEventId": "SFX_Player_Hurt"
+        }
+      ]
+    },
+    "DeathFlyImpact": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Damage/Fly/Death_Fly_Impact.blockyanim",
+          "BlendingDuration": 0.05,
+          "Looping": false,
+          "SoundEventId": "SFX_Player_Death"
+        }
+      ]
+    },
+    "HurtBurn": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Damage/Burn/Hurt_Burn.blockyanim",
+          "Looping": false,
+          "SoundEventId": "SFX_Player_Hurt_Burn"
+        }
+      ]
+    },
+    "FlyIdlePassive": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around2.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Down.blockyanim",
+          "Weight": 1,
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Up.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Left.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Right.blockyanim",
+          "BlendingDuration": 0.4
+        }
+      ],
+      "NextAnimationDelay": {
+        "Max": 1,
+        "Min": 0
+      }
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/Alerted.blockyanim",
+          "Speed": 1,
+          "Looping": false,
+          "Sound": "SFX_Golem_Firesteel_Death"
+        }
+      ]
+    },
+    "TailSweep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/TailSweep.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Passive": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Lava_Dragon/Animations/FlyIdle.blockyanim"
+        }
+      ]
+    }
+  },
+  "Particles": [
+    {
+      "SystemId": "Effect_Fire",
+      "Scale": 10,
+      "Color": "#940000",
+      "TargetEntityPart": "Self",
+      "TargetNodeName": "Pelvis",
+      "PositionOffset": {
+        "Y": -2
+      }
+    },
+    {
+      "SystemId": "Candle_Fire",
+      "TargetEntityPart": "Self",
+      "TargetNodeName": "Head",
+      "PositionOffset": {
+        "X": 0,
+        "Z": 0.75,
+        "Y": -0.4
+      },
+      "Scale": 3,
+      "Color": "#ffca07"
+    },
+    {
+      "SystemId": "Candle_Fire",
+      "TargetNodeName": "TailEnd",
+      "Color": "#ffca07",
+      "Scale": 7,
+      "PositionOffset": {
+        "Z": -1.5,
+        "Y": 0
+      },
+      "RotationOffset": {
+        "Pitch": 0,
+        "Yaw": 0,
+        "Roll": 0
+      }
+    },
+    {
+      "SystemId": "Smoke_Floor",
+      "TargetEntityPart": "Self",
+      "TargetNodeName": "Pelvis",
+      "Color": "#4f4f4f",
+      "PositionOffset": {
+        "Y": -1.5
+      },
+      "Scale": 1
+    }
+  ],
+  "Trails": [
+    {
+      "TargetEntityPart": "Self",
+      "TargetNodeName": "TailTip",
+      "TrailId": "Large_Flame"
+    }
+  ]
+}

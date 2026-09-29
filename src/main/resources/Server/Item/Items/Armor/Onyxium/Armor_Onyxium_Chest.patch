@@ -1,0 +1,47 @@
+{
+  "Quality": "Legendary",
+  "Armor": {
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.135,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.135,
+          "CalculationType": "Percent"
+        }
+      ]
+    },
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 29,
+          "CalculationType": "Additive"
+        }
+      ],
+      "Mana": null
+    }
+  },
+  "Recipe": {
+    "TimeSeconds": 0,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Onyxium",
+        "Quantity": 15
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Arcanebench",
+        "Type": "Crafting",
+        "Categories": [
+          "Arcane_Armor"
+        ]
+      }
+    ]
+  }
+}

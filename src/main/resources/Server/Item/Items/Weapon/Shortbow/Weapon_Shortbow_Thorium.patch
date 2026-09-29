@@ -1,0 +1,136 @@
+{
+  "Quality": "Epic",
+  "Recipe": {
+    "TimeSeconds": 0,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Thorium",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Weapons"
+        ]
+      }
+    ]
+  },
+  "InteractionVars": {
+    "Primary_Shoot_Damage_Strength_4": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Shortbow_Primary_Shoot_Damage_Strength_4",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Projectile": 21.9
+            }
+          },
+          "TargetedDamage": {
+            "Head": {
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Projectile": 30
+                }
+              },
+              "DamageEffects": {
+                "Knockback": {
+                  "Type": "Force",
+                  "VelocityConfig": {
+                    "AirResistance": 0.99,
+                    "AirResistanceMax": 0.98,
+                    "GroundResistance": 0.94,
+                    "GroundResistanceMax": 0.3,
+                    "Threshold": 3.0,
+                    "Style": "Linear"
+                  },
+                  "Direction": {
+                    "X": 0.0,
+                    "Y": 0.5,
+                    "Z": -1
+                  },
+                  "Force": 8,
+                  "VelocityType": "Set"
+                },
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Critical",
+                    "Scale": 1,
+                    "RotationOffset": {
+                      "Yaw": 180,
+                      "Pitch": 0,
+                      "Roll": 0
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Primary_Shoot_Damage_Strength_3": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Shortbow_Primary_Shoot_Damage_Strength_3",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Projectile": 8.1
+            }
+          }
+        }
+      ]
+    },
+    "Primary_Shoot_Damage_Strength_2": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Shortbow_Primary_Shoot_Damage_Strength_2",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Projectile": 4.6
+            }
+          }
+        }
+      ]
+    },
+    "Primary_Shoot_Damage_Strength_1": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Shortbow_Primary_Shoot_Damage_Strength_1",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Projectile": 2.3
+            }
+          }
+        }
+      ]
+    },
+    "Primary_Shoot_Damage_Strength_0": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Shortbow_Primary_Shoot_Damage_Strength_0",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Projectile": 1.2
+            }
+          }
+        }
+      ]
+    },
+    "Signature_Volley_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Weapon_Shortbow_Signature_Volley_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Projectile": 16.5
+            }
+          }
+        }
+      ]
+    }
+  }
+}

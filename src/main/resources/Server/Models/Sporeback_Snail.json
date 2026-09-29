@@ -1,0 +1,472 @@
+{
+  "Model": "NPC/Boss/Giant_Snail/Giant_Snail.blockymodel",
+  "Texture": "NPC/Boss/Giant_Snail/Giant_Snail.png",
+  "EyeHeight": 1.6,
+  "CrouchOffset": -0.4,
+  "SittingOffset": -0.6,
+  "SleepingOffset": -1,
+  "MinScale": 1,
+  "MaxScale": 1,
+  "PhysicsValues": {},
+  "DefaultAttachments": [
+    {
+      "Model": "Characters/Body_Attachments/Eyes/Eyes.blockymodel",
+      "Texture": "Characters/Body_Attachments/Eyes/Eyes_Textures/Greyscale_Large.png",
+      "GradientSet": "Eyes_Gradient",
+      "GradientId": "Brown"
+    }
+  ],
+  "Camera": {
+    "PositionOffset": {
+      "X": -0.35,
+      "Z": 2.75,
+      "Y": 0.6
+    }
+  },
+  "Particles": [],
+  "AnimationSets": {
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Hurt1.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Idle.blockyanim"
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Walk.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Walk.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Walk.blockyanim"
+        }
+      ]
+    },
+    "RunBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Walk.blockyanim"
+        }
+      ]
+    },
+    "Retreat": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Retreat.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Shelter": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Shelter.blockyanim", "Looping": false }
+      ]
+    },
+    "Emerge": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Emerge.blockyanim", "Looping": false }
+      ]
+    },
+    "Attack": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Hurt1.blockyanim", "Looping": false }
+      ]
+    },
+    "Passive": {
+      "Animations": [
+        {
+          "Animation": "NPC/Boss/Giant_Snail/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Idle.blockyanim", "Looping": true }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Shelter.blockyanim", "Looping": true }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Retreat.blockyanim", "Looping": false }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        { "Animation": "NPC/Boss/Giant_Snail/Emerge.blockyanim", "Looping": false }
+      ]
+    }
+  },
+  "DetailBoxes": {
+    "Pelvis": [
+      {
+        "Offset": {
+          "X": 0.00462,
+          "Y": 0,
+          "Z": 0.03906
+        },
+        "Box": {
+          "Min": {
+            "X": -0.52344,
+            "Y": 0,
+            "Z": -0.32031
+          },
+          "Max": {
+            "X": 0.52344,
+            "Y": 0.26563,
+            "Z": 0.32031
+          }
+        }
+      }
+    ],
+    "PelvisBack": [
+      {
+        "Offset": {
+          "X": -0.0005,
+          "Y": 0,
+          "Z": 0.96477
+        },
+        "Box": {
+          "Min": {
+            "X": -0.45312,
+            "Y": 0,
+            "Z": -0.60161
+          },
+          "Max": {
+            "X": 0.45313,
+            "Y": 0.74841,
+            "Z": 0.60161
+          }
+        }
+      }
+    ],
+    "Torso": [
+      {
+        "Offset": {
+          "X": -0.01772,
+          "Y": 0,
+          "Z": -0.97886
+        },
+        "Box": {
+          "Min": {
+            "X": -0.73437,
+            "Y": -0.02165,
+            "Z": -0.70151
+          },
+          "Max": {
+            "X": 0.73437,
+            "Y": 2.55766,
+            "Z": 0.70151
+          }
+        }
+      }
+    ],
+    "Shell": [
+      {
+        "Offset": {
+          "X": -0.03175,
+          "Y": 0,
+          "Z": 0.72203
+        },
+        "Box": {
+          "Min": {
+            "X": -0.48437,
+            "Y": 0.49034,
+            "Z": -0.20312
+          },
+          "Max": {
+            "X": 0.48438,
+            "Y": 1.02159,
+            "Z": 0.20313
+          }
+        }
+      }
+    ],
+    "cube--C1": [
+      {
+        "Offset": {
+          "X": -0.47497,
+          "Y": 0,
+          "Z": -0.08217
+        },
+        "Box": {
+          "Min": {
+            "X": -0.24219,
+            "Y": -0.0205,
+            "Z": -1.05844
+          },
+          "Max": {
+            "X": 0.24219,
+            "Y": 0.6954,
+            "Z": 1.05844
+          }
+        }
+      }
+    ],
+    "cube--C2": [
+      {
+        "Offset": {
+          "X": -0.01503,
+          "Y": 0,
+          "Z": -0.03402
+        },
+        "Box": {
+          "Min": {
+            "X": -0.65626,
+            "Y": 0.23334,
+            "Z": -1.00505
+          },
+          "Max": {
+            "X": 0.65626,
+            "Y": 0.92556,
+            "Z": 1.00505
+          }
+        }
+      }
+    ],
+    "cube--C3": [
+      {
+        "Offset": {
+          "X": -0.03444,
+          "Y": 0,
+          "Z": 0.10162
+        },
+        "Box": {
+          "Min": {
+            "X": -0.5625,
+            "Y": 0.19335,
+            "Z": -1.12589
+          },
+          "Max": {
+            "X": 0.5625,
+            "Y": 2.44512,
+            "Z": 1.12589
+          }
+        }
+      }
+    ],
+    "cube--C4": [
+      {
+        "Offset": {
+          "X": -0.03175,
+          "Y": 0,
+          "Z": -0.71128
+        },
+        "Box": {
+          "Min": {
+            "X": -0.48437,
+            "Y": 0.82981,
+            "Z": -0.20312
+          },
+          "Max": {
+            "X": 0.48438,
+            "Y": 1.28294,
+            "Z": 0.20313
+          }
+        }
+      }
+    ],
+    "cube--C5": [
+      {
+        "Offset": {
+          "X": 0.47447,
+          "Y": 0,
+          "Z": -0.08217
+        },
+        "Box": {
+          "Min": {
+            "X": -0.24219,
+            "Y": -0.0205,
+            "Z": -1.05844
+          },
+          "Max": {
+            "X": 0.24219,
+            "Y": 0.6954,
+            "Z": 1.05844
+          }
+        }
+      }
+    ],
+    "BigShroom": [
+      {
+        "Offset": {
+          "X": -1.14443,
+          "Y": 0,
+          "Z": 0.97275
+        },
+        "Box": {
+          "Min": {
+            "X": -1.05551,
+            "Y": 1.20402,
+            "Z": -1.04201
+          },
+          "Max": {
+            "X": 1.05551,
+            "Y": 3.67053,
+            "Z": 1.04201
+          }
+        }
+      }
+    ],
+    "SmallShroom": [
+      {
+        "Offset": {
+          "X": 0.86752,
+          "Y": 0,
+          "Z": -0.76563
+        },
+        "Box": {
+          "Min": {
+            "X": -0.40728,
+            "Y": 1.24975,
+            "Z": -0.3125
+          },
+          "Max": {
+            "X": 0.40728,
+            "Y": 2.51208,
+            "Z": 0.3125
+          }
+        }
+      }
+    ],
+    "R-Eye-Background": [
+      {
+        "Offset": {
+          "X": 0.10938,
+          "Y": 0,
+          "Z": -0.22734
+        },
+        "Box": {
+          "Min": {
+            "X": -0.10391,
+            "Y": 1.53672,
+            "Z": -0.005
+          },
+          "Max": {
+            "X": 0.10391,
+            "Y": 1.74453,
+            "Z": 0.005
+          }
+        }
+      }
+    ],
+    "L-Eye-Background": [
+      {
+        "Offset": {
+          "X": -0.10937,
+          "Y": 0,
+          "Z": -0.22734
+        },
+        "Box": {
+          "Min": {
+            "X": -0.10391,
+            "Y": 1.53672,
+            "Z": -0.005
+          },
+          "Max": {
+            "X": 0.10391,
+            "Y": 1.74453,
+            "Z": 0.005
+          }
+        }
+      }
+    ],
+    "Handle": [
+      {
+        "Offset": {
+          "X": -0.00531,
+          "Y": 0,
+          "Z": 0.17102
+        },
+        "Box": {
+          "Min": {
+            "X": -0.005,
+            "Y": 0.01561,
+            "Z": -0.10156
+          },
+          "Max": {
+            "X": 0.005,
+            "Y": 0.21874,
+            "Z": 0.10156
+          }
+        }
+      }
+    ],
+    "Handle--C1": [
+      {
+        "Offset": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0.04577
+        },
+        "Box": {
+          "Min": {
+            "X": -0.05469,
+            "Y": 0.00274,
+            "Z": -0.09398
+          },
+          "Max": {
+            "X": 0.05469,
+            "Y": 0.39253,
+            "Z": 0.09398
+          }
+        }
+      }
+    ],
+    "Handle2": [
+      {
+        "Offset": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0.07525
+        },
+        "Box": {
+          "Min": {
+            "X": -0.10156,
+            "Y": 0.34661,
+            "Z": -1.00972
+          },
+          "Max": {
+            "X": 0.10156,
+            "Y": 1.88375,
+            "Z": 1.00972
+          }
+        }
+      }
+    ]
+  },
+  "HitBox": {
+    "Min": {
+      "X": -0.8,
+      "Y": 0,
+      "Z": -1.5
+    },
+    "Max": {
+      "X": 0.8,
+      "Y": 3.2,
+      "Z": 2
+    }
+  }
+}

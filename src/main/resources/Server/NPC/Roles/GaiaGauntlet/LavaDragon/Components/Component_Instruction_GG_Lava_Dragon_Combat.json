@@ -1,0 +1,45 @@
+{
+  "$Comment": "One combat schedule for melee, tail sweep, and a direct fire-breath cone.",
+  "Type": "Component",
+  "Class": "Instruction",
+  "Interface": "Hytale.Instruction.Combat",
+  "DefaultState": ".Default",
+  "Parameters": {},
+  "Content": {
+    "TreeMode": true,
+    "Sensor": { "Type": "Any" },
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": { "Type": "Any", "Once": true },
+        "Actions": [
+          { "Type": "TimerStart", "Name": "LavaTail", "StartValueRange": [ 8, 8 ], "RestartValueRange": [ 10, 10 ] },
+          { "Type": "TimerStart", "Name": "LavaCone", "StartValueRange": [ 4, 4 ], "RestartValueRange": [ 9, 9 ] }
+        ]
+      },
+      {
+        "Sensor": { "Type": "And", "Sensors": [ { "Type": "Target", "Range": 12 }, { "Type": "Timer", "Name": "LavaCone", "State": "Stopped" } ] },
+        "BodyMotion": { "Type": "MatchLook" },
+        "HeadMotion": { "Type": "Aim", "Spread": 0, "HitProbability": 1, "RelativeTurnSpeed": 2 },
+        "ActionsBlocking": true,
+        "Actions": [
+          { "Type": "TimerRestart", "Name": "LavaCone" },
+          { "Type": "Attack", "Attack": "Root_NPC_Lava_Dragon_Fire_Cone", "AimingTimeRange": [ 2, 2 ], "LineOfSight": true, "AvoidFriendlyFire": true }
+        ]
+      },
+      {
+        "Sensor": { "Type": "And", "Sensors": [ { "Type": "Timer", "Name": "LavaTail", "State": "Stopped" }, { "Type": "Target", "Range": 8 } ] },
+        "ActionsBlocking": true,
+        "Actions": [
+          { "Type": "TimerRestart", "Name": "LavaTail" },
+          { "Type": "Attack", "Attack": "Root_NPC_Lava_Dragon_Tail_Sweep" }
+        ]
+      },
+      {
+        "InvertTreeModeResult": true,
+        "Sensor": { "Type": "State", "State": ".Default" },
+        "Actions": [ { "Type": "OverrideAltitude", "DesiredAltitudeRange": [ 0.5, 1.5 ] } ]
+      }
+    ]
+  }
+}

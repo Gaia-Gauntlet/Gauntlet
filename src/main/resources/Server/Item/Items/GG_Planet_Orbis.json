@@ -1,0 +1,55 @@
+{
+  "TranslationProperties": {
+    "Name": "GG Orbis"
+  },
+  "Icon": "Icons/ItemsGenerated/GG_Planet_Orbis.png",
+  "Categories": [
+    "GG_Items.GG_Items2"
+  ],
+  "Quality": "Legendary",
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Block_Secondary"
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "CustomModel": "Blocks/GG_Planet/GG_Planet.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/GG_Planet/GG_Orbis.png",
+        "Weight": 1
+      }
+    ],
+    "ParticleColor": "#ffb616",
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "BlockPreviewVisibility": "AlwaysVisible",
+      "RotationMode": "Default"
+    },
+    "CubeShadingMode": "Flat",
+    "Opacity": "Transparent",
+    "Group": "Dev",
+    "HitboxType": "GG_Planet_Orbis",
+    "CustomModelScale": 2
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Debug"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.4,
+    "Rotation": [
+      0,
+      186,
+      16
+    ],
+    "Translation": [
+      -8,
+      -32
+    ]
+  },
+  "Scale": 0.5
+}

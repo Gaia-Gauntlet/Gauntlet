@@ -1,0 +1,19 @@
+{
+  "Interactions": [
+    {
+      "Type": "Chaining",
+      "ChainId": "Slashes",
+      "$Comment": "Alternate claw swipes; fire breath and tail sweep use independent combat timers.",
+      "ChainingAllowance": 15,
+      "Next": [
+        "Lava_Dragon_Swipe_Left",
+        "Lava_Dragon_Swipe_Right"
+      ]
+    }
+  ],
+  "Tags": {
+    "Attack": [
+      "Melee"
+    ]
+  }
+}

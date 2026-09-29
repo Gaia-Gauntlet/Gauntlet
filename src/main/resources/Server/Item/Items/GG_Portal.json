@@ -1,0 +1,73 @@
+{
+  "TranslationProperties": {
+    "Name": "GG Portal",
+    "Description": "server.items.Forgotten_Temple_Portal_Enter.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Portal_Return.png",
+  "Categories": [
+    "Blocks.Portals"
+  ],
+  "BlockType": {
+    "AmbientSoundEventId": "GG_SFX_Portal_Neutral",
+    "DrawType": "Model",
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Miscellaneous/Platform_Magic_Exit.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Miscellaneous/Platform_Magic_Blue2.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Pad_Portal",
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "PhysicalMaterialId": "Stone",
+    "VariantRotation": "NESW",
+    "BlockEntity": {
+      "Components": {
+        "BlockMapMarker": {
+          "Name": "Portal",
+          "Icon": "Temple_Gateway.png"
+        }
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "Particles": [
+      {
+        "SystemId": "GG_Portal",
+        "PositionOffset": {
+          "Y": 13.5,
+          "X": 0,
+          "Z": 2
+        }
+      }
+    ],
+    "TextureComputedColor": "#736940",
+    "SoundOcclusionOpacity": 0
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Portal"
+    ]
+  },
+  "Quality": "Technical",
+  "IconProperties": {
+    "Scale": 0.35,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      0.0,
+      -13.5
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

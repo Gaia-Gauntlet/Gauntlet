@@ -1,0 +1,29 @@
+{
+  "Recipe": {
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Tools"
+        ],
+        "Id": "Arcanebench"
+      }
+    ]
+  },
+  "BlockType": {
+    "Bench": {
+      "Categories": [
+        {
+          "Id": "Workbench_Weapons",
+          "Icon": "Icons/CraftingCategories/Armory/Sword.png",
+          "Name": "server.benchCategories.workbench.survival"
+        },
+        {
+          "Id": "Workbench_Armor",
+          "Icon": "Icons/CraftingCategories/Armory/MetalHead.png",
+          "Name": "server.benchcategories.workbench.armor"
+        }
+      ]
+    }
+  }
+}

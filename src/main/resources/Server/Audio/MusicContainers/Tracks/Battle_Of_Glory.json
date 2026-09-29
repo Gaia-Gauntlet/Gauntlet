@@ -1,0 +1,8 @@
+{
+  "Type": "SingleTrack",
+  "PlayToCompletion": true,
+  "AudioCategory": "AudioCat_Music",
+  "Track": "Music/zUnused/BattleofGlory.ogg",
+  "Volume": 0,
+  "TransitionType": "Crossfade"
+}

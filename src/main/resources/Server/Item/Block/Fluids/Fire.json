@@ -1,0 +1,63 @@
+{
+  "$Comment": "Fire that never ignites blocks, so it cannot burn trees, plants or builds. It keeps its contact damage and visuals, and goes out on its first tick like fire on stone.",
+  "MaxFluidLevel": 8,
+  "Effect": [
+    "Lava"
+  ],
+  "Opacity": "Transparent",
+  "BlockParticleSetId": "Lava",
+  "ParticleColor": "#f94e11",
+  "BlockSoundSetId": "Empty",
+  "Light": {
+    "Color": "#e90"
+  },
+  "DrawType": "None",
+  "Particles": [
+    {
+      "SystemId": "Fluid_Fire",
+      "Scale": 1,
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "Interactions": {
+    "Collision": {
+      "Cooldown": {
+        "Id": "BurnEffect",
+        "Cooldown": 1
+      },
+      "Interactions": [
+        {
+          "Type": "Condition",
+          "RequiredGameMode": "Adventure",
+          "Next": {
+            "Type": "ApplyEffect",
+            "EffectId": {
+              "Duration": 1,
+              "OverlapBehavior": "Overwrite",
+              "ApplicationEffects": {
+                "HorizontalSpeedMultiplier": 0.5
+              }
+            },
+            "Next": {
+              "Type": "ApplyEffect",
+              "EffectId": "Burn"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "Tags": {
+    "Fluid": [
+      "Fire"
+    ]
+  },
+  "Ticker": {
+    "Type": "Fire",
+    "CanDemote": false,
+    "FlowRate": 2.0,
+    "SupportedBy": "Fire"
+  }
+}

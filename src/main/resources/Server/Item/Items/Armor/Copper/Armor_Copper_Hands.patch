@@ -1,0 +1,45 @@
+{
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Armor"
+        ]
+      }
+    ],
+    "TimeSeconds": 0
+  },
+  "Quality": "Uncommon",
+  "Armor": {
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.03,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.03,
+          "CalculationType": "Percent"
+        }
+      ]
+    },
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 7,
+          "CalculationType": "Additive"
+        }
+      ]
+    }
+  }
+}

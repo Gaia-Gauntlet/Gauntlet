@@ -1,0 +1,77 @@
+{
+  "Type": "GaiaBoss",
+  "Reference": "Template_Boss",
+  "BossScaling": {
+    "DisplayNameKey": "gg.boss.pirate_queen_bloodlocks.name",
+    "MiniBoss": false,
+    "ZoneTags": [ "Pirate Bay" ],
+    "Enabled": true,
+    "UpdatePeriodSeconds": 5,
+    "Smoothing": 0.3,
+    "MaxDeltaPerUpdate": 0.15,
+    "NearbyRadius": 45,
+    "AttackerWindowSeconds": 20,
+    "PhysicalScale": 1.5,
+    "MaxHealth": {
+      "Base": 1.0,
+      "PerNearbyPlayer": 0.1,
+      "PerActiveAttacker": 0.05,
+      "Min": 1.0,
+      "Max": 2.5
+    },
+    "DamageMultiplier": {
+      "Base": 2.0,
+      "PerNearbyPlayer": 0.04,
+      "Min": 2.0,
+      "Max": 2.8
+    },
+    "AddSpawns": { "Max": 0 }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "gg.boss.pirate_queen_bloodlocks.name",
+      "Description": "Translation key for NPC name display"
+    }
+  },
+  "Modify": {
+    "DeathParticles": "Effect_Death_Bones",
+    "MaxHealth": 1500,
+    "HearingRange": 8,
+    "ViewSector": 270,
+    "ViewRange": 30,
+    "AlertedRange": 35,
+    "AbsoluteDetectionRange": 4,
+    "AlertedTime": [
+      0.5,
+      0.5
+    ],
+    "DropList": "GG_Boss_Loot",
+    "Appearance": "Pirate_Queen_Bloodlocks",
+    "Weapons": [
+      "Weapon_Sword_Cutlass",
+      "Weapon_Gun_Blunderbuss",
+      "Weapon_Bomb_Large_Fire"
+    ],
+    "FlockArray": [],
+    "WanderRadius": 3,
+    "Attack": "Root_NPC_Skeleton_Pirate_Captain_Attack",
+    "AttackDistance": 3,
+    "AttackPauseRange": [
+      2,
+      2.6
+    ],
+    "TargetRange": 35,
+    "CombatBehaviorDistance": 12,
+    "CombatAlwaysMovingWeight": 0,
+    "CombatDirectWeight": 10,
+    "CombatStrafeWeight": 0,
+    "CombatBackOffAfterAttack": false,
+    "CombatAdditionalBehaviorComponent": "Component_Instruction_GG_Pirate_Queen_Combat",
+    "AlwaysSleepAtNight": false,
+    "PassiveAnimation": "",
+    "BreathesInWater": true,
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  }
+}

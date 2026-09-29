@@ -1,0 +1,155 @@
+{
+  "BaseFov": 60,
+  "Keyframes": [
+    {
+      "Id": "Keyframe",
+      "Easing": "Linear",
+      "Position": {
+        "X": 0,
+        "Y": 1.7,
+        "Z": 0
+      },
+      "RelativeToPlayer": true,
+      "Look": {
+        "Yaw": 0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Easing": "QuadInOut",
+      "Position": {
+        "X": -98,
+        "Y": 110,
+        "Z": 0
+      },
+      "Duration": 3,
+      "Look": {
+        "Yaw": 0,
+        "Pitch": -90
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98,
+        "Y": 150
+      },
+      "Look": {
+        "Pitch": -90
+      },
+      "Easing": "QuadInOut",
+      "Duration": 3.5
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.5,
+        "Y": 150,
+        "Z": -44.5
+      },
+      "Duration": 2,
+      "Look": {
+        "Pitch": -20
+      },
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -57.5,
+        "Y": 150,
+        "Z": -22.5
+      },
+      "Look": {
+        "Pitch": -20,
+        "Yaw": -60
+      },
+      "Duration": 3,
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -57.5,
+        "Y": 150,
+        "Z": 22.5
+      },
+      "Look": {
+        "Pitch": -20,
+        "Yaw": -120
+      },
+      "Duration": 3,
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.5,
+        "Y": 150,
+        "Z": 48.5
+      },
+      "Look": {
+        "Pitch": -20,
+        "Yaw": -180
+      },
+      "Duration": 3,
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -140,
+        "Y": 150,
+        "Z": 23.5
+      },
+      "Look": {
+        "Pitch": -20,
+        "Yaw": -240
+      },
+      "Duration": 3,
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -140,
+        "Y": 150,
+        "Z": -23.5
+      },
+      "Look": {
+        "Pitch": -20,
+        "Yaw": -300
+      },
+      "Duration": 3,
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.5,
+        "Y": 150,
+        "Z": -44.5
+      },
+      "Look": {
+        "Pitch": -20
+      },
+      "Duration": 3,
+      "Easing": "QuadInOut"
+    },
+    {
+      "Id": "Keyframe",
+      "Easing": "QuadOut",
+      "Position": {
+        "X": 0,
+        "Y": 1.7,
+        "Z": 0
+      },
+      "Duration": 3,
+      "RelativeToPlayer": true,
+      "Look": {
+        "Yaw": 0
+      }
+    }
+  ],
+  "HideUi": true
+}

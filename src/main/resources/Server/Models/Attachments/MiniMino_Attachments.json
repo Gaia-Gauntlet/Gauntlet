@@ -1,0 +1,11 @@
+{
+  "Parent": "Corgi",
+  "Model": "NPC/Avatar/MiniMino/Models/Model.blockymodel",
+  "Texture": "NPC/Avatar/MiniMino/Models/Model_default.png",
+  "DefaultAttachments": [
+    {
+      "Model": "NPC/Avatar/MiniMino/Models/Attachments/RedScarf.blockymodel",
+      "Texture": "NPC/Avatar/MiniMino/Models/Attachments/RedScarf_default.png"
+    }
+  ]
+}

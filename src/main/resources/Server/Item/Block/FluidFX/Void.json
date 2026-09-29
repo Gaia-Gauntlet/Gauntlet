@@ -1,0 +1,25 @@
+{
+  "$Comment": "Screen effect for a player who has fallen into Void fluid. Near-black fog closing in fast, drained colour, and a sink they cannot swim out of quickly - the fluid damages them on the way down.",
+  "Fog": "Color",
+  "FogColor": "#0a0812",
+  "FogDistance": [
+    -24,
+    4
+  ],
+  "ColorsSaturation": 0.15,
+  "ColorsFilter": [
+    0.55,
+    0.5,
+    0.75
+  ],
+  "DistortionAmplitude": 7,
+  "DistortionFrequency": 4,
+  "MovementSettings": {
+    "SwimUpSpeed": 1.5,
+    "SwimDownSpeed": -2.5,
+    "SinkSpeed": -2.5,
+    "HorizontalSpeedMultiplier": 0.35,
+    "FieldOfViewMultiplier": 1,
+    "EntryVelocityMultiplier": 1
+  }
+}

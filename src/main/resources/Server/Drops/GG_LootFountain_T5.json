@@ -1,0 +1,476 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Droplist",
+        "DroplistId": "GG_Food_Loot",
+        "Weight": 90
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Potion_Health_Large",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        },
+        "Weight": 50
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Weapon_Arrow_Crude",
+          "QuantityMin": 1,
+          "QuantityMax": 10
+        },
+        "Weight": 100
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Weapon_Arrow_Crude",
+          "QuantityMin": 1,
+          "QuantityMax": 10
+        },
+        "Weight": 75
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Multiple",
+            "Containers": [
+              {
+                "Type": "Choice",
+                "Containers": [
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Axe_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Battleaxe_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Daggers_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Club_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Sword_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Mace_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Longsword_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Choice",
+                    "Containers": [
+                      {
+                        "Type": "Multiple",
+                        "Containers": [
+                          {
+                            "Type": "Single",
+                            "Item": {
+                              "ItemId": "Weapon_Arrow_Crude",
+                              "QuantityMin": 1,
+                              "QuantityMax": 10
+                            }
+                          },
+                          {
+                            "Type": "Single",
+                            "Item": {
+                              "ItemId": "Weapon_Shortbow_Mithril",
+                              "QuantityMin": 1,
+                              "QuantityMax": 1
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Type": "Multiple",
+                        "Containers": [
+                          {
+                            "Type": "Single",
+                            "Item": {
+                              "ItemId": "Weapon_Bullets_Iron",
+                              "QuantityMin": 10,
+                              "QuantityMax": 20
+                            }
+                          },
+                          {
+                            "Type": "Choice",
+                            "Containers": [
+                              {
+                                "Type": "Single",
+                                "Item": {
+                                  "ItemId": "Weapon_Assault_Rifle",
+                                  "QuantityMin": 1,
+                                  "QuantityMax": 1
+                                },
+                                "Weight": 30
+                              },
+                              {
+                                "Type": "Single",
+                                "Item": {
+                                  "ItemId": "Weapon_Handgun",
+                                  "QuantityMin": 1,
+                                  "QuantityMax": 1
+                                },
+                                "Weight": 60
+                              },
+                              {
+                                "Type": "Single",
+                                "Item": {
+                                  "ItemId": "Weapon_Gun",
+                                  "QuantityMin": 1,
+                                  "QuantityMax": 1
+                                },
+                                "Weight": 60
+                              }
+                            ]
+                          }
+                        ],
+                        "Weight": 66.667
+                      }
+                    ],
+                    "Weight": 122.5
+                  }
+                ],
+                "Weight": 10
+              },
+              {
+                "Type": "Choice",
+                "Containers": [
+                  {
+                    "Type": "Choice",
+                    "Containers": [
+                      {
+                        "Type": "Single",
+                        "Item": {
+                          "ItemId": "Weapon_Shield_Mithril",
+                          "QuantityMin": 1,
+                          "QuantityMax": 1
+                        }
+                      },
+                      {
+                        "Type": "Single",
+                        "Item": {
+                          "ItemId": "Weapon_Shield_Orbis_Incandescent",
+                          "QuantityMin": 1,
+                          "QuantityMax": 1
+                        }
+                      }
+                    ],
+                    "Weight": 65.824
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Armor_Mithril_Chest",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Armor_Mithril_Legs",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Armor_Mithril_Hands",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  }
+                ],
+                "Weight": 10,
+                "RollsMin": 1,
+                "RollsMax": 1
+              },
+              {
+                "Type": "Multiple",
+                "Containers": [
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Ingredient_Bar_Mithril",
+                      "QuantityMin": 5,
+                      "QuantityMax": 10
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Ingredient_Bar_Mithril",
+                      "QuantityMin": 1,
+                      "QuantityMax": 10
+                    },
+                    "Weight": 75
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Type": "Multiple",
+            "Containers": [
+              {
+                "Type": "Choice",
+                "Containers": [
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Axe_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Battleaxe_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Daggers_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Club_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Sword_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Mace_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Weapon_Longsword_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Choice",
+                    "Containers": [
+                      {
+                        "Type": "Multiple",
+                        "Containers": [
+                          {
+                            "Type": "Single",
+                            "Item": {
+                              "ItemId": "Weapon_Arrow_Crude",
+                              "QuantityMin": 1,
+                              "QuantityMax": 10
+                            }
+                          },
+                          {
+                            "Type": "Single",
+                            "Item": {
+                              "ItemId": "Weapon_Shortbow_Onyxium",
+                              "QuantityMin": 1,
+                              "QuantityMax": 1
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Type": "Multiple",
+                        "Containers": [
+                          {
+                            "Type": "Single",
+                            "Item": {
+                              "ItemId": "Weapon_Bullets_Iron",
+                              "QuantityMin": 10,
+                              "QuantityMax": 20
+                            }
+                          },
+                          {
+                            "Type": "Choice",
+                            "Containers": [
+                              {
+                                "Type": "Single",
+                                "Item": {
+                                  "ItemId": "Weapon_Assault_Rifle",
+                                  "QuantityMin": 1,
+                                  "QuantityMax": 1
+                                },
+                                "Weight": 30
+                              },
+                              {
+                                "Type": "Single",
+                                "Item": {
+                                  "ItemId": "Weapon_Handgun",
+                                  "QuantityMin": 1,
+                                  "QuantityMax": 1
+                                },
+                                "Weight": 60
+                              },
+                              {
+                                "Type": "Single",
+                                "Item": {
+                                  "ItemId": "Weapon_Gun",
+                                  "QuantityMin": 1,
+                                  "QuantityMax": 1
+                                },
+                                "Weight": 60
+                              }
+                            ]
+                          }
+                        ],
+                        "Weight": 66.667
+                      }
+                    ],
+                    "Weight": 122.5
+                  }
+                ],
+                "Weight": 10
+              },
+              {
+                "Type": "Choice",
+                "Containers": [
+                  {
+                    "Type": "Choice",
+                    "Containers": [
+                      {
+                        "Type": "Single",
+                        "Item": {
+                          "ItemId": "Weapon_Shield_Onyxium",
+                          "QuantityMin": 1,
+                          "QuantityMax": 1
+                        }
+                      },
+                      {
+                        "Type": "Single",
+                        "Item": {
+                          "ItemId": "Weapon_Shield_Orbis_Incandescent",
+                          "QuantityMin": 1,
+                          "QuantityMax": 1
+                        }
+                      }
+                    ],
+                    "Weight": 65.824
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Armor_Onyxium_Chest",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Armor_Onyxium_Legs",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Armor_Onyxium_Hands",
+                      "QuantityMin": 1,
+                      "QuantityMax": 1
+                    }
+                  }
+                ],
+                "Weight": 10,
+                "RollsMin": 1,
+                "RollsMax": 1
+              },
+              {
+                "Type": "Multiple",
+                "Containers": [
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Ingredient_Bar_Onyxium",
+                      "QuantityMin": 5,
+                      "QuantityMax": 10
+                    }
+                  },
+                  {
+                    "Type": "Single",
+                    "Item": {
+                      "ItemId": "Ingredient_Bar_Onyxium",
+                      "QuantityMin": 1,
+                      "QuantityMax": 10
+                    },
+                    "Weight": 75
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

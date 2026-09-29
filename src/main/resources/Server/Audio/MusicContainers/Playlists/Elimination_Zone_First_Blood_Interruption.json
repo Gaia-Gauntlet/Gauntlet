@@ -1,0 +1,14 @@
+{
+  "Type": "Sequence",
+  "AudioCategory": "AudioCat_Music_In_Game",
+  "LoopCount": 0,
+  "Children": [
+    {
+      "Parent": "Battle_Of_Glory_First_Blood"
+    },
+    {
+      "Parent": "Elimination_Zone_Random"
+    }
+  ],
+  "TransitionType": "Crossfade"
+}

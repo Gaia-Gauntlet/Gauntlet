@@ -1,0 +1,22 @@
+{
+  "Name": "kit gg3",
+  "Description": "server.commands.kitGg3.desc",
+  "Commands": [
+    "inventory clear",
+    "give Weapon_Axe_Iron",
+    "give Weapon_Battleaxe_Iron",
+    "give Weapon_Club_Iron",
+    "give Weapon_Daggers_Iron",
+    "give Weapon_Longsword_Iron",
+    "give Weapon_Mace_Iron",
+    "give Weapon_Shortbow_Flame",
+    "give Weapon_Shortbow_Frost",
+    "give Weapon_Shortbow_Iron",
+    "give Weapon_Spear_Iron",
+    "give Weapon_Sword_Iron",
+    "give Armor_Iron_Chest",
+    "give Armor_Iron_Hands",
+    "give Armor_Iron_Legs",
+    "give Potion_Health_Large --quantity=10"
+  ]
+}

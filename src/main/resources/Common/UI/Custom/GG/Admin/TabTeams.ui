@@ -1,0 +1,55 @@
+// Teams tab: put players on teams, see every team at a glance, and shape the roster.
+$G = "Common.ui";
+
+@Content = Group {
+    LayoutMode: Left;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Assign a player"; }
+            $G.@Caption { @Text = "Online and not on a team"; }
+            $G.@PickerRow {
+                $G.@Picker #AssignPlayer { @Anchor = (Right: 6); }
+            }
+            $G.@Caption { @Text = "Or any name"; }
+            $G.@PickerRow {
+                $G.@Input #AssignName { @Placeholder = "username"; }
+            }
+            $G.@Caption { @Text = "Team"; }
+            $G.@PickerRow {
+                $G.@Picker #AssignTeam { @Anchor = (Right: 6); }
+                $G.@Go #AssignGo { Text: "Assign"; }
+            }
+            $G.@Field #UnassignedField { @Key = "Waiting"; }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "New team"; }
+            $G.@PickerRow {
+                $G.@Input #NewTeamId { @Anchor = (Right: 6); @Placeholder = "id, no spaces"; }
+                $G.@SmallInput #NewTeamSize { @Placeholder = "max"; }
+            }
+            $G.@PickerRow {
+                $G.@Input #NewTeamName { @Anchor = (Right: 6); @Placeholder = "display name"; }
+                $G.@Go #NewTeamGo { Text: "Create"; }
+            }
+            $G.@Caption { @Text = "Delete a team and unassign its members"; }
+            $G.@PickerRow {
+                $G.@Picker #DeleteTeamPicker { @Anchor = (Right: 6); }
+                $G.@Go #DeleteTeamGo { Text: "Delete"; }
+            }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        FlexWeight: 2;
+        $G.@Card {
+            FlexWeight: 1;
+            $G.@Header { @Text = "Teams"; }
+            $G.@Note { @Text = "Grey members are offline. Send in moves a team's online members into this game's lobby. A team sitting out is skipped when the match starts."; }
+            $G.@ScrollPanel #TeamList {}
+        }
+    }
+};

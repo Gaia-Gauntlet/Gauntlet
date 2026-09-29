@@ -1,0 +1,607 @@
+{
+  "Tags": {},
+  "Keyframes": [
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 0.0,
+        "Y": 1.7,
+        "Z": 0.0
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": true,
+      "Look": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      },
+      "Title": "Intro to the animation",
+      "Notes": "Starts at duration 0 so that the camera is at a known starting location"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.52682495117188,
+        "Y": 132.28481447696686,
+        "Z": -0.7465582489967346
+      },
+      "Duration": 1.5,
+      "Easing": "QuadOut",
+      "Fov": 50.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": -89.42704772949219,
+        "Yaw": 179.8195037841797,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.64143371582031,
+        "Y": 93.12108767032623,
+        "Z": -0.4667068123817444
+      },
+      "Duration": 2.0,
+      "Easing": "CubicIn",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": -89.22650909423828,
+        "Yaw": 90.48136138916016,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -95.82058715820312,
+        "Y": 89.09174501895905,
+        "Z": 43.139801025390625
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 10.882768630981445,
+        "Yaw": 1.0468506813049316,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -101.28910064697266,
+        "Y": 89.09174501895905,
+        "Z": 43.27845764160156
+      },
+      "Duration": 2.0,
+      "Easing": "Linear",
+      "Fov": 50.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 10.983036041259766,
+        "Yaw": 0.3449774980545044,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -92.38965606689453,
+        "Y": 142.18117678165436,
+        "Z": -437.7107849121094
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 2.3600244522094727,
+        "Yaw": 32.09023666381836,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -103.6747817993164,
+        "Y": 142.07799685001373,
+        "Z": -438.7366943359375
+      },
+      "Duration": 3.5,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 46.07658767700195,
+        "Yaw": -9.219993591308594,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 24.91309928894043,
+        "Y": 118.10409700870514,
+        "Z": -335.0002136230469
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 49.3852424621582,
+        "Yaw": -131.04531860351562,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 29.201465606689453,
+        "Y": 118.10409700870514,
+        "Z": -338.9339294433594
+      },
+      "Duration": 1.7000000476837158,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 49.18470764160156,
+        "Yaw": -140.3701629638672,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -325.2109375,
+        "Y": 89.36156618595123,
+        "Z": 219.21189880371094
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 27.473403930664062,
+        "Yaw": 49.63410949707031,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -342.7200927734375,
+        "Y": 89.36156618595123,
+        "Z": 237.64024353027344
+      },
+      "Duration": 2.0,
+      "Easing": "Linear",
+      "Fov": 55.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 17.54694175720215,
+        "Yaw": 38.905521392822266,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 150.67860412597656,
+        "Y": 89.13826906681061,
+        "Z": -174.16416931152344
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 45.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 11.12982177734375,
+        "Yaw": -49.6306037902832,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 146.20968627929688,
+        "Y": 89.13826906681061,
+        "Z": -178.14373779296875
+      },
+      "Duration": 3.200000047683716,
+      "Easing": "Linear",
+      "Fov": 35.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 0.6017140746116638,
+        "Yaw": -42.81261444091797,
+        "Roll": 5.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.38255310058594,
+        "Y": 192.36428225040436,
+        "Z": -1.5231943130493164
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": -89.42704772949219,
+        "Yaw": 177.61524963378906,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.38255310058594,
+        "Y": 182.56015932559967,
+        "Z": -1.5231943130493164
+      },
+      "Duration": 0.85,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": -89.42704772949219,
+        "Yaw": 163.77838134765625,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.38255310058594,
+        "Y": 174.82006227970123,
+        "Z": -1.5231943130493164
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": -89.42704772949219,
+        "Yaw": 158.36395263671875,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.38255310058594,
+        "Y": 156.75983583927155,
+        "Z": -1.5231943130493164
+      },
+      "Duration": 1,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": -89.42704772949219,
+        "Yaw": 146.5324249267578,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -97.96125793457031,
+        "Y": 105.67555391788483,
+        "Z": -27.587051391601562
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 5.325882434844971,
+        "Yaw": -0.05882328376173973,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -97.9146957397461,
+        "Y": 105.67555391788483,
+        "Z": -58.03098678588867
+      },
+      "Duration": 1.7000000476837158,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 6.5290937423706055,
+        "Yaw": -0.05882329121232033,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -57.676212310791016,
+        "Y": 96.38757479190826,
+        "Z": 19.96162986755371
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 15.954261779785156,
+        "Yaw": -126.09515380859375,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -50.3664436340332,
+        "Y": 99.99956667423248,
+        "Z": 36.66123580932617
+      },
+      "Duration": 1.7000000476837158,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 21.168155670166016,
+        "Yaw": -121.8839340209961,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -107.40479278564453,
+        "Y": 91.22758638858795,
+        "Z": 53.00411605834961
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 17.357954025268555,
+        "Yaw": -169.11000061035156,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -105.0651626586914,
+        "Y": 91.22758638858795,
+        "Z": 65.16508483886719
+      },
+      "Duration": 1.7000000476837158,
+      "Easing": "Linear",
+      "Fov": 70.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 15.352606773376465,
+        "Yaw": -169.00973510742188,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -418.3208312988281,
+        "Y": 85.55159914493561,
+        "Z": -18.311368942260742
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 65.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 25.867000579833984,
+        "Yaw": 15.120926856994629,
+        "Roll": 0.0
+      },
+      "Title": "Musheee Section"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -422.043,
+        "Y": 85.55159914493561,
+        "Z": -30.213
+      },
+      "Duration": 1,
+      "Easing": "Linear",
+      "Fov": 63.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 33.50400161743164,
+        "Yaw": 16.324132919311523,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -129.12355041503906,
+        "Y": 122.60000002384186,
+        "Z": -469.40203857421875
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 60.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 10.740278244018555,
+        "Yaw": 101.93136596679688,
+        "Roll": 0.0
+      },
+      "Title": "",
+      "Notes": "Beginning of the rolling sequence"
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -148.48635864257812,
+        "Y": 125.52395021915436,
+        "Z": -465.4896240234375
+      },
+      "Duration": 1,
+      "Easing": "Linear",
+      "Fov": 58.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 12.5451021194458,
+        "Yaw": 102.43270111083984,
+        "Roll": 45.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -225.3616943359375,
+        "Y": 93.36055910587311,
+        "Z": 47.232452392578125
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 50.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 1.415284514427185,
+        "Yaw": 91.10202026367188,
+        "Roll": 45.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -251.5008087158203,
+        "Y": 93.36055910587311,
+        "Z": 47.735267639160156
+      },
+      "Duration": 1,
+      "Easing": "Linear",
+      "Fov": 48.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 1.4149999618530273,
+        "Yaw": 91.10199737548828,
+        "Roll": 90.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 333.55694580078125,
+        "Y": 88.4395843744278,
+        "Z": -191.01515197753906
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 40.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 0.4127022325992584,
+        "Yaw": 125.53398895263672,
+        "Roll": 90.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 306.6017150878906,
+        "Y": 88.4395843744278,
+        "Z": -171.49392700195312
+      },
+      "Duration": 1,
+      "Easing": "Linear",
+      "Fov": 38.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 0.5129698514938354,
+        "Yaw": 125.93505859375,
+        "Roll": 135.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.38362884521484,
+        "Y": 93.0328232049942,
+        "Z": -84.22422790527344
+      },
+      "Duration": 0.0,
+      "Easing": "Linear",
+      "Fov": 30.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 1.8166155815124512,
+        "Yaw": 179.8176727294922,
+        "Roll": 135.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": -98.47777557373047,
+        "Y": 93.0328232049942,
+        "Z": -54.64039611816406
+      },
+      "Duration": 0.5,
+      "Easing": "QuadOut",
+      "Fov": 28.0,
+      "RelativeToPlayer": false,
+      "Look": {
+        "Pitch": 0.0,
+        "Yaw": 179.8179931640625,
+        "Roll": 180.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 0,
+        "Y": 20,
+        "Z": 0
+      },
+      "Duration": 1.3,
+      "Easing": "QuadOut",
+      "Fov": 70.0,
+      "RelativeToPlayer": true,
+      "Look": {
+        "Pitch": -45.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      }
+    },
+    {
+      "Id": "Keyframe",
+      "Position": {
+        "X": 0.0,
+        "Y": 1.3,
+        "Z": 0.0
+      },
+      "Duration": 1.1,
+      "Easing": "QuadInOut",
+      "Fov": 70.0,
+      "RelativeToPlayer": true,
+      "Look": {
+        "Pitch": 0.0,
+        "Yaw": 0.0,
+        "Roll": 0.0
+      }
+    }
+  ],
+  "BaseFov": 60.0,
+  "HideUi": true
+}

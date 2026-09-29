@@ -1,0 +1,29 @@
+{
+  "Parent": "Player",
+  "Model": "NPC/Boss/Pirate_Queen_Bloodlocks/Model.blockymodel",
+  "Texture": "NPC/Boss/Pirate_Queen_Bloodlocks/Texture.png",
+  "DefaultAttachments": [],
+  "AnimationSets": {
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Default/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Flavor/Sleep.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Default/Idle.blockyanim"
+        }
+      ]
+    }
+  }
+}

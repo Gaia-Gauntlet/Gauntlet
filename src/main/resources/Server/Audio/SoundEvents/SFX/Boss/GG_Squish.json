@@ -1,0 +1,11 @@
+{
+  "Layers": [
+    {
+      "Files": [ "Sounds/Squish1.ogg", "Sounds/Squish2.ogg", "Sounds/Squish3.ogg", "Sounds/Squish4.ogg", "Sounds/Squish5.ogg" ],
+      "RandomSettings": {
+        "MinPitch": -2,
+        "MaxPitch": 2
+      }
+    }
+  ]
+}

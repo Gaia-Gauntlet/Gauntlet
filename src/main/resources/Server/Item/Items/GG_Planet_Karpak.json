@@ -1,0 +1,55 @@
+{
+  "TranslationProperties": {
+    "Name": "GG Karpak"
+  },
+  "Icon": "Icons/ItemsGenerated/GG_Planet_Karpak.png",
+  "Categories": [
+    "GG_Items.GG_Items2"
+  ],
+  "Quality": "Legendary",
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Block_Secondary"
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "CustomModel": "Blocks/GG_Planet/GG_Planet.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/GG_Planet/GG_Karpak.png",
+        "Weight": 1
+      }
+    ],
+    "ParticleColor": "#ffb616",
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "BlockPreviewVisibility": "AlwaysVisible",
+      "RotationMode": "Default"
+    },
+    "CubeShadingMode": "Standard",
+    "Opacity": "Transparent",
+    "Group": "Dev",
+    "HitboxType": "GG_Planet_Karpak",
+    "CustomModelScale": 3
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Debug"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.4,
+    "Rotation": [
+      0,
+      222,
+      16
+    ],
+    "Translation": [
+      -7,
+      -32
+    ]
+  },
+  "Scale": 0.5
+}

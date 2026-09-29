@@ -1,0 +1,73 @@
+{
+  "Quality": "Legendary",
+  "InteractionVars": {
+    "Longsword_Swing_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Longsword_Swing_Left_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 33.7
+            },
+            "RandomPercentageModifier": 0.3
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Longsword_Special_Impact"
+          }
+        }
+      ]
+    },
+    "Longsword_Swing_Right_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Longsword_Swing_Right_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 33.7
+            },
+            "RandomPercentageModifier": 0.3
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Longsword_Special_Impact"
+          }
+        }
+      ]
+    },
+    "Longsword_Swing_Up_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Longsword_Swing_Up_Left_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 33.7
+            },
+            "RandomPercentageModifier": 0.3
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Longsword_Special_Impact"
+          }
+        }
+      ]
+    },
+    "Longsword_Stab_Charged_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Longsword_Stab_Charged_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 58.9
+            },
+            "Type": "Absolute",
+            "RandomPercentageModifier": 0.3
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Longsword_Special_Impact"
+          }
+        }
+      ]
+    }
+  }
+}

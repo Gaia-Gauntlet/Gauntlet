@@ -1,0 +1,39 @@
+{
+  "Quality": "Common",
+  "InteractionVars": {
+    "Club_Swing_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Club_Swing_Left_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 6.4
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Club_Wood_Impact"
+          }
+        }
+      ]
+    },
+    "Club_Swing_Right_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Club_Swing_Right_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 6.4
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Club_Wood_Impact"
+          }
+        }
+      ]
+    }
+  }
+}

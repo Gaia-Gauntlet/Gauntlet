@@ -42,7 +42,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove");
 
     // Legacy hardcoded tabs - will need to be tweaked to be only the top-level mngmnt tabs and then game-specific tabs. One widget/tab per component ?
-    private final List<AdminTab> tabs = List.of();//new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
+    private final List<AdminTab> tabs = List.of(new LogTab());//new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
             // new BossesTab(), new TeamsTab(), new SettingsTab(), new LogTab());
 
     private final AtomicReference<ScheduledFuture<?>> refresh = new AtomicReference<>();

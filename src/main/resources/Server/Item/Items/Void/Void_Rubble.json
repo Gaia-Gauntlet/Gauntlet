@@ -1,0 +1,59 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Void_Rubble.name"
+  },
+  "ItemLevel": 10,
+  "MaxStack": 100,
+  "Icon": "Icons/ItemsGenerated/Void_Cube.png",
+  "Categories": [
+    "Tool.TechnicalBlocks"
+  ],
+  "PlayerAnimationsId": "Block",
+  "Set": "Build",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Stone/Rubble_Small.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Void_Side.png",
+        "Weight": 1
+      }
+    ],
+    "Group": "Stone",
+    "HitboxType": "Rubble",
+    "Flags": {},
+    "RandomRotation": "YawStep1",
+    "Interactions": {
+      "Collision": "GG_Void_Damage"
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Dust",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "ParticleColor": "#1a1a1a",
+    "BlockSoundSetId": "Stone",
+    "PhysicalMaterialId": "Stone",
+    "TextureComputedColor": "#262832"
+  },
+  "Tags": {
+    "Type": [
+      "Rubble"
+    ],
+    "Family": [
+      "Build"
+    ]
+  },
+  "Quality": "Technical",
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

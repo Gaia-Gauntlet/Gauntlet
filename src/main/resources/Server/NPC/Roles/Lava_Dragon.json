@@ -1,0 +1,30 @@
+{
+  "Type": "GaiaBoss",
+  "Reference": "GG_Lava_Dragon",
+  "BossScaling": {
+    "DisplayNameKey": "gg.boss.lava_dragon.name",
+    "MiniBoss": false,
+    "ZoneTags": [ "LavaJapanese" ],
+    "Enabled": true,
+    "UpdatePeriodSeconds": 5,
+    "Smoothing": 0.3,
+    "MaxDeltaPerUpdate": 0.15,
+    "NearbyRadius": 45,
+    "AttackerWindowSeconds": 20,
+    "PhysicalScale": 1.5,
+    "MaxHealth": {
+      "Base": 1.0,
+      "PerNearbyPlayer": 0.1,
+      "PerActiveAttacker": 0.05,
+      "Min": 1.0,
+      "Max": 2.5
+    },
+    "DamageMultiplier": {
+      "Base": 1.0,
+      "PerNearbyPlayer": 0.04,
+      "Min": 1.0,
+      "Max": 1.8
+    },
+    "AddSpawns": { "Max": 0 }
+  }
+}

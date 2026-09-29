@@ -1,11 +1,16 @@
 package com.gaiagauntlet.gauntlet.core.session.components;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +21,7 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.EnumCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +37,7 @@ public class GameSession {
             .builder(GameSession.class, GameSession::new)
             .append(new KeyedCodec<>("Components",
                     new StringRegistryCodec<>(new SessionRegistry(), ConcurrentHashMap::new)),
-                    (holder, map) -> holder.sessionComponents = map,
+                    (holder, components) -> holder.sessionComponents = components,
                     holder -> holder.sessionComponents)
             .add()
             .append(new KeyedCodec<>("Sequence", Codec.STRING_ARRAY),
@@ -49,7 +55,7 @@ public class GameSession {
             .build();
 
     @Getter
-    private Map<String, SessionComponent> sessionComponents = new ConcurrentHashMap<>();
+    private Map<String, SessionComponent> sessionComponents;
 
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
@@ -67,13 +73,86 @@ public class GameSession {
     private String[] gameSequence;
 
     @Getter
-    // design here may change. My head canon is that the currentGame will pop from the array and the array of the sequence will shrink.
-    // Alternatively we could store the index of the current game inside the sequence and keep the sequence as-is
+    // design here may change. My head canon is that the currentGame will pop from
+    // the array and the array of the sequence will shrink.
+    // Alternatively we could store the index of the current game inside the
+    // sequence and keep the sequence as-is
     // I'm good with either
     private String currentGame;
 
-    @Getter 
-    @NotNull 
+    @Getter
+    @NotNull
     private SessionState sessionState = SessionState.SETTING_UP;
 
+    public GameSession() {
+        sessionComponents = new ConcurrentHashMap<>();
+    }
+
+    public boolean available() {
+        return sessionState == SessionState.FINISHED || sessionState == SessionState.IDLE;
+    }
+
+    /** gets the next available game */
+    @Nullable 
+    public String getNext() {
+        return gameSequence == null || gameSequence.length == 0 ? null : gameSequence[0];
+    }
+    /** transitions to the next game, popping it from the list and setting it as current */
+    @Nullable 
+    public String startNext() {
+        String nextGame = getNext();
+        if (nextGame == null) {
+            currentGame = null;
+            return null;
+        }
+
+        currentGame = nextGame;
+        sessionState = SessionState.RUNNING;
+        int remainingGames = gameSequence.length - 1;
+        if (remainingGames == 0) {
+            gameSequence = new String[0];
+        } else {
+            System.arraycopy(gameSequence, 1, gameSequence, 0, remainingGames);
+            gameSequence = Arrays.copyOf(gameSequence, remainingGames);
+        }
+
+        return currentGame;
+    }
+    /** adds a game to the sequence */
+    public void addGame(@Nonnull String gameId) {
+
+        if (gameSequence == null || gameSequence.length == 0) {
+            gameSequence = new String[] { gameId };
+            return;
+        }
+
+        String[] updatedSequence = Arrays.copyOf(gameSequence, gameSequence.length + 1);
+        updatedSequence[gameSequence.length] = gameId;
+        gameSequence = updatedSequence;
+    }
+    /** removes a game from the sequence */
+    public void removeGame(int index) {
+        if (gameSequence == null || index < 0 || index >= gameSequence.length) {
+            return;
+        }
+
+        int remainingGames = gameSequence.length - index - 1;
+        if (remainingGames > 0) {
+            System.arraycopy(gameSequence, index + 1, gameSequence, index, remainingGames);
+        }
+        gameSequence = Arrays.copyOf(gameSequence, gameSequence.length - 1);
+    }
+    /** removes a game if it is present */
+    public void removeGameIfPresent(@Nonnull String gameId) {
+        if (gameSequence == null) {
+            return;
+        }
+
+        for (int index = 0; index < gameSequence.length; index++) {
+            if (gameId.equals(gameSequence[index])) {
+                removeGame(index);
+                return;
+            }
+        }
+    }
 }

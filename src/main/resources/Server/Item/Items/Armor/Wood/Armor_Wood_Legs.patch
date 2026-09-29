@@ -1,0 +1,51 @@
+{
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Stick",
+        "Quantity": 10
+      }
+    ],
+    "TimeSeconds": 0,
+    "BenchRequirement": [
+      {
+        "Id": "Fieldcraft",
+        "Type": "Crafting",
+        "Categories": [
+          "Tools"
+        ]
+      },
+      {
+        "Id": "Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "Workbench_Armor"
+        ]
+      }
+    ]
+  },
+  "Armor": {
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.0504,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.0504,
+          "CalculationType": "Percent"
+        }
+      ]
+    },
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 5,
+          "CalculationType": "Additive"
+        }
+      ]
+    }
+  }
+}
