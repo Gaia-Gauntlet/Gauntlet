@@ -15,14 +15,14 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @ToString
-public abstract class TeamComponent implements GameComponent {
+public abstract class TeamComponent {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    @Getter private final String id;
-    @Getter @Nonnull private String name;
-    @Getter @Nonnull private TeamType teamType;
-    @Getter @Nonnull private UUID[] players;
-    private String icon;
+    @Getter final String id;
+    @Getter @Nonnull String name;
+    @Getter @Nonnull TeamType teamType;
+    @Getter @Nonnull UUID[] players;
+    String icon;
 
     public TeamComponent(
         String id,
@@ -47,6 +47,10 @@ public abstract class TeamComponent implements GameComponent {
             asset.getIcon()
         );
         this.players = asset.getPlayers();
+    }
+
+    public TeamComponent() {
+        id = "";
     }
 
     /**

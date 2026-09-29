@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamAsset;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -8,7 +9,9 @@ import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import lombok.Getter;
 
-public class TeamsPlugin  extends GamePlugin {
+import java.util.List;
+
+public class TeamsPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     @Getter public static final String ID = "TeamsPlugin";
 
@@ -23,5 +26,12 @@ public class TeamsPlugin  extends GamePlugin {
             .setCodec(TeamAsset.CODEC)
             .setKeyFunction(TeamAsset::getId)
             .build());
+    }
+
+    @Override
+    public List<String> getDependencies() {
+        var deps = super.getDependencies();
+        deps.add(AnnouncerPlugin.getID());
+        return deps;
     }
 }
