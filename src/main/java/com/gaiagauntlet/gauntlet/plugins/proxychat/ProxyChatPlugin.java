@@ -7,7 +7,7 @@ import lombok.Getter;
 
 public class ProxyChatPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    @Getter public static final String Id = "ProxyChatPlugin";
+    @Getter public static final String ID = "ProxyChatPlugin";
 
     @Override
     public void install() {

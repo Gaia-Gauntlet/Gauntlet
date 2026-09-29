@@ -62,16 +62,6 @@ public class TeamAsset implements JsonAssetWithMap<String, DefaultAssetMap<Strin
 
     public TeamAsset() {}
 
-    /**
-     * The icon path relative to {@code UI/Custom/}, or an empty string when the
-     * team has no icon.
-     */
-    @Nonnull
-    public String getUiIcon() {
-        String prefix = "UI/Custom/";
-        return icon.startsWith(prefix) ? icon.substring(prefix.length()) : icon;
-    }
-
     @Nullable
     public static AssetStore<String, TeamAsset, DefaultAssetMap<String, TeamAsset>> getAssetStore() {
         if (ASSET_STORE == null)

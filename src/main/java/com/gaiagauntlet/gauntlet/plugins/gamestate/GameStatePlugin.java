@@ -8,7 +8,7 @@ import lombok.Getter;
 /** Simple state machine handler implementation */
 public class GameStatePlugin  extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-     @Getter public static final String Id = "GameStatePlugin";
+     @Getter public static final String ID = "GameStatePlugin";
 
     @Override
     public void install() {

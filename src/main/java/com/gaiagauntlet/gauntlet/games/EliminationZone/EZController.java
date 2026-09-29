@@ -44,13 +44,13 @@ public class EZController extends LobbyController {
     @Override // temp, just messing around here
     public List<String> getPluginIds() {
         return List.of(
-                AnnouncerPlugin.Id,
-                GameStatePlugin.Id,
-                GameStorePlugin.Id,
-                LobbyControllerPlugin.Id,
-                ProxyChatPlugin.Id,
-                TeamsPlugin.Id,
-                ScoringPlugin.Id);
+                AnnouncerPlugin.ID,
+                GameStatePlugin.ID,
+                GameStorePlugin.ID,
+                LobbyControllerPlugin.ID,
+                ProxyChatPlugin.ID,
+                TeamsPlugin.ID,
+                ScoringPlugin.ID);
     }
 
 }

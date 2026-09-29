@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
  * Add params to the methods as-needed. For now, they are empty to prevent param bloat 
  */
 public abstract class GamePlugin {
-    public abstract String getId();
+    public abstract String getID();
 
     /** Gets a list of required plugin IDs */
     public List<String> getDependencies() { return List.of(); };

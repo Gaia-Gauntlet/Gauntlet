@@ -10,7 +10,7 @@ import lombok.Getter;
 
 public class TeamsPlugin  extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    @Getter public static final String Id = "TeamsPlugin";
+    @Getter public static final String ID = "TeamsPlugin";
 
     @Override
     public void install() {
@@ -19,7 +19,7 @@ public class TeamsPlugin  extends GamePlugin {
 
     public void setup(JavaPlugin host) {
         host.getAssetRegistry().register(HytaleAssetStore.builder(TeamAsset.class, new DefaultAssetMap<>())
-            .setPath("Gauntlet/Teams")
+            .setPath("Gauntlet/"+ID)
             .setCodec(TeamAsset.CODEC)
             .setKeyFunction(TeamAsset::getId)
             .build());

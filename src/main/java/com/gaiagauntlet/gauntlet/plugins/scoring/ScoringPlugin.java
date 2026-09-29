@@ -7,7 +7,7 @@ import lombok.Getter;
 
 public class ScoringPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    @Getter public static final String Id = "ScoringPlugin";
+    @Getter public static final String ID = "ScoringPlugin";
 
     @Override
     public void install() {

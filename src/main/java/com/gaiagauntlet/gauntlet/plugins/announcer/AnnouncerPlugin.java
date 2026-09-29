@@ -7,7 +7,7 @@ import lombok.Getter;
 
 public class AnnouncerPlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    @Getter public static final String Id = "AnnouncerPlugin";
+    @Getter public static final String ID = "AnnouncerPlugin";
 
     public AnnouncerPlugin() {}
 

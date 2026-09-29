@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 public class GameStorePlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    @Getter public static final String Id = "GameStore";
+    @Getter public static final String ID = "GameStore";
 
     @Override
     public void install() {
