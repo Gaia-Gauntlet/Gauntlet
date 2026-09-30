@@ -23,7 +23,7 @@ public class GameRegistry {
     
     public static void registerPlugin(String id, JavaPlugin host, Supplier<GamePlugin> pluginSupplier) {
         var plugin = pluginSupplier.get();
-        plugin.setup(host);
+        plugin.init(host);
         pluginRegistry.put(id, plugin);
     }
 

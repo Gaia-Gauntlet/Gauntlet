@@ -1,21 +1,29 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller;
 
+import java.util.List;
+
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
-import lombok.Getter;
 
 /**
  * A lobby controller plugin that lets you opt-into lobby logic.
  */
-public class LobbyControllerPlugin extends GamePlugin {
+public class LobbyControllerPlugin implements GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    @Getter public static final String ID = "LobbyControllerPlugin";
+    public static final String ID = "LobbyControllerPlugin";
 
     @Override
-    public void install() {
-        //
+    public void init(JavaPlugin host) {
     }
 
-    public void setup(JavaPlugin host) {}
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public List<String> getDependencies() {
+        return List.of();
+    }
 }

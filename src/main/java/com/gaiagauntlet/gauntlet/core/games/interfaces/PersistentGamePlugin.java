@@ -11,7 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  */
 public interface PersistentGamePlugin extends GamePlugin {
     /** Installs the plugin into a game */
-    public void readSession(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId);
+    public void setup(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId);
 
     /** Writes any state onto the session during the transition out of the game */
     public void writeSession(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId);
