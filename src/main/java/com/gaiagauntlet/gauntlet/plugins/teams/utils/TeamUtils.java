@@ -1,11 +1,13 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.session.TeamListSessionComponent;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,11 +38,21 @@ public class TeamUtils {
         return false;
     }
 
-    public static void hydrateSessionFromAssets(TeamListSessionComponent teamListSessionComponent, TeamListAsset teamListAsset) {
-        // TODO: Finish impl
-        var sessionsTeams = teamListSessionComponent.getTeamList();
-        for (TeamComponent team : teamListAsset.getTeamList().values()) {
-            sessionsTeams.computeIfAbsent(team.getId(), _ -> team.clone());
+    public static Collection<PlayerRef> getOnlinePlayers(TeamListComponent teams) {
+        var onlinePlayers = new HashSet<PlayerRef>();
+        for (UUID player : teams.getPlayers()) {
+            PlayerRef playerRef = Universe.get().getPlayer(player);
+            if (Objects.nonNull(playerRef)) onlinePlayers.add(playerRef);
         }
+        return onlinePlayers;
+    }
+
+    public static Collection<PlayerRef> getOnlinePlayers(TeamComponent team) {
+        var onlinePlayers = new HashSet<PlayerRef>();
+        for (UUID player : team.getPlayers()) {
+            PlayerRef playerRef = Universe.get().getPlayer(player);
+            if (Objects.nonNull(playerRef)) onlinePlayers.add(playerRef);
+        }
+        return onlinePlayers;
     }
 }

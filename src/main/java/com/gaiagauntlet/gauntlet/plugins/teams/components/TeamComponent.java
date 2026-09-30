@@ -20,10 +20,7 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /** The single component for an entire team. Holds all team-specific data */
@@ -164,7 +161,8 @@ public class TeamComponent {
         return Arrays.asList(players).contains(uuid);
     }
 
-    public boolean add(@Nonnull UUID newUuid) {
+    /** Use {@code TeamUtils.addPlayerToTeam} for cached player assignment safety */
+    boolean add(@Nonnull UUID newUuid) {
         for (int i = 0; i < players.length; i++) {
             UUID uuid = players[i];
             if (Objects.isNull(uuid)) {
@@ -177,7 +175,8 @@ public class TeamComponent {
         return false;
     }
 
-    public boolean remove(@Nonnull UUID uuidToRemove) {
+    /** Use {@code TeamUtils.removePlayerFromTeam} for cached player assignment safety */
+    boolean remove(@Nonnull UUID uuidToRemove) {
         for (int i = 0; i < players.length; i++) {
             UUID uuid = players[i];
             if (uuid.equals(uuidToRemove)) {
@@ -192,19 +191,5 @@ public class TeamComponent {
 
     public void clear() {
         this.players = new UUID[this.players.length];
-    }
-
-    public TeamComponent clone() {
-        var team = new TeamComponent(
-            this.id,
-            this.name,
-            this.teamType,
-            this.players.length,
-            this.icon
-        );
-        for (UUID player : this.players) {
-            team.add(player);
-        }
-        return team;
     }
 }
