@@ -193,4 +193,18 @@ public class TeamComponent {
     public void clear() {
         this.players = new UUID[this.players.length];
     }
+
+    public TeamComponent clone() {
+        var team = new TeamComponent(
+            this.id,
+            this.name,
+            this.teamType,
+            this.players.length,
+            this.icon
+        );
+        for (UUID player : this.players) {
+            team.add(player);
+        }
+        return team;
+    }
 }

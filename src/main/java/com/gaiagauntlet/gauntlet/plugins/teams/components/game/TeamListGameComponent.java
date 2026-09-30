@@ -37,7 +37,7 @@ public final class TeamListGameComponent implements GameComponent {
         .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, ConcurrentHashMap::new)),
             (team, v) -> team.teamList = v,
             team -> team.teamList)
-        .documentation("The full list of teams in this preset.")
+        .documentation("The full list of teams in this game.")
         .add()
         .build();
 

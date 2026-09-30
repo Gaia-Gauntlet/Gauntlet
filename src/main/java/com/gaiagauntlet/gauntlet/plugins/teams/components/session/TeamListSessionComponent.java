@@ -6,6 +6,7 @@ import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
+import lombok.Getter;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -21,11 +22,15 @@ public final class TeamListSessionComponent implements SessionComponent {
         .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, ConcurrentHashMap::new)),
             (team, v) -> team.teamList = v,
             team -> team.teamList)
-        .documentation("The full list of teams in this preset.")
+        .documentation("The full list of teams in this session.")
         .add()
         .build();
 
-    @Nonnull private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
+    @Nonnull @Getter private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
+
+    public TeamComponent getTeam(String teamId) {
+        return teamList.get(teamId);
+    }
 
     // add more here, since this is not enough
 }

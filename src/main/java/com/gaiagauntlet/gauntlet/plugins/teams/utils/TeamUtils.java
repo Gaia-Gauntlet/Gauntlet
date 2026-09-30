@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.session.TeamListSessionComponent;
 import com.hypixel.hytale.server.core.universe.Universe;
 
 import java.util.Objects;
@@ -32,5 +34,13 @@ public class TeamUtils {
             if (Objects.isNull(eliminated)) return true;
         }
         return false;
+    }
+
+    public static void hydrateSessionFromAssets(TeamListSessionComponent teamListSessionComponent, TeamListAsset teamListAsset) {
+        // TODO: Finish impl
+        var sessionsTeams = teamListSessionComponent.getTeamList();
+        for (TeamComponent team : teamListAsset.getTeamList().values()) {
+            sessionsTeams.computeIfAbsent(team.getId(), _ -> team.clone());
+        }
     }
 }
