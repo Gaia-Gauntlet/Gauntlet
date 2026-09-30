@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestore.resource;
+package com.gaiagauntlet.gauntlet.core.gamestore.resource;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
