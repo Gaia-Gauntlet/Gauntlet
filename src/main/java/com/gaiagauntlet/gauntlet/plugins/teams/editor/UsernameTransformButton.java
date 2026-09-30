@@ -36,6 +36,8 @@ public final class UsernameTransformButton {
     private UsernameTransformButton() {
     }
 
+
+    // all of this grew to be very cursed. I just started copying shit from hytale until it worked - need to clean it up later cuz rn it sucks
     public static void activate(AssetEditorActivateButtonEvent event) {
         var client = event.getEditorClient();
         var plugin = AssetEditorPlugin.get();
@@ -49,7 +51,7 @@ public final class UsernameTransformButton {
 
         var lookups = new HashMap<String, CompletableFuture<UUID>>();
         asset.getTeamList().values().forEach(team -> {
-            for (var player : team.getPlayerNames()) {
+            for (var player : team.getRawPlayerNames()) {
                 if (!isUuid(player))
                     lookups.computeIfAbsent(player, name -> PlayerUtils.uuidOf(name).exceptionally(error -> null));
             }
@@ -62,7 +64,7 @@ public final class UsernameTransformButton {
             var commands = new ArrayList<JsonUpdateCommand>();
 
             asset.getTeamList().forEach((teamId, team) -> {
-                var resolved = Arrays.stream(team.getPlayerNames()).map(player -> {
+                var resolved = Arrays.stream(team.getRawPlayerNames()).map(player -> {
                     var lookup = lookups.get(player);
                     if (lookup == null)
                         return player;
@@ -72,7 +74,7 @@ public final class UsernameTransformButton {
                     return uuid == null ? player : uuid.toString();
                 }).toArray(String[]::new);
 
-                if (Arrays.equals(resolved, team.getPlayerNames()))
+                if (Arrays.equals(resolved, team.getRawPlayerNames()))
                     return;
 
                 var command = new JsonUpdateCommand();

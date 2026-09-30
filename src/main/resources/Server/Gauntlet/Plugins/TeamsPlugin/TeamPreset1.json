@@ -1,12 +1,13 @@
 {
   "TeamList": {
-    "FunnyTeam": {
+    "TrickyTrorks": {
+      "Name": "Tricky Trorks",
       "Players": [
-        "28c3c4e4-95b1-4901-82f1-623f22454b41",
-        "ABC",
-        ""
-      ],
-      "Name": "asd"
+        "da9b0aee-c2bc-4b10-bee7-b8ca22157aa7",
+        "fdd094a9-7241-4b70-b94f-5894d1c6c999",
+        "5176f0e1-415e-4a42-be27-c7a868eb93c5",
+        "BrokenNameasdasdasd"
+      ]
     }
   }
 }

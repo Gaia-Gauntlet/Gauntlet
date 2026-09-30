@@ -49,8 +49,8 @@ public class TeamComponent {
             .documentation("UI asset team icon, for example GG/TeamIcons/Tricky_Trorks.png. Optional.")
             .add()
             .append(new KeyedCodec<>("Players", new ArrayCodec<>(Codec.STRING, String[]::new)),
-                    (team, v) -> team.playerNames = v,
-                    team -> team.playerNames)
+                    (team, v) -> team.rawPlayerNames = v,
+                    team -> team.rawPlayerNames)
             .documentation("The team roster")
             .add()
             .append(new KeyedCodec<>("PlayerUUIDs", new ArrayCodec<>(Codec.UUID_STRING, UUID[]::new)),
@@ -62,10 +62,13 @@ public class TeamComponent {
             .afterDecode(team -> {
                 // converts the player names into valid UUIDs in the event that the button was
                 // not pressed
-                var entries = team.playerNames;
+
+                // this also genuinely is a very sphaghetti way to handle this. I would like to clean this up a bit later
+                var entries = team.rawPlayerNames;
                 if (entries == null || entries.length == 0) return;
                 var lookups = Arrays.stream(entries)
                         .map(entry -> {
+                            if (entry == null) return null;
                             var uuid = parseUuid(entry);
                             return uuid != null
                                     ? CompletableFuture.completedFuture(uuid)
@@ -110,11 +113,13 @@ public class TeamComponent {
     UUID[] players;
     /**
      * List of player names - this is ONLY intended to be added via the asset
-     * editor. Values normalized into the player's UUIDs
+     * editor. Values normalized into the player's UUIDs after decoding. Ideally, this is never accessed anywhere
+     * <br /><br />
+     * Again, do NOT use this anywhere. Only use the `players` list
      */
     @Nonnull
     @Getter
-    String[] playerNames;
+    String[] rawPlayerNames;
     String icon;
 
     public TeamComponent(

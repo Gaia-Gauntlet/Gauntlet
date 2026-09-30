@@ -23,4 +23,6 @@ public final class TeamListGameComponent implements GameComponent {
     @Nonnull
     private Map<String, TeamComponent> teamList;
 
+    // add more here, since this is not enough
+
 }
