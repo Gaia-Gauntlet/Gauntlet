@@ -2,10 +2,8 @@ package com.gaiagauntlet.gauntlet.core;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
@@ -13,8 +11,6 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
-import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
@@ -66,7 +62,7 @@ public class GauntletOrchestrator {
     }
 
     @Nonnull
-    public static Optional<GameSession> sessionFor(@Nullable PlayerRef player) {
+    public static Optional<GameSession> sessionFor(@Nonnull PlayerRef player) {
         var comp = playerFor(player);
         if (comp.isPresent() && comp.get().getActiveSession() != null)
             return sessionFor(comp.get().getActiveSession());
@@ -74,7 +70,7 @@ public class GauntletOrchestrator {
     }
 
     @Nonnull
-    public static Optional<PlayerComponent> playerFor(@Nullable PlayerRef player) {
+    public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));
     }
 }
