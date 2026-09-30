@@ -100,26 +100,17 @@ public class TeamComponent {
         }
     }
 
-    @Getter
-    final String id;
-    @Getter
-    @Nonnull
-    String name;
-    @Getter
-    @Nonnull
-    TeamType teamType;
-    @Getter
-    @Nonnull
-    UUID[] players;
+    @Getter final String id;
+    @Getter @Nonnull String name = "";
+    @Getter @Nonnull TeamType teamType = TeamType.Participant;
+    @Getter @Nonnull UUID[] players = new UUID[0];
     /**
      * List of player names - this is ONLY intended to be added via the asset
      * editor. Values normalized into the player's UUIDs after decoding. Ideally, this is never accessed anywhere
      * <br /><br />
      * Again, do NOT use this anywhere. Only use the `players` list
      */
-    @Nonnull
-    @Getter
-    String[] rawPlayerNames;
+    @Nonnull @Getter String[] rawPlayerNames = new String[0];
     String icon;
 
     public TeamComponent(
