@@ -6,7 +6,7 @@ import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
+import com.gaiagauntlet.gauntlet.core.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.scoring.ScoringPlugin;
@@ -41,7 +41,6 @@ public class GauntletPlugin extends JavaPlugin {
         setupCommands();
         setupComponents();
         setupPlugins();
-
     }
 
     private void setupResources() {
@@ -62,13 +61,13 @@ public class GauntletPlugin extends JavaPlugin {
     }
 
     private void setupPlugins() {
-        GameRegistry.registerPlugin(AnnouncerPlugin.ID, AnnouncerPlugin::new);
-        GameRegistry.registerPlugin(GameStatePlugin.ID, GameStatePlugin::new);
-        GameRegistry.registerPlugin(GameStorePlugin.ID, GameStorePlugin::new);
-        GameRegistry.registerPlugin(LobbyControllerPlugin.ID, LobbyControllerPlugin::new);
-        GameRegistry.registerPlugin(ProxyChatPlugin.ID, ProxyChatPlugin::new);
-        GameRegistry.registerPlugin(TeamsPlugin.ID, TeamsPlugin::new);
-        GameRegistry.registerPlugin(ScoringPlugin.ID, ScoringPlugin::new);
+        GameRegistry.registerPlugin(AnnouncerPlugin.ID, this, AnnouncerPlugin::new);
+        GameRegistry.registerPlugin(GameStatePlugin.ID, this, GameStatePlugin::new);
+        GameRegistry.registerPlugin(GameStorePlugin.ID, this, GameStorePlugin::new);
+        GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
+        GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
+        GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
+        GameRegistry.registerPlugin(ScoringPlugin.ID, this, ScoringPlugin::new);
     }
 
     @Override

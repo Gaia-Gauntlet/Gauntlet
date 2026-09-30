@@ -1,12 +1,19 @@
 package com.gaiagauntlet.gauntlet.plugins.scoring;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
-public class ScoringPlugin extends GamePlugin {
+import java.util.List;
+
+public class ScoringPlugin implements GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-
     public static final String ID = "ScoringPlugin";
+
+    @Override
+    public void init(JavaPlugin host) {
+    }
 
     @Override
     public String getId() {
@@ -14,7 +21,7 @@ public class ScoringPlugin extends GamePlugin {
     }
 
     @Override
-    public void install() {
-        //
+    public List<String> getDependencies() {
+        return List.of(TeamsPlugin.ID);
     }
 }

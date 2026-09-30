@@ -1,9 +1,6 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestore.components;
-
-import org.jetbrains.annotations.NotNull;
+package com.gaiagauntlet.gauntlet.core.gamestore.components;
 
 import com.gaiagauntlet.gauntlet.utils.codec.SerializableComponent;
-import com.hypixel.hytale.codec.builder.BuilderCodec;
 
 /**
  * simple DTO for the session. Not as much churn as an ECS since this is just a
