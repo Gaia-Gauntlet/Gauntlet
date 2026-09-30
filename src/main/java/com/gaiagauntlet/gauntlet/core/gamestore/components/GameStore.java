@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestore.components;
+package com.gaiagauntlet.gauntlet.core.gamestore.components;
 
 import java.util.Map;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
+import com.gaiagauntlet.gauntlet.core.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.utils.codec.StringRegistryCodec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.teams.components;
+package com.gaiagauntlet.gauntlet.plugins.teams.components.entity;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;

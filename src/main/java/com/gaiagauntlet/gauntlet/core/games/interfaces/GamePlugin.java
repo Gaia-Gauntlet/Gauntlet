@@ -2,8 +2,6 @@ package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
 import java.util.List;
 
-import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 /**
@@ -11,21 +9,12 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
  * 
  * Add params to the methods as-needed. For now, they are empty to prevent param bloat 
  */
-public abstract class GamePlugin {
-    public abstract String getID();
+public interface GamePlugin {
+    public String getId();
 
     /** Gets a list of required plugin IDs */
-    public List<String> getDependencies() { return List.of(); };
+    public List<String> getDependencies();
 
-    /** Installs the plugin into a game */
-    public void install() {}
-
-    /** Writes any state onto the session during the transition out of the game */
-    public void writeSession(GameSession sessionObject) {}
-
-    /** Admin tab or admin configurations */
-    public AdminTab getAdminTab() { return null; };
-
-    /** Initialisation of resources and components on the respective stores */
-    public abstract void setup(JavaPlugin host);
+    /** initializes the plugin itself */
+    public void init(JavaPlugin plugin);
 }

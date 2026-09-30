@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -21,12 +23,12 @@ public class GameRegistry {
     
     public static void registerPlugin(String id, JavaPlugin host, Supplier<GamePlugin> pluginSupplier) {
         var plugin = pluginSupplier.get();
-        plugin.setup(host);
+        plugin.init(host);
         pluginRegistry.put(id, plugin);
     }
 
-    public static Optional<GameController> getGame(String id) {
-        return Optional.ofNullable(controllerRegistry.get(id));
+    public static Optional<GameController> getGame(@Nullable String id) {
+        return Optional.ofNullable(id == null ? null : controllerRegistry.get(id));
     }
 
     public static boolean hasGame(String id) {
