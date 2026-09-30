@@ -2,6 +2,8 @@ package com.gaiagauntlet.gauntlet.plugins.gamestore;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import lombok.Getter;
 
 /**
  * GameStore plugin is a MiniECS system that a Game can opt-into using for state management.
@@ -10,15 +12,12 @@ import com.hypixel.hytale.logger.HytaleLogger;
  */
 public class GameStorePlugin extends GamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    public static final String ID = "GameStore";
-
-    @Override
-    public String getId() {
-        return ID;
-    }
+    @Getter public static final String ID = "GameStore";
 
     @Override
     public void install() {
         //
     }
+
+    public void setup(JavaPlugin host) {}
 }

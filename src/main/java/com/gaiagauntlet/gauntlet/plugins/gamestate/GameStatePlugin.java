@@ -31,4 +31,6 @@ public class GameStatePlugin implements SimpleGamePlugin {
     public void setup(ComponentAccessor<EntityStore> accessor, String gameId) {
         
     }
+
+    public void init(JavaPlugin host) {}
 }

@@ -2,7 +2,6 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import java.util.List;
 
-import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;

@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 public class GameRegistry {
 
@@ -20,8 +21,10 @@ public class GameRegistry {
         controllerRegistry.put(id, controller.get());
     }
     
-    public static void registerPlugin(String id, Supplier<GamePlugin> plugin) {
-        pluginRegistry.put(id, plugin.get());
+    public static void registerPlugin(String id, JavaPlugin host, Supplier<GamePlugin> pluginSupplier) {
+        var plugin = pluginSupplier.get();
+        plugin.setup(host);
+        pluginRegistry.put(id, plugin);
     }
 
     public static Optional<GameController> getGame(@Nullable String id) {
