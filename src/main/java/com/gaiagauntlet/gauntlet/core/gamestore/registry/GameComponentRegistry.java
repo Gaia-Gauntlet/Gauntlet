@@ -20,6 +20,9 @@ public class GameComponentRegistry implements CodecRegistry<GameComponent> {
 
     private static final Map<String, GameComponentType<?>> componentRegistry = new ConcurrentHashMap<>();
 
+    public static <T extends GameComponent> GameComponentType<T> register(String id, Class<T> cClass) {
+        return register(id, cClass, null);
+    }
     public static <T extends GameComponent> GameComponentType<T> register(String id, Class<T> cClass,
             BuilderCodec<T> codec) {
         if (componentRegistry.containsKey(id)) {

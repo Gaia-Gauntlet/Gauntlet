@@ -2,11 +2,16 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
+import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.core.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
+import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.asseteditor.AssetEditorPlugin;
@@ -32,10 +37,22 @@ public class TeamsPlugin implements PersistentGamePlugin {
                 .setKeyFunction(TeamListAsset::getId)
                 .build());
 
-        EliminatedComponent.setComponentType(host.getEntityStoreRegistry().registerComponent(
+        var entityStore = host.getEntityStoreRegistry();
+
+        EliminatedComponent.setComponentType(entityStore.registerComponent(
                 EliminatedComponent.class,
                 EliminatedComponent::new));
+        TeamPlayerComponent.setComponentType(entityStore.registerComponent(
+                TeamPlayerComponent.class,
+                "TeamPlayer",
+                TeamPlayerComponent.CODEC));
 
+        TeamListComponent.setSessionComponentType(
+                SessionRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
+        TeamListComponent.setGameComponentType(
+                GameComponentRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
+
+        // asset editor button
         var editor = AssetEditorPlugin.get();
         if (editor != null) {
             editor.getEventRegistry().register(

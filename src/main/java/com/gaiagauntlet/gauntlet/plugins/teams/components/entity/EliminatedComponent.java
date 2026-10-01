@@ -8,6 +8,8 @@ import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import lombok.Getter;
 import lombok.Setter;
+
+import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -16,7 +18,7 @@ import org.jspecify.annotations.Nullable;
 public class EliminatedComponent implements Component<EntityStore> {
     @Getter @Setter private static ComponentType<EntityStore, EliminatedComponent> componentType;
 
-    public static BuilderCodec<EliminatedComponent> CODEC = BuilderCodec
+    public static BuilderCodec<@NotNull EliminatedComponent> CODEC = BuilderCodec
         .builder(EliminatedComponent.class, EliminatedComponent::new)
         .append(
             new KeyedCodec<>("EliminatedAt", Codec.LONG),
