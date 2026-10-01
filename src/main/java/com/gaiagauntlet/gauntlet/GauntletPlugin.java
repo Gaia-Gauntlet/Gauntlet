@@ -38,9 +38,9 @@ public class GauntletPlugin extends JavaPlugin {
     protected void setup() {
         LOGGER.atInfo().log("Setting up Gauntlet!");
         setupResources();
-        setupCommands();
         setupComponents();
         setupPlugins();
+        setupCommands();
     }
 
     private void setupResources() {

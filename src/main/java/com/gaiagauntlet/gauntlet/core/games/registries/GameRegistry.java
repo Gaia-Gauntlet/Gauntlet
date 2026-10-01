@@ -1,9 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.games.registries;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -45,7 +42,14 @@ public class GameRegistry {
         return Optional.ofNullable(id == null ? null : pluginRegistry.get(id));
     }
 
-    public static <T extends GamePlugin> List<T> getPlugin(List<String> ids, Class<T> type) {
+    public static <T extends GamePlugin> List<T> getPlugins(Class<T> type) {
+        return pluginRegistry.values().stream()
+            .filter(type::isInstance)
+            .map(type::cast)
+            .toList();
+    }
+
+    public static <T extends GamePlugin> List<T> getPlugins(List<String> ids, Class<T> type) {
         return ids.stream()
                 .map(pluginRegistry::get)
                 .filter(type::isInstance)
