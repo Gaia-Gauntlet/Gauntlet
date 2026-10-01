@@ -57,24 +57,25 @@ public final class PlayerUtils {
 
     /**
      * Returning null means the player is offline
-     * @param playerName
+     * @param playerName Name of the player to fetch the UUID of
      * @return
      */
     @Nullable
     public static CompletableFuture<UUID> uuidOf(String playerName) {
         if (playerName == null || playerName.length() <= 1) return CompletableFuture.completedFuture(null);
-        var noramlizedName = normalize(playerName);
+        var normalisedName = normalize(playerName);
         var uuid = cachedPlayerIds.get(playerName);
-        if (uuid != null) {
-            return CompletableFuture.completedFuture(uuid);
-        }
+        if (uuid != null) return CompletableFuture.completedFuture(uuid);
 
         var uuidFuture = new CompletableFuture<UUID>();
-        var future = resolve(noramlizedName);
+        var future = resolve(normalisedName);
         future.whenComplete((name, error) -> {
             if (error != null) {
-                uuidFuture.completeExceptionally(error);
+                uuidFuture.complete(null);
                 return;
+            }
+            if (name == null) {
+                uuidFuture.complete(null);
             }
 
             // get it again - it should be there now
@@ -90,13 +91,11 @@ public final class PlayerUtils {
     @Nullable
     public static String resolveOnline(String username) {
         var cachedPlayerName = cachedPlayers.get(normalize(username));
-        if (cachedPlayerName != null) {
-            return cachedPlayerName;
-        }
+        if (cachedPlayerName != null) return cachedPlayerName;
 
         // check the universe
         var player = Universe.get().getPlayerByUsername(username, NameMatching.EXACT_IGNORE_CASE);
-        if (player == null) return null;
+        if (Objects.isNull(player)) return null;
         var playerUsername = player.getUsername();
         // record it for future reference / caching
         record(playerUsername, player.getUuid());
@@ -121,14 +120,12 @@ public final class PlayerUtils {
 
     public static CompletableFuture<String> resolve(String username) {
         var user = resolveOnline(username);
-        if (user != null) {
-            return CompletableFuture.completedFuture(user);
-        }
+        if (user != null) return CompletableFuture.completedFuture(user);
+
         var auth = ServerAuthManager.getInstance();
         var token = auth.getSessionToken();
-        if (token == null) {
-            return CompletableFuture.completedFuture(null);
-        }
+        if (token == null) return CompletableFuture.completedFuture(null);
+
         var client = auth.getProfileServiceClient();
         return resolve(username, client, token);
     }
@@ -142,8 +139,8 @@ public final class PlayerUtils {
         }
         client.getProfileByUsernameAsync(username, token).whenComplete((profile, error) -> {
             if (error != null || profile == null || profile.getUuid() == null) {
-                LOGGER.atFine().log("No account found for %s", username);
-                nameFuture.completeExceptionally(error);
+                LOGGER.atWarning().log("No account found for %s", username);
+                nameFuture.complete(null);
                 return;
             }
             record(profile.getUsername(), profile.getUuid());

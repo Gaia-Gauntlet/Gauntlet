@@ -1,5 +1,5 @@
 {
-  "Type": "GG_LootFountain",
+  "Type": "LootFountain",
   "Droplist": "GG_LootFountain_Demo",
   "OpenState": "Opened",
   "SpawnOffset": [0.0, 1.25, 0.0],

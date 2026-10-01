@@ -6,8 +6,8 @@
         "Type": "Single",
         "Item": {
           "ItemId": "Potion_Health_Large",
-          "QuantityMin": 2,
-          "QuantityMax": 3
+          "QuantityMin": 1,
+          "QuantityMax": 2
         },
         "Weight": 50
       },

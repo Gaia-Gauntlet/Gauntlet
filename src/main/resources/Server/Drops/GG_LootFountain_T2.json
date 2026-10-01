@@ -169,9 +169,9 @@
         "Item": {
           "ItemId": "Potion_Health_Lesser",
           "QuantityMin": 1,
-          "QuantityMax": 2
+          "QuantityMax": 1
         },
-        "Weight": 10
+        "Weight": 15
       },
       {
         "Type": "Single",

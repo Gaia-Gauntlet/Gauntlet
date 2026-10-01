@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +37,7 @@ public class TeamListAsset implements JsonAssetWithMap<String, DefaultAssetMap<S
             .metadata(new UISidebarButtons(
                     new UIButton(UsernameTransformButton.BUTTON_TEXT_ID,
                             UsernameTransformButton.BUTTON_ID)))
-            .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, ConcurrentHashMap::new)),
+            .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, HashMap::new)),
                     (team, v) -> team.teamList = v,
                     team -> team.teamList)
             .documentation("The full list of teams in this preset.")
