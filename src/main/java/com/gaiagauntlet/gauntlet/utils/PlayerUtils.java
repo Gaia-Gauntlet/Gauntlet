@@ -4,6 +4,7 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.auth.ProfileServiceClient;
 import com.hypixel.hytale.server.core.auth.ServerAuthManager;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
 import javax.annotation.Nonnull;
@@ -48,6 +49,10 @@ public final class PlayerUtils {
         cachedPlayers.put(normalized, username);
         cachedPlayerIds.put(normalized, uuid);
         idsToPlayer.put(uuid, normalized);
+    }
+
+    public static PlayerRef get(UUID playerUuid) {
+        return Universe.get().getPlayer(playerUuid);
     }
 
     /**

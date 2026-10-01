@@ -4,9 +4,13 @@ import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TeamUtils {
@@ -48,5 +52,36 @@ public class TeamUtils {
         }
 
         return teamSession;
+    }
+
+    public static double getScore(PlayerRef player) {
+        if (player == null)
+            return 0;
+        var playerComponent = player.getComponentConcurrent(TeamPlayerComponent.getComponentType());
+        if (playerComponent == null)
+            return 0;
+        return playerComponent.getScore();
+    }
+
+    public static double getScore(UUID playerId) {
+        return getScore(PlayerUtils.get(playerId));
+    }
+
+    public static double getScore(TeamListComponent team, String teamId) {
+        if (team == null || teamId == null)
+            return 0d;
+        return getScore(team.get(teamId));
+    }
+
+    public static double getScore(TeamComponent team) {
+        if (team == null)
+            return 0d;
+        return team.getPlayers().stream().mapToDouble(TeamUtils::getScore).sum();
+    }
+
+    public static double getScore(TeamListComponent teams) {
+        if (teams == null) return 0d;
+        return teams.getTeams().values().stream()
+                .mapToDouble(TeamUtils::getScore).sum();
     }
 }
