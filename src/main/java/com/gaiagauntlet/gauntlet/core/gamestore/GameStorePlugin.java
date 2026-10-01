@@ -19,9 +19,7 @@ import lombok.Getter;
  */
 public class GameStorePlugin implements SimpleGamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    
-    @Getter
-    public static final String ID = "GameStore";
+    @Getter public static final String ID = "GameStore";
 
     @Override
     public void init(JavaPlugin host) {
