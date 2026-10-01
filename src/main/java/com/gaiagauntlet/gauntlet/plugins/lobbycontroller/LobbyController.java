@@ -1,7 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
@@ -47,7 +46,7 @@ public abstract class LobbyController extends GameController {
         }
 
         // register the early plugins
-        var persistentPlugins = GameRegistry.getPlugin(requiredPlugins(), PersistentGamePlugin.class);
+        var persistentPlugins = GameRegistry.getPlugins(requiredPlugins(), PersistentGamePlugin.class);
         for (var plugin : persistentPlugins) {
             try {
                 plugin.setup(hubAccessor, session, getId());
@@ -78,7 +77,7 @@ public abstract class LobbyController extends GameController {
             return onWorld(world, () -> {
                 var lobbyStore = world.getEntityStore().getStore();
 
-                var simplePlugins = GameRegistry.getPlugin(requiredPlugins(), SimpleGamePlugin.class);
+                var simplePlugins = GameRegistry.getPlugins(requiredPlugins(), SimpleGamePlugin.class);
                 for (var plugin : simplePlugins) {
                     try {
                         plugin.setup(lobbyStore, getId());
