@@ -13,7 +13,7 @@ public abstract class LobbyController extends GameController {
 
     @Override
     public final void setupGame() {
-        // setup the game
+        var world = getLobbyManager().setupWorld();
     };
 
     @Override
