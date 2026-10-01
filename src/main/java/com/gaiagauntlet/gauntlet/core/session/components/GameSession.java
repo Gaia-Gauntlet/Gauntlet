@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.utils.codec.StringRegistryCodec;
@@ -22,6 +23,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.EnumCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
+import com.hypixel.hytale.logger.HytaleLogger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,8 +35,13 @@ import lombok.Setter;
  * information necessary to identify a specific game
  */
 public class GameSession {
+    private final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     public static BuilderCodec<@NotNull GameSession> CODEC = BuilderCodec
             .builder(GameSession.class, GameSession::new)
+            .append(new KeyedCodec<>("Id", Codec.STRING),
+                    (holder, v) -> holder.id = v,
+                    holder -> holder.id)
+            .add()
             .append(new KeyedCodec<>("Components",
                     new StringRegistryCodec<>(new SessionRegistry(), ConcurrentHashMap::new)),
                     (holder, components) -> holder.sessionComponents = components,
@@ -56,6 +63,9 @@ public class GameSession {
 
     @Getter
     private Map<String, SessionComponent> sessionComponents;
+
+    @Getter
+    private String id;
 
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
@@ -88,17 +98,26 @@ public class GameSession {
         sessionComponents = new ConcurrentHashMap<>();
     }
 
+    public GameSession(String id) {
+        this.id = id;
+        this();
+    }
+
     public boolean available() {
         return sessionState == SessionState.FINISHED || sessionState == SessionState.IDLE;
     }
 
     /** gets the next available game */
-    @Nullable 
+    @Nullable
     public String getNext() {
         return gameSequence == null || gameSequence.length == 0 ? null : gameSequence[0];
     }
-    /** transitions to the next game, popping it from the list and setting it as current */
-    @Nullable 
+
+    /**
+     * transitions to the next game, popping it from the list and setting it as
+     * current
+     */
+    @Nullable
     public String startNext() {
         String nextGame = getNext();
         if (nextGame == null) {
@@ -118,6 +137,32 @@ public class GameSession {
 
         return currentGame;
     }
+
+    /**
+     * Checks if the current game is still the current game, and then sets it as
+     * running
+     */
+    public boolean setRunning(String gameIdCheck) {
+        if (!currentGame.equals(gameIdCheck)) {
+            AdminLog.add(gameIdCheck,
+                    "Game failed to switch to running! Game " + currentGame + " was somehow registered instead");
+            return false;
+        }
+        if (sessionState == SessionState.RUNNING) {
+            AdminLog.add(gameIdCheck,
+                    "Game " + currentGame + " attempted to double-start");
+            return true; // actually fine, the game is already running. Double-marking is not the end of
+                         // the world
+        }
+        if (sessionState != SessionState.SETTING_UP) {
+            AdminLog.add(gameIdCheck,
+                    "Game failed to switch to running! State is " + sessionState + " instead of setting up!");
+            return false;
+        }
+        sessionState = SessionState.RUNNING;
+        return true;
+    }
+
     /** adds a game to the sequence */
     public void addGame(@Nonnull String gameId) {
 
@@ -130,6 +175,7 @@ public class GameSession {
         updatedSequence[gameSequence.length] = gameId;
         gameSequence = updatedSequence;
     }
+
     /** removes a game from the sequence */
     public void removeGame(int index) {
         if (gameSequence == null || index < 0 || index >= gameSequence.length) {
@@ -142,6 +188,7 @@ public class GameSession {
         }
         gameSequence = Arrays.copyOf(gameSequence, gameSequence.length - 1);
     }
+
     /** removes a game if it is present */
     public void removeGameIfPresent(@Nonnull String gameId) {
         if (gameSequence == null) {

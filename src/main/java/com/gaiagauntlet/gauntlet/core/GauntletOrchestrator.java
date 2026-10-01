@@ -1,18 +1,12 @@
 package com.gaiagauntlet.gauntlet.core;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import javax.annotation.Nonnull;
-
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
-import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
-import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.component.ComponentAccessor;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
  * The very thin big boi router
@@ -23,11 +17,28 @@ import com.hypixel.hytale.server.core.universe.Universe;
 public class GauntletOrchestrator {
 
     /**
+     * Business rules because I have nowhere else to put them.
+     * 1) All controller methods should be invoked on the HUB thread
+     * 2) SessionId states should be cleared between games 
+     * 3) Games should be setup before any player is allowed to join
+     * 4) Eventing needs
+     *      a) Failure Events
+     *      b) Session status updates
+     * 5) threading needs
+     *      a) player join
+     *      b) player leave
+     *      c) server shutdown
+     *      d) server startup (load up from crashed server - attempt recovery?)
+     */
+
+
+
+    /**
      * Sets up a game to allow for sending players to and, later, starting the game
      * itself
      */
-    public static CompletableFuture<GameController> setupGame(String sessionId) {
-        var sessionRes = sessionFor(sessionId);
+    public static CompletableFuture<GameController> setupGame(ComponentAccessor<EntityStore> accessor, String sessionId) {
+        var sessionRes = GauntletUtils.sessionFor(sessionId);
         if (!sessionRes.isPresent() || !sessionRes.get().available()) {
             AdminLog.add("Unable to setup the session's game. The session is not in a valid state!");
             return null;
@@ -43,34 +54,9 @@ public class GauntletOrchestrator {
         var game = gameRes.get();
 
         // pass stuff to the game
-        game.setupGame();
+        game.setupGame(accessor, session);
 
         // ensure this runs AFTER the game is made, needs to finalize what the game actually needs in order to be created
         return CompletableFuture.completedFuture(game);
-    }
-
-    /** ----- Utilities and shortcuts to make stuff faster ----- */
-
-    /** Shortcut for getting the universe resource with all the sessions */
-    public static UniverseGameResource withResource() {
-        return Universe.get().getResource(UniverseGameResource.getResourceType());
-    }
-
-    @Nonnull
-    public static Optional<GameSession> sessionFor(@Nonnull String id) {
-        return withResource().getSession(id);
-    }
-
-    @Nonnull
-    public static Optional<GameSession> sessionFor(@Nonnull PlayerRef player) {
-        var comp = playerFor(player);
-        if (comp.isPresent() && comp.get().getActiveSession() != null)
-            return sessionFor(comp.get().getActiveSession());
-        return Optional.empty();
-    }
-
-    @Nonnull
-    public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
-        return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));
     }
 }
