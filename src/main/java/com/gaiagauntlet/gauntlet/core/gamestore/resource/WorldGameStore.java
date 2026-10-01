@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameStore;
+import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
@@ -24,14 +24,28 @@ public class WorldGameStore implements Resource<EntityStore> {
     public static final BuilderCodec<@NotNull WorldGameStore> CODEC = BuilderCodec
             .builder(WorldGameStore.class, WorldGameStore::new)
             .append(new KeyedCodec<>("Games",
-                    new MapCodec<>(GameStore.CODEC, ConcurrentHashMap::new, false)),
+                    new MapCodec<>(GameEcs.CODEC, ConcurrentHashMap::new, false)),
                     (resource, v) -> resource.games = v,
                     resource -> resource.games)
             .add()
             .build();
 
-    // we need to verify if you can have more than one game in a store at a time. Because otherwise, this should just be a single game 
-    private Map<String, GameStore> games;
+    // gameId is just the current session
+    private Map<String, GameEcs> games;
+
+    public GameEcs getGame(String sessionId) {
+        var game = games.get(sessionId);
+        if (game == null) {
+            game = new GameEcs();
+            games.put(sessionId, game);
+        }
+        return game;
+    }
+    
+    public void clearGame(String sessionId) {
+        var game = games.get(sessionId);
+        game.clear();
+    }
 
     @Override
     public WorldGameStore clone() {
