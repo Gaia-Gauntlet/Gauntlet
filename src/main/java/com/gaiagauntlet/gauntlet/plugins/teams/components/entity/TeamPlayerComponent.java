@@ -36,14 +36,9 @@ public class TeamPlayerComponent implements Component<EntityStore> {
             .add()
             .build();
 
-    @Getter
-    @Setter
-    private String team;
+    @Getter @Setter private String team;
     /** Generic score the player holds. Shows up next to their username on refresh */
-    @Getter
-    @Setter
-    private Double score;
-
+    @Getter @Setter private Double score;
     public TeamPlayerComponent() {
         score = 0.0d;
     }
