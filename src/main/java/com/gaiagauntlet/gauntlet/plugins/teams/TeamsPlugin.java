@@ -2,7 +2,7 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameStore;
+import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.core.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;

@@ -45,6 +45,7 @@ public class TeamPlayerComponent implements Component<EntityStore> {
     private Double score;
 
     public TeamPlayerComponent() {
+        score = 0.0d;
     }
     public TeamPlayerComponent(TeamPlayerComponent other) {
         score = other.score;
@@ -53,6 +54,7 @@ public class TeamPlayerComponent implements Component<EntityStore> {
 
     public TeamPlayerComponent(String team) {
         this.team = team;
+        score = 0.0d;
     }
 
     @Override
