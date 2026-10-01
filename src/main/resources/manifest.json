@@ -23,7 +23,7 @@
         "Hytale:EntityModule": "*"
     },
     "OptionalDependencies": {
-        
+        "com.creditor:Creditor": "*"
     },
     "DisabledByDefault": false,
     "Main": "com.gaiagauntlet.gauntlet.GauntletPlugin",

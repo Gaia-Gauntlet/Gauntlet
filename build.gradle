@@ -46,7 +46,7 @@ dependencies {
 
     // required deps - here for convenience
     vineImplementation "curse.maven:camera-sequence-assets-1647265:9008896"
-//    vineImplementation "curse.maven:loot-fountains-1719449:9026998"
+    vineImplementation "curse.maven:loot-fountains-1719449:9029110"
 }
 
 
