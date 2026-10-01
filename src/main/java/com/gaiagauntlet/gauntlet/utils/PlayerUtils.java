@@ -71,7 +71,7 @@ public final class PlayerUtils {
         var future = resolve(normalisedName);
         future.whenComplete((name, error) -> {
             if (error != null) {
-                uuidFuture.completeExceptionally(error);
+                uuidFuture.complete(null);
                 return;
             }
             if (name == null) {
@@ -139,8 +139,8 @@ public final class PlayerUtils {
         }
         client.getProfileByUsernameAsync(username, token).whenComplete((profile, error) -> {
             if (error != null || profile == null || profile.getUuid() == null) {
-                LOGGER.atFine().log("No account found for %s", username);
-                nameFuture.completeExceptionally(error);
+                LOGGER.atWarning().log("No account found for %s", username);
+                nameFuture.complete(null);
                 return;
             }
             record(profile.getUsername(), profile.getUuid());
