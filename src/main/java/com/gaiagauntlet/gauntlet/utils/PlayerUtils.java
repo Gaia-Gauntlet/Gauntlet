@@ -25,6 +25,7 @@ public final class PlayerUtils {
     public static final Map<String, String> cachedPlayers = new ConcurrentHashMap<>();
     // second cache to go from normalizedUsername -> UUID
     public static final Map<String, UUID> cachedPlayerIds = new ConcurrentHashMap<>();
+    public static final Map<UUID, String> idsToPlayer = new ConcurrentHashMap<>();
 
     private PlayerUtils() {
     }
@@ -46,6 +47,7 @@ public final class PlayerUtils {
         var normalized = normalize(username);
         cachedPlayers.put(normalized, username);
         cachedPlayerIds.put(normalized, uuid);
+        idsToPlayer.put(uuid, normalized);
     }
 
     /**
@@ -93,6 +95,22 @@ public final class PlayerUtils {
         var playerUsername = player.getUsername();
         // record it for future reference / caching
         record(playerUsername, player.getUuid());
+        return playerUsername;
+    }
+    
+    @Nullable
+    public static String resolveOnline(UUID playerUuid) {
+        var cachedNormalized = idsToPlayer.get(playerUuid);
+        if (cachedNormalized != null) {
+            return resolveOnline(cachedNormalized);
+        }
+
+        // check the universe
+        var player = Universe.get().getPlayer(playerUuid);
+        if (player == null) return null;
+        var playerUsername = player.getUsername();
+        // record it for future reference / caching
+        record(playerUsername, playerUuid);
         return playerUsername;
     }
 
