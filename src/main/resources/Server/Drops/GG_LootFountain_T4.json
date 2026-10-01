@@ -258,9 +258,9 @@
         "Item": {
           "ItemId": "Potion_Health_Greater",
           "QuantityMin": 1,
-          "QuantityMax": 2
+          "QuantityMax": 1
         },
-        "Weight": 50
+        "Weight": 20
       },
       {
         "Type": "Single",

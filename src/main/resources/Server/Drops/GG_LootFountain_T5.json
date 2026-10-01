@@ -12,7 +12,7 @@
         "Item": {
           "ItemId": "Potion_Health_Large",
           "QuantityMin": 1,
-          "QuantityMax": 2
+          "QuantityMax": 1
         },
         "Weight": 50
       },
