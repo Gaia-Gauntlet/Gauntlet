@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /** The single component for an entire team. Holds all team-specific data */
@@ -109,17 +110,10 @@ public class TeamComponent {
         }
     }
 
-    @Getter
-    final String id;
-    @Getter
-    @Nonnull
-    String name = "";
-    @Getter
-    @Nonnull
-    TeamType teamType = TeamType.Participant;
-    @Getter
-    @Nonnull
-    Set<UUID> players;
+    @Getter final String id;
+    @Getter @Nonnull String name = "";
+    @Getter @Nonnull TeamType teamType = TeamType.Participant;
+    @Getter @Nonnull Set<UUID> players = new HashSet<>();
     /**
      * List of player names - this is ONLY intended to be added via the asset
      * editor. Values normalized into the player's UUIDs after decoding. Ideally,
@@ -128,9 +122,7 @@ public class TeamComponent {
      * <br />
      * Again, do NOT use this anywhere. Only use the `players` list
      */
-    @Nonnull
-    @Getter
-    String[] rawPlayerNames = new String[0];
+    @Nonnull @Getter String[] rawPlayerNames = new String[0];
     String icon;
 
     public TeamComponent(
@@ -188,12 +180,15 @@ public class TeamComponent {
         return players.contains(uuid);
     }
 
-    /** Returns false if the player was already on the team */
+    /**
+     * Use {@code TeamUtils.addPlayerToTeam} for cached player assignment safety.
+     * Returns false if the player was already on the team
+     */
     public boolean add(@Nonnull UUID player) {
-        var prev = players.add(player);
-        return prev;
+        return players.add(player);
     }
 
+    /** Use {@code TeamUtils.removePlayerFromTeam} for cached player assignment safety */
     public boolean remove(@Nonnull UUID uuidToRemove) {
         var removed = players.remove(uuidToRemove);
         if (!removed) {
