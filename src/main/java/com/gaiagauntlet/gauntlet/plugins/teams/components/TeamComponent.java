@@ -77,17 +77,17 @@ public class TeamComponent {
                     return;
                 var lookups = Arrays.stream(entries)
                         .map(entry -> {
-                            if (entry == null)
-                                return null;
+                            if (entry == null) return null;
                             var uuid = parseUuid(entry);
                             return uuid != null
                                     ? CompletableFuture.completedFuture(uuid)
-                                    : PlayerUtils.uuidOf(entry)
-                                            .exceptionally(err -> null);
+                                    : PlayerUtils.uuidOf(entry);
                         })
                         .toList();
 
-                CompletableFuture.allOf(lookups.toArray(CompletableFuture[]::new)).join();
+                CompletableFuture.allOf(
+                    lookups.toArray(CompletableFuture[]::new)
+                ).join();
 
                 var players = new HashSet<UUID>(entries.length);
                 for (var i = 0; i < entries.length; i++) {
