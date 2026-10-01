@@ -51,6 +51,14 @@ public class TeamListAsset implements JsonAssetWithMap<String, DefaultAssetMap<S
 
     public TeamListAsset() {
     }
+    public TeamListAsset(TeamListAsset other) {
+        data = other.data;
+        id = other.id;
+        teamList = new ConcurrentHashMap<>(other.teamList.size());
+        for (var team : other.teamList.entrySet()) {
+            teamList.put(team.getKey(), team.getValue().clone());
+        }
+    }
 
     @Nullable
     public static AssetStore<String, TeamListAsset, DefaultAssetMap<String, TeamListAsset>> getAssetStore() {
@@ -66,6 +74,6 @@ public class TeamListAsset implements JsonAssetWithMap<String, DefaultAssetMap<S
     }
 
     public TeamListAsset clone() {
-
+        return new TeamListAsset(this);
     }
 }

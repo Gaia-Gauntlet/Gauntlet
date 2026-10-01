@@ -4,6 +4,7 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.auth.ProfileServiceClient;
 import com.hypixel.hytale.server.core.auth.ServerAuthManager;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ public final class PlayerUtils {
     public static final Map<String, String> cachedPlayers = new ConcurrentHashMap<>();
     // second cache to go from normalizedUsername -> UUID
     public static final Map<String, UUID> cachedPlayerIds = new ConcurrentHashMap<>();
+    public static final Map<UUID, String> idsToPlayer = new ConcurrentHashMap<>();
 
     private PlayerUtils() {
     }
@@ -46,6 +48,11 @@ public final class PlayerUtils {
         var normalized = normalize(username);
         cachedPlayers.put(normalized, username);
         cachedPlayerIds.put(normalized, uuid);
+        idsToPlayer.put(uuid, normalized);
+    }
+
+    public static PlayerRef get(UUID playerUuid) {
+        return Universe.get().getPlayer(playerUuid);
     }
 
     /**
@@ -93,6 +100,22 @@ public final class PlayerUtils {
         var playerUsername = player.getUsername();
         // record it for future reference / caching
         record(playerUsername, player.getUuid());
+        return playerUsername;
+    }
+    
+    @Nullable
+    public static String resolveOnline(UUID playerUuid) {
+        var cachedNormalized = idsToPlayer.get(playerUuid);
+        if (cachedNormalized != null) {
+            return resolveOnline(cachedNormalized);
+        }
+
+        // check the universe
+        var player = Universe.get().getPlayer(playerUuid);
+        if (player == null) return null;
+        var playerUsername = player.getUsername();
+        // record it for future reference / caching
+        record(playerUsername, playerUuid);
         return playerUsername;
     }
 

@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.scoring.components;
 
+import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
@@ -11,8 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ScoresComponent implements SessionComponent {
-    public static final BuilderCodec<ScoresComponent> CODEC = BuilderCodec
+import org.jetbrains.annotations.NotNull;
+
+public class ScoresComponent implements SessionComponent, GameComponent {
+    public static final BuilderCodec<@NotNull ScoresComponent> CODEC = BuilderCodec
         .builder(ScoresComponent.class, ScoresComponent::new)
         .append(new KeyedCodec<>("TeamScoreMap", new MapCodec<>(Codec.INTEGER, HashMap::new)),
             (c, v) -> c.teamScoreMap = v,

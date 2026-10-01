@@ -1,91 +1,151 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.components;
 
-import lombok.Getter;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
-public abstract class TeamListComponent {
-    @Nonnull Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
-    @Getter @Nonnull Map<UUID, TeamComponent> uuidToTeam = new ConcurrentHashMap<>();
+import org.jetbrains.annotations.NotNull;
 
-    // Teams
+import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
+import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
+import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
+import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
+import com.hypixel.hytale.codec.KeyedCodec;
+import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.map.MapCodec;
 
-    // TODO: Test these methods to ensure the cached uuidToTeam remains stable as intended.
+import lombok.Getter;
+import lombok.Setter;
 
-    public boolean addTeam(TeamComponent teamComponent) {
-        // Assert that new team id is unique.
-        if (isTeamExist(teamComponent.getId())) return false;
-        teamList.put(teamComponent.getId(), teamComponent);
-        // Attempt to add existing players on component to cache. Most of the time this will not
-        // be used since the team component passed in should be fresh (i.e. no players on it)
-        for (UUID player : teamComponent.getPlayers()) {
-            boolean result = addPlayerToTeam(teamComponent.getId(), player);
-            // If a player was unable to be added, check if it's because they're already cached as
-            // on this team, and if not, remove them from this new team in favour of the
-            // pre-existing team.
-            if (!result
-                && !getTeamForPlayer(player).getId().equals(teamComponent.getId())
-            ) teamComponent.remove(player);
-            uuidToTeam.put(player, teamComponent);
-        }
-        return true;
+public final class TeamListComponent implements SessionComponent, GameComponent {
+    @Nonnull
+    public static final String ID = "TeamListComponent";
+
+    @Getter @Setter private static GameComponentType<TeamListComponent> gameComponentType;
+    @Getter @Setter private static SessionComponentType<TeamListComponent> sessionComponentType;
+
+
+    public static final BuilderCodec<@NotNull TeamListComponent> CODEC = AssetBuilderCodec
+            .builder(
+                    TeamListComponent.class,
+                    TeamListComponent::new)
+            .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, ConcurrentHashMap::new)),
+                    (team, v) -> team.teamList = v,
+                    team -> team.teamList)
+            .documentation("The full list of teams in this session.")
+            .add()
+            .afterDecode((teams) -> {
+
+                // wipe the map before rebuilding it
+                teams.playerToMap.clear();
+
+                // iterate over every player of every team
+                for (var teamEntry : teams.getTeams().entrySet()) {
+                    for (var player : teamEntry.getValue().getPlayers()) {
+                        // Resynchronizes the teams
+                        var prev = teams.playerToMap.put(player, teamEntry.getKey());
+                        if (prev != null) {
+                            // the player is on two teams - whoops - not much to be done about that though
+                            // other than cry
+                            AdminLog.add("Player " + PlayerUtils.resolveOnline(player) + " is on both team " + prev
+                                    + " and team " + teamEntry.getKey());
+                            teams.remove(player, prev);
+                        }
+                    }
+                }
+            })
+            .build();
+
+    @Nonnull
+    private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
+    private Map<UUID, String> playerToMap = new ConcurrentHashMap<>();
+
+    public Map<String, TeamComponent> getTeams() {
+        return teamList;
     }
 
-    public boolean removeTeam(String teamId) {
-        TeamComponent team = getTeam(teamId);
-        if (Objects.isNull(team)) return false;
-
-        // Clear cached player teams for removed team
-        for (UUID player : team.getPlayers()) {
-            removePlayerFromTeam(teamId, player);
+    public void addTeam(String teamId, TeamComponent team) {
+        // puts the team
+        var existing = teamList.put(teamId, team);
+        // if there was an existing team with the same id, remove all the players from
+        // the lookup table
+        if (existing != null) {
+            for (var player : existing.getPlayers()) {
+                playerToMap.remove(player);
+            }
         }
-        teamList.remove(teamId);
-        return true;
+
+        // add the players in the new team to the lookup table
+        for (var player : team.getPlayers()) {
+            var prev = playerToMap.put(player, team.getId());
+            if (prev != null) { // if a new player is already in a team, remove them from that team
+                remove(player, prev);
+            }
+        }
     }
 
-    public TeamComponent getTeam(String teamId) {
+    @Nullable
+    public TeamComponent get(String teamId) {
         return teamList.get(teamId);
     }
 
-    public boolean isTeamExist(String teamId) {
-        return Objects.nonNull(getTeam(teamId));
+    @Nullable
+    public TeamComponent get(UUID player) {
+        var teamId = playerToMap.get(player);
+        if (teamId == null) {
+            // ik we spend so much time making the map, but go ahead and manually search
+            // just in case someone DIDN'T se the teamList to add a player to a team >.>
+            for (var teamEntry : teamList.entrySet()) {
+                if (teamEntry.getValue().contains(player)) {
+                    put(player, teamEntry.getKey());
+                    return teamEntry.getValue();
+                }
+            }
+            return null; // player is for sure not here
+        }
+        return get(teamId);
     }
 
-    public Collection<TeamComponent> getTeams() {
-        return teamList.values();
-    }
+    /** Puts a player on a team, returning the previous team */
+    @Nullable
+    public String put(UUID player, String teamId) {
+        var team = get(teamId);
+        if (team == null)
+            return null; // new team does not exist
+        var existing = playerToMap.put(player, teamId);
+        if (teamId.equals(existing))
+            return null; // player already on the team
+        if (existing != null) {
+            remove(player, existing);
+        }
 
-    // Players
-
-    public boolean addPlayerToTeam(String teamId, UUID player) {
-        if (isPlayerOnTeam(player)) return false;
-        var team = getTeam(teamId);
-        if (Objects.isNull(team)) return false;
         team.add(player);
-        getUuidToTeam().put(player, team);
-        return true;
+        return existing;
     }
 
-    public boolean removePlayerFromTeam(String teamId, UUID player) {
-        var team = getTeam(teamId);
-        if (Objects.isNull(team)) return false;
-        if (!team.remove(player)) return false;
-        getUuidToTeam().remove(player);
-        return true;
+    public void remove(UUID player, String teamId) {
+        var existingTeam = playerToMap.get(player);
+        if (existingTeam != null && existingTeam.equals(teamId)) {
+            playerToMap.remove(player);
+        }
+
+        var team = get(teamId);
+        if (team == null)
+            return;
+
+        team.remove(player);
     }
 
-    public TeamComponent getTeamForPlayer(UUID player) {
-        return uuidToTeam.get(player);
+    public Set<UUID> getPlayers() {
+        return playerToMap.keySet();
     }
 
-    public boolean isPlayerOnTeam(UUID player) {
-        return getPlayers().contains(player);
-    }
-
-    public Collection<UUID> getPlayers() {
-        return uuidToTeam.keySet();
-    }
+    // add more here, since this is not enough
 }
