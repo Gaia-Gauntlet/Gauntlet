@@ -1,8 +1,5 @@
 package com.gaiagauntlet.gauntlet.core.commands;
 
-import java.util.Collection;
-import java.util.Locale;
-
 import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
@@ -20,11 +17,8 @@ import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.arguments.types.SingleArgumentType;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractWorldCommand;
-import com.hypixel.hytale.server.core.command.system.suggestion.SuggestionProvider;
 import com.hypixel.hytale.server.core.command.system.suggestion.SuggestionResult;
 import com.hypixel.hytale.server.core.command.system.suggestion.SuggestionUtil;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -124,12 +118,14 @@ public class SessionCommands extends AbstractCommandCollection {
 
         @Override
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
-            var selectedGamesList = games.provided(ctx) ? games.get(ctx) : "";
+            var selectedGamesList = games.provided(ctx) ? games.get(ctx) : null;
             var session = sessionId.get(ctx);
-            var games = selectedGamesList.split(",");
-
+            
             var gameSession = new GameSession(session);
-            if (games.length >= 1) {
+            if (selectedGamesList != null) {
+
+                var games = selectedGamesList.split(",");
+                
                 for (var game : games) {
                     if (!GameRegistry.hasGame(game)) {
                         ctx.sendMessage(error("Game " + game + " is not registered!"));
@@ -142,7 +138,7 @@ public class SessionCommands extends AbstractCommandCollection {
             var resource = GauntletUtils.withResource();
             var success = resource.addSession(gameSession);
             if (success) {
-                ctx.sendMessage(msg("session.create.success").param("sessionId", session));
+                ctx.sendMessage(msg("server.gg.commands.session.create.success").param("sessionId", session));
             } else {
                 ctx.sendMessage(error("Unable to add session! It already exists"));
             }
