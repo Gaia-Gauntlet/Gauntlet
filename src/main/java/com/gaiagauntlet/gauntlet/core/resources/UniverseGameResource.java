@@ -32,9 +32,7 @@ public class UniverseGameResource {
             .add()
             .build();
 
-    @Setter
-    @Getter
-    private static UniverseResourceType<UniverseGameResource> resourceType;
+    @Setter @Getter private static UniverseResourceType<UniverseGameResource> resourceType;
 
     private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
 

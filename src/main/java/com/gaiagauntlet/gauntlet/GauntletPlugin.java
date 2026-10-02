@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.party.resources.UniversePartyResource;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
@@ -46,8 +47,11 @@ public class GauntletPlugin extends JavaPlugin {
 
     private void setupResources() {
         UniverseGameResource.setResourceType(
-                Universe.registerResource(UniverseGameResource.class, UniverseGameResource.ID,
-                        UniverseGameResource.CODEC));
+            Universe.registerResource(UniverseGameResource.class, UniverseGameResource.ID,
+                    UniverseGameResource.CODEC));
+        UniversePartyResource.setResourceType(
+            Universe.registerResource(UniversePartyResource.class, UniversePartyResource.ID,
+                UniversePartyResource.CODEC));
     }
 
     private void setupCommands() {
