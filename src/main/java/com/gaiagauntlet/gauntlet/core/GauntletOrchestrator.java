@@ -19,29 +19,28 @@ public class GauntletOrchestrator {
     /**
      * Business rules because I have nowhere else to put them.
      * 1) All controller methods should be invoked on the HUB thread
-     * 2) SessionId states should be cleared between games 
+     * 2) SessionId states should be cleared between games
      * 3) Games should be setup before any player is allowed to join
      * 4) Eventing needs
-     *      a) Failure Events
-     *      b) Session status updates
+     * a) Failure Events
+     * b) Session status updates
      * 5) threading needs
-     *      a) player join
-     *      b) player leave
-     *      c) server shutdown
-     *      d) server startup (load up from crashed server - attempt recovery?)
+     * a) player join
+     * b) player leave
+     * c) server shutdown
+     * d) server startup (load up from crashed server - attempt recovery?)
      */
-
-
 
     /**
      * Sets up a game to allow for sending players to and, later, starting the game
      * itself
      */
-    public static CompletableFuture<GameController> setupGame(ComponentAccessor<EntityStore> accessor, String sessionId) {
+    public static CompletableFuture<GameController> setupGame(ComponentAccessor<EntityStore> accessor,
+            String sessionId) {
         var sessionRes = GauntletUtils.sessionFor(sessionId);
         if (!sessionRes.isPresent() || !sessionRes.get().available()) {
             AdminLog.add("Unable to setup the session's game. The session is not in a valid state!");
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
         var session = sessionRes.get();
 
@@ -49,14 +48,15 @@ public class GauntletOrchestrator {
         var gameRes = GameRegistry.getGame(nextGameId);
         if (!gameRes.isPresent()) {
             AdminLog.add("Game " + nextGameId + " is not registered, cannot set up!");
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
         var game = gameRes.get();
 
         // pass stuff to the game
-        game.setupGame(accessor, session);
+        var future = game.setupGame(accessor, session);
 
-        // ensure this runs AFTER the game is made, needs to finalize what the game actually needs in order to be created
+        // ensure this runs AFTER the game is made, needs to finalize what the game
+        // actually needs in order to be created
         return CompletableFuture.completedFuture(game);
     }
 }

@@ -41,4 +41,17 @@ public class UniverseGameResource {
     public Optional<GameSession> getSession(String id) {
         return Optional.ofNullable(sessions.get(id));
     }
+
+    public Map<String, GameSession> getSessions() {
+        return sessions;
+    }
+
+    public boolean addSession(GameSession session) {
+        if (sessions.containsKey(session.getId())) {
+            return false; // unable to add duplicate
+        }
+
+        sessions.put(session.getId(), session);
+        return true;
+    }
 }

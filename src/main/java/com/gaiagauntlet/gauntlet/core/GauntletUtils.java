@@ -1,14 +1,10 @@
 package com.gaiagauntlet.gauntlet.core;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nonnull;
 
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
-import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.server.core.universe.PlayerRef;

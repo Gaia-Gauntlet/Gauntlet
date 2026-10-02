@@ -190,16 +190,17 @@ public class GameSession {
     }
 
     /** removes a game if it is present */
-    public void removeGameIfPresent(@Nonnull String gameId) {
+    public boolean removeGameIfPresent(@Nonnull String gameId) {
         if (gameSequence == null) {
-            return;
+            return false;
         }
 
         for (int index = 0; index < gameSequence.length; index++) {
             if (gameId.equals(gameSequence[index])) {
                 removeGame(index);
-                return;
+                return true;
             }
         }
+        return false;
     }
 }

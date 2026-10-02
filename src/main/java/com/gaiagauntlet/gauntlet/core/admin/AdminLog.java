@@ -9,12 +9,14 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.hypixel.hytale.logger.HytaleLogger;
+
 /**
  * The last few hundred things worth telling an admin, kept in memory for the
  * dashboard's Log tab.
  */
 public final class AdminLog {
-
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     // global logs
     public static final String GLOBAL = "Global";
     private static final int CAPACITY = 300;
@@ -38,6 +40,7 @@ public final class AdminLog {
     }
 
     public static void add(@Nonnull String gameId, @Nonnull String text) {
+        LOGGER.atInfo().log(gameId + " " + text);
         synchronized (LINES) {
             LINES.addLast(new Line(System.currentTimeMillis(), gameId, text));
             while (LINES.size() > CAPACITY) {

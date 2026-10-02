@@ -32,7 +32,9 @@ public class GauntletPlugin extends JavaPlugin {
 
     @Override
     protected void start() {
-        LOGGER.atInfo().log("Starting Gauntlet!");    }
+        LOGGER.atInfo().log("Starting Gauntlet!");
+        setupCommands();
+    }
 
     @Override
     protected void setup() {
@@ -40,7 +42,6 @@ public class GauntletPlugin extends JavaPlugin {
         setupResources();
         setupComponents();
         setupPlugins();
-        setupCommands();
     }
 
     private void setupResources() {

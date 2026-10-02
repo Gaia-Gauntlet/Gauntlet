@@ -14,6 +14,9 @@ public class GauntletCommand extends AbstractCommandCollection {
         // requirePermission(Permissions.ADMIN);
         addAliases("gg");
 
+        addSubCommand(new SessionCommands());
+        addSubCommand(new OrchestratorCommands());
+
         for (CommandGamePlugin plugin : GameRegistry.getPlugins(CommandGamePlugin.class)) {
             for (AbstractCommand command : plugin.getCommands()) {
                 addSubCommand(command);
