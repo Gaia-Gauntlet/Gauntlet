@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
@@ -28,10 +29,10 @@ public final class LogTab implements AdminTab {
     public void bind(@Nonnull UIEventBuilder evt) {
     }
 
-     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nonnull String gameId) {
+    @Override
+    public void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nullable GameSession session) {
         var rows = new ArrayList<String>();
-        for (var line : AdminLog.recent(gameId, LINES)) {
+        for (var line : AdminLog.recent(session, LINES)) {
             rows.add(line.render());
         }
         Widgets.fillList(cmd, "#LogList", rows, "Nothing logged yet");

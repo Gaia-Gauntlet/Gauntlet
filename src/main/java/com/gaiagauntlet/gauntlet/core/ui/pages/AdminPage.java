@@ -1,16 +1,16 @@
 package com.gaiagauntlet.gauntlet.core.ui.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.hypixel.hytale.component.Ref;
@@ -45,13 +45,21 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
     /** Renders and actions touch the tabs' row caches, so the refresh timer and the click thread take turns. */
     private final Object lock = new Object();
-    @Getter private final String gameId;
+
+    @Nullable @Getter private GameSession session;
     private volatile AdminTab activeTab = tabs.getFirst();
     @Nullable private volatile AdminPageEvent pendingConfirm;
+    @Getter private final PlayerRef player;
 
-    public AdminPage(@Nonnull PlayerRef playerRef, @Nonnull String gameId) {
+    public AdminPage(@Nonnull PlayerRef playerRef, @Nullable GameSession session) {
         super(playerRef, CustomPageLifetime.CanDismiss, AdminPageEvent.CODEC);
-        this.gameId = gameId;
+        this.player = playerRef;
+        if (Objects.nonNull(session)) {
+            this.session = session;
+        } else {
+            Optional<GameSession> firstSession = GauntletUtils.withResource().getSessions().values().stream().findFirst();
+            firstSession.ifPresent(gameSession -> this.session = gameSession);
+        }
     }
 
     @Override
@@ -68,7 +76,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         Widgets.bind(evt, "#CloseButton", "page.close");
         Widgets.bind(evt, "#ConfirmYes", "page.confirmYes");
         Widgets.bind(evt, "#ConfirmNo", "page.confirmNo");
-        Widgets.bindChange(evt, "#GamePicker", "page.selectGame");
+        Widgets.bindChange(evt, "#SessionPicker", "page.selectSession");
 
         var uiPlugins = GameRegistry.getPlugins(UiGamePlugin.class);
         if (!uiPlugins.isEmpty()) tabs = new ArrayList<>();
@@ -84,12 +92,12 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
             Widgets.bindArg(evt, "#Tab" + tab.getId(), "page.selectTab", tab.getId());
             tab.bind(evt);
         }
-        fillGamePicker(cmd);
+        fillSessionPicker(cmd);
         for (var tab : tabs) {
-             tab.buildOnce(cmd, evt, gameId);
+             tab.buildOnce(cmd, evt, session);
         }
         applyTab(cmd);
-        activeTab.render(cmd, evt, gameId);
+        activeTab.render(cmd, evt, session);
     }
 
     @Override
@@ -105,7 +113,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
             case "" -> sendUpdate(null, false);
             case "page.close" -> close();
             case "page.selectTab" -> selectTab(data.arg());
-            case "page.selectGame" -> selectGame(data.pick());
+            case "page.selectSession" -> selectSession(data.pick());
             case "page.confirmNo" -> {
                 pendingConfirm = null;
                 closeConfirm(null);
@@ -133,7 +141,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         for (var tab : tabs) {
             if (tab.getId().equalsIgnoreCase(tabId)) {
                 try {
-                     return tab.handle(action, event, gameId, this);
+                     return tab.handle(action, event, session, this);
                 } catch (IllegalStateException | IllegalArgumentException e) {
                     return Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage());
                 } catch (RuntimeException e) {
@@ -162,7 +170,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     // }
 
     /** Sets the status line from any thread, rendering the active tab with it. */
-    void pushStatus(@Nonnull Message status) {
+    public void pushStatus(@Nonnull Message status) {
         update(status);
     }
 
@@ -176,7 +184,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
                 cmd.set("#ActionStatus.TextSpans", status);
             }
             try {
-                // activeTab.render(cmd, evt, game);
+                 activeTab.render(cmd, evt, session);
             } catch (RuntimeException e) {
                 LOGGER.atWarning().withCause(e).log("Admin tab %s failed to render; nothing sent", activeTab.getId());
                 return;
@@ -199,38 +207,44 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
                 var cmd = new UICommandBuilder();
                 var evt = new UIEventBuilder();
                 applyTab(cmd);
-                tab.render(cmd, evt, gameId);
+                tab.render(cmd, evt, session);
                 sendUpdate(cmd, evt, false);
                 return;
             }
         }
     }
 
-    private void selectGame(@Nullable String id) {
-        // var store = GlobalStore.find();
-        // var chosen = store == null || id == null ? null : store.game(id).orElse(null);
-        // if (chosen == null || chosen == game) {
-        //     return;
-        // }
-        // game = chosen;
-        // var cmd = new UICommandBuilder();
-        // var evt = new UIEventBuilder();
-        // for (var tab : tabs) {
-        //     tab.buildOnce(cmd, evt, game);
-        // }
-        // activeTab.render(cmd, evt, game);
-        // cmd.set("#ActionStatus.TextSpans", Widgets.ok("Now showing " + game.id()));
-        // sendUpdate(cmd, evt, false);
+    private void selectSession(@Nullable String id) {
+        var sessions = GauntletUtils.withResource().getSessions();
+        var chosen = sessions.get(id);
+        if (chosen == null) return;
+        session = chosen;
+        var cmd = new UICommandBuilder();
+        var evt = new UIEventBuilder();
+        for (var tab : tabs) {
+            tab.buildOnce(cmd, evt, session);
+        }
+        activeTab.render(cmd, evt, session);
+        cmd.set("#ActionStatus.TextSpans", Widgets.ok("Now showing " + session.getId()));
+        sendUpdate(cmd, evt, false);
     }
 
-    /** Refills the game picker; called on open and after games are created or removed. */
-    void fillGamePicker(@Nonnull UICommandBuilder cmd) {
-        // var options = new ArrayList<Widgets.Option>();
-        // for (var g : GlobalStore.get().games()) {
-        //     options.add(new Widgets.Option(g.id() + ", " + g.type().name() + (g.isOpen() ? ", " + Orchestrator.state(g).name().toLowerCase() : ", closed"), g.id()));
-        // }
-        // Widgets.fillPicker(cmd, "#GamePicker", options);
-        // cmd.set("#GamePicker.Value", game.id());
+    /** Refills the session picker; called on open and after sessions are created or removed. */
+    void fillSessionPicker(@Nonnull UICommandBuilder cmd) {
+        var sessions = GauntletUtils.withResource().getSessions();
+
+        var options = new ArrayList<Widgets.Option>();
+        for (var s : sessions.values()) {
+            options.add(
+                new Widgets.Option(
+                    s.getId() + " - " + s.getCurrentGame(),
+                    s.getId()
+                )
+            );
+        }
+        Widgets.fillPicker(cmd, "#SessionPicker", options);
+
+        cmd.set("#SessionPicker.Value", Objects.isNull(session) ? "" : session.getId());
     }
 
     // Confirm prompt

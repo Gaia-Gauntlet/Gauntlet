@@ -22,6 +22,8 @@ import com.hypixel.hytale.server.core.command.system.suggestion.SuggestionUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.*;
+
 /**
  * All of these are, currently, debug and a stop-gap until the full eventing
  * pipeline is finished
@@ -86,28 +88,9 @@ public class SessionCommands extends AbstractCommandCollection {
         addSubCommand(new NextGameSession());
     }
 
-    @Nonnull
-    private static Message msg(String key) {
-        var message = Message.translation(key);
-        message.getFormattedMessage().markupEnabled = true;
-        return message;
-    }
-
-    @Nonnull
-    private static Message markup(@Nonnull Message message) {
-        message.getFormattedMessage().markupEnabled = true;
-        return message;
-    }
-
-    private static Message error(@Nonnull String error) {
-        var message = Message.translation("server.gg.commands.error").param("message", error);
-        message.getFormattedMessage().markupEnabled = true;
-        return message;
-    }
-
-    private class CreateSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
-        private OptionalArg<String> games;
+    private static class CreateSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
+        private final OptionalArg<String> games;
 
         public CreateSession() {
             super("create", "Create a new session");
@@ -145,8 +128,8 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class DestroySession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
+    private static class DestroySession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
 
         public DestroySession() {
             super("destroy", "Destroys a session");
@@ -171,7 +154,7 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class ListSessions extends AbstractWorldCommand {
+    private static class ListSessions extends AbstractWorldCommand {
         public ListSessions() {
             super("list", "List all sessions");
             addAliases("ls");
@@ -181,7 +164,7 @@ public class SessionCommands extends AbstractCommandCollection {
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
             var sessions = GauntletUtils.withResource().getSessions();
 
-            if (sessions.size() == 0) {
+            if (sessions.isEmpty()) {
                 ctx.sendMessage(error("No active sessions"));
                 return;
             }
@@ -201,9 +184,9 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class AddGameToSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
-        private RequiredArg<String> gameId;
+    private static class AddGameToSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
+        private final RequiredArg<String> gameId;
 
         public AddGameToSession() {
             super("add", "Add a game to a session");
@@ -228,9 +211,9 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class RemoveGameFromSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
-        private RequiredArg<String> gameId;
+    private static class RemoveGameFromSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
+        private final RequiredArg<String> gameId;
 
         public RemoveGameFromSession() {
             super("remove", "Remove a game from the session");
@@ -256,8 +239,8 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class SetupSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
+    private static class SetupSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
 
         public SetupSession() {
             super("setup", "Sets up the next game for a session");
@@ -283,8 +266,8 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class StartSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
+    private static class StartSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
 
         public StartSession() {
             super("start", "Starts the current game for a session");
@@ -313,8 +296,8 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class StopSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
+    private static class StopSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
 
         public StopSession() {
             super("stop", "Starts the next game for a session");
@@ -342,8 +325,8 @@ public class SessionCommands extends AbstractCommandCollection {
         }
     }
 
-    private class NextGameSession extends AbstractWorldCommand {
-        private RequiredArg<String> sessionId;
+    private static class NextGameSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
 
         public NextGameSession() {
             super("next", "Sets up the next game for a session");

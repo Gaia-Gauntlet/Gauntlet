@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet.core.ui.interfaces;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.hypixel.hytale.server.core.Message;
@@ -26,16 +27,16 @@ public interface AdminTab {
     /**
      * Fills generated rows and pickers. Runs when the page opens and when the selected game changes.
      */
-    default void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nonnull String gameId) {
+    default void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nullable GameSession session) {
     }
 
     /** Rewrites the live fields. Runs on the refresh timer and after each action. */
-     default void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, String gameId) {
+     default void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nullable GameSession session) {
      }
 
     /** Performs one of this tab's actions. Returns the line to show in the status bar, or null. */
      @Nullable
-     default Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nonnull String gameId, @Nonnull AdminPage page) {
+     default Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nullable GameSession session, @Nonnull AdminPage page) {
          return null;
      };
 }

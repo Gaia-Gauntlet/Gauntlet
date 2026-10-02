@@ -6,9 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.logger.HytaleLogger;
 
 /**
@@ -51,13 +53,15 @@ public final class AdminLog {
 
     /** The newest lines first: the game's own plus server-wide ones. */
     @Nonnull
-    public static List<Line> recent(@Nonnull String gameId, int limit) {
+    public static List<Line> recent(@Nullable GameSession session, int limit) {
         var out = new ArrayList<Line>();
+        if (Objects.isNull(session)) return out;
+
         synchronized (LINES) {
             var it = LINES.descendingIterator();
             while (it.hasNext() && out.size() < limit) {
                 var line = it.next();
-                if (line.gameId().isEmpty() || line.gameId().equals(gameId)) {
+                if (line.gameId().isEmpty() || line.gameId().equals(session.getCurrentGame())) {
                     out.add(line);
                 }
             }

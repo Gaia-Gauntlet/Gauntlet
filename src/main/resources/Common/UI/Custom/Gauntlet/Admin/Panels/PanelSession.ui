@@ -1,0 +1,65 @@
+// Session tab: where the session is, the timer, the life cycle actions, and preflight.
+$G = "../Common.ui";
+
+Group #PanelSession {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Status"; }
+            $G.@Field #SessionField    { @Key = "Session"; }
+            $G.@Field #GameField    { @Key = "Game"; }
+            $G.@Field #StateField   { @Key = "State"; }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Session"; }
+            $G.@ButtonRow {
+                $G.@Danger #DestroySession { Text: "Destroy Session"; }
+            }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Game"; }
+
+            $G.@ButtonRow {
+                $G.@Confirm #SetupGame { @Anchor = (Right: 3); Text: "Setup Next Game"; }
+                $G.@Confirm #StartGame { @Anchor = (Left: 3); Text: "Start Current Game"; }
+            }
+
+            $G.@ButtonRow {
+                $G.@Danger #StopGame { @Anchor = (Right: 3); Text: "Stop Game"; }
+            }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Lobby"; }
+            $G.@ButtonRow {
+                $G.@Confirm #MatchStart    { @Anchor = (Right: 3); Text: "Start countdown"; }
+            }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Event"; }
+            $G.@Note { @Text = "Every match adds its points to each team's event score, shown in the lobby."; }
+            $G.@ButtonRow {
+                $G.@Danger #ResetScores { Text: "Reset event scores"; }
+            }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            FlexWeight: 1;
+            $G.@Header { @Text = "Preflight"; }
+            $G.@ScrollPanel #PreflightList {}
+        }
+    }
+}

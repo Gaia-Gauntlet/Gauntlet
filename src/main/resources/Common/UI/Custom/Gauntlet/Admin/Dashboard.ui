@@ -37,11 +37,11 @@ $Common.@PageOverlay #MainPage {
                 Anchor: (Height: 30, Bottom: 8);
 
                 Label {
-                    Text: "Game";
-                    Anchor: (Width: 44);
+                    Text: "Session";
+                    Anchor: (Width: 66);
                     Style: (FontSize: 12, RenderUppercase: true, TextColor: #878e9c, VerticalAlignment: Center, LetterSpacing: 1);
                 }
-                $G.@Picker #GamePicker { FlexWeight: 0; Anchor: (Width: 200, Right: 14); }
+                $G.@Picker #SessionPicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
 
                 // Tabs get dynamically added here
 
@@ -67,7 +67,7 @@ $Common.@PageOverlay #MainPage {
                 LayoutMode: Full;
 
                 // Panels get dynamically added here
-                
+
             }
         }
     }
