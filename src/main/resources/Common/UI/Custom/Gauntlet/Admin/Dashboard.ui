@@ -3,14 +3,15 @@
 $Common = "../../Common.ui";
 $G = "Common.ui";
 
-$TabMatch = "TabMatch.ui";
-$TabGames = "TabGames.ui";
-$TabZones = "TabZones.ui";
-$TabEvents = "TabEvents.ui";
-$TabBosses = "TabBosses.ui";
-$TabTeams = "TabTeams.ui";
-$TabSettings = "TabSettings.ui";
-$TabLog = "TabLog.ui";
+$TabNoTab = "Panels/PanelNoTab.ui";
+//$TabMatch = "TabMatch.ui";
+//$TabGames = "TabGames.ui";
+//$TabZones = "TabZones.ui";
+//$TabEvents = "TabEvents.ui";
+//$TabBosses = "TabBosses.ui";
+//$TabTeams = "TabTeams.ui";
+//$TabSettings = "TabSettings.ui";
+//$TabLog = "TabLog.ui";
 
 $Common.@PageOverlay #MainPage {
     Anchor: (Full: 0);
@@ -22,7 +23,7 @@ $Common.@PageOverlay #MainPage {
 
         #Title {
             $Common.@Title {
-                @Text = "Gaia Gauntlet";
+                @Text = "Gauntlet";
             }
         }
 
@@ -36,20 +37,13 @@ $Common.@PageOverlay #MainPage {
                 Anchor: (Height: 30, Bottom: 8);
 
                 Label {
-                    Text: "Game";
-                    Anchor: (Width: 44);
+                    Text: "Session";
+                    Anchor: (Width: 66);
                     Style: (FontSize: 12, RenderUppercase: true, TextColor: #878e9c, VerticalAlignment: Center, LetterSpacing: 1);
                 }
-                $G.@Picker #GamePicker { FlexWeight: 0; Anchor: (Width: 200, Right: 14); }
+                $G.@Picker #SessionPicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
 
-                $G.@Tab #TabMatch    { @Anchor = (Right: 4); Text: "Match"; }
-                $G.@Tab #TabGames    { @Anchor = (Right: 4); Text: "Games"; }
-                $G.@Tab #TabZones    { @Anchor = (Right: 4); Text: "Zones"; }
-                $G.@Tab #TabEvents   { @Anchor = (Right: 4); Text: "Events"; }
-                $G.@Tab #TabBosses   { @Anchor = (Right: 4); Text: "Bosses"; }
-                $G.@Tab #TabTeams    { @Anchor = (Right: 4); Text: "Teams"; }
-                $G.@Tab #TabSettings { @Anchor = (Right: 4); Text: "Settings"; }
-                $G.@Tab #TabLog      { @Anchor = (Right: 4); Text: "Log"; }
+                // Tabs get dynamically added here
 
                 Group { FlexWeight: 1; }
             }
@@ -63,7 +57,7 @@ $Common.@PageOverlay #MainPage {
 
                 Label #ActionStatus {
                     FlexWeight: 1;
-                    Text: "Ready";
+                    Text: "Not Ready";
                     Style: (FontSize: 12, TextColor: #7a9cc6, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
                 }
             }
@@ -72,14 +66,8 @@ $Common.@PageOverlay #MainPage {
                 FlexWeight: 1;
                 LayoutMode: Full;
 
-                $TabMatch.@Content    #PanelMatch    { Visible: true; }
-                $TabGames.@Content    #PanelGames    { Visible: false; }
-                $TabZones.@Content    #PanelZones    { Visible: false; }
-                $TabEvents.@Content   #PanelEvents   { Visible: false; }
-                $TabBosses.@Content   #PanelBosses   { Visible: false; }
-                $TabTeams.@Content    #PanelTeams    { Visible: false; }
-                $TabSettings.@Content #PanelSettings { Visible: false; }
-                $TabLog.@Content      #PanelLog      { Visible: false; }
+                // Panels get dynamically added here
+
             }
         }
     }

@@ -1,21 +1,18 @@
 package com.gaiagauntlet.gauntlet.core.ui.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.hypixel.hytale.codec.Codec;
-import com.hypixel.hytale.codec.KeyedCodec;
-import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -26,8 +23,8 @@ import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCu
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import lombok.Getter;
 
 /**
  * The in-game admin page, built on the server's own UI pipeline. It opens on the game the admin
@@ -37,31 +34,33 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final String PAGE = "GG/Admin/Dashboard.ui";
+    private static final String PAGE = "Gauntlet/Admin/Dashboard.ui";
     private static final long REFRESH_MILLIS = 2000;
     private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove");
 
-    // Legacy hardcoded tabs - will need to be tweaked to be only the top-level mngmnt tabs and then game-specific tabs. One widget/tab per component ?
-    private final List<AdminTab> tabs = List.of(new LogTab());//new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
+    private List<AdminTab> tabs = List.of(new NoTab());//new LogTab(), new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
             // new BossesTab(), new TeamsTab(), new SettingsTab(), new LogTab());
 
     private final AtomicReference<ScheduledFuture<?>> refresh = new AtomicReference<>();
 
     /** Renders and actions touch the tabs' row caches, so the refresh timer and the click thread take turns. */
     private final Object lock = new Object();
-    // private volatile Game game;
-    private volatile AdminTab activeTab = tabs.get(0);
+
+    @Nullable @Getter private GameSession session;
+    private volatile AdminTab activeTab = tabs.getFirst();
     @Nullable private volatile AdminPageEvent pendingConfirm;
+    @Getter private final PlayerRef player;
 
-    public AdminPage(@Nonnull PlayerRef playerRef/*,  @Nonnull Game game */) {
+    public AdminPage(@Nonnull PlayerRef playerRef, @Nullable GameSession session) {
         super(playerRef, CustomPageLifetime.CanDismiss, AdminPageEvent.CODEC);
-        // this.game = game;
+        this.player = playerRef;
+        if (Objects.nonNull(session)) {
+            this.session = session;
+        } else {
+            Optional<GameSession> firstSession = GauntletUtils.withResource().getSessions().values().stream().findFirst();
+            firstSession.ifPresent(gameSession -> this.session = gameSession);
+        }
     }
-
-    // @Nonnull
-    // public Game game() {
-    //     return game;
-    // }
 
     @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt,
@@ -77,17 +76,28 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         Widgets.bind(evt, "#CloseButton", "page.close");
         Widgets.bind(evt, "#ConfirmYes", "page.confirmYes");
         Widgets.bind(evt, "#ConfirmNo", "page.confirmNo");
-        Widgets.bindChange(evt, "#GamePicker", "page.selectGame");
-        for (var tab : tabs) {
-            Widgets.bindArg(evt, "#Tab" + tab.id(), "page.selectTab", tab.id());
+        Widgets.bindChange(evt, "#SessionPicker", "page.selectSession");
+
+        var uiPlugins = GameRegistry.getPlugins(UiGamePlugin.class);
+        if (!uiPlugins.isEmpty()) tabs = new ArrayList<>();
+        for (UiGamePlugin plugin : uiPlugins) {
+            tabs.add(plugin.getAdminTab());
+        }
+        selectTab(tabs.getFirst().getId());
+
+        for (AdminTab tab : tabs) {
+            cmd.append("#TopStrip", "Gauntlet/Admin/Tabs/Tab" + tab.getId() + ".ui");
+            cmd.append("#TabBody", "Gauntlet/Admin/Panels/Panel" + tab.getId() + ".ui");
+
+            Widgets.bindArg(evt, "#Tab" + tab.getId(), "page.selectTab", tab.getId());
             tab.bind(evt);
         }
-        fillGamePicker(cmd);
+        fillSessionPicker(cmd);
         for (var tab : tabs) {
-            // tab.buildOnce(cmd, evt, game);
+             tab.buildOnce(cmd, evt, session);
         }
         applyTab(cmd);
-        // activeTab.render(cmd, evt, game);
+        activeTab.render(cmd, evt, session);
     }
 
     @Override
@@ -103,7 +113,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
             case "" -> sendUpdate(null, false);
             case "page.close" -> close();
             case "page.selectTab" -> selectTab(data.arg());
-            case "page.selectGame" -> selectGame(data.pick());
+            case "page.selectSession" -> selectSession(data.pick());
             case "page.confirmNo" -> {
                 pendingConfirm = null;
                 closeConfirm(null);
@@ -129,9 +139,9 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         var dot = action.indexOf('.');
         var tabId = dot < 0 ? "" : action.substring(0, dot);
         for (var tab : tabs) {
-            if (tab.id().equalsIgnoreCase(tabId)) {
+            if (tab.getId().equalsIgnoreCase(tabId)) {
                 try {
-                    // return tab.handle(action, event, game, this);
+                     return tab.handle(action, event, session, this);
                 } catch (IllegalStateException | IllegalArgumentException e) {
                     return Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage());
                 } catch (RuntimeException e) {
@@ -160,7 +170,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     // }
 
     /** Sets the status line from any thread, rendering the active tab with it. */
-    void pushStatus(@Nonnull Message status) {
+    public void pushStatus(@Nonnull Message status) {
         update(status);
     }
 
@@ -174,9 +184,9 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
                 cmd.set("#ActionStatus.TextSpans", status);
             }
             try {
-                // activeTab.render(cmd, evt, game);
+                 activeTab.render(cmd, evt, session);
             } catch (RuntimeException e) {
-                LOGGER.atWarning().withCause(e).log("Admin tab %s failed to render; nothing sent", activeTab.id());
+                LOGGER.atWarning().withCause(e).log("Admin tab %s failed to render; nothing sent", activeTab.getId());
                 return;
             }
             sendUpdate(cmd, evt, false);
@@ -184,51 +194,57 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     }
 
     private void applyTab(@Nonnull UICommandBuilder cmd) {
-        for (var tab : tabs) {
-            cmd.set("#Panel" + tab.id() + ".Visible", tab == activeTab);
-            cmd.set("#Tab" + tab.id() + ".Disabled", tab == activeTab);
+        for (AdminTab tab : tabs) {
+            cmd.set("#Panel" + tab.getId() + ".Visible", tab == activeTab);
+            cmd.set("#Tab" + tab.getId() + ".Disabled", tab == activeTab);
         }
     }
 
     private void selectTab(@Nullable String id) {
         for (var tab : tabs) {
-            if (tab.id().equalsIgnoreCase(id == null ? "" : id) && tab != activeTab) {
+            if (tab.getId().equalsIgnoreCase(id == null ? "" : id) && tab != activeTab) {
                 activeTab = tab;
                 var cmd = new UICommandBuilder();
                 var evt = new UIEventBuilder();
                 applyTab(cmd);
-                // tab.render(cmd, evt, game);
+                tab.render(cmd, evt, session);
                 sendUpdate(cmd, evt, false);
                 return;
             }
         }
     }
 
-    private void selectGame(@Nullable String id) {
-        // var store = GlobalStore.find();
-        // var chosen = store == null || id == null ? null : store.game(id).orElse(null);
-        // if (chosen == null || chosen == game) {
-        //     return;
-        // }
-        // game = chosen;
-        // var cmd = new UICommandBuilder();
-        // var evt = new UIEventBuilder();
-        // for (var tab : tabs) {
-        //     tab.buildOnce(cmd, evt, game);
-        // }
-        // activeTab.render(cmd, evt, game);
-        // cmd.set("#ActionStatus.TextSpans", Widgets.ok("Now showing " + game.id()));
-        // sendUpdate(cmd, evt, false);
+    private void selectSession(@Nullable String id) {
+        var sessions = GauntletUtils.withResource().getSessions();
+        var chosen = sessions.get(id);
+        if (chosen == null) return;
+        session = chosen;
+        var cmd = new UICommandBuilder();
+        var evt = new UIEventBuilder();
+        for (var tab : tabs) {
+            tab.buildOnce(cmd, evt, session);
+        }
+        activeTab.render(cmd, evt, session);
+        cmd.set("#ActionStatus.TextSpans", Widgets.ok("Now showing " + session.getId()));
+        sendUpdate(cmd, evt, false);
     }
 
-    /** Refills the game picker; called on open and after games are created or removed. */
-    void fillGamePicker(@Nonnull UICommandBuilder cmd) {
-        // var options = new ArrayList<Widgets.Option>();
-        // for (var g : GlobalStore.get().games()) {
-        //     options.add(new Widgets.Option(g.id() + ", " + g.type().name() + (g.isOpen() ? ", " + Orchestrator.state(g).name().toLowerCase() : ", closed"), g.id()));
-        // }
-        // Widgets.fillPicker(cmd, "#GamePicker", options);
-        // cmd.set("#GamePicker.Value", game.id());
+    /** Refills the session picker; called on open and after sessions are created or removed. */
+    void fillSessionPicker(@Nonnull UICommandBuilder cmd) {
+        var sessions = GauntletUtils.withResource().getSessions();
+
+        var options = new ArrayList<Widgets.Option>();
+        for (var s : sessions.values()) {
+            options.add(
+                new Widgets.Option(
+                    s.getId() + " - " + s.getCurrentGame(),
+                    s.getId()
+                )
+            );
+        }
+        Widgets.fillPicker(cmd, "#SessionPicker", options);
+
+        cmd.set("#SessionPicker.Value", Objects.isNull(session) ? "" : session.getId());
     }
 
     // Confirm prompt
