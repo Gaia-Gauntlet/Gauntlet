@@ -1,0 +1,2 @@
+$G = "../Common.ui";
+$G.@Tab #TabLog { @Anchor = (Right: 4); Text: "Log"; }

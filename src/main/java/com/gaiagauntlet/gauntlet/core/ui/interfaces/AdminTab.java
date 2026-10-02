@@ -1,7 +1,12 @@
 package com.gaiagauntlet.gauntlet.core.ui.interfaces;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
+import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
 /**
@@ -18,14 +23,19 @@ public interface AdminTab {
     /** Registers the bindings for the controls the markup declares. Runs once per page. */
     void bind(@Nonnull UIEventBuilder evt);
 
-    /** Fills generated rows and pickers. Runs when the page opens and when the selected game changes. */
-    // default void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nonnull Game game) {
-    // }
+    /**
+     * Fills generated rows and pickers. Runs when the page opens and when the selected game changes.
+     */
+    default void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nonnull String gameId) {
+    }
 
     /** Rewrites the live fields. Runs on the refresh timer and after each action. */
-    // void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nonnull Game game);
+     default void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, String gameId) {
+     }
 
     /** Performs one of this tab's actions. Returns the line to show in the status bar, or null. */
-    // @Nullable
-    // Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nonnull Game game, @Nonnull AdminPage page);
+     @Nullable
+     default Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nonnull String gameId, @Nonnull AdminPage page) {
+         return null;
+     };
 }

@@ -29,6 +29,7 @@ public class AdminCommand extends AbstractPlayerCommand {
         var player = store.getComponent(ref, Player.getComponentType());
         if (player == null) return;
 
-        player.getPageManager().openCustomPage(ref, store, new AdminPage(playerRef));
+        // TODO: Fill in gameId from player
+        player.getPageManager().openCustomPage(ref, store, new AdminPage(playerRef, ""));
     }
 }

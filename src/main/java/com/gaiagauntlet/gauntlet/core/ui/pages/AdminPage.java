@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.ui.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
@@ -8,6 +9,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.hypixel.hytale.component.Ref;
@@ -21,6 +24,7 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import lombok.Getter;
 
 /**
  * The in-game admin page, built on the server's own UI pipeline. It opens on the game the admin
@@ -30,31 +34,25 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final String PAGE = "GG/Admin/Dashboard.ui";
+    private static final String PAGE = "Gauntlet/Admin/Dashboard.ui";
     private static final long REFRESH_MILLIS = 2000;
     private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove");
 
-    // Legacy hardcoded tabs - will need to be tweaked to be only the top-level mngmnt tabs and then game-specific tabs. One widget/tab per component ?
-    private final List<AdminTab> tabs = List.of(new NoTab());//new LogTab(), new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
+    private List<AdminTab> tabs = List.of(new NoTab());//new LogTab(), new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
             // new BossesTab(), new TeamsTab(), new SettingsTab(), new LogTab());
 
     private final AtomicReference<ScheduledFuture<?>> refresh = new AtomicReference<>();
 
     /** Renders and actions touch the tabs' row caches, so the refresh timer and the click thread take turns. */
     private final Object lock = new Object();
-    // private volatile Game game;
+    @Getter private final String gameId;
     private volatile AdminTab activeTab = tabs.getFirst();
     @Nullable private volatile AdminPageEvent pendingConfirm;
 
-    public AdminPage(@Nonnull PlayerRef playerRef/*,  @Nonnull Game game */) {
+    public AdminPage(@Nonnull PlayerRef playerRef, @Nonnull String gameId) {
         super(playerRef, CustomPageLifetime.CanDismiss, AdminPageEvent.CODEC);
-        // this.game = game;
+        this.gameId = gameId;
     }
-
-    // @Nonnull
-    // public Game game() {
-    //     return game;
-    // }
 
     @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt,
@@ -71,16 +69,27 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         Widgets.bind(evt, "#ConfirmYes", "page.confirmYes");
         Widgets.bind(evt, "#ConfirmNo", "page.confirmNo");
         Widgets.bindChange(evt, "#GamePicker", "page.selectGame");
-        for (var tab : tabs) {
+
+        var uiPlugins = GameRegistry.getPlugins(UiGamePlugin.class);
+        if (!uiPlugins.isEmpty()) tabs = new ArrayList<>();
+        for (UiGamePlugin plugin : uiPlugins) {
+            tabs.add(plugin.getAdminTab());
+        }
+        selectTab(tabs.getFirst().getId());
+
+        for (AdminTab tab : tabs) {
+            cmd.append("#TopStrip", "Gauntlet/Admin/Tabs/Tab" + tab.getId() + ".ui");
+            cmd.append("#TabBody", "Gauntlet/Admin/Panels/Panel" + tab.getId() + ".ui");
+
             Widgets.bindArg(evt, "#Tab" + tab.getId(), "page.selectTab", tab.getId());
             tab.bind(evt);
         }
         fillGamePicker(cmd);
         for (var tab : tabs) {
-            // tab.buildOnce(cmd, evt, game);
+             tab.buildOnce(cmd, evt, gameId);
         }
         applyTab(cmd);
-        // activeTab.render(cmd, evt, game);
+        activeTab.render(cmd, evt, gameId);
     }
 
     @Override
@@ -124,7 +133,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         for (var tab : tabs) {
             if (tab.getId().equalsIgnoreCase(tabId)) {
                 try {
-                    // return tab.handle(action, event, game, this);
+                     return tab.handle(action, event, gameId, this);
                 } catch (IllegalStateException | IllegalArgumentException e) {
                     return Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage());
                 } catch (RuntimeException e) {
@@ -177,7 +186,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     }
 
     private void applyTab(@Nonnull UICommandBuilder cmd) {
-        for (var tab : tabs) {
+        for (AdminTab tab : tabs) {
             cmd.set("#Panel" + tab.getId() + ".Visible", tab == activeTab);
             cmd.set("#Tab" + tab.getId() + ".Disabled", tab == activeTab);
         }
@@ -190,7 +199,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
                 var cmd = new UICommandBuilder();
                 var evt = new UIEventBuilder();
                 applyTab(cmd);
-                // tab.render(cmd, evt, game);
+                tab.render(cmd, evt, gameId);
                 sendUpdate(cmd, evt, false);
                 return;
             }

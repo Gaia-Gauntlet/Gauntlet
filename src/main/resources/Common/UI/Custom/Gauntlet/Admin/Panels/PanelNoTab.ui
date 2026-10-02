@@ -1,11 +1,12 @@
 // No tab: Displayed when no other tabs are available to be displayed
-$G = "Common.ui";
+$G = "../Common.ui";
 
-@Content = Group {
+Group #PanelNoTab {
     LayoutMode: Top;
+    Visible: false;
 
     $G.@Card {
         FlexWeight: 1;
         $G.@Header { @Text = "No Tab"; }
     }
-};
+}
