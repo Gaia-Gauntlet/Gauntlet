@@ -1,12 +1,7 @@
 package com.gaiagauntlet.gauntlet.core.ui.interfaces;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
-import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
-import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
 /**
@@ -18,7 +13,7 @@ public interface AdminTab {
 
     /** Matches the panel id "#Panel<Id>" and the tab button "#Tab<Id>". */
     @Nonnull
-    String id();
+    String getId();
 
     /** Registers the bindings for the controls the markup declares. Runs once per page. */
     void bind(@Nonnull UIEventBuilder evt);

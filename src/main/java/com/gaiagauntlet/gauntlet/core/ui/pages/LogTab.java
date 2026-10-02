@@ -19,7 +19,7 @@ final class LogTab implements AdminTab {
 
     @Nonnull
     @Override
-    public String id() {
+    public String getId() {
         return "Log";
     }
 
