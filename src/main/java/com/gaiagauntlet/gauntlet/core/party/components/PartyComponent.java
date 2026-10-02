@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class PartyComponent implements Component<EntityStore> {
+public class PartyComponent {
     private static HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     public static final BuilderCodec<PartyComponent> CODEC = BuilderCodec
@@ -41,16 +41,18 @@ public class PartyComponent implements Component<EntityStore> {
     UUID[] players = new UUID[0];
     @Getter UUID owner;
 
-    public PartyComponent() {}
+    private PartyComponent() {}
 
-    public PartyComponent(UUID[] players) {
+    public PartyComponent(String id, UUID[] players) {
         if (players.length == 0) {
             throw new InvalidParameterException("Party cannot be formed with no players");
         }
+        this.id = id;
         this.players = players;
         this.owner = players[0];
     }
-    public PartyComponent(UUID[] players, UUID owner) {
+    public PartyComponent(String id, UUID[] players, UUID owner) {
+        this.id = id;
         this.players = players;
         this.owner = owner;
     }
@@ -86,8 +88,7 @@ public class PartyComponent implements Component<EntityStore> {
         this.owner = owner;
     }
 
-    @Override
-    public @Nullable Component<EntityStore> clone() {
-        return new PartyComponent(players.clone(), owner);
+    public boolean includesPlayer(UUID player) {
+        return Arrays.asList(players).contains(player);
     }
 }

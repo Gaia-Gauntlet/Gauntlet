@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet;
 
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
+import com.gaiagauntlet.gauntlet.core.commands.PartyCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.party.resources.UniversePartyResource;
@@ -55,8 +56,8 @@ public class GauntletPlugin extends JavaPlugin {
     }
 
     private void setupCommands() {
-        gauntletCommand = new GauntletCommand();
-        getCommandRegistry().registerCommand(gauntletCommand);
+        getCommandRegistry().registerCommand(new GauntletCommand());
+        getCommandRegistry().registerCommand(new PartyCommand());
     }
 
     private void setupComponents() {

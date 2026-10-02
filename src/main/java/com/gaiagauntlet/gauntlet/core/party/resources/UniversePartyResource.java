@@ -5,14 +5,17 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
 import com.hypixel.hytale.component.Resource;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.resources.UniverseResourceType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import lombok.Getter;
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UniversePartyResource implements Resource<EntityStore> {
@@ -31,12 +34,17 @@ public class UniversePartyResource implements Resource<EntityStore> {
     private Map<String, PartyComponent> parties;
 
     public PartyComponent getParty(String partyId) {
-        var party = parties.get(partyId);
-        if (Objects.isNull(party)) {
-            party = new PartyComponent();
-            parties.put(partyId, party);
-        }
-        return party;
+        return parties.get(partyId);
+    }
+
+    public Collection<PartyComponent> getParties() {
+        return parties.values();
+    }
+
+    public PartyComponent createParty(String partyId, UUID owner) {
+        var newParty = new PartyComponent(partyId, new UUID[]{owner});
+        parties.put(partyId, newParty);
+        return newParty;
     }
 
     public PartyComponent removeParty(String partyId) {
