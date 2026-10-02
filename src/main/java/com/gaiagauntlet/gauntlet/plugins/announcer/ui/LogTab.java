@@ -35,6 +35,6 @@ public final class LogTab implements AdminTab {
         for (var line : AdminLog.recent(session, LINES)) {
             rows.add(line.render());
         }
-        Widgets.fillList(cmd, "#LogList", rows, "Nothing logged yet");
+        Widgets.fillList(cmd, "LogList", rows, "Nothing logged yet");
     }
 }

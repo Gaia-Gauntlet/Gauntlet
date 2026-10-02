@@ -3,8 +3,9 @@ package com.gaiagauntlet.gauntlet.core.ui.pages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
@@ -50,25 +51,25 @@ public final class Widgets {
                 new EventData().append("Action", action).append("@Pick", selector + ".Value"), false);
     }
 
-    public static void field(@Nonnull UICommandBuilder cmd, @Nonnull String id, @Nonnull String text) {
-        cmd.set("#" + id + " #Value.Text", text);
+    public static void field(@Nonnull UICommandBuilder cmd, @Nonnull String id, @Nullable String text) {
+        cmd.set("#" + id + " #Value.Text", Objects.isNull(text) ? "" : text);
     }
 
-    public static void text(@Nonnull UICommandBuilder cmd, @Nonnull String selector, @Nonnull String text) {
-        cmd.set(selector + ".Text", text);
+    public static void text(@Nonnull UICommandBuilder cmd, @Nonnull String selector, @Nullable String text) {
+        cmd.set(selector + ".Text", Objects.isNull(text) ? "" : text);
     }
 
     /** Replaces the container's rows with one text row each, or one placeholder row when empty. */
     public static void fillList(@Nonnull UICommandBuilder cmd, @Nonnull String container, @Nonnull List<String> rows, @Nonnull String empty) {
-        cmd.clear(container);
+        cmd.clear("#"+ container);
         if (rows.isEmpty()) {
-            cmd.append(container, ROW);
-            cmd.set(container + "[0].Text", empty);
+            cmd.append("#"+ container, ROW);
+            cmd.set("#"+ container + "[0].Text", empty);
             return;
         }
         for (int i = 0; i < rows.size(); i++) {
-            cmd.append(container, ROW);
-            cmd.set(container + "[" + i + "].Text", rows.get(i));
+            cmd.append("#"+ container, ROW);
+            cmd.set("#"+ container + "[" + i + "].Text", rows.get(i));
         }
     }
 
@@ -79,7 +80,7 @@ public final class Widgets {
         }
         cmd.set(picker + ".Entries", entries);
         if (!options.isEmpty()) {
-            cmd.set(picker + ".Value", options.get(0).value());
+            cmd.set(picker + ".Value", options.getFirst().value());
         }
     }
 

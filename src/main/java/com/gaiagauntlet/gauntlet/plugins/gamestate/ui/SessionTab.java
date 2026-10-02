@@ -14,6 +14,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
@@ -48,6 +51,11 @@ public final class SessionTab implements AdminTab {
         Widgets.field(cmd, "SessionField", Objects.isNull(session) ? "N/A" : session.getId());
         Widgets.field(cmd, "GameField", Objects.isNull(session) ? "N/A" : session.getCurrentGame());
         Widgets.field(cmd, "StateField", Objects.isNull(session) ? "N/A" : session.getSessionState().name());
+
+        Widgets.fillList(cmd, "GameList",
+            Objects.isNull(session) ? List.of() : Arrays.stream(session.getGameSequence()).toList(),
+            "No games added yet..."
+        );
     }
 
     @Override
@@ -61,7 +69,7 @@ public final class SessionTab implements AdminTab {
         };
     }
 
-    Message sessionDestroy(@Nullable GameSession session) {
+    private Message sessionDestroy(@Nullable GameSession session) {
         if (Objects.nonNull(session)) {
             var oldSession = GauntletUtils.withResource().getSessions().remove(session.getId());
             if (Objects.nonNull(oldSession)) {
@@ -71,7 +79,7 @@ public final class SessionTab implements AdminTab {
         return error("Unable to remove session because it isn't registered!");
     }
 
-    Message gameSetup(@Nullable GameSession session, AdminPage page) {
+    private Message gameSetup(@Nullable GameSession session, AdminPage page) {
         if (Objects.isNull(session)) {
             return error("No session to setup a game for!");
         }
@@ -94,11 +102,11 @@ public final class SessionTab implements AdminTab {
         return null;
     }
 
-    Message gameStart(@Nullable GameSession session) {
+    private Message gameStart(@Nullable GameSession session) {
         return error("Starting games not yet supported!");
     }
 
-    Message gameStop(GameSession session) {
+    private Message gameStop(@Nullable GameSession session) {
         return error("Stopping games not yet supported!");
     }
 }

@@ -19,7 +19,11 @@ Group #PanelSession {
                 $G.@Danger #DestroySession { Text: "Destroy Session"; }
             }
         }
+    }
 
+    $G.@Gutter {}
+
+    $G.@Column {
         $G.@Card {
             $G.@Header { @Text = "Game"; }
 
@@ -31,35 +35,14 @@ Group #PanelSession {
             $G.@ButtonRow {
                 $G.@Danger #StopGame { @Anchor = (Right: 3); Text: "Stop Game"; }
             }
-        }
-    }
 
-    $G.@Gutter {}
-
-    $G.@Column {
-        $G.@Card {
-            $G.@Header { @Text = "Lobby"; }
-            $G.@ButtonRow {
-                $G.@Confirm #MatchStart    { @Anchor = (Right: 3); Text: "Start countdown"; }
+            $G.@ScrollPanel #GameList {}
+            Label {
+                Text: "Game";
+                Anchor: (Width: 66);
+                Style: (FontSize: 12, RenderUppercase: true, TextColor: #878e9c, VerticalAlignment: Center, LetterSpacing: 1);
             }
-        }
-
-        $G.@Card {
-            $G.@Header { @Text = "Event"; }
-            $G.@Note { @Text = "Every match adds its points to each team's event score, shown in the lobby."; }
-            $G.@ButtonRow {
-                $G.@Danger #ResetScores { Text: "Reset event scores"; }
-            }
-        }
-    }
-
-    $G.@Gutter {}
-
-    $G.@Column {
-        $G.@Card {
-            FlexWeight: 1;
-            $G.@Header { @Text = "Preflight"; }
-            $G.@ScrollPanel #PreflightList {}
+            $G.@Picker #GamePicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
         }
     }
 }
