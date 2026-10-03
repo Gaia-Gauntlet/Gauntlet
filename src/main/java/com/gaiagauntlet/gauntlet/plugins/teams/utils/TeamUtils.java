@@ -162,6 +162,8 @@ public class TeamUtils {
                 if (team.getSize() + party.getAllOnlinePlayers().size() <= teams.getTeamSize()) {
                     // Party fits, add all players to the team
                     for (PlayerRef player : party.getAllOnlinePlayers()) {
+                        // Don't include players not requested to be distributed
+                        if (!unassigned.contains(player)) continue;
                         party.addPlayer(player.getUuid());
                         unassigned.remove(player);
                     }
