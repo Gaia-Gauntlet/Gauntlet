@@ -127,7 +127,12 @@ public abstract class GauntletEvent {
      * \ ---------------------- |
      */
 
-    /** Operations relating to the game */
+    /**
+     * Operations relating to the game
+     * Note: I'm not sure what to actually add here
+     * 
+     * Not a lot is known currently about the specific games. This may just no-op for now
+     */
     public class Game extends Event {
         @Getter
         private GauntletEvent.GameOperation op;
@@ -145,12 +150,17 @@ public abstract class GauntletEvent {
      * This triggers the cleanup code for the controller
      */
     public class GameEnd extends Event {
-
+        @Getter private final String gameId;
+        
+        
+        public GameEnd(String gameId) {
+            this.gameId = gameId;
+        }
     }
 
     /**
      * | ---------------------- \
-     * Player Management
+     *     Player Management
      * \ ---------------------- |
      */
 

@@ -4,8 +4,13 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEvents;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GameHandlers;
+import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
+import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -33,6 +38,23 @@ public class GauntletOrchestrator {
      *     c) server shutdown
      *     d) server startup (load up from crashed server - attempt recovery?)
      */
+
+    public static void setupListeners() {
+        // session event handling
+        GauntletEvents.on(GauntletEvent.Session.class, SessionHandlers::handleSession);
+        GauntletEvents.on(GauntletEvent.SessionQueue.class, SessionHandlers::handleSessionQueue);
+        GauntletEvents.on(GauntletEvent.NewSession.class, SessionHandlers::handleNewSession);
+        
+        // game event handling
+        GauntletEvents.on(GauntletEvent.Game.class, GameHandlers::handleGame);
+        GauntletEvents.on(GauntletEvent.GameEnd.class, GameHandlers::handleGameEnd);
+        
+        // player event handling
+        GauntletEvents.on(GauntletEvent.ConnectPlayer.class, PlayerHandlers::handleConnectPlayer);
+        GauntletEvents.on(GauntletEvent.DisconnectPlayer.class, PlayerHandlers::handleDisconnectPlayer);
+        GauntletEvents.on(GauntletEvent.AddPlayer.class, PlayerHandlers::handleAddPlayer);
+        GauntletEvents.on(GauntletEvent.RemovePlayer.class, PlayerHandlers::handleRemovePlayer);
+    }
 
     /**
      * Sets up a game to allow for sending players to and, later, starting the game

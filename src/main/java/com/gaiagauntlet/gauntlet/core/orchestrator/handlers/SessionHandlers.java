@@ -11,7 +11,7 @@ import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class SessionHandlers extends HandlerUtils {
-    public static void createSession(World hub, GauntletEvent.NewSession sessionEvt) {
+    public static void handleNewSession(World hub, GauntletEvent.NewSession sessionEvt) {
 
         var gameSession = sessionEvt.getNewSession();
         // validate loaded games
@@ -154,7 +154,7 @@ public class SessionHandlers extends HandlerUtils {
         // resource.removeSession(session);
     }
 
-    public static void sessionQueue(World hub, GauntletEvent.SessionQueue sessionEvt) {
+    public static void handleSessionQueue(World hub, GauntletEvent.SessionQueue sessionEvt) {
         var sessionOp = sessionFor(sessionEvt.getSessionId());
 
         if (!sessionOp.isPresent()) {

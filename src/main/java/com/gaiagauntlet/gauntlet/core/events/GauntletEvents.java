@@ -1,13 +1,16 @@
 package com.gaiagauntlet.gauntlet.core.events;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.hypixel.hytale.event.EventRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import com.hypixel.hytale.server.core.universe.world.World;
 
 /**
  * Gauntlet Events serve as a way to suggest mutations / changes to the game
@@ -21,14 +24,18 @@ public class GauntletEvents {
         registry = plugin.getEventRegistry();
     }
 
-    public static <T extends GauntletEvent.Event> void on(@Nonnull Class<T> type, @Nonnull Consumer<T> listener) {
+    public static <T extends GauntletEvent.Event> void on(@Nonnull Class<T> type, @Nonnull BiConsumer<World, T> listener) {
         if (registry == null) {
             LOGGER.atSevere().log("Failed to listen for event because registry is not setup");
             return;
         }
         registry.registerGlobal(type, event -> {
             try {
-                listener.accept(event);
+                // always run events on the hub world
+                var hubWorld = GauntletUtils.withHubWorld();
+                GauntletUtils.run(hubWorld, () -> {
+                    listener.accept(hubWorld, event);
+                });
             } catch (RuntimeException e) {
                 LOGGER.atSevere().withCause(e).log("Listener for %s failed", type.getSimpleName());
             }
