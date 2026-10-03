@@ -1,9 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.resources;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
@@ -79,7 +76,10 @@ public class UniverseGauntletResource {
     }
 
     public PartyComponent createParty(String partyId, UUID owner) {
-        var newParty = new PartyComponent(partyId, new UUID[]{owner});
+        var players = new HashSet<UUID>();
+        players.add(owner);
+
+        var newParty = new PartyComponent(partyId, players);
         parties.put(partyId, newParty);
         return newParty;
     }
