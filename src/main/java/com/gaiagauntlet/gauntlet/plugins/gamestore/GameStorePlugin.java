@@ -3,7 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.gamestore;
 import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
-import com.gaiagauntlet.gauntlet.core.events.GauntletEvents;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.events.GameEventHandler;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -25,7 +25,7 @@ public class GameStorePlugin implements SimpleGamePlugin {
     @Override
     public void init(JavaPlugin host) {
         // intercepts any session plugins and persists their state
-        GauntletEvents.on(GauntletEvent.GameEnd.class, GameEventHandler::GameEndHandler);
+        GauntletEventRegistry.on(GauntletEvent.GameEnd.class, GameEventHandler::GameEndHandler);
     }
 
     @Override

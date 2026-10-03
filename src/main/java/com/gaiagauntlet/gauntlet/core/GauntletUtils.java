@@ -31,9 +31,12 @@ public class GauntletUtils {
 
     @Nonnull
     public static Optional<GameSession> sessionFor(@Nonnull PlayerRef player) {
-        var comp = playerFor(player);
-        if (comp.isPresent() && comp.get().getActiveSession() != null)
-            return sessionFor(comp.get().getActiveSession());
+        if (!(playerFor(player).orElse(null) instanceof PlayerComponent comp)) {
+            return Optional.empty();
+        }
+        if (comp.getActiveSession() != null)
+            return sessionFor(comp.getActiveSession());
+        
         return Optional.empty();
     }
 
@@ -69,7 +72,9 @@ public class GauntletUtils {
         return future;
     }
 
-    /** Returns a completable future on the world thread with no return type needed */
+    /**
+     * Returns a completable future on the world thread with no return type needed
+     */
     public static CompletableFuture<Void> runAsync(World world, Runnable operation) {
         return runAsync(world, () -> {
             operation.run();

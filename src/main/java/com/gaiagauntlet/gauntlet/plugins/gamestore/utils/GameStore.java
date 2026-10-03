@@ -14,10 +14,10 @@ public class GameStore {
         return withResource(world.getEntityStore().getStore());   
     }
     public static GameEcs withStore(ComponentAccessor<EntityStore> accessor, String gameId) {
-        return withResource(accessor).getGame(gameId);
+        return withResource(accessor).get(gameId);
     }
     public static GameEcs withStore(World world, String sessionId) {
-        return withResource(world).getGame(sessionId);
+        return withResource(world).get(sessionId);
     }
     
 }

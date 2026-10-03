@@ -3,11 +3,11 @@ package com.gaiagauntlet.gauntlet.plugins.lobbycontroller;
 import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;

@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestore.resource;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,15 +34,16 @@ public class WorldGameStore implements Resource<EntityStore> {
     // gameId is just the current session
     private Map<String, GameEcs> games;
 
-    public GameEcs getGame(String sessionId) {
-        var game = games.get(sessionId);
-        if (game == null) {
-            game = new GameEcs();
-            games.put(sessionId, game);
-        }
+    public Optional<GameEcs> get(String sessionId) {
+        return Optional.ofNullable(games.get(sessionId));
+    }
+
+    public GameEcs create(String sessionId) {
+        var game = new GameEcs();
+        games.put(sessionId, game);
         return game;
     }
-    
+
     public void clearGame(String sessionId) {
         var game = games.get(sessionId);
         game.clear();

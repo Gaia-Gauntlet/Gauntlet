@@ -1,12 +1,13 @@
 package com.gaiagauntlet.gauntlet.plugins.teams;
 
-import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
@@ -21,6 +22,7 @@ import com.hypixel.hytale.event.EventRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.List;
@@ -80,7 +82,7 @@ public class TeamsPlugin implements PersistentGamePlugin {
     }
 
     @Override
-    public void writeSession(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId) {
-
+    public SessionWriter capture(World world, String gameId) {
+        return null;
     }
 }

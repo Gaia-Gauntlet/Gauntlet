@@ -5,13 +5,17 @@ import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class SessionHandlers extends HandlerUtils {
-    public static void handleNewSession(World hub, GauntletEvent.NewSession sessionEvt) {
+    public static void handleNewSession(World hub, NewSessionEvent sessionEvt) {
 
         var gameSession = sessionEvt.getNewSession();
         // validate loaded games
@@ -37,7 +41,7 @@ public class SessionHandlers extends HandlerUtils {
         sessionEvt.complete();
     }
 
-    public static void handleSession(World hub, GauntletEvent.Session sessionEvt) {
+    public static void handleSession(World hub, SessionEvent sessionEvt) {
         var sessionOp = sessionFor(sessionEvt.getSessionId());
 
         if (!sessionOp.isPresent()) {
@@ -52,7 +56,7 @@ public class SessionHandlers extends HandlerUtils {
                 setupGame(hub, sessionEvt, session);
                 return;
             }
-            case CANCEL -> {
+            case CLEAN -> {
                 cancelGame(hub, sessionEvt, session);
                 return;
             }
@@ -63,7 +67,7 @@ public class SessionHandlers extends HandlerUtils {
         }
     }
 
-    private static void setupGame(World hub, GauntletEvent.Session sessionEvt, GameSession session) {
+    private static void setupGame(World hub, SessionEvent sessionEvt, GameSession session) {
         if (!session.available()) {
             sessionEvt.Error("Session is in state " + session.getSessionState().toString()
                     + " and is not available for setting up a new game");
@@ -72,13 +76,12 @@ public class SessionHandlers extends HandlerUtils {
         }
 
         var nextGameId = session.getNext();
-        var gameRes = GameRegistry.getGame(nextGameId);
-        if (!gameRes.isPresent()) {
+
+        if (!(GameRegistry.getGame(nextGameId).orElse(null) instanceof GameController game)) {
             sessionEvt.Error("No pending game");
             sessionEvt.complete();
             return;
         }
-        var game = gameRes.get();
 
         // pass stuff to the game
         // mark the next game as running
@@ -113,20 +116,18 @@ public class SessionHandlers extends HandlerUtils {
         });
     }
 
-    private static void cancelGame(World hub, GauntletEvent.Session sessionEvt, GameSession session) {
+    private static void cancelGame(World hub, SessionEvent sessionEvt, GameSession session) {
 
         var currentGame = session.getCurrentGame();
-        var gameRes = GameRegistry.getGame(currentGame);
-        if (!gameRes.isPresent()) {
+        if (!(GameRegistry.getGame(currentGame).orElse(null) instanceof GameController game)) {
             sessionEvt.Error("No pending game");
             session.setErrored("No current game is available to cancel");
             sessionEvt.complete();
             return;
         }
-        var game = gameRes.get();
 
         // pass stuff to the game
-        var future = game.cleanGame(hub.getEntityStore().getStore(), session);
+        var future = game.cleanGame(hub, session);
         future.whenComplete((value, error) -> {
             if (error != null) {
                 AdminLog.add("Cancelling game " + currentGame + " for session " + session.getId()
@@ -140,7 +141,7 @@ public class SessionHandlers extends HandlerUtils {
         });
     }
 
-    private static void deleteSession(World hub, GauntletEvent.Session sessionEvt, GameSession session) {
+    private static void deleteSession(World hub, SessionEvent sessionEvt, GameSession session) {
         // if the game is running, cancel it
         if (!session.available()) {
             cancelGame(hub, sessionEvt, session);
@@ -154,16 +155,13 @@ public class SessionHandlers extends HandlerUtils {
         // resource.removeSession(session);
     }
 
-    public static void handleSessionQueue(World hub, GauntletEvent.SessionQueue sessionEvt) {
-        var sessionOp = sessionFor(sessionEvt.getSessionId());
-
-        if (!sessionOp.isPresent()) {
+    public static void handleSessionQueue(World hub, SessionQueueEvent sessionEvt) {
+        if (!(sessionFor(sessionEvt.getSessionId()).orElse(null) instanceof GameSession session)) {
             sessionEvt.Error("Session " + sessionEvt.getSessionId() + " is not present");
             sessionEvt.complete();
             return;
         }
 
-        var session = sessionOp.get();
         var op = sessionEvt.getOp();
         var gameQueue = sessionEvt.getNewQueue();
         // validate games

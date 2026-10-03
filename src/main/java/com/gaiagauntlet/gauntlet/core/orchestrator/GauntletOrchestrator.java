@@ -9,14 +9,23 @@ import javax.annotation.Nonnull;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
-import com.gaiagauntlet.gauntlet.core.events.GauntletEvents;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.GamePlayerEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.UniversePlayerEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GameHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.event.EventPriority;
+import com.hypixel.hytale.server.core.event.events.player.PlayerEvent;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -50,23 +59,22 @@ public class GauntletOrchestrator {
      */
     public static void setupListeners() {
         // session event handling
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.Session.class, wrap(SessionHandlers::handleSession));
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.SessionQueue.class, wrap(SessionHandlers::handleSessionQueue));
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.NewSession.class, wrap(SessionHandlers::handleNewSession));
+        GauntletEventRegistry.on(EventPriority.LATE, SessionEvent.class, wrap(SessionHandlers::handleSession));
+        GauntletEventRegistry.on(EventPriority.LATE, SessionQueueEvent.class,
+                wrap(SessionHandlers::handleSessionQueue));
+        GauntletEventRegistry.on(EventPriority.LATE, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
 
         // game event handling
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.Game.class, wrap(GameHandlers::handleGame));
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.GameEnd.class, wrap(GameHandlers::handleGameEnd));
+        GauntletEventRegistry.on(EventPriority.LATE, GameEvent.class, wrap(GameHandlers::handleGame));
+        GauntletEventRegistry.on(EventPriority.LATE, GameEndEvent.class, wrap(GameHandlers::handleGameEnd));
 
         // player event handling
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.ConnectPlayer.class, wrap(PlayerHandlers::handleConnectPlayer));
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.DisconnectPlayer.class, wrap(PlayerHandlers::handleDisconnectPlayer));
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.AddPlayer.class, wrap(PlayerHandlers::handleAddPlayer));
-        GauntletEvents.on(EventPriority.LATE, GauntletEvent.RemovePlayer.class, wrap(PlayerHandlers::handleRemovePlayer));
+        GauntletEventRegistry.on(EventPriority.LATE, UniversePlayerEvent.class, wrap(PlayerHandlers::handlePlayer));
+        GauntletEventRegistry.on(EventPriority.LATE, GamePlayerEvent.class, wrap(PlayerHandlers::handleGamePlayer));
     }
 
     /** Ensures the event handler is always run on the hub world */
-    private static <T extends GauntletEvent.Event> Consumer<T> wrap(@Nonnull BiConsumer<World, T> listener) {
+    private static <T extends GauntletEvent> Consumer<T> wrap(@Nonnull BiConsumer<World, T> listener) {
         return (T event) -> {
             // always run events on the hub world
             var hubWorld = GauntletUtils.withHubWorld();
@@ -74,34 +82,5 @@ public class GauntletOrchestrator {
                 listener.accept(hubWorld, event);
             });
         };
-    }
-
-    /**
-     * Sets up a game to allow for sending players to and, later, starting the game
-     * itself
-     */
-    public static CompletableFuture<GameController> setupGame(ComponentAccessor<EntityStore> accessor,
-            String sessionId) {
-        var sessionRes = GauntletUtils.sessionFor(sessionId);
-        if (!sessionRes.isPresent() || !sessionRes.get().available()) {
-            AdminLog.add("Unable to setup the session's game. The session is not in a valid state!");
-            return CompletableFuture.completedFuture(null);
-        }
-        var session = sessionRes.get();
-
-        var nextGameId = session.getNext();
-        var gameRes = GameRegistry.getGame(nextGameId);
-        if (!gameRes.isPresent()) {
-            AdminLog.add("Game " + nextGameId + " is not registered, cannot set up!");
-            return CompletableFuture.completedFuture(null);
-        }
-        var game = gameRes.get();
-
-        // pass stuff to the game
-        var future = game.setupGame(accessor, session);
-
-        // ensure this runs AFTER the game is made, needs to finalize what the game
-        // actually needs in order to be created
-        return CompletableFuture.completedFuture(game);
     }
 }

@@ -2,7 +2,7 @@ package com.gaiagauntlet.gauntlet;
 
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
-import com.gaiagauntlet.gauntlet.core.events.GauntletEvents;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
@@ -49,7 +49,7 @@ public class GauntletPlugin extends JavaPlugin {
     // sets up internal or core operations like registries or event handlers
     private void setupCore() {
         // Setup the events
-        GauntletEvents.setup(this);
+        GauntletEventRegistry.setup(this);
     }
 
     private void setupResources() {

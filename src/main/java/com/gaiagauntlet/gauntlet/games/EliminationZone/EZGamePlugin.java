@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
-import com.gaiagauntlet.gauntlet.core.events.GauntletEvents;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.EZBosses;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;

@@ -1,19 +1,14 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
-import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.GamePlayerEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.UniversePlayerEvent;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class PlayerHandlers extends HandlerUtils {
-    public static void handleConnectPlayer(World hub, GauntletEvent.ConnectPlayer sessionEvt) {
+    public static void handlePlayer(World hub, UniversePlayerEvent sessionEvt) {
         throw new IllegalAccessError("Not implemented!");
     }
-    public static void handleDisconnectPlayer(World hub, GauntletEvent.DisconnectPlayer sessionEvt) {
-        throw new IllegalAccessError("Not implemented!");
-    }
-    public static void handleAddPlayer(World hub, GauntletEvent.AddPlayer sessionEvt) {
-        throw new IllegalAccessError("Not implemented!");
-    }
-    public static void handleRemovePlayer(World hub, GauntletEvent.RemovePlayer sessionEvt) {
+    public static void handleGamePlayer(World hub, GamePlayerEvent sessionEvt) {
         throw new IllegalAccessError("Not implemented!");
     }
 }

@@ -1,6 +1,5 @@
 package com.gaiagauntlet.gauntlet.core.events;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -11,13 +10,12 @@ import com.hypixel.hytale.event.EventRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
-import com.hypixel.hytale.server.core.universe.world.World;
 
 /**
  * Gauntlet Events serve as a way to suggest mutations / changes to the game
  * through a single pipeline
  */
-public class GauntletEvents {
+public class GauntletEventRegistry {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static EventRegistry registry = null;
 
@@ -25,11 +23,12 @@ public class GauntletEvents {
         registry = plugin.getEventRegistry();
     }
 
-    public static <T extends GauntletEvent.Event> void on(@Nonnull Class<T> type, @Nonnull Consumer<T> listener) {
+    public static <T extends GauntletEvent> void on(@Nonnull Class<T> type, @Nonnull Consumer<T> listener) {
         on(null, type, listener);
     }
-    
-    public static <T extends GauntletEvent.Event> void on(EventPriority priority, @Nonnull Class<T> type, @Nonnull Consumer<T> listener) {
+
+    public static <T extends GauntletEvent> void on(EventPriority priority, @Nonnull Class<T> type,
+            @Nonnull Consumer<T> listener) {
         if (registry == null) {
             LOGGER.atSevere().log("Failed to listen for event because registry is not setup");
             return;
@@ -38,6 +37,10 @@ public class GauntletEvents {
             priority = EventPriority.NORMAL;
         }
         registry.registerGlobal(priority, type, event -> {
+            if (!GauntletUtils.withHubWorld().isInThread()) {
+                LOGGER.atSevere().log("Event %s was dispatched outside of the hub thread! Mods must use GauntletEvents.dispatch", type.getSimpleName());
+                return;
+            }
             try {
                 listener.accept(event);
             } catch (RuntimeException e) {
@@ -46,15 +49,18 @@ public class GauntletEvents {
         });
     }
 
-    public static void dispatch(@Nonnull GauntletEvent.Event event) {
-        LOGGER.atFine().log("Event %s", event);
-        try {
-            var dispatcher = HytaleServer.get().getEventBus().dispatchFor((Class) event.getClass());
-            if (dispatcher.hasListener()) {
-                dispatcher.dispatch(event);
+    public static void dispatch(@Nonnull GauntletEvent event) {
+        // ensure on hub world
+        GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
+            LOGGER.atFine().log("Event %s", event);
+            try {
+                var dispatcher = HytaleServer.get().getEventBus().dispatchFor((Class) event.getClass());
+                if (dispatcher.hasListener()) {
+                    dispatcher.dispatch(event);
+                }
+            } catch (RuntimeException e) {
+                LOGGER.atSevere().withCause(e).log("Dispatch of %s failed", event);
             }
-        } catch (RuntimeException e) {
-            LOGGER.atSevere().withCause(e).log("Dispatch of %s failed", event);
-        }
+        });
     }
 }
