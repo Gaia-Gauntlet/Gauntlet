@@ -34,7 +34,7 @@ public abstract class GauntletEvent implements IEvent<Void> {
     }
 
     public void complete() {
-        complete(null);
+        complete(Message.raw("Completed Successfully"));
     }
 
     public void complete(Message reason) {

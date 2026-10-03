@@ -82,7 +82,7 @@ public class TeamsPlugin implements PersistentGamePlugin {
     }
 
     @Override
-    public SessionWriter capture(World world, String gameId) {
+    public SessionWriter capture(World world, GameEcs store, String sessionId) {
         return null;
     }
 }

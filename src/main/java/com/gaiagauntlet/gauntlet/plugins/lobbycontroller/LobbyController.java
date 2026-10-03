@@ -36,7 +36,9 @@ public abstract class LobbyController extends GameController {
     @Override
     public final CompletableFuture<Void> setupGame(ComponentAccessor<EntityStore> hubAccessor, GameSession session) {
         var sessionId = session.getId();
-        var hubStore = GameStore.withStore(hubAccessor, sessionId);
+        if (!(GameStore.withStore(hubAccessor, sessionId).orElse(null) instanceof GameEcs hubStore)) {
+            return CompletableFuture.completedFuture(null);
+        }
         var existing = hubStore.get(LobbyComponent.getComponentType());
         if (existing != null) {
             LOGGER.atWarning().log(
@@ -66,6 +68,7 @@ public abstract class LobbyController extends GameController {
             // world thread
             return onWorld(world, () -> {
                 var lobbyStore = world.getEntityStore().getStore();
+                var gameStore = GameStore.withResource(world).create(sessionId);
 
                 var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
                 for (var plugin : simplePlugins) {
@@ -77,7 +80,6 @@ public abstract class LobbyController extends GameController {
                     }
                 }
 
-                var gameStore = GameStore.withStore(world, sessionId);
                 setupGame(world, gameStore, sessionId);
             });
         })

@@ -94,7 +94,7 @@ public class GameSession {
 
     @Getter
     @NotNull
-    private SessionState sessionState = SessionState.SETTING_UP;
+    private SessionState sessionState = SessionState.IDLE;
     @Getter
     @Nullable
     private String errorReason;

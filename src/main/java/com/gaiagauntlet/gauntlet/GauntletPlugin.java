@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet;
 
+import com.gaiagauntlet.gauntlet.core.GauntletCore;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
@@ -50,6 +51,7 @@ public class GauntletPlugin extends JavaPlugin {
     private void setupCore() {
         // Setup the events
         GauntletEventRegistry.setup(this);
+        GauntletCore.setup(this);
     }
 
     private void setupResources() {

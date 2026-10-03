@@ -1,6 +1,12 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
@@ -23,7 +29,8 @@ import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.err
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 public final class SessionTab implements AdminTab {
-    public SessionTab() {}
+    public SessionTab() {
+    }
 
     @Override
     public @NonNull String getId() {
@@ -53,19 +60,19 @@ public final class SessionTab implements AdminTab {
         Widgets.field(cmd, "StateField", Objects.isNull(session) ? "N/A" : session.getSessionState().name());
 
         Widgets.fillList(cmd, "GameList",
-            Objects.isNull(session) ? List.of() : Arrays.stream(session.getGameSequence()).toList(),
-            "No games added yet..."
-        );
+                Objects.isNull(session) ? List.of() : session.getGameSequence().stream().toList(),
+                "No games added yet...");
     }
 
     @Override
-    public @Nullable Message handle(@NonNull String action, @NonNull AdminPageEvent event, @Nullable GameSession session, @NonNull AdminPage page) {
+    public @Nullable Message handle(@NonNull String action, @NonNull AdminPageEvent event,
+            @Nullable GameSession session, @NonNull AdminPage page) {
         return switch (action) {
             case "session.destroy" -> sessionDestroy(session);
             case "session.game.setup" -> gameSetup(session, page);
             case "session.game.start" -> gameStart(session);
             case "session.game.stop" -> gameStop(session);
-            default -> Message.raw("Session tab received unknown action "+ action).color(Color.RED);
+            default -> Message.raw("Session tab received unknown action " + action).color(Color.RED);
         };
     }
 
@@ -84,22 +91,18 @@ public final class SessionTab implements AdminTab {
             return error("No session to setup a game for!");
         }
         var sessionId = session.getId();
-        var playerRef = page.getPlayer();
-        var ref = playerRef.getReference();
-        assert ref != null;
-        var future = GauntletOrchestrator.setupGame(ref.getStore(), sessionId);
-        page.pushStatus(msg("server.gg.commands.session.setup.pending").param("sessionId", sessionId));
-        future.whenComplete((ctrl, error) -> {
-            if (error != null) {
-                page.pushStatus(error("Unable to setup! " + error.getLocalizedMessage()));
-                return;
-            }
-            page.pushStatus(msg("server.gg.commands.session.setup.success")
-                .param("sessionId", sessionId)
-                .param("gameId", ctrl.getId()));
-        });
 
-        return null;
+        page.pushStatus(msg("server.gg.commands.session.setup.pending").param("sessionId", sessionId));
+        GauntletEventRegistry.dispatch(
+                new SessionEvent(SessionOperation.SETUP, sessionId)
+                        .withMessages(page::pushStatus)
+                        .withCallback(message -> {
+                            page.pushStatus(msg("server.gg.commands.session.setup.success")
+                                    .param("sessionId", sessionId)
+                                    .param("gameId", "<GameID not available>"));
+                        }));
+
+        return msg("server.gg.commands.session.setup.pending").param("sessionId", sessionId);
     }
 
     private Message gameStart(@Nullable GameSession session) {

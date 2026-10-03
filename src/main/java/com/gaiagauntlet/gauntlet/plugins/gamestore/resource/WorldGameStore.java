@@ -39,6 +39,8 @@ public class WorldGameStore implements Resource<EntityStore> {
     }
 
     public GameEcs create(String sessionId) {
+        var existing = get(sessionId);
+        if (existing.isPresent()) return existing.orElseThrow();
         var game = new GameEcs();
         games.put(sessionId, game);
         return game;

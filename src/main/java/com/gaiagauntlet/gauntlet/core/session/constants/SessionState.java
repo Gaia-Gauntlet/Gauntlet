@@ -31,8 +31,8 @@ public enum SessionState {
                 case FINISHED, CLEANING, IDLE, ERROR -> false;
             };
             case CLEANING -> switch (this) { // <other> -> cleaning
-                case RUNNING, ERROR -> true;
-                case FINISHED, SETTING_UP, CLEANING, IDLE -> false;
+                case RUNNING, ERROR, SETTING_UP -> true;
+                case FINISHED, CLEANING, IDLE -> false;
             };
             case FINISHED -> switch (this) { // <other> -> finished
                 case FINISHED, IDLE, ERROR, CLEANING -> true;

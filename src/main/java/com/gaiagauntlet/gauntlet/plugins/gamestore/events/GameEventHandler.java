@@ -40,7 +40,7 @@ public class GameEventHandler {
 
         evt.defer(GauntletUtils.runAsync(gameWorld, () -> {
             var writes = new ArrayList<SessionWriter>();
-            var gameEcs = GameStore.withStore(gameWorld, sessionId);
+            var gameEcs = GameStore.ensureStore(gameWorld, sessionId);
             for (var plugin : persistentPlugins) {
                 try {
                     writes.add(plugin.capture(gameWorld, gameEcs, sessionId));
