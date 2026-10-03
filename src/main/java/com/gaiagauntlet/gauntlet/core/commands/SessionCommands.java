@@ -3,6 +3,13 @@ package com.gaiagauntlet.gauntlet.core.commands;
 import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -23,6 +30,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.*;
+
+import java.util.List;
 
 /**
  * All of these are, currently, debug and a stop-gap until the full eventing
@@ -45,7 +54,8 @@ public class SessionCommands extends AbstractCommandCollection {
         @Override
         public void suggest(@Nonnull CommandSender sender, @Nonnull String textAlreadyEntered,
                 int numParametersTyped, @Nonnull SuggestionResult result) {
-            SuggestionUtil.suggestFiltered(GauntletUtils.withResource().getSessions().keySet(), textAlreadyEntered, result);
+            SuggestionUtil.suggestFiltered(GauntletUtils.withResource().getSessions().keySet(), textAlreadyEntered,
+                    result);
 
         }
 
@@ -83,9 +93,7 @@ public class SessionCommands extends AbstractCommandCollection {
         addSubCommand(new AddGameToSession());
         addSubCommand(new RemoveGameFromSession());
         addSubCommand(new SetupSession());
-        addSubCommand(new StartSession());
-        addSubCommand(new StopSession());
-        addSubCommand(new NextGameSession());
+        addSubCommand(new CleanSession());
     }
 
     private static class CreateSession extends AbstractWorldCommand {
@@ -103,12 +111,12 @@ public class SessionCommands extends AbstractCommandCollection {
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
             var selectedGamesList = games.provided(ctx) ? games.get(ctx) : null;
             var session = sessionId.get(ctx);
-            
+
             var gameSession = new GameSession(session);
             if (selectedGamesList != null) {
 
                 var games = selectedGamesList.split(",");
-                
+
                 for (var game : games) {
                     if (!GameRegistry.hasGame(game)) {
                         ctx.sendMessage(error("Game " + game + " is not registered!"));
@@ -118,13 +126,14 @@ public class SessionCommands extends AbstractCommandCollection {
                 }
             }
 
-            var resource = GauntletUtils.withResource();
-            var success = resource.addSession(gameSession);
-            if (success) {
-                ctx.sendMessage(msg("server.gg.commands.session.create.success").param("sessionId", session));
-            } else {
-                ctx.sendMessage(error("Unable to add session! It already exists"));
-            }
+            GauntletEventRegistry.dispatch(
+                    new NewSessionEvent(gameSession)
+                            .withMessages(ctx::sendMessage)
+                            .withCallback(message -> {
+                                ctx.sendMessage(message);
+                                ctx.sendMessage(msg("server.gg.commands.session.create.success")
+                                        .param("sessionId", session));
+                            }));
         }
     }
 
@@ -140,16 +149,15 @@ public class SessionCommands extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
             var targetSession = sessionId.get(ctx);
-            var resource = GauntletUtils.withResource();
-            resource.getSession(targetSession).ifPresentOrElse(session -> {
 
-                resource.getSessions().remove(session.getId());
-
-                ctx.sendMessage(msg("server.gg.commands.session.destroy.success")
-                        .param("sessionId", session.getId()));
-            }, () -> {
-                ctx.sendMessage(error("Unable to remove session: " + sessionId + " because it isn't registered!"));
-            });
+            GauntletEventRegistry.dispatch(
+                    new SessionEvent(SessionOperation.DELETE, targetSession)
+                            .withMessages(ctx::sendMessage)
+                            .withCallback(message -> {
+                                ctx.sendMessage(message);
+                                ctx.sendMessage(msg("server.gg.commands.session.destroy.success")
+                                        .param("sessionId", targetSession));
+                            }));
 
         }
     }
@@ -176,7 +184,7 @@ public class SessionCommands extends AbstractCommandCollection {
                                 .param("sessionId", session.getKey())
                                 .param("game", session.getValue().getCurrentGame())
                                 .param("gamesList",
-                                        games != null && games.length >= 1
+                                        games != null && games.size() >= 1
                                                 ? String.join(", ", session.getValue().getGameSequence())
                                                 : "No games queued")
                                 .param("state", session.getValue().getSessionState().toString())));
@@ -199,14 +207,15 @@ public class SessionCommands extends AbstractCommandCollection {
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
             var game = gameId.get(ctx);
             var session = sessionId.get(ctx);
-            GauntletUtils.sessionFor(session).ifPresentOrElse(ses -> {
-                ses.addGame(game);
-                ctx.sendMessage(msg("server.gg.commands.session.add.success")
-                        .param("sessionId", session)
-                        .param("gameId", game));
-            }, () -> {
-                ctx.sendMessage(error("Unable to find session " + session));
-            });
+            GauntletEventRegistry.dispatch(
+                    new SessionQueueEvent(SessionQueueOp.APPEND, session, List.of(game))
+                            .withMessages(ctx::sendMessage)
+                            .withCallback(message -> {
+                                ctx.sendMessage(message);
+                                ctx.sendMessage(msg("server.gg.commands.session.add.success")
+                                        .param("sessionId", session)
+                                        .param("gameId", game));
+                            }));
 
         }
     }
@@ -226,15 +235,14 @@ public class SessionCommands extends AbstractCommandCollection {
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
             var game = gameId.get(ctx);
             var session = sessionId.get(ctx);
-            GauntletUtils.sessionFor(session).ifPresentOrElse(ses -> {
-                var success = ses.removeGame(game);
-                ctx.sendMessage(msg("server.gg.commands.session.remove.success")
-                        .param("sessionId", session)
-                        .param("gameId", game)
-                        .param("status", success ? "successfully" : "unsuccessfully"));
-            }, () -> {
-                ctx.sendMessage(error("Unable to remove game from session: " + session));
-            });
+            GauntletEventRegistry.dispatch(new SessionQueueEvent(SessionQueueOp.REMOVE, session, List.of(game))
+                    .withMessages(ctx::sendMessage).withCallback(message -> {
+                        ctx.sendMessage(message);
+                        ctx.sendMessage(msg("server.gg.commands.session.remove.success")
+                                .param("sessionId", session)
+                                .param("status", "Successfully")
+                                .param("gameId", game));
+                    }));
 
         }
     }
@@ -250,56 +258,23 @@ public class SessionCommands extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> accessor) {
             var targetSession = sessionId.get(ctx);
-            var future = GauntletOrchestrator.setupGame(accessor, targetSession);
             ctx.sendMessage(msg("server.gg.commands.session.setup.pending")
                     .param("sessionId", targetSession));
 
-            future.whenComplete((ctrl, error) -> {
-                if (error != null) {
-                    ctx.sendMessage(error("Unable to setup! " + error.getLocalizedMessage()));
-                    return;
-                }
-                ctx.sendMessage(msg("server.gg.commands.session.setup.success")
-                        .param("sessionId", targetSession)
-                        .param("gameId", ctrl.getId()));
-            });
+            GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.SETUP, targetSession)
+                    .withMessages(ctx::sendMessage).withCallback(message -> {
+                        ctx.sendMessage(message);
+                        ctx.sendMessage(msg("server.gg.commands.session.setup.success")
+                                .param("sessionId", targetSession)
+                                .param("gameId", "Momentarily Disabled"));
+                    }));
         }
     }
 
-    private static class StartSession extends AbstractWorldCommand {
+    private static class CleanSession extends AbstractWorldCommand {
         private final RequiredArg<String> sessionId;
 
-        public StartSession() {
-            super("start", "Starts the current game for a session");
-            sessionId = withRequiredArg("sessionId", "The session", SESSION_ID);
-        }
-
-        @Override
-        protected void execute(CommandContext ctx, World arg1, Store<EntityStore> accessor) {
-            var targetSession = sessionId.get(ctx);
-            ctx.sendMessage(error("Starting games not yet supported!"));
-
-            // var future = GauntletOrchestrator.setupGame(accessor, targetSession);
-            // ctx.sendMessage(msg("server.gg.commands.session.start.pending")
-            // .param("sessionId", targetSession));
-
-            // future.whenComplete((ctrl, error) -> {
-            // if (error != null) {
-            // ctx.sendMessage(error("Unable to start! " + error.getLocalizedMessage()));
-            // return;
-            // }
-
-            // ctx.sendMessage(msg("server.gg.commands.session.start.success")
-            // .param("sessionId", targetSession)
-            // .param("gameId", ctrl.getId()));
-            // });
-        }
-    }
-
-    private static class StopSession extends AbstractWorldCommand {
-        private final RequiredArg<String> sessionId;
-
-        public StopSession() {
+        public CleanSession() {
             super("stop", "Starts the next game for a session");
             sessionId = withRequiredArg("sessionId", "The session", SESSION_ID);
         }
@@ -307,50 +282,15 @@ public class SessionCommands extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> accessor) {
             var targetSession = sessionId.get(ctx);
-            ctx.sendMessage(error("Stopping games not yet supported!"));
+            ctx.sendMessage(error("Cleaning games not yet supported!"));
 
-            // var future = GauntletOrchestrator.stopGame(accessor, targetSession);
-            // ctx.sendMessage(msg("server.gg.commands.session.stop.pending")
-            // .param("sessionId", targetSession));
-
-            // future.whenComplete((ctrl, error) -> {
-            // if (error != null) {
-            // ctx.sendMessage(error("Unable to stop! " + error.getLocalizedMessage()));
-            // return;
-            // }
-            // ctx.sendMessage(msg("server.gg.commands.session.stop.success")
-            // .param("sessionId", targetSession)
-            // .param("gameId", ctrl.getId()));
-            // });
-        }
-    }
-
-    private static class NextGameSession extends AbstractWorldCommand {
-        private final RequiredArg<String> sessionId;
-
-        public NextGameSession() {
-            super("next", "Sets up the next game for a session");
-            sessionId = withRequiredArg("sessionId", "The session", SESSION_ID);
-        }
-
-        @Override
-        protected void execute(CommandContext ctx, World arg1, Store<EntityStore> accessor) {
-            var targetSession = sessionId.get(ctx);
-            ctx.sendMessage(error("Transitioning to the next game not yet supported!"));
-
-            // var future = GauntletOrchestrator.setupGame(accessor, targetSession);
-            // ctx.sendMessage(msg("server.gg.commands.session.setup.pending")
-            // .param("sessionId", targetSession));
-
-            // future.whenComplete((ctrl, error) -> {
-            // if (error != null) {
-            // ctx.sendMessage(error("Unable to setup! " + error.getLocalizedMessage()));
-            // return;
-            // }
-            // ctx.sendMessage(msg("server.gg.commands.session.setup.success")
-            // .param("sessionId", targetSession)
-            // .param("gameId", ctrl.getId()));
-            // });
+            GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, targetSession)
+                    .withMessages(ctx::sendMessage).withCallback(message -> {
+                        ctx.sendMessage(message);
+                        ctx.sendMessage(msg("server.gg.commands.session.setup.success")
+                                .param("sessionId", targetSession)
+                                .param("gameId", "Momentarily Disabled"));
+                    }));
         }
     }
 }
