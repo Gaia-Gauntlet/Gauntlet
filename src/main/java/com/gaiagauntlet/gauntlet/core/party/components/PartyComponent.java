@@ -5,7 +5,7 @@ import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
-import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
+import com.hypixel.hytale.codec.codecs.set.SetCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -17,7 +17,7 @@ import java.util.*;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 public class PartyComponent {
-    private static HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     public static final BuilderCodec<PartyComponent> CODEC = BuilderCodec
         .builder(PartyComponent.class, PartyComponent::new)
@@ -25,8 +25,11 @@ public class PartyComponent {
             (c, v) -> c.id = v,
             c -> c.id
         ).add()
-        .append(new KeyedCodec<>("Players", new ArrayCodec<>(Codec.UUID_STRING, UUID[]::new)),
-            (c, v) -> c.players = v,
+        .append(new KeyedCodec<>("Players", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
+            (c, v) -> {
+                c.players.clear();
+                c.players.addAll(v);
+            },
             c -> c.players
         ).add()
         .append(new KeyedCodec<>("Owner", Codec.UUID_STRING),
@@ -36,20 +39,20 @@ public class PartyComponent {
         .build();
 
     @Getter String id;
-    UUID[] players = new UUID[0];
+    Set<UUID> players = new HashSet<>();
     @Getter UUID owner;
 
     private PartyComponent() {}
 
-    public PartyComponent(String id, UUID[] players) {
-        if (players.length == 0) {
+    public PartyComponent(String id, Set<UUID> players) {
+        if (players.isEmpty()) {
             throw new InvalidParameterException("Party cannot be formed with no players");
         }
         this.id = id;
         this.players = players;
-        this.owner = players[0];
+        this.owner = players.stream().findAny().get();
     }
-    public PartyComponent(String id, UUID[] players, UUID owner) {
+    public PartyComponent(String id, Set<UUID> players, UUID owner) {
         this.id = id;
         this.players = players;
         this.owner = owner;
@@ -62,31 +65,26 @@ public class PartyComponent {
                 .param("player", playerRef.getUsername())
             );
         }
-
-        var playerList = new ArrayList<>(Arrays.stream(players).toList());
-        playerList.add(player);
-        players = playerList.toArray(playerList.toArray(new UUID[0]));
+        players.add(player);
     }
 
     public boolean removePlayer(UUID player) {
         var playerRef = PlayerUtils.get(player);
 
         boolean isOwner = owner.equals(player);
-        if (isOwner && players.length <= 1) {
+        if (isOwner && players.size() <= 1) {
             GauntletUtils.withResource().removeParty(id);
             return true;
         }
-        var playerList = new ArrayList<>(Arrays.stream(players).toList());
-        boolean removed = playerList.remove(player);
+        boolean removed = players.remove(player);
         if (removed) {
-            players = playerList.toArray(playerList.toArray(new UUID[0]));
             if (Objects.nonNull(playerRef)) {
                 sendMessage(msg("server.gg.commands.party.left")
                     .param("player", playerRef.getUsername())
                 );
             }
         }
-        if (isOwner) setOwner(playerList.getFirst());
+        if (isOwner) setOwner(players.stream().findAny().get());
         return removed;
     }
 
@@ -94,7 +92,7 @@ public class PartyComponent {
         if (owner == null) {
             LOGGER.atSevere().log("Parties must always have an owner");
             return;
-        } else if (Arrays.stream(players).noneMatch(p -> p.equals(owner))) {
+        } else if (players.stream().noneMatch(p -> p.equals(owner))) {
             LOGGER.atSevere().log("Player with UUID " + owner + " cannot be set as owner of" +
                 "party with ID " + id + "because they are not in the team.");
             return;
@@ -114,11 +112,11 @@ public class PartyComponent {
     }
 
     public boolean includesPlayer(UUID player) {
-        return Arrays.asList(players).contains(player);
+        return players.contains(player);
     }
 
     public int size() {
-        return players.length;
+        return players.size();
     }
 
     public void sendMessage(Message message) {
