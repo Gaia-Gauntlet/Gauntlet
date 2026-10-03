@@ -95,8 +95,8 @@ public final class SessionTab implements AdminTab {
         page.pushStatus(msg("server.gg.commands.session.setup.pending").param("sessionId", sessionId));
         GauntletEventRegistry.dispatch(
                 new SessionEvent(SessionOperation.SETUP, sessionId)
-                        .withMessages(page::pushStatus)
-                        .withCallback(message -> {
+                        .onMessage(msg -> page.pushStatus(msg.toMessage()))
+                        .onComplete(message -> {
                             page.pushStatus(msg("server.gg.commands.session.setup.success")
                                     .param("sessionId", sessionId)
                                     .param("gameId", "<GameID not available>"));
