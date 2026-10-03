@@ -37,7 +37,7 @@ public final class PlayerUtils {
     }
 
     public static boolean isOnline(@Nonnull UUID uuid) {
-        return !Objects.isNull(Universe.get().getPlayer(uuid));
+        return Objects.nonNull(Universe.get().getPlayer(uuid));
     }
 
     /**

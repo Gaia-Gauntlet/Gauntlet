@@ -1,13 +1,55 @@
 {
   "TeamList": {
     "TrickyTrorks": {
-      "Name": "Tricky Trorks",
-      "Players": [
-        "da9b0aee-c2bc-4b10-bee7-b8ca22157aa7",
-        "fdd094a9-7241-4b70-b94f-5894d1c6c999",
-        "5176f0e1-415e-4a42-be27-c7a868eb93c5",
-        "BrokenNameasdasdasd"
-      ]
+      "Name": "Tricky Trorks"
+    },
+    "KeenKweebecs": {
+      "Name": "Keen Kweebecs",
+      "Icon": "UI/Custom/GG/TeamIcons/Kweebec.png"
+    },
+    "FluffyFerans": {
+      "Name": "Fluffy Ferans",
+      "Icon": "UI/Custom/GG/TeamIcons/Feran.png"
+    },
+    "ObservantOutlanders": {
+      "Name": "Observant Outlanders",
+      "Icon": "UI/Custom/GG/TeamIcons/Outlander.png"
+    },
+    "VarynsVoid": {
+      "Name": "Varyn's Void",
+      "Icon": "UI/Custom/GG/TeamIcons/Void.png"
+    },
+    "BumblingBramblekin": {
+      "Name": "Bumbling Bramblekin",
+      "Icon": "UI/Custom/GG/TeamIcons/Bramblekin.png"
+    },
+    "GoofyGoblins": {
+      "Name": "Goofy Goblins",
+      "Icon": "UI/Custom/GG/TeamIcons/Goblin.png"
+    },
+    "KookyKlops": {
+      "Name": "Kooky Klops",
+      "Icon": "UI/Custom/GG/TeamIcons/Klops.png"
+    },
+    "SleepySlothians": {
+      "Name": "Sleepy Slothians",
+      "Icon": "UI/Custom/GG/TeamIcons/Slothian.png"
+    },
+    "ScaryScaraks": {
+      "Name": "Scary Scaraks",
+      "Icon": "UI/Custom/GG/TeamIcons/Scarak.png"
+    },
+    "DeadlyDinosaurs": {
+      "Name": "DeadlyDinosaurs",
+      "Icon": "UI/Custom/GG/TeamIcons/Dinosaur.png"
+    },
+    "SaucySaurians": {
+      "Name": "Saucy Saurians",
+      "Icon": "UI/Custom/GG/TeamIcons/Saurian.png"
+    },
+    "WackyWerewolves": {
+      "Name": "Wacky Werewolves",
+      "Icon": "UI/Custom/GG/TeamIcons/Werewolf.png"
     }
   }
 }

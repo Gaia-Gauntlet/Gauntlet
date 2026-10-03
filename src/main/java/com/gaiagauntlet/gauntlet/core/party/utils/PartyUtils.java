@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,11 @@ import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg
 public class PartyUtils {
     public static final long EXPIRY_SECONDS = 180;
     private PartyUtils() {}
+
+    public static Collection<PartyComponent> getParties() {
+        var resource = GauntletUtils.withResource();
+        return resource.getParties().values();
+    }
 
     public static PartyComponent getParty(String partyId) {
         var resource = GauntletUtils.withResource();
