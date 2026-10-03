@@ -109,9 +109,7 @@ public class GameSession {
     }
 
     public boolean available() {
-        return sessionState == SessionState.FINISHED
-                || sessionState == SessionState.IDLE
-                || sessionState == SessionState.ERROR;
+        return !sessionState.active();
     }
 
     /** gets the next available game */
@@ -120,25 +118,39 @@ public class GameSession {
         return gameSequence.peekFirst();
     }
 
+    private boolean transitionBlocked(SessionState state, @Nullable String gameIdCheck) {
+        if (gameIdCheck != null && !gameIdCheck.equals(currentGame)) {
+            AdminLog.add(gameIdCheck,
+                    "Game " + gameIdCheck + " in " + getId() + " failed to switch to " + state.toString() + "! Game "
+                            + currentGame
+                            + " was somehow registered instead");
+            return true;
+        }
+
+        if (sessionState.to(SessionState.SETTING_UP))
+            return false; // transition allowed, not blocked
+        AdminLog.add(gameIdCheck == null ? AdminLog.GLOBAL : gameIdCheck,
+                "Game failed to switch to " + state.toString() + "! State is " + sessionState
+                        + " instead!");
+        return true;
+    }
+
     /**
      * transitions to the next game, popping it from the list and setting it as
      * current
      */
     @Nullable
     public String startNext() {
-        if (sessionState == SessionState.RUNNING || sessionState == SessionState.SETTING_UP) {
-            AdminLog.add(
-                    "Failed to start next game because the state is " + sessionState);
+        if (transitionBlocked(SessionState.SETTING_UP, null))
             return null;
-        }
 
-        errorReason = null;
         currentGame = gameSequence.pollFirst();
-
+        
         if (currentGame == null) {
             return null;
         }
-
+        
+        errorReason = null;
         sessionState = SessionState.SETTING_UP;
         return currentGame;
     }
@@ -151,23 +163,10 @@ public class GameSession {
      * <b>MANAGED BY THE ORCHESTRATOR</b>
      */
     public boolean setRunning(String gameIdCheck) {
+        if (transitionBlocked(SessionState.RUNNING, gameIdCheck))
+            return false;
+
         errorReason = null;
-        if (!currentGame.equals(gameIdCheck)) {
-            AdminLog.add(gameIdCheck,
-                    "Game failed to switch to running! Game " + currentGame + " was somehow registered instead");
-            return false;
-        }
-        if (sessionState == SessionState.RUNNING) {
-            AdminLog.add(gameIdCheck,
-                    "Game " + currentGame + " attempted to double-start");
-            return true; // actually fine, the game is already running. Double-marking is not the end of
-                         // the world
-        }
-        if (sessionState != SessionState.SETTING_UP) {
-            AdminLog.add(gameIdCheck,
-                    "Game failed to switch to running! State is " + sessionState + " instead of setting up!");
-            return false;
-        }
         sessionState = SessionState.RUNNING;
         return true;
     }
@@ -183,29 +182,24 @@ public class GameSession {
      * @return
      */
     public boolean setComplete(String gameIdCheck) {
-        if (!currentGame.equals(gameIdCheck)) {
-            AdminLog.add(gameIdCheck,
-                    "Game failed to switch to complete! Game " + currentGame + " is already running");
+        if (transitionBlocked(SessionState.FINISHED, gameIdCheck))
             return false;
-        }
-        if (sessionState == SessionState.FINISHED || sessionState == SessionState.IDLE) {
-            AdminLog.add(gameIdCheck,
-                    "Game " + currentGame + " attempted to double-complete");
-            return true; // actually fine, the game is already running. Double-marking is not the end of
-                         // the world
-        }
-        if (sessionState == SessionState.ERROR) {
-            AdminLog.add(gameIdCheck,
-                    "Game " + currentGame + " in an errored state, recovering to idle");
-            sessionState = SessionState.IDLE;
-            return true;
-        }
-        if (sessionState != SessionState.RUNNING) {
-            AdminLog.add(gameIdCheck,
-                    "Game failed to switch to complete! State is " + sessionState + " instead of running!");
-            return false;
-        }
+        errorReason = null;
         sessionState = SessionState.FINISHED;
+        return true;
+    }
+
+    /**
+     * Returns TRUE if the transition happened. Returns FALSE if already in cleaning
+     * or game is not running
+     * 
+     * @param gameIdCheck
+     * @return
+     */
+    public boolean setCleaning(String gameIdCheck) {
+        if (transitionBlocked(SessionState.CLEANING, gameIdCheck))
+            return false;
+        sessionState = SessionState.CLEANING;
         return true;
     }
 
@@ -219,6 +213,7 @@ public class GameSession {
     public void addGame(@Nonnull String gameId) {
         gameSequence.addLast(gameId);
     }
+
     public void addGames(@Nonnull Collection<String> games) {
         gameSequence.addAll(games);
     }

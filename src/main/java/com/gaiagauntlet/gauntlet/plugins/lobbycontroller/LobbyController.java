@@ -60,7 +60,7 @@ public abstract class LobbyController extends GameController {
             hubAccessor.getExternalData().getWorld().execute(() -> {
                 // hop to the hub thread again to finalize the initialization of the component
                 hubStore.put(LobbyComponent.getComponentType(), new LobbyComponent(world));
-                
+
             });
             // ensure that a weird world doesn't throw us into an odd thread, hop into the
             // world thread
@@ -95,20 +95,20 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
-    public final CompletableFuture<Void> cleanGame(ComponentAccessor<EntityStore> hubAccessor, GameSession session) {
+    public final CompletableFuture<Void> cleanGame(World hubAccessor, GameSession session) {
         // remove the game
         return CompletableFuture.completedFuture(null);
     };
 
     @Override
-    public final CompletableFuture<Void> playerJoin(ComponentAccessor<EntityStore> hubAccessor, String sessionId,
+    public final CompletableFuture<Void> playerJoin(World hubAccessor, String sessionId,
             PlayerRef player) {
         // add a player to the game
         return CompletableFuture.completedFuture(null);
     };
 
     @Override
-    public final CompletableFuture<Void> playerLeave(ComponentAccessor<EntityStore> hubAccessor, String sessionId,
+    public final CompletableFuture<Void> playerLeave(World hubAccessor, String sessionId,
             PlayerRef player) {
         return CompletableFuture.completedFuture(null);
         // remove a player from the game

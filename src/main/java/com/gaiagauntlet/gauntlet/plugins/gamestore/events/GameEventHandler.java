@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -18,7 +19,7 @@ import com.hypixel.hytale.server.core.Message;
 public class GameEventHandler {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    public static void GameEndHandler(GauntletEvent.GameEnd evt) {
+    public static void GameEndHandler(GameEndEvent evt) {
         var gameId = evt.getGameId();
         if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController gameController)) {
             return;
@@ -39,7 +40,7 @@ public class GameEventHandler {
 
         evt.defer(GauntletUtils.runAsync(gameWorld, () -> {
             var writes = new ArrayList<SessionWriter>();
-            var gameEcs = GameStore.withStore(gameWorld, gameId);
+            var gameEcs = GameStore.withStore(gameWorld, sessionId);
             for (var plugin : persistentPlugins) {
                 try {
                     writes.add(plugin.capture(gameWorld, gameEcs, sessionId));
@@ -51,7 +52,7 @@ public class GameEventHandler {
                 }
             }
             return writes;
-        }).thenCompose(sessionWrites -> GauntletUtils.runAsync(gameWorld, () -> {
+        }).thenCompose(sessionWrites -> GauntletUtils.runAsync(GauntletUtils.withHubWorld(), () -> {
             for (var writer : sessionWrites) {
                 try {
                     writer.apply(session);
