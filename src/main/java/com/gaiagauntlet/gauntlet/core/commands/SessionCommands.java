@@ -143,7 +143,7 @@ public class SessionCommands extends AbstractCommandCollection {
         public DestroySession() {
             super("destroy", "Destroys a session");
             addAliases("d");
-            sessionId = withRequiredArg("sessionId", "The session to destroy", ArgTypes.STRING);
+            sessionId = withRequiredArg("sessionId", "The session to destroy", SESSION_ID);
         }
 
         @Override
