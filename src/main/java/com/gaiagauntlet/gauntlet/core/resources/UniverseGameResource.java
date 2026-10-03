@@ -54,4 +54,16 @@ public class UniverseGameResource {
         sessions.put(session.getId(), session);
         return true;
     }
+
+    /**
+     * Deletes the session. Should be run from the Orchestrator's delete session.
+     * This does zero cleanup and may lead to stale/missing/broken data
+     */
+    public boolean removeSession(GameSession session) {
+        if (!sessions.containsKey(session.getId())) {
+            return false; // to remove
+        }
+        sessions.remove(session.getId());
+        return true;
+    }
 }

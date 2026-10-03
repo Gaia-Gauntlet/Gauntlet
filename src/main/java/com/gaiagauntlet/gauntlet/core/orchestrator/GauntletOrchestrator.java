@@ -1,7 +1,8 @@
-package com.gaiagauntlet.gauntlet.core;
+package com.gaiagauntlet.gauntlet.core.orchestrator;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
@@ -13,6 +14,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  * 90% of the business logic for this should exist within the GameController
  * 
  * The Orchestrator is simply there to route and standardize implementations
+ * 
+ * All business-logic implementations should be within the handlers/
  */
 public class GauntletOrchestrator {
 

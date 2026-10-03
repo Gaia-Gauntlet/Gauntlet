@@ -1,7 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
 
-import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;

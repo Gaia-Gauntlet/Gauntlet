@@ -2,9 +2,9 @@ package com.gaiagauntlet.gauntlet.core.commands;
 
 import javax.annotation.Nonnull;
 
-import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;

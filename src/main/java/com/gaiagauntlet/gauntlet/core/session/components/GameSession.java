@@ -93,6 +93,9 @@ public class GameSession {
     @Getter
     @NotNull
     private SessionState sessionState = SessionState.SETTING_UP;
+    @Getter
+    @Nullable
+    private String errorReason;
 
     public GameSession() {
         sessionComponents = new ConcurrentHashMap<>();
@@ -104,7 +107,9 @@ public class GameSession {
     }
 
     public boolean available() {
-        return sessionState == SessionState.FINISHED || sessionState == SessionState.IDLE;
+        return sessionState == SessionState.FINISHED
+                || sessionState == SessionState.IDLE
+                || sessionState == SessionState.ERROR;
     }
 
     /** gets the next available game */
@@ -119,6 +124,7 @@ public class GameSession {
      */
     @Nullable
     public String startNext() {
+        errorReason = null;
         String nextGame = getNext();
         if (nextGame == null) {
             currentGame = null;
@@ -126,7 +132,7 @@ public class GameSession {
         }
 
         currentGame = nextGame;
-        sessionState = SessionState.RUNNING;
+        sessionState = SessionState.SETTING_UP;
         int remainingGames = gameSequence.length - 1;
         if (remainingGames == 0) {
             gameSequence = new String[0];
@@ -141,8 +147,12 @@ public class GameSession {
     /**
      * Checks if the current game is still the current game, and then sets it as
      * running
+     * <br />
+     * <br />
+     * <b>MANAGED BY THE ORCHESTRATOR</b>
      */
     public boolean setRunning(String gameIdCheck) {
+        errorReason = null;
         if (!currentGame.equals(gameIdCheck)) {
             AdminLog.add(gameIdCheck,
                     "Game failed to switch to running! Game " + currentGame + " was somehow registered instead");
@@ -161,6 +171,49 @@ public class GameSession {
         }
         sessionState = SessionState.RUNNING;
         return true;
+    }
+
+    /**
+     * RULE: Can switch to Complete if currently in Running state. Warns if already
+     * finished/idle but returns true
+     * <br />
+     * <br />
+     * Recovers from an errored state - but keeps the error reason
+     * 
+     * @param gameIdCheck
+     * @return
+     */
+    public boolean setComplete(String gameIdCheck) {
+        if (!currentGame.equals(gameIdCheck)) {
+            AdminLog.add(gameIdCheck,
+                    "Game failed to switch to complete! Game " + currentGame + " is already running");
+            return false;
+        }
+        if (sessionState == SessionState.FINISHED || sessionState == SessionState.IDLE) {
+            AdminLog.add(gameIdCheck,
+                    "Game " + currentGame + " attempted to double-complete");
+            return true; // actually fine, the game is already running. Double-marking is not the end of
+                         // the world
+        }
+        if (sessionState == SessionState.ERROR) {
+            AdminLog.add(gameIdCheck,
+                    "Game " + currentGame + " in an errored state, recovering to idle");
+            sessionState = SessionState.IDLE;
+            return true;
+        }
+        if (sessionState != SessionState.RUNNING) {
+            AdminLog.add(gameIdCheck,
+                    "Game failed to switch to complete! State is " + sessionState + " instead of running!");
+            return false;
+        }
+        sessionState = SessionState.FINISHED;
+        return true;
+    }
+
+    /** Set if the session resulted in an error of some kind */
+    public void setErrored(String errorReason) {
+        sessionState = SessionState.ERROR;
+        this.errorReason = errorReason;
     }
 
     /** adds a game to the sequence */

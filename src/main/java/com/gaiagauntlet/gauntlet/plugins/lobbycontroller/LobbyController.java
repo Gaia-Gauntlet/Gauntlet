@@ -60,17 +60,7 @@ public abstract class LobbyController extends GameController {
             hubAccessor.getExternalData().getWorld().execute(() -> {
                 // hop to the hub thread again to finalize the initialization of the component
                 hubStore.put(LobbyComponent.getComponentType(), new LobbyComponent(world));
-                var check = session.setRunning(getId());
-                if (!check) {
-                    // something has gone horribly wrong
-                    LOGGER.atSevere().log(
-                            "Session in a weird state when starting %s! Defensively clearing world before things get too bad. Check admin log for details",
-                            getId());
-                    // TODO: I don't think the controller should handle recovery - only reporting.
-                    // The orchestrator should handle how a faulty state is recovered from
-                    cleanGame(hubAccessor, session);
-                    return;
-                }
+                
             });
             // ensure that a weird world doesn't throw us into an odd thread, hop into the
             // world thread
