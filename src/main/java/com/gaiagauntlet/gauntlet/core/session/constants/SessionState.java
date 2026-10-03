@@ -3,12 +3,12 @@ package com.gaiagauntlet.gauntlet.core.session.constants;
 import javax.annotation.Nonnull;
 
 public enum SessionState {
-    RUNNING,
-    SETTING_UP,
-    CLEANING,
     IDLE,
-    ERROR,
-    FINISHED;
+    SETTING_UP,
+    RUNNING,
+    CLEANING,
+    FINISHED,
+    ERROR;
 
     /**
      * Transition Rules for the closed state machine

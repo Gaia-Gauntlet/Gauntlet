@@ -10,8 +10,6 @@ public class GameEvent extends GauntletEvent {
 
     public enum GameOperation {
         START,
-        STOP,
-        CANCEL,
-        NEXT
+        STOP
     }
 }
