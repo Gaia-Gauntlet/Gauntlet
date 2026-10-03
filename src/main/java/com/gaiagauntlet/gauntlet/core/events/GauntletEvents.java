@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.event.EventRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -24,18 +25,21 @@ public class GauntletEvents {
         registry = plugin.getEventRegistry();
     }
 
-    public static <T extends GauntletEvent.Event> void on(@Nonnull Class<T> type, @Nonnull BiConsumer<World, T> listener) {
+    public static <T extends GauntletEvent.Event> void on(@Nonnull Class<T> type, @Nonnull Consumer<T> listener) {
+        on(null, type, listener);
+    }
+    
+    public static <T extends GauntletEvent.Event> void on(EventPriority priority, @Nonnull Class<T> type, @Nonnull Consumer<T> listener) {
         if (registry == null) {
             LOGGER.atSevere().log("Failed to listen for event because registry is not setup");
             return;
         }
-        registry.registerGlobal(type, event -> {
+        if (priority == null) {
+            priority = EventPriority.NORMAL;
+        }
+        registry.registerGlobal(priority, type, event -> {
             try {
-                // always run events on the hub world
-                var hubWorld = GauntletUtils.withHubWorld();
-                GauntletUtils.run(hubWorld, () -> {
-                    listener.accept(hubWorld, event);
-                });
+                listener.accept(event);
             } catch (RuntimeException e) {
                 LOGGER.atSevere().withCause(e).log("Listener for %s failed", type.getSimpleName());
             }

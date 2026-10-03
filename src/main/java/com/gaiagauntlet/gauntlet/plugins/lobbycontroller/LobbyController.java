@@ -6,9 +6,9 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
-import com.gaiagauntlet.gauntlet.core.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
@@ -46,7 +46,7 @@ public abstract class LobbyController extends GameController {
         }
 
         // register the early plugins
-        var persistentPlugins = GameRegistry.getPlugins(requiredPlugins(), PersistentGamePlugin.class);
+        var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
         for (var plugin : persistentPlugins) {
             try {
                 plugin.setup(hubAccessor, session, getId());
@@ -67,7 +67,7 @@ public abstract class LobbyController extends GameController {
             return onWorld(world, () -> {
                 var lobbyStore = world.getEntityStore().getStore();
 
-                var simplePlugins = GameRegistry.getPlugins(requiredPlugins(), SimpleGamePlugin.class);
+                var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
                 for (var plugin : simplePlugins) {
                     try {
                         plugin.setup(lobbyStore, getId());

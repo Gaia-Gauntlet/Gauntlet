@@ -1,6 +1,10 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
@@ -12,6 +16,8 @@ import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GameHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
 import com.hypixel.hytale.component.ComponentAccessor;
+import com.hypixel.hytale.event.EventPriority;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
@@ -30,30 +36,44 @@ public class GauntletOrchestrator {
      * 2) SessionId states should be cleared between games
      * 3) Games should be setup before any player is allowed to join
      * 4) Eventing needs
-     *     a) Failure Events
-     *     b) Session status updates
+     * a) Failure Events
+     * b) Session status updates
      * 5) threading needs
-     *     a) player join
-     *     b) player leave
-     *     c) server shutdown
-     *     d) server startup (load up from crashed server - attempt recovery?)
+     * a) player join
+     * b) player leave
+     * c) server shutdown
+     * d) server startup (load up from crashed server - attempt recovery?)
      */
 
+    /**
+     * Registers all of the events LATE so that they can be intercepted easily
+     */
     public static void setupListeners() {
         // session event handling
-        GauntletEvents.on(GauntletEvent.Session.class, SessionHandlers::handleSession);
-        GauntletEvents.on(GauntletEvent.SessionQueue.class, SessionHandlers::handleSessionQueue);
-        GauntletEvents.on(GauntletEvent.NewSession.class, SessionHandlers::handleNewSession);
-        
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.Session.class, wrap(SessionHandlers::handleSession));
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.SessionQueue.class, wrap(SessionHandlers::handleSessionQueue));
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.NewSession.class, wrap(SessionHandlers::handleNewSession));
+
         // game event handling
-        GauntletEvents.on(GauntletEvent.Game.class, GameHandlers::handleGame);
-        GauntletEvents.on(GauntletEvent.GameEnd.class, GameHandlers::handleGameEnd);
-        
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.Game.class, wrap(GameHandlers::handleGame));
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.GameEnd.class, wrap(GameHandlers::handleGameEnd));
+
         // player event handling
-        GauntletEvents.on(GauntletEvent.ConnectPlayer.class, PlayerHandlers::handleConnectPlayer);
-        GauntletEvents.on(GauntletEvent.DisconnectPlayer.class, PlayerHandlers::handleDisconnectPlayer);
-        GauntletEvents.on(GauntletEvent.AddPlayer.class, PlayerHandlers::handleAddPlayer);
-        GauntletEvents.on(GauntletEvent.RemovePlayer.class, PlayerHandlers::handleRemovePlayer);
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.ConnectPlayer.class, wrap(PlayerHandlers::handleConnectPlayer));
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.DisconnectPlayer.class, wrap(PlayerHandlers::handleDisconnectPlayer));
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.AddPlayer.class, wrap(PlayerHandlers::handleAddPlayer));
+        GauntletEvents.on(EventPriority.LATE, GauntletEvent.RemovePlayer.class, wrap(PlayerHandlers::handleRemovePlayer));
+    }
+
+    /** Ensures the event handler is always run on the hub world */
+    private static <T extends GauntletEvent.Event> Consumer<T> wrap(@Nonnull BiConsumer<World, T> listener) {
+        return (T event) -> {
+            // always run events on the hub world
+            var hubWorld = GauntletUtils.withHubWorld();
+            GauntletUtils.run(hubWorld, () -> {
+                listener.accept(hubWorld, event);
+            });
+        };
     }
 
     /**

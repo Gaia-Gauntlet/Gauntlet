@@ -2,12 +2,12 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
-import com.gaiagauntlet.gauntlet.core.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;

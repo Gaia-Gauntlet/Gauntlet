@@ -5,9 +5,12 @@ import java.util.function.Consumer;
 
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.event.IEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.*;
 
 import lombok.Getter;
@@ -151,10 +154,14 @@ public abstract class GauntletEvent {
      */
     public class GameEnd extends Event {
         @Getter private final String gameId;
-        
-        
-        public GameEnd(String gameId) {
+        @Getter private final String sessionId;
+        /** Accessor for where the game world is from */
+        @Getter private final ComponentAccessor<EntityStore> accessor;
+
+        public GameEnd(ComponentAccessor<EntityStore> accessor, String sessionId, String gameId) {
+            this.accessor = accessor;
             this.gameId = gameId;
+            this.sessionId = sessionId;
         }
     }
 

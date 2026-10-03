@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.core.gamestore.components;
+package com.gaiagauntlet.gauntlet.plugins.gamestore.components;
 
 import javax.annotation.Nullable;
 

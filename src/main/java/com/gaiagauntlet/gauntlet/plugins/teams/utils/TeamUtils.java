@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;

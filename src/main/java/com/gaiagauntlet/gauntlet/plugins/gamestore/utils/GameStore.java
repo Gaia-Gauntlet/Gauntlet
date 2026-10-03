@@ -1,7 +1,7 @@
-package com.gaiagauntlet.gauntlet.core.gamestore.utils;
+package com.gaiagauntlet.gauntlet.plugins.gamestore.utils;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
-import com.gaiagauntlet.gauntlet.core.gamestore.resource.WorldGameStore;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.resource.WorldGameStore;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
