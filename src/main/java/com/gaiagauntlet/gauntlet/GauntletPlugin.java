@@ -2,11 +2,11 @@ package com.gaiagauntlet.gauntlet;
 
 import com.gaiagauntlet.gauntlet.core.GauntletCore;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
-import com.gaiagauntlet.gauntlet.core.commands.PartyCommand;
+import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.party.resources.UniversePartyResource;
+import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
@@ -19,7 +19,6 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.Universe;
-
 import lombok.Getter;
 
 public class GauntletPlugin extends JavaPlugin {
@@ -60,9 +59,6 @@ public class GauntletPlugin extends JavaPlugin {
         UniverseGauntletResource.setResourceType(
             Universe.registerResource(UniverseGauntletResource.class, UniverseGauntletResource.ID,
                     UniverseGauntletResource.CODEC));
-        UniversePartyResource.setResourceType(
-            Universe.registerResource(UniversePartyResource.class, UniversePartyResource.ID,
-                UniversePartyResource.CODEC));
     }
 
     private void setupCommands() {
@@ -73,7 +69,19 @@ public class GauntletPlugin extends JavaPlugin {
     private void setupComponents() {
         var entityRegistry = getEntityStoreRegistry();
         PlayerComponent.setComponentType(
-                entityRegistry.registerComponent(PlayerComponent.class, PlayerComponent.ID, PlayerComponent.CODEC));
+            entityRegistry.registerComponent(
+                PlayerComponent.class,
+                PlayerComponent.ID,
+                PlayerComponent.CODEC
+            )
+        );
+        PartyInvitesComponent.setComponentType(
+            entityRegistry.registerComponent(
+                PartyInvitesComponent.class,
+                PartyInvitesComponent.ID,
+                PartyInvitesComponent.CODEC
+            )
+        );
     }
 
     private void setupPlugins() {

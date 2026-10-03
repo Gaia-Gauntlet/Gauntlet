@@ -1,22 +1,17 @@
 package com.gaiagauntlet.gauntlet.core.party.components;
 
-import com.gaiagauntlet.gauntlet.core.party.resources.UniversePartyResource;
-import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
-import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.universe.Universe;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import lombok.Getter;
-import org.jspecify.annotations.Nullable;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 
 public class PartyComponent {
     private static HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -66,7 +61,7 @@ public class PartyComponent {
     public boolean removePlayer(UUID player) {
         boolean isOwner = owner.equals(player);
         if (isOwner && players.length <= 1) {
-            Universe.get().getResource(UniversePartyResource.getResourceType()).removeParty(id);
+            GauntletUtils.withResource().removeParty(id);
             return true;
         }
         var playerList = new ArrayList<>(Arrays.stream(players).toList());
@@ -86,6 +81,17 @@ public class PartyComponent {
             return;
         }
         this.owner = owner;
+    }
+
+    public List<PlayerRef> getAllOnlinePlayers() {
+        var players = new ArrayList<PlayerRef>();
+        for (UUID uuid : this.players) {
+            var player = PlayerUtils.get(uuid);
+            if (Objects.nonNull(player)) {
+                players.add(player);
+            }
+        }
+        return players;
     }
 
     public boolean includesPlayer(UUID player) {

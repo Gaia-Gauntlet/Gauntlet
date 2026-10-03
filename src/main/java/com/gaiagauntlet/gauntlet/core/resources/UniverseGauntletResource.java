@@ -1,9 +1,12 @@
 package com.gaiagauntlet.gauntlet.core.resources;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -14,6 +17,8 @@ import com.hypixel.hytale.server.core.universe.resources.UniverseResourceType;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.annotation.Nonnull;
 
 /**
  * Universe-scoped resource for game management. Mutations should only happen
@@ -28,10 +33,18 @@ public class UniverseGauntletResource {
                     (resource, v) -> resource.sessions = v,
                     resource -> resource.sessions)
             .add()
+            .append(new KeyedCodec<>("Parties",
+                    new MapCodec<>(PartyComponent.CODEC, ConcurrentHashMap::new, false)),
+                (resource, v) -> resource.parties = v,
+                resource -> resource.parties)
+            .add()
             .build();
 
     @Setter @Getter private static UniverseResourceType<UniverseGauntletResource> resourceType;
-    @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
+    @Nonnull @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
+    @Nonnull @Getter private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
+
+    // Sessions
 
     public Optional<GameSession> getSession(String id) {
         return Optional.ofNullable(sessions.get(id));
@@ -48,7 +61,7 @@ public class UniverseGauntletResource {
 
     /**
      * Deletes the session. Should be run from the Orchestrator's delete session.
-     * This does zero cleanup and may lead to stale/missing/broken data
+     * This does zero clean-up and may lead to stale/missing/broken data
      */
     public boolean removeSession(GameSession session) {
         if (session == null || session.getId() == null) return false;
@@ -58,4 +71,21 @@ public class UniverseGauntletResource {
         sessions.remove(session.getId());
         return true;
     }
+
+    // Parties
+
+    public PartyComponent getParty(String partyId) {
+        return parties.get(partyId);
+    }
+
+    public PartyComponent createParty(String partyId, UUID owner) {
+        var newParty = new PartyComponent(partyId, new UUID[]{owner});
+        parties.put(partyId, newParty);
+        return newParty;
+    }
+
+    public PartyComponent removeParty(String partyId) {
+        return parties.remove(partyId);
+    }
+
 }

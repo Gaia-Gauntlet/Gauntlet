@@ -1,4 +1,6 @@
 error= <color is="#f70000"><b>{message}</b></color>
+
+# ==================== Sessions ====================
 session.create.pending=<color is="#f7d600">Adding session {sessionId}...</color>
 session.create.success=<color is="#4af700">Session {sessionId} added!</color>
 
@@ -23,4 +25,6 @@ session.start.success=<color is="#4af700">Started {gameId} in {sessionId}</color
 session.stop.pending=<color is="#f7d600">Stopping {sessionId}</color>
 session.stop.success=<color is="#4af700">Stopped {gameId} in {sessionId}</color>
 
-
+# ==================== Party ====================
+party.header = <color is="#ebcb94">======</color> <b>{name}</b> <color is="#ebcb94">======</color>
+party.member = <color is="#edd977">{i}. <b>{name}</b></color>
