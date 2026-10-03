@@ -227,7 +227,7 @@ public class SessionCommands extends AbstractCommandCollection {
             var game = gameId.get(ctx);
             var session = sessionId.get(ctx);
             GauntletUtils.sessionFor(session).ifPresentOrElse(ses -> {
-                var success = ses.removeGameIfPresent(game);
+                var success = ses.removeGame(game);
                 ctx.sendMessage(msg("server.gg.commands.session.remove.success")
                         .param("sessionId", session)
                         .param("gameId", game)

@@ -7,7 +7,7 @@ import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class SessionHandlers extends HandlerUtils {
@@ -152,5 +152,47 @@ public class SessionHandlers extends HandlerUtils {
 
         // var resource = withResource();
         // resource.removeSession(session);
+    }
+
+    public static void sessionQueue(World hub, GauntletEvent.SessionQueue sessionEvt) {
+        var sessionOp = sessionFor(sessionEvt.getSessionId());
+
+        if (!sessionOp.isPresent()) {
+            sessionEvt.Error("Session " + sessionEvt.getSessionId() + " is not present");
+            sessionEvt.complete();
+            return;
+        }
+
+        var session = sessionOp.get();
+        var op = sessionEvt.getOp();
+        var gameQueue = sessionEvt.getNewQueue();
+        // validate games
+        for (var game : gameQueue) {
+            if (!GameRegistry.hasGame(game)) {
+                // validation failed
+                sessionEvt.complete(
+                        MessageUtils.error("Game " + game + " is not a valid, registered game! Cancelling operation"));
+                return;
+            }
+        }
+
+        switch (op) {
+            case SET -> {
+                session.setGames(gameQueue);
+                sessionEvt.complete();
+                return;
+            }
+            case REMOVE -> {
+                for (var game : gameQueue) {
+                    session.removeGame(game);
+                }
+                sessionEvt.complete();
+                return;
+            }
+            case APPEND -> {
+                session.addGames(gameQueue);
+                sessionEvt.complete();
+            }
+        }
     }
 }

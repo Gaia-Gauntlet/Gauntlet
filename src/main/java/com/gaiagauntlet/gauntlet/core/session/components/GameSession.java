@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.core.session.components;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,8 +50,8 @@ public class GameSession {
                     holder -> holder.sessionComponents)
             .add()
             .append(new KeyedCodec<>("Sequence", Codec.STRING_ARRAY),
-                    (holder, v) -> holder.gameSequence = v,
-                    holder -> holder.gameSequence)
+                    (holder, v) -> holder.setGames(Arrays.asList(v)),
+                    holder -> holder.gameSequence.toArray(new String[0]))
             .add()
             .append(new KeyedCodec<>("CurrentGame", Codec.STRING),
                     (holder, v) -> holder.currentGame = v,
@@ -80,7 +82,7 @@ public class GameSession {
     }
 
     @Getter
-    private String[] gameSequence;
+    private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
 
     @Getter
     // design here may change. My head canon is that the currentGame will pop from
@@ -115,7 +117,7 @@ public class GameSession {
     /** gets the next available game */
     @Nullable
     public String getNext() {
-        return gameSequence == null || gameSequence.length == 0 ? null : gameSequence[0];
+        return gameSequence.peekFirst();
     }
 
     /**
@@ -124,23 +126,20 @@ public class GameSession {
      */
     @Nullable
     public String startNext() {
-        errorReason = null;
-        String nextGame = getNext();
-        if (nextGame == null) {
-            currentGame = null;
+        if (sessionState == SessionState.RUNNING || sessionState == SessionState.SETTING_UP) {
+            AdminLog.add(
+                    "Failed to start next game because the state is " + sessionState);
             return null;
         }
 
-        currentGame = nextGame;
-        sessionState = SessionState.SETTING_UP;
-        int remainingGames = gameSequence.length - 1;
-        if (remainingGames == 0) {
-            gameSequence = new String[0];
-        } else {
-            System.arraycopy(gameSequence, 1, gameSequence, 0, remainingGames);
-            gameSequence = Arrays.copyOf(gameSequence, remainingGames);
+        errorReason = null;
+        currentGame = gameSequence.pollFirst();
+
+        if (currentGame == null) {
+            return null;
         }
 
+        sessionState = SessionState.SETTING_UP;
         return currentGame;
     }
 
@@ -218,42 +217,21 @@ public class GameSession {
 
     /** adds a game to the sequence */
     public void addGame(@Nonnull String gameId) {
-
-        if (gameSequence == null || gameSequence.length == 0) {
-            gameSequence = new String[] { gameId };
-            return;
-        }
-
-        String[] updatedSequence = Arrays.copyOf(gameSequence, gameSequence.length + 1);
-        updatedSequence[gameSequence.length] = gameId;
-        gameSequence = updatedSequence;
+        gameSequence.addLast(gameId);
+    }
+    public void addGames(@Nonnull Collection<String> games) {
+        gameSequence.addAll(games);
     }
 
-    /** removes a game from the sequence */
-    public void removeGame(int index) {
-        if (gameSequence == null || index < 0 || index >= gameSequence.length) {
-            return;
+    public void setGames(Collection<String> games) {
+        gameSequence.clear();
+        if (games != null) {
+            gameSequence.addAll(games);
         }
-
-        int remainingGames = gameSequence.length - index - 1;
-        if (remainingGames > 0) {
-            System.arraycopy(gameSequence, index + 1, gameSequence, index, remainingGames);
-        }
-        gameSequence = Arrays.copyOf(gameSequence, gameSequence.length - 1);
     }
 
     /** removes a game if it is present */
-    public boolean removeGameIfPresent(@Nonnull String gameId) {
-        if (gameSequence == null) {
-            return false;
-        }
-
-        for (int index = 0; index < gameSequence.length; index++) {
-            if (gameId.equals(gameSequence[index])) {
-                removeGame(index);
-                return true;
-            }
-        }
-        return false;
+    public boolean removeGame(@Nonnull String gameId) {
+        return gameSequence.removeFirstOccurrence(gameId);
     }
 }

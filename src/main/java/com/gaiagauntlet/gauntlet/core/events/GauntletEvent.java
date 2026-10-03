@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.events;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
@@ -103,8 +104,21 @@ public abstract class GauntletEvent {
     }
 
     /** Sets the session's game queue - does NOT override the current game */
-    public class SetSessionQueue extends Event {
+    public class SessionQueue extends Event {
+        @Getter private final String sessionId;
+        @Getter private final Collection<String> newQueue;
+        @Getter private final SessionQueueOp op = SessionQueueOp.SET;
 
+        public SessionQueue(String sessionId, Collection<String> games) {
+            newQueue = games;
+            this.sessionId = sessionId;
+        }
+    }
+
+    public enum SessionQueueOp {
+        SET,
+        REMOVE,
+        APPEND
     }
 
     /**
