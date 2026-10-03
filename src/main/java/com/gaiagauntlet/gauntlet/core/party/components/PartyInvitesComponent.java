@@ -9,6 +9,7 @@ import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 
+@NoArgsConstructor
 public class PartyInvitesComponent implements Component<EntityStore> {
     @Getter @Setter private static ComponentType<EntityStore, PartyInvitesComponent> componentType;
     public static final String ID = "PartyInvitesComponent";
@@ -23,7 +25,7 @@ public class PartyInvitesComponent implements Component<EntityStore> {
     public static final BuilderCodec<PartyInvitesComponent> CODEC = BuilderCodec
         .builder(PartyInvitesComponent.class, PartyInvitesComponent::new)
         .append(new KeyedCodec<>("Invites",
-            new MapCodec<>(Invite.CODEC, HashMap::new)),
+            new MapCodec<>(Invite.CODEC, HashMap::new, false)),
             (c, v) -> c.invites = v,
             c -> c.invites
         )
@@ -32,8 +34,6 @@ public class PartyInvitesComponent implements Component<EntityStore> {
 
     /** Map from partyId to a party invite */
     private Map<String, Invite> invites = new HashMap<>();
-
-    public PartyInvitesComponent() {}
 
     public Invite getInvite(String partyId) {
         return invites.get(partyId);
@@ -80,6 +80,10 @@ public class PartyInvitesComponent implements Component<EntityStore> {
         public Invite(String partyId, UUID sender, ScheduledFuture<?> expiryFuture) {
             this.partyId = partyId;
             this.expiryFuture = expiryFuture;
+        }
+
+        public void cancel() {
+            if (Objects.nonNull(expiryFuture)) expiryFuture.cancel(false);
         }
     }
 }

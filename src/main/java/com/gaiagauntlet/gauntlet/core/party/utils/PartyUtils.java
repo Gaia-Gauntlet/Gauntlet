@@ -10,6 +10,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Locale;
 import java.util.Objects;
@@ -26,6 +28,10 @@ public class PartyUtils {
         return resource.getParty(partyId);
     }
 
+    /**
+     * Ensures that the player is always in a party, even if it's a singleton.
+     */
+    @Nonnull
     public static PartyComponent getPartyForPlayer(PlayerRef player) {
         var resource = GauntletUtils.withResource();
         for (PartyComponent party : resource.getParties().values()) {
@@ -39,11 +45,46 @@ public class PartyUtils {
         );
     }
 
+    /**
+     * Gets the party for the player without making a new one if they aren't in one already.
+     */
+    @Nullable
+    private static PartyComponent getPartyForPlayerNullable(PlayerRef player) {
+        var resource = GauntletUtils.withResource();
+        for (PartyComponent party : resource.getParties().values()) {
+            party.includesPlayer(player.getUuid());
+            return party;
+        }
+        return null;
+    }
+
+    public static void leaveParty(PlayerRef playerRef) {
+        var party = getPartyForPlayer(playerRef);
+        if (party.size() == 1) {
+            playerRef.sendMessage(msg("You're the only one in this party, so you cannot leave.").color(Color.RED));
+            return;
+        }
+        var success = party.removePlayer(playerRef.getUuid());
+        if (success) {
+            playerRef.sendMessage(msg("server.gg.commands.party.left.you").param("party", party.getId()));
+        } else {
+            playerRef.sendMessage(msg("Failed to leave the party. See logs.").color(Color.RED));
+        }
+    }
+
+    // Invites
+
     public static void sendPartyInvite(PlayerRef sender, PlayerRef recipient) {
         var party = getPartyForPlayer(sender);
         var invites = getInvitesComp(recipient);
-        if (hasActiveInvite(party.getId(), recipient)) {
+        if (sender.getUuid().equals(recipient.getUuid())) {
+            sender.sendMessage(msg("You can't invite yourself to a party!").color(Color.RED));
+            return;
+        } else if (hasActiveInvite(party.getId(), recipient)) {
             sender.sendMessage(msg(recipient.getUsername() + " already has an active invite from you."));
+            return;
+        } else if (party.includesPlayer(recipient.getUuid())) {
+            sender.sendMessage(msg(recipient.getUsername() + " is already in this party!"));
             return;
         }
         var expiry = HytaleServer.SCHEDULED_EXECUTOR.schedule(
@@ -79,21 +120,42 @@ public class PartyUtils {
                 + " has expired."
             ));
 
-            if (Objects.nonNull(invite.getExpiryFuture())) invite.getExpiryFuture().cancel(false);
+            invite.cancel();
         });
     }
 
 
     public static void acceptInvite(PartyComponent party, PlayerRef recipient) {
-        var recipParty = getPartyForPlayer(recipient);
-        if (Objects.nonNull(recipParty)) {
+        var recipParty = getPartyForPlayerNullable(recipient);
+        if (Objects.nonNull(recipParty)) { // Remove player from current party
             recipParty.removePlayer(recipient.getUuid());
         }
         if (!hasActiveInvite(party.getId(), recipient)) {
             recipient.sendMessage(msg("You don't have an invite from this party!").color(Color.RED));
             return;
         }
+        var invites = getInvitesComp(recipient);
+        var invite = invites.getInvite(party.getId());
+        invite.cancel();
         party.addPlayer(recipient.getUuid());
+        recipient.sendMessage(msg("server.gg.commands.party.joined.you").param("party", party.getId()));
+    }
+
+    public static void declineInvite(PartyComponent party, PlayerRef recipient) {
+        var invites = getInvitesComp(recipient);
+        var invite = invites.removeInvite(party.getId());
+        if (Objects.isNull(invite)) {
+            recipient.sendMessage(msg("You don't have an invite to that party to decline!").color(Color.RED));
+            return;
+        }
+        recipient.sendMessage(msg("party.invite.declined.you").param("party", party.getId()));
+        PlayerRef sender = PlayerUtils.get(invite.getSender());
+        if (Objects.nonNull(sender)) {
+            sender.sendMessage(msg("party.invite.declined")
+                .param("recipient", recipient.getUsername())
+                .param("party", party.getId())
+            );
+        }
     }
 
     static boolean hasActiveInvite(String partyId, PlayerRef recipient) {

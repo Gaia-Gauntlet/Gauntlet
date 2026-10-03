@@ -97,4 +97,8 @@ public class PartyComponent {
     public boolean includesPlayer(UUID player) {
         return Arrays.asList(players).contains(player);
     }
+
+    public int size() {
+        return players.length;
+    }
 }
