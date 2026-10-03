@@ -13,6 +13,7 @@ import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQue
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -126,6 +127,8 @@ public class SessionCommands extends AbstractCommandCollection {
                 }
             }
 
+            ctx.sendMessage(msg("server.gg.commands.session.create.pending")
+                    .param("sessionId", session));
             GauntletEventRegistry.dispatch(
                     new NewSessionEvent(gameSession)
                             .withMessages(ctx::sendMessage)
@@ -150,6 +153,8 @@ public class SessionCommands extends AbstractCommandCollection {
         protected void execute(CommandContext ctx, World arg1, Store<EntityStore> arg2) {
             var targetSession = sessionId.get(ctx);
 
+            ctx.sendMessage(msg("server.gg.commands.session.destroy.pending")
+                    .param("sessionId", targetSession));
             GauntletEventRegistry.dispatch(
                     new SessionEvent(SessionOperation.DELETE, targetSession)
                             .withMessages(ctx::sendMessage)
@@ -177,17 +182,18 @@ public class SessionCommands extends AbstractCommandCollection {
                 return;
             }
 
-            for (var session : sessions.entrySet()) {
-                var games = session.getValue().getGameSequence();
+            for (var sessionEntry : sessions.entrySet()) {
+                var games = sessionEntry.getValue().getGameSequence();
+                var session = sessionEntry.getValue();
                 ctx.sendMessage(
                         markup(Message.translation("server.gg.commands.session.list.line")
-                                .param("sessionId", session.getKey())
-                                .param("game", session.getValue().getCurrentGame())
+                                .param("sessionId", sessionEntry.getKey())
+                                .param("game", session.getCurrentGame())
                                 .param("gamesList",
                                         games != null && games.size() >= 1
-                                                ? String.join(", ", session.getValue().getGameSequence())
+                                                ? String.join(", ", session.getGameSequence())
                                                 : "No games queued")
-                                .param("state", session.getValue().getSessionState().toString())));
+                                .param("state", session.getSessionState().toString() + " " + session.getErrorReason() )));
             }
         }
     }
@@ -266,7 +272,7 @@ public class SessionCommands extends AbstractCommandCollection {
                         ctx.sendMessage(message);
                         ctx.sendMessage(msg("server.gg.commands.session.setup.success")
                                 .param("sessionId", targetSession)
-                                .param("gameId", "Momentarily Disabled"));
+                                .param("gameId", "<id unavailable>"));
                     }));
         }
     }
@@ -289,7 +295,7 @@ public class SessionCommands extends AbstractCommandCollection {
                         ctx.sendMessage(message);
                         ctx.sendMessage(msg("server.gg.commands.session.setup.success")
                                 .param("sessionId", targetSession)
-                                .param("gameId", "Momentarily Disabled"));
+                                .param("gameId", "<id unavailable>"));
                     }));
         }
     }

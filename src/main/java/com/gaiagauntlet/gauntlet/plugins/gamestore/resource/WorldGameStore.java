@@ -32,7 +32,7 @@ public class WorldGameStore implements Resource<EntityStore> {
             .build();
 
     // gameId is just the current session
-    private Map<String, GameEcs> games;
+    private Map<String, GameEcs> games = new ConcurrentHashMap<>();
 
     public Optional<GameEcs> get(String sessionId) {
         return Optional.ofNullable(games.get(sessionId));

@@ -7,6 +7,7 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.events.GameEventHandler;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.resource.WorldGameStore;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -27,6 +28,8 @@ public class GameStorePlugin implements SimpleGamePlugin {
     public void init(JavaPlugin host) {
         // intercepts any session plugins and persists their state
         GauntletEventRegistry.on(GameEndEvent.class, GameEventHandler::GameEndHandler);
+        var registry = host.getEntityStoreRegistry();
+        WorldGameStore.setResourceType(registry.registerResource(WorldGameStore.class, WorldGameStore.ID, WorldGameStore.CODEC));
     }
 
     @Override
