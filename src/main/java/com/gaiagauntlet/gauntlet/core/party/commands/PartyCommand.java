@@ -1,19 +1,19 @@
 package com.gaiagauntlet.gauntlet.core.party.commands;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
-import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NonNull;
+
+import java.awt.*;
+import java.util.Objects;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
@@ -23,6 +23,7 @@ public class PartyCommand extends AbstractPlayerCommand {
         addAliases("p");
         requireNoPermission();
         addSubCommand(new AddCommand());
+        addSubCommand(new AcceptCommand());
     }
 
     @Override
@@ -32,10 +33,17 @@ public class PartyCommand extends AbstractPlayerCommand {
         var players = party.getAllOnlinePlayers();
         for (int i = 0; i < players.size(); i++) {
             var player = players.get(i);
-            context.sendMessage(msg("server.gg.commands.party.member")
-                .param("i", (i+1))
-                .param("name", player.getUsername())
-            );
+            if (party.getOwner().equals(player.getUuid())) {
+                context.sendMessage(msg("server.gg.commands.party.owner")
+                    .param("i", (i+1))
+                    .param("name", player.getUsername())
+                );
+            } else {
+                context.sendMessage(msg("server.gg.commands.party.member")
+                    .param("i", (i+1))
+                    .param("name", player.getUsername())
+                );
+            }
         }
     }
 
@@ -54,13 +62,33 @@ public class PartyCommand extends AbstractPlayerCommand {
         @Override
         protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             PlayerRef recipient = recipientArg.get(context);
-
             PartyUtils.sendPartyInvite(playerRef, recipient);
         }
     }
 
+    public static class AcceptCommand extends AbstractPlayerCommand {
+
+        private final RequiredArg<String> partyArg = withRequiredArg(
+            "party", "Party you'd like to join", ArgTypes.STRING
+        );
+
+        public AcceptCommand() {
+            super("accept", "Invite a player to your party");
+        }
+
+        @Override
+        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
+            var partyId = partyArg.get(context);
+            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-2));
+            if (Objects.isNull(party)) {
+                context.sendMessage(msg("Invalid party name!").color(Color.RED));
+                return;
+            }
+            PartyUtils.acceptInvite(party, playerRef);
+        }
+    }
+
     // TODO: Decline invite command
-    // TODO: Accept invite command
     // TODO: Leave command
-    // TODO: Base command to show team and people in it
+    // TODO: Transfer owner command
 }

@@ -27,4 +27,11 @@ session.stop.success=<color is="#4af700">Stopped {gameId} in {sessionId}</color>
 
 # ==================== Party ====================
 party.header = <color is="#ebcb94">======</color> <b>{name}</b> <color is="#ebcb94">======</color>
-party.member = <color is="#edd977">{i}. <b>{name}</b></color>
+party.owner = <color is="#edd977"><i>{i}.</i> <b>{name}</b></color>
+party.member = <color is="#edd977"><i>{i}.</i> {name}</color>
+
+party.invite.sent = Invited <b>{recipient}</b> to join {party}!\n<i>The invite will expire in {expiry}s</i>.
+party.invite.received = <color is="#ebcb94">======</color> You have received a party invite from <b>{sender}</b>! <color is="#ebcb94">======</color>\n\\
+                        Use <b>/party accept "{party}"</b> to <color is="#77ed7d">accept</color>.\n\\
+                        Use <b>/party decline "{party}"</b> to <color is="#ed7f77">decline</color>.\n\
+                        <color is="#ebcb94">======</color> The invite will expire in {expiry}s <color is="#ebcb94">======</color>

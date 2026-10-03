@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 
+import java.awt.*;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -17,8 +18,13 @@ import java.util.concurrent.TimeUnit;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 public class PartyUtils {
-    public static final long EXPIRY_SECONDS = 30;
+    public static final long EXPIRY_SECONDS = 180;
     private PartyUtils() {}
+
+    public static PartyComponent getParty(String partyId) {
+        var resource = GauntletUtils.withResource();
+        return resource.getParty(partyId);
+    }
 
     public static PartyComponent getPartyForPlayer(PlayerRef player) {
         var resource = GauntletUtils.withResource();
@@ -45,10 +51,14 @@ public class PartyUtils {
             TimeUnit.SECONDS
         );
         invites.putInvite(party.getId(), sender.getUuid(), expiry);
-        recipient.sendMessage(Message.raw("You have received a party invite from "
-            + sender.getUsername() + "!"
-        ));
-        sender.sendMessage(Message.raw("Invited " + recipient.getUsername() + " to join your party"));
+        recipient.sendMessage(msg("server.gg.commands.party.invite.received")
+            .param("sender", sender.getUsername())
+            .param("party", party.getId())
+            .param("expiry", EXPIRY_SECONDS));
+        sender.sendMessage(msg("server.gg.commands.party.invite.sent")
+            .param("recipient", recipient.getUsername())
+            .param("party", party.getId())
+            .param("expiry", EXPIRY_SECONDS));
     }
 
     public static void expireInvite(String partyId, PlayerRef sender, PlayerRef recipient) {
@@ -73,8 +83,17 @@ public class PartyUtils {
         });
     }
 
-    public static void acceptInvite(PlayerRef sender, PlayerRef recipient) {
 
+    public static void acceptInvite(PartyComponent party, PlayerRef recipient) {
+        var recipParty = getPartyForPlayer(recipient);
+        if (Objects.nonNull(recipParty)) {
+            recipParty.removePlayer(recipient.getUuid());
+        }
+        if (!hasActiveInvite(party.getId(), recipient)) {
+            recipient.sendMessage(msg("You don't have an invite from this party!").color(Color.RED));
+            return;
+        }
+        party.addPlayer(recipient.getUuid());
     }
 
     static boolean hasActiveInvite(String partyId, PlayerRef recipient) {
@@ -82,8 +101,7 @@ public class PartyUtils {
         var invite = invites.getInvite(partyId);
         if (Objects.isNull(invite)) return false;
         if (Objects.isNull(invite.getExpiryFuture())) {
-            // This is a stale invite, cancel it
-            invites.removeInvite(partyId);
+            // This is a stale invite, discount it
             return false;
         }
         return true;
