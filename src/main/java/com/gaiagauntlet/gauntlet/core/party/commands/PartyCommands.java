@@ -155,7 +155,5 @@ public class PartyCommands extends AbstractPlayerCommand {
         }
     }
 
-    // TODO: Decline invite command
-    // TODO: Leave command
     // TODO: Transfer owner command
 }

@@ -37,6 +37,7 @@ party.joined = <b>{player}</b> <color is="#77ed7d">joined</color> your party!
 party.left.you = You <color is="#ed7f77">left</color> <b>{party}</b>.
 party.left = <b>{player}</b> <color is="#ed7f77">left</color> your party!
 
+party.invite.leaderonly = Only the <b>party leader</b> can send party invites!
 party.invite.declined.you = <color is="#ed7f77">Declined</color> invite to join <b>{party}</b>.
 party.invite.declined = <b>{recipient}</b> <color is="#ed7f77">decline</color> your invite to join <b>{party}</b>.
 party.invite.sent = Invited <b>{recipient}</b> to join {party}!\n<i>The invite will expire in {expiry}s</i>.

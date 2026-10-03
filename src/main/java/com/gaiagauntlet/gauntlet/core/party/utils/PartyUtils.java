@@ -80,6 +80,9 @@ public class PartyUtils {
         if (sender.getUuid().equals(recipient.getUuid())) {
             sender.sendMessage(msg("You can't invite yourself to a party!").color(Color.RED));
             return;
+        } else if (!party.getOwner().equals(sender.getUuid())) {
+            sender.sendMessage(msg("server.gg.commands.party.invite.leaderonly"));
+            return;
         } else if (hasActiveInvite(party.getId(), recipient)) {
             sender.sendMessage(msg(recipient.getUsername() + " already has an active invite from you."));
             return;
