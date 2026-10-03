@@ -2,10 +2,12 @@ package com.gaiagauntlet.gauntlet;
 
 import com.gaiagauntlet.gauntlet.core.GauntletCore;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
+import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
+import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
+import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
@@ -17,7 +19,6 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.Universe;
-
 import lombok.Getter;
 
 public class GauntletPlugin extends JavaPlugin {
@@ -55,20 +56,32 @@ public class GauntletPlugin extends JavaPlugin {
     }
 
     private void setupResources() {
-        UniverseGameResource.setResourceType(
-                Universe.registerResource(UniverseGameResource.class, UniverseGameResource.ID,
-                        UniverseGameResource.CODEC));
+        UniverseGauntletResource.setResourceType(
+            Universe.registerResource(UniverseGauntletResource.class, UniverseGauntletResource.ID,
+                    UniverseGauntletResource.CODEC));
     }
 
     private void setupCommands() {
-        gauntletCommand = new GauntletCommand();
-        getCommandRegistry().registerCommand(gauntletCommand);
+        getCommandRegistry().registerCommand(new GauntletCommand());
+        getCommandRegistry().registerCommand(new PartyCommands());
     }
 
     private void setupComponents() {
         var entityRegistry = getEntityStoreRegistry();
         PlayerComponent.setComponentType(
-                entityRegistry.registerComponent(PlayerComponent.class, PlayerComponent.ID, PlayerComponent.CODEC));
+            entityRegistry.registerComponent(
+                PlayerComponent.class,
+                PlayerComponent.ID,
+                PlayerComponent.CODEC
+            )
+        );
+        PartyInvitesComponent.setComponentType(
+            entityRegistry.registerComponent(
+                PartyInvitesComponent.class,
+                PartyInvitesComponent.ID,
+                PartyInvitesComponent.CODEC
+            )
+        );
     }
 
     private void setupPlugins() {

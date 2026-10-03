@@ -40,7 +40,7 @@ public abstract class LobbyController extends GameController {
             return CompletableFuture.completedFuture(null);
         }
         var existing = hubStore.get(LobbyComponent.getComponentType());
-        if (existing != null) {
+        if (existing.isPresent()) {
             LOGGER.atWarning().log(
                     "Initializing %s with session %s where a game was already initialized! Previous game did not shut down correctly. Clearing and continuing",
                     getId(), sessionId);

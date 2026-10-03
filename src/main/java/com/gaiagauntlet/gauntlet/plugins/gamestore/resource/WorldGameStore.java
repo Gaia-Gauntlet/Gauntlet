@@ -19,9 +19,7 @@ import lombok.Setter;
 
 public class WorldGameStore implements Resource<EntityStore> {
     public static final String ID = "WorldGameStore";
-    @Getter
-    @Setter
-    private static ResourceType<EntityStore, WorldGameStore> resourceType;
+    @Getter @Setter private static ResourceType<EntityStore, WorldGameStore> resourceType;
     public static final BuilderCodec<@NotNull WorldGameStore> CODEC = BuilderCodec
             .builder(WorldGameStore.class, WorldGameStore::new)
             .append(new KeyedCodec<>("Games",
