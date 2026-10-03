@@ -63,8 +63,8 @@ public final class GaiaLog {
     public GaiaLog(Level level) {
         this.level = level;
         this.millis = System.currentTimeMillis();
-        gameId = "<No Game>";
-        sessionId = "<No Session>";
+        gameId = GLOBAL;
+        sessionId = GLOBAL;
     }
 
     public GaiaLog withSession(String id) {
@@ -77,7 +77,10 @@ public final class GaiaLog {
     }
 
     public GaiaLog withSession(GameSession session) {
-        this.gameId = session.getCurrentGame();
+        if (session.getCurrentGame() != null) {
+            this.gameId = session.getCurrentGame();
+        }
+        this.gameId = GLOBAL;
         this.sessionId = session.getId();
         return this;
     }
@@ -123,8 +126,8 @@ public final class GaiaLog {
 
     @Override 
     public String toString() {
-        return "[" + level.getName() + "]" + TIME.format(Instant.ofEpochMilli(millis))
-                + " [" + gameId + "] " + text;
+        return "[" + level.getName() + "] " + TIME.format(Instant.ofEpochMilli(millis))
+                + " [" + gameId + "] " + text.getAnsiMessage();
     }
 
     public Message toMessage() {

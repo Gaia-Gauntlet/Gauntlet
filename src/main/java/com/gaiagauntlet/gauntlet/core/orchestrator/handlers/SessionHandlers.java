@@ -210,6 +210,11 @@ public class SessionHandlers extends HandlerUtils {
             }
         }
 
+        if (gameQueue.size() == 0) {
+            Resolve.error(sessionEvt, session, "server.gg.events.game.queue.missing");
+            return;
+        }
+
         switch (op) {
             case SET -> {
                 session.setGames(gameQueue);
@@ -218,17 +223,20 @@ public class SessionHandlers extends HandlerUtils {
                 return;
             }
             case REMOVE -> {
+                var removed = 0;
                 for (var game : gameQueue) {
-                    session.removeGame(game);
+                    var success = session.removeGame(game);
+                    if (success) removed++;
                 }
-                Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.success")
-                        .param("action", "removed games"));
+                Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.removal.success")
+                        .param("games", removed)
+                    );
                 return;
             }
             case APPEND -> {
                 session.addGames(gameQueue);
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.success")
-                        .param("action", "appended games"));
+                        .param("action", "appended " + gameQueue.size() + " game(s)"));
             }
         }
     }

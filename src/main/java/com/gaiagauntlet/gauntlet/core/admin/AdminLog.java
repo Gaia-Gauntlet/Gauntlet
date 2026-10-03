@@ -50,7 +50,7 @@ public final class AdminLog {
             var it = LINES.descendingIterator();
             while (it.hasNext() && out.size() < limit) {
                 var line = it.next();
-                if (line.getGameId().isEmpty() || line.getGameId().equals(session.getCurrentGame())) {
+                if (line.getSessionId() == GLOBAL || line.getSessionId().isEmpty() || line.getSessionId().equals(session.getId())) {
                     out.add(line);
                 }
             }
