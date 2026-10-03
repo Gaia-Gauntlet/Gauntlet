@@ -51,6 +51,7 @@ public final class PlayerUtils {
         idsToPlayer.put(uuid, normalized);
     }
 
+    @Nullable
     public static PlayerRef get(UUID playerUuid) {
         return Universe.get().getPlayer(playerUuid);
     }

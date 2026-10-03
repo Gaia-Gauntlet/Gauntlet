@@ -7,11 +7,14 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import lombok.Getter;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 public class PartyComponent {
     private static HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -53,12 +56,21 @@ public class PartyComponent {
     }
 
     public void addPlayer(UUID player) {
+        var playerRef = PlayerUtils.get(player);
+        if (Objects.nonNull(playerRef)) {
+            sendMessage(msg("server.gg.commands.party.joined")
+                .param("player", playerRef.getUsername())
+            );
+        }
+
         var playerList = new ArrayList<>(Arrays.stream(players).toList());
         playerList.add(player);
         players = playerList.toArray(playerList.toArray(new UUID[0]));
     }
 
     public boolean removePlayer(UUID player) {
+        var playerRef = PlayerUtils.get(player);
+
         boolean isOwner = owner.equals(player);
         if (isOwner && players.length <= 1) {
             GauntletUtils.withResource().removeParty(id);
@@ -66,7 +78,14 @@ public class PartyComponent {
         }
         var playerList = new ArrayList<>(Arrays.stream(players).toList());
         boolean removed = playerList.remove(player);
-        if (removed) players = playerList.toArray(playerList.toArray(new UUID[0]));
+        if (removed) {
+            players = playerList.toArray(playerList.toArray(new UUID[0]));
+            if (Objects.nonNull(playerRef)) {
+                sendMessage(msg("server.gg.commands.party.left")
+                    .param("player", playerRef.getUsername())
+                );
+            }
+        }
         if (isOwner) setOwner(playerList.getFirst());
         return removed;
     }
@@ -100,5 +119,11 @@ public class PartyComponent {
 
     public int size() {
         return players.length;
+    }
+
+    public void sendMessage(Message message) {
+        for (PlayerRef partyMember : getAllOnlinePlayers()) {
+            partyMember.sendMessage(message);
+        }
     }
 }

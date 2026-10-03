@@ -19,12 +19,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 import java.util.Objects;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
-public class PartyCommand extends AbstractPlayerCommand {
+public class PartyCommands extends AbstractPlayerCommand {
     private static final SingleArgumentType<String> PARTY_ID = new SingleArgumentType<>(
         "server.commands.parsing.argtype.string.name", "server.commands.parsing.argtype.string.usage") {
         @Override
@@ -35,8 +34,14 @@ public class PartyCommand extends AbstractPlayerCommand {
         @Override
         public void suggest(@Nonnull CommandSender sender, @Nonnull String textAlreadyEntered,
                             int numParametersTyped, @Nonnull SuggestionResult result) {
-            SuggestionUtil.suggestFiltered(GauntletUtils.withResource().getParties().keySet(), textAlreadyEntered,
-                result);
+            SuggestionUtil.suggestFiltered(
+                GauntletUtils.withResource()
+                    .getParties().keySet()
+                    .stream().map(p -> '"' + p + '"')
+                    .toList(),
+                textAlreadyEntered,
+                result
+            );
         }
 
         @Override
@@ -45,7 +50,7 @@ public class PartyCommand extends AbstractPlayerCommand {
         }
     };
 
-    public PartyCommand() {
+    public PartyCommands() {
         super("party", "Commands related to player parties.");
         addAliases("p");
         requireNoPermission();
