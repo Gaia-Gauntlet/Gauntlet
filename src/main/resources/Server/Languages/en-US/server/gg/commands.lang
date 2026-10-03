@@ -1,10 +1,18 @@
 error= <color is="#f70000"><b>{message}</b></color>
-session.create.success=<color is="#f7d600">Session {sessionId} added!</color>
-session.list.line= <color is="#a2a2a2">{sessionId}</color> - <color is="#f7d600"><b>{game}</b></color> - {state}\
-                    \n<i>{gamesList}</i>
+session.create.pending=<color is="#f7d600">Adding session {sessionId}...</color>
+session.create.success=<color is="#4af700">Session {sessionId} added!</color>
+
+session.list.line=/---<b><color is="#fbff00">{sessionId}</color></b>---\\\
+                    \n<color is="#a2a2a2">Currnet Game:</color> <color is="#f7d600"><b>{game}</b></color>\
+                    \n<color is="#a2a2a2">State:</color> {state}\
+                    \n<color is="#a2a2a2">Game List:</color> <i>{gamesList}</i>\
+                    \n\\---
+
 session.add.success=<color is="#f7d600">Successfully added game {gameId} to {sessionId}</color>
 session.remove.success=<color is="#f7d600">{status} removed game {gameId} from {sessionId}</color>
-session.destroy.success=<color is="#f7d600">Removed {sessionId} from registry</color>
+
+session.destroy.pending=<color is="#f7d600">Removing {sessionId} from registry...</color>
+session.destroy.success=<color is="#4af700">Removed {sessionId} from registry</color>
 
 session.setup.pending=<color is="#f7d600">Setting up {sessionId}</color>
 session.setup.success=<color is="#4af700">Setup {gameId} in {sessionId}</color>

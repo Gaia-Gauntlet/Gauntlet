@@ -1,7 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.scoring.components;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

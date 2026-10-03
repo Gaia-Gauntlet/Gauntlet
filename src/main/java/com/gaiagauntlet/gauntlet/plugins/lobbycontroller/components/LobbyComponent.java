@@ -2,8 +2,8 @@ package com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponent;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 import lombok.Getter;

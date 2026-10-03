@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
@@ -37,12 +37,12 @@ public class TeamUtils {
     /** Creates a new team component if it is missing */
     @Nonnull
     public static TeamListComponent withTeamList(World world, String session) {
-        return GameStore.withStore(world, session).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
+        return GameStore.ensureStore(world, session).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
     }
     /** Creates a new team component if it is missing */
     @Nonnull
     public static TeamListComponent withTeamList(ComponentAccessor<EntityStore> accessor, String sessionId) {
-        return GameStore.withStore(accessor, sessionId).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
+        return GameStore.ensureStore(accessor, sessionId).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
     }
     /** Creates a new team list if it is missing */
     @Nullable

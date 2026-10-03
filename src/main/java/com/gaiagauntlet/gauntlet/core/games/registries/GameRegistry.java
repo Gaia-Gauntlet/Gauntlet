@@ -53,6 +53,11 @@ public class GameRegistry {
             .toList();
     }
 
+    public static List<GamePlugin> getPlugins(List<String> ids) {
+        return ids.stream()
+                .map(pluginRegistry::get)
+                .toList();
+    }
     public static <T extends GamePlugin> List<T> getPlugins(List<String> ids, Class<T> type) {
         return ids.stream()
                 .map(pluginRegistry::get)
