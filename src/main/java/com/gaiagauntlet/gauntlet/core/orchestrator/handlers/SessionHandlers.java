@@ -59,7 +59,7 @@ public class SessionHandlers extends HandlerUtils {
                 return;
             }
             case CLEAN -> {
-                cancelGame(hub, sessionEvt, session);
+                cleanGame(hub, sessionEvt, session);
                 return;
             }
             case DELETE -> {
@@ -98,7 +98,7 @@ public class SessionHandlers extends HandlerUtils {
 
                 session.setErrored("Error thrown when setting up");
                 // cancel the game immediately - run on the hub thread
-                GauntletUtils.run(hub, () -> cancelGame(hub, sessionEvt, session));
+                GauntletUtils.run(hub, () -> cleanGame(hub, sessionEvt, session));
                 return;
             }
 
@@ -111,16 +111,22 @@ public class SessionHandlers extends HandlerUtils {
 
                 session.setErrored("Game was in a weird state when starting (session state mismatch)");
                 // cancel the game immediately - run on the hub thread
-                GauntletUtils.run(hub, () -> cancelGame(hub, sessionEvt, session));
+                GauntletUtils.run(hub, () -> cleanGame(hub, sessionEvt, session));
                 return;
             }
             sessionEvt.complete();
         });
     }
 
-    private static void cancelGame(World hub, SessionEvent sessionEvt, GameSession session) {
-
+    private static void cleanGame(World hub, SessionEvent sessionEvt, GameSession session) {
         var currentGame = session.getCurrentGame();
+        var isCleaning = session.setCleaning(currentGame);
+
+        if (!isCleaning) {
+            sessionEvt.complete(Message.raw("Already cleaning!"));
+            return;
+        }
+
         if (!(GameRegistry.getGame(currentGame).orElse(null) instanceof GameController game)) {
             sessionEvt.Error("No pending game");
             session.setErrored("No current game is available to cancel");
@@ -146,7 +152,7 @@ public class SessionHandlers extends HandlerUtils {
     private static void deleteSession(World hub, SessionEvent sessionEvt, GameSession session) {
         // if the game is running, cancel it
         if (!session.available()) {
-            cancelGame(hub, sessionEvt, session);
+            cleanGame(hub, sessionEvt, session);
             return;
         }
 

@@ -52,7 +52,7 @@ public class GauntletEventRegistry {
     public static void dispatch(@Nonnull GauntletEvent event) {
         // ensure on hub world
         GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
-            LOGGER.atFine().log("Event %s", event);
+            LOGGER.atInfo().log("Event %s", event);
             try {
                 var dispatcher = HytaleServer.get().getEventBus().dispatchFor((Class) event.getClass());
                 if (dispatcher.hasListener()) {
