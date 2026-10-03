@@ -1,8 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 
-import com.gaiagauntlet.gauntlet.core.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
+import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
@@ -10,16 +11,11 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.ComponentAccessor;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
-
+import java.util.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -37,12 +33,12 @@ public class TeamUtils {
     /** Creates a new team component if it is missing */
     @Nonnull
     public static TeamListComponent withTeamList(World world, String session) {
-        return GameStore.withStore(world, session).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
+        return GameStore.ensureStore(world, session).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
     }
     /** Creates a new team component if it is missing */
     @Nonnull
     public static TeamListComponent withTeamList(ComponentAccessor<EntityStore> accessor, String sessionId) {
-        return GameStore.withStore(accessor, sessionId).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
+        return GameStore.ensureStore(accessor, sessionId).ensure(TeamListComponent.getGameComponentType(), TeamListComponent::new);
     }
     /** Creates a new team list if it is missing */
     @Nullable
@@ -128,5 +124,59 @@ public class TeamUtils {
         if (teams == null) return 0d;
         return teams.getTeams().values().stream()
             .mapToDouble(TeamUtils::getScore).sum();
+    }
+
+    /**
+     * Initialise teams to a team list component from an asset. Does not populate teams beyond what
+     * has been manually defined in the {@code TeamListAsset}
+     */
+    public static void initialiseTeams(TeamListComponent teams, TeamListAsset teamAsset) {
+        for (TeamComponent team : teamAsset.getTeamList().values()) {
+            teams.addTeam(team.getId(), team.clone());
+        }
+    }
+
+    /**
+     * Distribute players across existing team components. Any players already in a team remain
+     * there, and new players are fit in appropriately
+     */
+    public static void distributePlayers(Collection<PlayerRef> players, TeamListComponent teams) {
+        var unassigned = new LinkedHashSet<>(players);
+        // First pass - Clean offline players, fill from parties if enabled.
+        for (var team : teams.getTeams().values()) {
+            for (UUID uuid : team.getPlayers()) {
+                // Remove offline players from team
+                PlayerRef player = PlayerUtils.get(uuid);
+                if (Objects.isNull(player)) {
+                    team.remove(uuid);
+                    continue;
+                }
+                // Remove players already assigned to team from unassigned
+                unassigned.remove(player);
+            }
+
+            if (!teams.isRespectParties()) continue;
+
+            // Check if any existing parties will fit in this team.
+            for (PartyComponent party : PartyUtils.getParties()) {
+                if (team.getSize() + party.getAllOnlinePlayers().size() <= teams.getTeamSize()) {
+                    // Party fits, add all players to the team
+                    for (PlayerRef player : party.getAllOnlinePlayers()) {
+                        // Don't include players not requested to be distributed
+                        if (!unassigned.contains(player)) continue;
+                        party.addPlayer(player.getUuid());
+                        unassigned.remove(player);
+                    }
+                }
+            }
+        }
+
+        // Second pass - Fill gaps with players not yet assigned (and not in a party if enabled)
+        for (var team : teams.getTeams().values()) {
+            while (team.getSize() < teams.getTeamSize() && !unassigned.isEmpty()) {
+                team.add(unassigned.removeFirst().getUuid());
+            }
+            if (unassigned.isEmpty()) break;
+        }
     }
 }

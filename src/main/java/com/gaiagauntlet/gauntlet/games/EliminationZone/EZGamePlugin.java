@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.EZBosses;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
@@ -24,6 +25,7 @@ public class EZGamePlugin extends JavaPlugin {
     @Override
     protected void setup() {
         LOGGER.atInfo().log("Setting up EZGame!");
+        // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
 
         // Setup each section - keeps the top-level plugin cleaner this way

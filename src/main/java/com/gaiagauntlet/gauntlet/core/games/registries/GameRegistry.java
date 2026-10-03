@@ -30,6 +30,10 @@ public class GameRegistry {
         return Optional.ofNullable(id == null ? null : controllerRegistry.get(id));
     }
 
+    public static Set<String> getGameIds() {
+        return controllerRegistry.keySet();
+    }
+
     public static boolean hasGame(String id) {
         return controllerRegistry.containsKey(id);
     }
@@ -49,6 +53,11 @@ public class GameRegistry {
             .toList();
     }
 
+    public static List<GamePlugin> getPlugins(List<String> ids) {
+        return ids.stream()
+                .map(pluginRegistry::get)
+                .toList();
+    }
     public static <T extends GamePlugin> List<T> getPlugins(List<String> ids, Class<T> type) {
         return ids.stream()
                 .map(pluginRegistry::get)

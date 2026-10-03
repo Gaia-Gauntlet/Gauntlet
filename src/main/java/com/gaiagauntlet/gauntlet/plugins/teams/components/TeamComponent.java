@@ -146,7 +146,7 @@ public class TeamComponent {
         icon = other.icon;
     }
 
-    public TeamComponent() {
+    private TeamComponent() {
         id = "";
     }
 

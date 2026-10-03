@@ -6,15 +6,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.hypixel.hytale.logger.HytaleLogger;
 
 /**
  * The last few hundred things worth telling an admin, kept in memory for the
  * dashboard's Log tab.
  */
 public final class AdminLog {
-
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     // global logs
     public static final String GLOBAL = "Global";
     private static final int CAPACITY = 300;
@@ -38,6 +42,7 @@ public final class AdminLog {
     }
 
     public static void add(@Nonnull String gameId, @Nonnull String text) {
+        LOGGER.atInfo().log(gameId + " " + text);
         synchronized (LINES) {
             LINES.addLast(new Line(System.currentTimeMillis(), gameId, text));
             while (LINES.size() > CAPACITY) {
@@ -48,13 +53,15 @@ public final class AdminLog {
 
     /** The newest lines first: the game's own plus server-wide ones. */
     @Nonnull
-    public static List<Line> recent(@Nonnull String gameId, int limit) {
+    public static List<Line> recent(@Nullable GameSession session, int limit) {
         var out = new ArrayList<Line>();
+        if (Objects.isNull(session)) return out;
+
         synchronized (LINES) {
             var it = LINES.descendingIterator();
             while (it.hasNext() && out.size() < limit) {
                 var line = it.next();
-                if (line.gameId().isEmpty() || line.gameId().equals(gameId)) {
+                if (line.gameId().isEmpty() || line.gameId().equals(session.getCurrentGame())) {
                     out.add(line);
                 }
             }

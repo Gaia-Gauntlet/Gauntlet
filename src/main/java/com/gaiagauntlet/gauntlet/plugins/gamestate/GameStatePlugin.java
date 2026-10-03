@@ -1,6 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestate;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.SessionTab;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -9,7 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.List;
 
 /** Simple state machine handler implementation */
-public class GameStatePlugin implements SimpleGamePlugin {
+public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     public static final String ID = "GameStatePlugin";
@@ -30,4 +33,9 @@ public class GameStatePlugin implements SimpleGamePlugin {
     }
 
     public void init(JavaPlugin host) {}
+
+    @Override
+    public AdminTab getAdminTab() {
+        return new SessionTab();
+    }
 }
