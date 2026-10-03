@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
-import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
+import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -15,7 +15,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  * thousand times
  */
 public class HandlerUtils {
-    public static UniverseGameResource withResource() {
+    public static UniverseGauntletResource withResource() {
         return GauntletUtils.withResource();
     }
 

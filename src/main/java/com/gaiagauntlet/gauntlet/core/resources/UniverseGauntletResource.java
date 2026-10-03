@@ -18,13 +18,11 @@ import lombok.Setter;
 /**
  * Universe-scoped resource for game management. Mutations should only happen
  * via the Orchestrator and nowhere else.
- * 
- * Reads
  */
-public class UniverseGameResource {
-    public static final String ID = "UniverseGameResource";
-    public static final BuilderCodec<@NotNull UniverseGameResource> CODEC = BuilderCodec
-            .builder(UniverseGameResource.class, UniverseGameResource::new)
+public class UniverseGauntletResource {
+    public static final String ID = "UniverseGauntletResource";
+    public static final BuilderCodec<@NotNull UniverseGauntletResource> CODEC = BuilderCodec
+            .builder(UniverseGauntletResource.class, UniverseGauntletResource::new)
             .append(new KeyedCodec<>("Sessions",
                     new MapCodec<>(GameSession.CODEC, ConcurrentHashMap::new, false)),
                     (resource, v) -> resource.sessions = v,
@@ -32,16 +30,11 @@ public class UniverseGameResource {
             .add()
             .build();
 
-    @Setter @Getter private static UniverseResourceType<UniverseGameResource> resourceType;
-
-    private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
+    @Setter @Getter private static UniverseResourceType<UniverseGauntletResource> resourceType;
+    @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
 
     public Optional<GameSession> getSession(String id) {
         return Optional.ofNullable(sessions.get(id));
-    }
-
-    public Map<String, GameSession> getSessions() {
-        return sessions;
     }
 
     public boolean addSession(GameSession session) {

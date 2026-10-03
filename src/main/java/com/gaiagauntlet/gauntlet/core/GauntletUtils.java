@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
-import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
+import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -20,8 +20,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
  */
 public class GauntletUtils {
     /** Shortcut for getting the universe resource with all the sessions */
-    public static UniverseGameResource withResource() {
-        return Universe.get().getResource(UniverseGameResource.getResourceType());
+    public static UniverseGauntletResource withResource() {
+        return Universe.get().getResource(UniverseGauntletResource.getResourceType());
     }
 
     @Nonnull
