@@ -170,6 +170,7 @@ public class TeamUtils {
                 }
             }
         }
+
         // Second pass - Fill gaps with players not yet assigned (and not in a party if enabled)
         for (var team : teams.getTeams().values()) {
             while (team.getSize() < teams.getTeamSize() && !unassigned.isEmpty()) {

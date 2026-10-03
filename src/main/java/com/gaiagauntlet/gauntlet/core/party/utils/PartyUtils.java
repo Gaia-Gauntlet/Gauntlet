@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
@@ -96,9 +97,13 @@ public class PartyUtils {
             sender.sendMessage(msg(recipient.getUsername() + " is already in this party!"));
             return;
         }
-        var expiry = HytaleServer.SCHEDULED_EXECUTOR.schedule(
-            () -> expireInvite(party.getId(), sender, recipient), EXPIRY_SECONDS,
-            TimeUnit.SECONDS
+        UUID uuid = sender.getWorldUuid();
+        assert uuid != null;
+        World world = Universe.get().getWorld(uuid);
+        assert world != null;
+        var expiry = world.scheduleAfter(
+            () -> expireInvite(party.getId(), sender, recipient),
+            EXPIRY_SECONDS, TimeUnit.SECONDS
         );
         invites.putInvite(party.getId(), sender.getUuid(), expiry);
         recipient.sendMessage(msg("server.gg.commands.party.invite.received")
@@ -112,27 +117,19 @@ public class PartyUtils {
     }
 
     public static void expireInvite(String partyId, PlayerRef sender, PlayerRef recipient) {
-        // Since this is called by a schedule executor, hop to recipient world thread to ensure
-        // we can successfully modify entity components.
-        assert recipient.getWorldUuid() != null;
-        World world = Universe.get().getWorld(recipient.getWorldUuid());
-        assert world != null;
-        world.execute(() -> {
-            var invites = getInvitesComp(recipient);
-            var invite = invites.removeInvite(partyId);
-            if (Objects.isNull(invite)) return;
+        var invites = getInvitesComp(recipient);
+        var invite = invites.removeInvite(partyId);
+        if (Objects.isNull(invite)) return;
 
-            recipient.sendMessage(Message.raw("Your invite from " + sender.getUsername()
-                + " has expired."
-            ));
-            sender.sendMessage(Message.raw("Your invite to " + recipient.getUsername()
-                + " has expired."
-            ));
+        recipient.sendMessage(Message.raw("Your invite from " + sender.getUsername()
+            + " has expired."
+        ));
+        sender.sendMessage(Message.raw("Your invite to " + recipient.getUsername()
+            + " has expired."
+        ));
 
-            invite.cancel();
-        });
+        invite.cancel();
     }
-
 
     public static void acceptInvite(PartyComponent party, PlayerRef recipient) {
         var recipParty = getPartyForPlayerNullable(recipient);
