@@ -127,7 +127,7 @@ public class GameSession {
             return true;
         }
 
-        if (sessionState.to(SessionState.SETTING_UP))
+        if (sessionState.to(state))
             return false; // transition allowed, not blocked
         AdminLog.add(gameIdCheck == null ? AdminLog.GLOBAL : gameIdCheck,
                 "Game failed to switch to " + state.toString() + "! State is " + sessionState

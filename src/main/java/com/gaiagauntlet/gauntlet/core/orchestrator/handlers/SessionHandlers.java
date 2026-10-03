@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -167,12 +168,16 @@ public class SessionHandlers extends HandlerUtils {
         var op = sessionEvt.getOp();
         var gameQueue = sessionEvt.getNewQueue();
         // validate games
-        for (var game : gameQueue) {
-            if (!GameRegistry.hasGame(game)) {
-                // validation failed
-                sessionEvt.complete(
-                        MessageUtils.error("Game " + game + " is not a valid, registered game! Cancelling operation"));
-                return;
+        if (op != SessionQueueOp.REMOVE) {
+
+            for (var game : gameQueue) {
+                if (!GameRegistry.hasGame(game)) {
+                    // validation failed
+                    sessionEvt.complete(
+                            MessageUtils
+                                    .error("Game " + game + " is not a valid, registered game! Cancelling operation"));
+                    return;
+                }
             }
         }
 
