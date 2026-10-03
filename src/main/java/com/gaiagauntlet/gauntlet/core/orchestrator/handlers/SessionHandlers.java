@@ -12,6 +12,7 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class SessionHandlers extends HandlerUtils {
@@ -151,8 +152,9 @@ public class SessionHandlers extends HandlerUtils {
         // clean players
         // for (var player : session.getParticipants())
 
-        // var resource = withResource();
-        // resource.removeSession(session);
+        var resource = withResource();
+        resource.removeSession(session);
+        sessionEvt.complete(Message.raw("Destroyed " + session.getId()));
     }
 
     public static void handleSessionQueue(World hub, SessionQueueEvent sessionEvt) {

@@ -60,6 +60,7 @@ public class UniverseGameResource {
      * This does zero cleanup and may lead to stale/missing/broken data
      */
     public boolean removeSession(GameSession session) {
+        if (session == null || session.getId() == null) return false;
         if (!sessions.containsKey(session.getId())) {
             return false; // to remove
         }
