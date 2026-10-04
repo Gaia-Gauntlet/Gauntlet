@@ -31,14 +31,16 @@ public class EliminatedComponent implements Component<EntityStore> {
 
     @Getter @Setter private long eliminatedAt;
 
-    public EliminatedComponent() {}
+    public EliminatedComponent() {
+        this.eliminatedAt = System.currentTimeMillis();
+    }
 
-    public EliminatedComponent(long eliminatedAt) {
-        this.eliminatedAt = eliminatedAt;
+    public EliminatedComponent(EliminatedComponent other) {
+        this.eliminatedAt = other.eliminatedAt;
     }
 
     @Override
-    public @Nullable Component<EntityStore> clone() {
-        return new EliminatedComponent(eliminatedAt);
+    public Component<EntityStore> clone() {
+        return new EliminatedComponent(this);
     }
 }

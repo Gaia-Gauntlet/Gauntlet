@@ -16,9 +16,7 @@ import org.jspecify.annotations.Nullable;
  * Component to give a player when they have been eliminated from a game.
  */
 public class TeamPlayerComponent implements Component<EntityStore> {
-    @Getter
-    @Setter
-    private static ComponentType<EntityStore, TeamPlayerComponent> componentType;
+    @Getter @Setter private static ComponentType<EntityStore, TeamPlayerComponent> componentType;
 
     public static BuilderCodec<@NotNull TeamPlayerComponent> CODEC = BuilderCodec
             .builder(TeamPlayerComponent.class, TeamPlayerComponent::new)
@@ -29,27 +27,35 @@ public class TeamPlayerComponent implements Component<EntityStore> {
             .documentation("The time that this entity was eliminated.")
             .add()
             .append(
-                    new KeyedCodec<>("Score", Codec.DOUBLE),
-                    TeamPlayerComponent::setScore,
-                    TeamPlayerComponent::getScore)
-            .documentation("The time that this entity was eliminated.")
+                    new KeyedCodec<>("Kills", Codec.INTEGER),
+                    TeamPlayerComponent::setKills,
+                    TeamPlayerComponent::getKills)
+            .documentation("The number of players killed by this player.")
             .add()
             .build();
 
     @Getter @Setter private String team;
-    /** Generic score the player holds. Shows up next to their username on refresh */
-    @Getter @Setter private Double score;
+    /** The number of players killed by this player. */
+    @Getter @Setter private int kills;
     public TeamPlayerComponent() {
-        score = 0.0d;
+        kills = 0;
     }
     public TeamPlayerComponent(TeamPlayerComponent other) {
-        score = other.score;
+        kills = other.kills;
         team = other.team;
     }
 
     public TeamPlayerComponent(String team) {
         this.team = team;
-        score = 0.0d;
+        kills = 0;
+    }
+
+    public int incrementKills() {
+        return ++kills;
+    }
+
+    public void reset() {
+        kills = 0;
     }
 
     @Override
