@@ -1,0 +1,176 @@
+// Shared building blocks for every Gaia Gauntlet GM dashboard tab.
+//
+// The one rule that matters here: buttons never carry a fixed width. Each one flexes to an equal
+// share of its row, so a long label shrinks to fit instead of being clipped - which is what went
+// wrong the first time this page was built.
+$Common = "../Common.ui";
+
+// ---------------------------------------------------------------------------------------------
+// Containers
+// ---------------------------------------------------------------------------------------------
+
+// Frame around one section of a tab.
+@Card = Group {
+    LayoutMode: Top;
+    Anchor: (Bottom: 8);
+    Background: (TexturePath: "../Common/ContainerPanelPatch.png", Border: 4);
+    Padding: (Full: 10);
+};
+
+// Re-export, so a tab file only ever needs to import GmCommon.
+@ScrollbarStyle = $Common.@DefaultScrollbarStyle;
+
+// A scrolling column of cards. Tabs are built from two or three of these side by side.
+@Column = Group {
+    FlexWeight: 1;
+    LayoutMode: TopScrolling;
+    ScrollbarStyle: @ScrollbarStyle;
+};
+
+// Gap between two columns.
+@Gutter = Group {
+    Anchor: (Width: 6, Left: 6, Right: 6);
+};
+
+// Inset panel holding a generated list of rows.
+@ListPanel = Group {
+    LayoutMode: Top;
+    Background: (Color: #000000(0.18));
+    Padding: (Full: 6);
+};
+
+// Row of equally sized buttons.
+@ButtonRow = Group {
+    LayoutMode: Left;
+    Anchor: (Height: 30, Top: 4);
+};
+
+// Picker + go button, for choosing a specific boss or weather option.
+@PickerRow = Group {
+    LayoutMode: Left;
+    Anchor: (Height: 30, Top: 6);
+};
+
+// ---------------------------------------------------------------------------------------------
+// Text
+// ---------------------------------------------------------------------------------------------
+
+// Section header inside a card.
+@Header = Label {
+    @Text = "";
+    Style: (FontSize: 13, RenderBold: true, RenderUppercase: true, TextColor: #E8A93B, LetterSpacing: 1);
+    Anchor: (Height: 19, Bottom: 6);
+    Text: @Text;
+};
+
+// Caption above a group of buttons.
+@Caption = Label {
+    @Text = "";
+    Style: (FontSize: 11, RenderUppercase: true, TextColor: #5a6a7a, LetterSpacing: 1);
+    Anchor: (Height: 15, Top: 8);
+    Text: @Text;
+};
+
+// A key/value row. The value label has id #Value so a page can set `#SomeField #Value.Text`.
+@Field = Group {
+    @Key = "";
+    LayoutMode: Left;
+    Anchor: (Height: 20);
+
+    Label {
+        Text: @Key;
+        Anchor: (Width: 116);
+        Style: (FontSize: 12, TextColor: #878e9c, VerticalAlignment: Center);
+    }
+    Label #Value {
+        FlexWeight: 1;
+        Style: (FontSize: 12, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+    }
+};
+
+// ---------------------------------------------------------------------------------------------
+// Buttons
+// ---------------------------------------------------------------------------------------------
+
+// Neutral action. FlexWeight is baked in: every button in a @ButtonRow gets an equal share of the
+// row, which is what keeps labels from being clipped when a column is narrow.
+@Action = TextButton {
+    @Anchor = ();
+    @Text = "";
+    FlexWeight: 1;
+    Style: $Common.@SmallTertiaryTextButtonStyle;
+    Anchor: (...@Anchor, Height: 30);
+    Padding: (Horizontal: 8);
+    Text: @Text;
+};
+
+// Affirmative action - starting things, approving things.
+@Confirm = TextButton {
+    @Anchor = ();
+    @Text = "";
+    FlexWeight: 1;
+    Style: $Common.@SmallSecondaryTextButtonStyle;
+    Anchor: (...@Anchor, Height: 30);
+    Padding: (Horizontal: 8);
+    Text: @Text;
+};
+
+// Destructive action. Common.ui only ships a full-size cancel button, so this is the same
+// destructive art paired with the small label style.
+@DangerStyle = TextButtonStyle(
+    Default:  (Background: PatchStyle(TexturePath: "../Common/Buttons/Destructive.png", Border: 12),         LabelStyle: $Common.@SmallSecondaryButtonLabelStyle),
+    Hovered:  (Background: PatchStyle(TexturePath: "../Common/Buttons/Destructive_Hovered.png", Border: 12), LabelStyle: $Common.@SmallSecondaryButtonLabelStyle),
+    Pressed:  (Background: PatchStyle(TexturePath: "../Common/Buttons/Destructive_Pressed.png", Border: 12), LabelStyle: $Common.@SmallSecondaryButtonLabelStyle),
+    Disabled: (Background: PatchStyle(TexturePath: "../Common/Buttons/Disabled.png", Border: 12),            LabelStyle: $Common.@SmallButtonDisabledLabelStyle),
+    Sounds: $Common.@ButtonsCancel
+);
+
+@Danger = TextButton {
+    @Anchor = ();
+    @Text = "";
+    FlexWeight: 1;
+    Style: @DangerStyle;
+    Anchor: (...@Anchor, Height: 30);
+    Padding: (Horizontal: 8);
+    Text: @Text;
+};
+
+// The fixed-width button beside a @Picker. Deliberately not @Confirm: this one must NOT flex, so
+// the dropdown gets all the leftover width.
+@Go = TextButton {
+    @Anchor = ();
+    @Text = "";
+    Style: $Common.@SmallSecondaryTextButtonStyle;
+    Anchor: (...@Anchor, Width: 84, Height: 30);
+    Padding: (Horizontal: 8);
+    Text: @Text;
+};
+
+// One entry in the top tab strip. The active tab is marked by disabling its own button.
+@Tab = TextButton {
+    @Anchor = ();
+    @Text = "";
+    Style: $Common.@SmallTertiaryTextButtonStyle;
+    Anchor: (...@Anchor, Width: 118, Height: 30);
+    Padding: (Horizontal: 8);
+    Text: @Text;
+};
+
+// ---------------------------------------------------------------------------------------------
+// Inputs
+// ---------------------------------------------------------------------------------------------
+
+@Picker = DropdownBox {
+    @Anchor = ();
+    FlexWeight: 1;
+    Anchor: (...@Anchor, Height: 30);
+    Style: (
+        ...$Common.@DefaultDropdownBoxStyle,
+        LabelStyle: (...$Common.@DefaultDropdownBoxLabelStyle, RenderUppercase: false, FontSize: 12),
+        EntryLabelStyle: (...$Common.@DefaultDropdownBoxEntryLabelStyle, RenderUppercase: false, FontSize: 12),
+        SelectedEntryLabelStyle: (...$Common.@DefaultDropdownBoxEntryLabelStyle, RenderUppercase: false, FontSize: 12, RenderBold: true),
+        NoItemsLabelStyle: (...$Common.@DefaultDropdownBoxEntryLabelStyle, RenderUppercase: false, FontSize: 12, TextColor: #b7cedd(0.5)),
+        PanelAlign: Bottom,
+        PanelWidth: 240
+    );
+};

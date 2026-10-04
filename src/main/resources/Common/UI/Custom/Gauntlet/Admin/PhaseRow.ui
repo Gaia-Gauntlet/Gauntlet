@@ -1,0 +1,16 @@
+// One zone closing phase: close, hold, and warning seconds.
+$G = "Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Height: 30, Bottom: 4);
+
+    Label #Name {
+        Anchor: (Width: 110);
+        Style: (FontSize: 12, TextColor: #ffffff, VerticalAlignment: Center);
+    }
+    $G.@SmallInput #Close { @Anchor = (Right: 4); @Placeholder = "close"; }
+    $G.@SmallInput #Hold { @Anchor = (Right: 4); @Placeholder = "hold"; }
+    $G.@SmallInput #Warn { @Anchor = (Right: 6); @Placeholder = "warn"; }
+    $G.@Go #Apply { @Anchor = (Width: 78); Text: "Apply"; }
+}

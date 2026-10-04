@@ -1,0 +1,109 @@
+// Gaia Gauntlet admin dashboard: the shell only. The game picker, the tab strip, the status line,
+// and one resident panel per tab. AdminPage toggles which panel is visible and renders it.
+$Common = "../../Common.ui";
+$G = "Common.ui";
+
+$TabNoTab = "Panels/PanelNoTab.ui";
+//$TabMatch = "TabMatch.ui";
+//$TabGames = "TabGames.ui";
+//$TabZones = "TabZones.ui";
+//$TabEvents = "TabEvents.ui";
+//$TabBosses = "TabBosses.ui";
+//$TabTeams = "TabTeams.ui";
+//$TabSettings = "TabSettings.ui";
+//$TabLog = "TabLog.ui";
+
+$Common.@PageOverlay #MainPage {
+    Anchor: (Full: 0);
+    LayoutMode: Middle;
+
+    $Common.@DecoratedContainer {
+        @CloseButton = true;
+        Anchor: (Width: 1240, Height: 768);
+
+        #Title {
+            $Common.@Title {
+                @Text = "Gauntlet";
+            }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 12);
+
+            // Game picker and tab strip.
+            Group #TopStrip {
+                LayoutMode: Left;
+                Anchor: (Height: 30, Bottom: 8);
+
+                Label {
+                    Text: "Session";
+                    Anchor: (Width: 66);
+                    Style: (FontSize: 12, RenderUppercase: true, TextColor: #878e9c, VerticalAlignment: Center, LetterSpacing: 1);
+                }
+                $G.@Picker #SessionPicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
+
+                // Tabs get dynamically added here
+
+                Group { FlexWeight: 1; }
+            }
+
+            // Feedback line, set on every action so each click answers.
+            Group #StatusBar {
+                LayoutMode: Left;
+                Anchor: (Height: 26, Bottom: 8);
+                Background: (Color: #000000(0.22));
+                Padding: (Horizontal: 10);
+
+                Label #ActionStatus {
+                    FlexWeight: 1;
+                    Text: "Not Ready";
+                    Style: (FontSize: 12, TextColor: #7a9cc6, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+            }
+
+            Group #TabBody {
+                FlexWeight: 1;
+                LayoutMode: Full;
+
+                // Panels get dynamically added here
+
+            }
+        }
+    }
+}
+
+// Confirm prompt for the actions that throw players out of a match or a game.
+$Common.@PageOverlay #ConfirmPage {
+    Anchor: (Full: 0);
+    LayoutMode: Middle;
+    Visible: false;
+
+    $Common.@DecoratedContainer {
+        Anchor: (Width: 460);
+
+        #Title {
+            $Common.@Title {
+                @Text = "Are you sure?";
+            }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 20);
+
+            Label #ConfirmMessage {
+                Anchor: (Bottom: 20);
+                Style: (FontSize: 14, TextColor: #d6e4ee, Wrap: true, HorizontalAlignment: Center);
+            }
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Height: 30);
+
+                $G.@Danger  #ConfirmYes { @Anchor = (Right: 4); Text: "Yes, do it"; }
+                $G.@Confirm #ConfirmNo  { @Anchor = (Left: 4);  Text: "No, go back"; }
+            }
+        }
+    }
+}

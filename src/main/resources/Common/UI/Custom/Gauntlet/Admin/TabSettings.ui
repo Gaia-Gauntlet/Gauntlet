@@ -1,0 +1,15 @@
+// Settings tab: every setting, with apply, override, and drop override per row.
+$G = "Common.ui";
+
+@Content = Group {
+    LayoutMode: Top;
+
+    $G.@Note { @Text = "Apply sets the value for every game. Override sets it for the selected game only, marked with a star. Drop removes the override."; }
+    Group #SettingList {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $G.@ScrollbarStyle;
+        Background: (Color: #000000(0.18));
+        Padding: (Full: 8);
+    }
+};

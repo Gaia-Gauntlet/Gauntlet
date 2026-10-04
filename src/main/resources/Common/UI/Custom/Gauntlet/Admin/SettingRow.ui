@@ -1,0 +1,20 @@
+// One setting on one line: id, the effective value in an editable field, the three ways to change it, and what it means.
+$G = "Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Height: 30, Bottom: 4);
+
+    Label #Key {
+        Anchor: (Width: 230);
+        Style: (FontSize: 12, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+    }
+    $G.@Input #Field { FlexWeight: 0; Anchor: (Width: 150, Height: 30, Right: 6); }
+    $G.@Go #Apply { @Anchor = (Right: 4, Width: 72); Text: "Apply"; }
+    $G.@GoQuiet #Override { @Anchor = (Right: 4, Width: 84); Text: "Override"; }
+    $G.@GoQuiet #Drop { @Anchor = (Right: 10, Width: 64); Text: "Drop"; }
+    Label #Description {
+        FlexWeight: 1;
+        Style: (FontSize: 11, TextColor: #5a6a7a, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+    }
+}
