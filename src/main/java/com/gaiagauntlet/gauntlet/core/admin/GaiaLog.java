@@ -31,18 +31,12 @@ public final class GaiaLog {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss")
             .withZone(ZoneId.systemDefault());
 
-    @Getter
-    Level level;
-    @Getter
-    long millis;
-    @Getter
-    String sessionId;
-    @Getter
-    String gameId;
-    @Getter
-    Message text;
-    @Getter
-    Throwable e;
+    @Getter Level level;
+    @Getter long millis;
+    @Getter String sessionId;
+    @Getter String gameId;
+    @Getter Message text;
+    @Getter Throwable e;
 
     public static GaiaLog log(GaiaLog line) {
         LOGGER.at(line.level).withCause(line.e).log(line.toString());

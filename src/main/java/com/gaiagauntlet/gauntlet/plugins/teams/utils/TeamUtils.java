@@ -101,7 +101,7 @@ public class TeamUtils {
         var playerComponent = player.getComponentConcurrent(TeamPlayerComponent.getComponentType());
         if (playerComponent == null)
             return 0;
-        return playerComponent.getScore();
+        return playerComponent.getKills();
     }
 
     public static double getScore(UUID playerId) {
