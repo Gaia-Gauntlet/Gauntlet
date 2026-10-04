@@ -1,21 +1,16 @@
 package com.gaiagauntlet.gauntlet.plugins.announcer.utils;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
-import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
-import com.hypixel.hytale.server.core.command.system.CommandManager;
-import com.hypixel.hytale.server.core.console.ConsoleSender;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
-import com.hypixel.hytale.server.core.util.NotificationUtil;
 import net.lordimass.assets.CameraSequenceAsset;
 
 import javax.annotation.Nonnull;
@@ -24,12 +19,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public final class Announcer {
-
-    public static final String COLOR_INFO = "#7EC8FF";
-    public static final String COLOR_SUCCESS = "#55FF55";
-    public static final String COLOR_WARNING = "#FFAA33";
-    public static final String COLOR_DANGER = "#FF5555";
-
     private Announcer() {}
 
     /** Chat line to every online player. */
