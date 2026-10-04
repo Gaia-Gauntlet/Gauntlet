@@ -93,7 +93,6 @@ public abstract class LobbyController extends GameController {
                         // and take recovery action
                     }
                 });
-
     };
 
     @Override
