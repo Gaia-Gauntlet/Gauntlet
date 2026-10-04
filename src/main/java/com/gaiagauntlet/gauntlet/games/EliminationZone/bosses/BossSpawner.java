@@ -9,6 +9,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesC
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.events.BossEvents;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.builtin.triggervolumes.TriggerVolumesPlugin;
 import com.hypixel.hytale.builtin.triggervolumes.manager.VolumeEntry;
 import com.hypixel.hytale.component.Ref;
@@ -60,12 +61,16 @@ public final class BossSpawner {
             throw new IllegalStateException("Boss " + boss.roleId() + " is disabled in its role");
         }
 
-        BossesComponent bosses = BossesComponent.TYPE.of(game);
+        BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
 
         if (bosses.isActive(boss.roleId()) || bosses.getPending().contains(boss.roleId())) {
             throw new IllegalStateException(boss.roleId() + " is already in the arena");
         }
-        int limit = GlobalStore.get().settingsOf(game).get(Settings.BOSS_MAX_ACTIVE);
+
+        // TODO: Game settings
+//        int limit = GlobalStore.get().settingsOf(game).get(Settings.BOSS_MAX_ACTIVE);
+        int limit = 3;
+
         if (bosses.count() >= limit) {
             throw new IllegalStateException("Boss limit reached (" + limit + ")");
         }
@@ -81,15 +86,17 @@ public final class BossSpawner {
         }
         var point = points.get(ThreadLocalRandom.current().nextInt(points.size()));
 
-        // TODO:
+
+        bosses.getPending().add(boss.roleId());
+        GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(game);
+        place(game, arena, boss, point);
+
+        // TODO: Find out if this chunk loading stuff is actually necessary or if there's a better way around it.
 //        var chunk = arena.getChunkIfLoaded(chunkIndex);
 //        if (chunk != null) {
 //            place(game, arena, boss, point, chunk);
 //            return;
 //        }
-        bosses.getPending().add(boss.roleId());
-        GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(game);
-
 //        arena.getChunkAsync(chunkIndex).whenComplete((loaded, error) -> arena.execute(() -> {
 //            bosses.getPending().remove(boss.roleId());
 //            if (loaded == null || error != null) {
@@ -111,7 +118,8 @@ public final class BossSpawner {
      * Bosses take turns, so none comes up again until every other one has.
      */
     public static void spawnRandom(@Nonnull String game, @Nonnull World arena) {
-        BossesComponent bosses = BossesComponent.TYPE.of(game);
+        BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
+
         var points = spawnPoints(arena);
         var candidates = new ArrayList<String>();
         for (var boss : BossUtils.getBosses().values()) {
@@ -131,15 +139,16 @@ public final class BossSpawner {
         spawn(game, arena, bosses.drawFrom(candidates));
     }
 
-    private static void place(@Nonnull String game, @Nonnull World arena, @Nonnull BossScalingComponent boss, @Nonnull SpawnPoint point,
-                              @Nonnull WorldChunk chunk) {
+    private static void place(@Nonnull String game, @Nonnull World arena, @Nonnull BossScalingComponent boss, @Nonnull SpawnPoint point
+//                              @Nonnull WorldChunk chunk
+    ) {
         var npc = NPCPlugin.get();
         int roleIndex = npc.getIndex(boss.roleId());
         if (roleIndex < 0) {
             GaiaLog.atWarning().log("NPC role " + boss.roleId() + " cannot be spawned").withGameId(game);
             return;
         }
-        chunk.addKeepLoaded();
+//        chunk.addKeepLoaded();
         var store = arena.getEntityStore().getStore();
         var spawned = npc.spawnEntity(store, roleIndex, point.position(), new Rotation3f(0f, 0f, 0f), null,
                 (entity, ref, s) -> {
@@ -153,13 +162,14 @@ public final class BossSpawner {
                     s.addComponent(ref, BossMarkerComponent.getComponentType(), new BossMarkerComponent(game, boss.roleId()));
                 });
         if (spawned == null) {
-            chunk.removeKeepLoaded();
+//            chunk.removeKeepLoaded();
             GaiaLog.atWarning().log("Spawning " + boss.roleId() + " failed").withGameId(game);
             return;
         }
         Ref<EntityStore> ref = spawned.first();
 
-        BossesComponent.TYPE.of(game).add(new BossesComponent.Active(boss.roleId(), ref, point.zoneId()));
+        BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
+        bosses.add(new BossesComponent.Active(boss.roleId(), ref, point.zoneId));
 
         LOGGER.atInfo().log("[%s] %s spawned in %s", game, boss.roleId(), point.zoneId());
         GaiaLog.atWarning().log("Boss " + boss.roleId() + " spawned in " + point.zoneId()).withGameId(game);
@@ -171,7 +181,8 @@ public final class BossSpawner {
 
     /** Called by the death system when a marked boss dies. */
     static void onDefeated(@Nonnull String game, @Nonnull World arena, @Nonnull String bossId) {
-        BossesComponent.TYPE.of(game).remove(bossId);
+        BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
+        bosses.remove(bossId);
         var boss = BossUtils.getBoss(bossId);
         var name = boss == null ? bossId.replace('_', ' ') : boss.displayText();
         LOGGER.atInfo().log("[%s] %s defeated", game, bossId);

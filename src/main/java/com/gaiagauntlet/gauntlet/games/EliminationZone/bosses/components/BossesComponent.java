@@ -45,18 +45,18 @@ public final class BossesComponent implements GameComponent {
     }
 
     /** Points a boss that is out at its entity again after the entity loads back in. */
-    void rebind(@Nonnull String bossId, @Nonnull Ref<EntityStore> ref) {
+    public void rebind(@Nonnull String bossId, @Nonnull Ref<EntityStore> ref) {
         var boss = active.get(bossId);
         if (boss != null) {
             active.put(bossId, new Active(boss.bossId(), ref, boss.zoneId()));
         }
     }
 
-    void add(@Nonnull Active boss) {
+    public void add(@Nonnull Active boss) {
         active.put(boss.bossId(), boss);
     }
 
-    void remove(@Nonnull String bossId) {
+    public void remove(@Nonnull String bossId) {
         active.remove(bossId);
     }
 
