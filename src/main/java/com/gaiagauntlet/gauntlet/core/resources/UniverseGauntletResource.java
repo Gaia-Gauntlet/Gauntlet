@@ -71,8 +71,8 @@ public class UniverseGauntletResource {
 
     // Parties
 
-    public PartyComponent getParty(String partyId) {
-        return parties.get(partyId);
+    public Optional<PartyComponent> getParty(String partyId) {
+        return Optional.ofNullable(parties.get(partyId));
     }
 
     public PartyComponent createParty(String partyId, UUID owner) {

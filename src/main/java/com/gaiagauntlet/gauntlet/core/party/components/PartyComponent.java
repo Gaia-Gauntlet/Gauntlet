@@ -10,16 +10,19 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+
+import org.jetbrains.annotations.NotNull;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 public class PartyComponent {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    public static final BuilderCodec<PartyComponent> CODEC = BuilderCodec
+    public static final BuilderCodec<@NotNull PartyComponent> CODEC = BuilderCodec
         .builder(PartyComponent.class, PartyComponent::new)
         .append(new KeyedCodec<>("Id", Codec.STRING),
             (c, v) -> c.id = v,
@@ -36,11 +39,16 @@ public class PartyComponent {
             (c, v) -> c.owner = v,
             c -> c.owner
         ).add()
+        .append(new KeyedCodec<>("session", Codec.STRING),
+            (c, v) -> c.session = v,
+            c -> c.session
+        ).add()
         .build();
 
     @Getter String id;
     Set<UUID> players = new HashSet<>();
     @Getter UUID owner;
+    @Getter @Setter String session;
 
     private PartyComponent() {}
 
@@ -108,6 +116,9 @@ public class PartyComponent {
                 players.add(player);
             }
         }
+        return players;
+    }
+    public Set<UUID> getAllPlayers() {
         return players;
     }
 

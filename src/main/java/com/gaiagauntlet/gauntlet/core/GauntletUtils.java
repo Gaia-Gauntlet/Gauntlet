@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -35,8 +36,8 @@ public class GauntletUtils {
         if (!(playerFor(player).orElse(null) instanceof PlayerComponent comp)) {
             return Optional.empty();
         }
-        if (comp.getActiveSession() != null)
-            return sessionFor(comp.getActiveSession());
+        if (comp.getCurrentSession() != null)
+            return sessionFor(comp.getCurrentSession());
         
         return Optional.empty();
     }

@@ -26,3 +26,14 @@ session.destroy.success=<color is="#06f906">Deleted session {sessionId}</color>
 
 session.game.success=<color is="#06f906">Successfully {action} in {sessionId}</color>
 session.game.removal.success=<color is="#06f906">Successfully removed {games} game(s) from {sessionId}</color>
+
+# Player Events
+players.connect.warn=Player {playerName} not routed because {reason}
+players.connect.wrongsession=Player {playerName} in a different session from party! Leaving old session
+players.disconnect.warn=Player {playerName} disconnecting. Controller not notified because {reason}
+
+players.error=Player {playerName} unable to {operation} {sessionId} because {reason}
+players.join.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
+players.join.existed=Removed {playerName} from {oldSessionId}, joining {sessionId}
+players.join.existing.error=Failed removing {playerName} from {oldSessionId}. {cause}
+players.join.perms.error={playerName} is not an owner of party {partyName} - which is in {partySessionId} - and cannot change it to {sessionId}
