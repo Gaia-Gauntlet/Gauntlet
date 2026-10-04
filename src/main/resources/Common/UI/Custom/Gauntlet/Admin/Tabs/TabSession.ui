@@ -1,2 +1,0 @@
-$G = "../Common.ui";
-$G.@Tab #TabSession { @Anchor = (Right: 4); Text: "Session"; }

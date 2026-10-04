@@ -1,6 +1,0 @@
-{
-  "Groups": {
-    "Hostile": [ "Player" ],
-    "Ignore": [ "GG_Sporeback_Boss", "GG_Sporeback_Fungus" ]
-  }
-}
