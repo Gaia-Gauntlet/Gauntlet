@@ -66,11 +66,8 @@ public class GameSession {
             .add()
             .build();
 
-    @Getter
-    private Map<String, SessionComponent> sessionComponents;
-
-    @Getter
-    private String id;
+    @Getter private Map<String, SessionComponent> sessionComponents;
+    @Getter private String id;
 
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
@@ -84,23 +81,18 @@ public class GameSession {
         return Optional.of(type.getTypeClass().cast(sesComp));
     }
 
-    @Getter
-    private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
+    @Getter private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
 
-    @Getter
+
     // design here may change. My head canon is that the currentGame will pop from
     // the array and the array of the sequence will shrink.
     // Alternatively we could store the index of the current game inside the
     // sequence and keep the sequence as-is
     // I'm good with either
-    private String currentGame;
+    @Getter private String currentGame;
 
-    @Getter
-    @NotNull
-    private SessionState sessionState = SessionState.IDLE;
-    @Getter
-    @Nullable
-    private String errorReason;
+    @Getter @NotNull private SessionState sessionState = SessionState.IDLE;
+    @Getter @Nullable private String errorReason;
 
     public GameSession() {
         sessionComponents = new ConcurrentHashMap<>();
@@ -193,9 +185,6 @@ public class GameSession {
      * <br />
      * <br />
      * Recovers from an errored state - but keeps the error reason
-     * 
-     * @param gameIdCheck
-     * @return
      */
     public boolean setComplete(String gameIdCheck) {
         if (transitionBlocked(SessionState.FINISHED, gameIdCheck))
@@ -208,9 +197,6 @@ public class GameSession {
     /**
      * Returns TRUE if the transition happened. Returns FALSE if already in cleaning
      * or game is not running
-     * 
-     * @param gameIdCheck
-     * @return
      */
     public boolean setCleaning(String gameIdCheck) {
         if (transitionBlocked(SessionState.CLEANING, gameIdCheck))

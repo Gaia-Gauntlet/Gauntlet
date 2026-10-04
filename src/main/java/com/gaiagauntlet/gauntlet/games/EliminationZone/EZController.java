@@ -37,8 +37,7 @@ public class EZController extends LobbyController {
             GameStorePlugin.ID,
             LobbyControllerPlugin.ID,
             ProxyChatPlugin.ID,
-            TeamsPlugin.ID,
-            ScoringPlugin.ID);
+            TeamsPlugin.ID);
 
     private EZArenaManager arena = new EZArenaManager();
     private EZLobbyManager lobby = new EZLobbyManager();

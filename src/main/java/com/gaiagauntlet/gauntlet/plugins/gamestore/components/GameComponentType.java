@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.gamestore.components;
 import javax.annotation.Nullable;
 
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import lombok.Getter;
 
 /**
  * simple DTO for the session. Not as much churn as an ECS since this is just a
@@ -15,7 +16,8 @@ public class GameComponentType<T extends GameComponent> {
      */
     private Class<T> tClass;
 
-    @Nullable 
+    @Getter
+    @Nullable
     private final BuilderCodec<T> codec;
 
     private String id;
@@ -31,10 +33,6 @@ public class GameComponentType<T extends GameComponent> {
 
     public Class<T> getTypeClass() {
         return tClass;
-    }
-
-    public BuilderCodec<T> getCodec() {
-        return codec;
     }
 
     /**
