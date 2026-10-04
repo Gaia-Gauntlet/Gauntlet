@@ -1,17 +1,21 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossScalingComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.events.BossEvents;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.hypixel.hytale.builtin.triggervolumes.TriggerVolumesPlugin;
 import com.hypixel.hytale.builtin.triggervolumes.manager.VolumeEntry;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Rotation3f;
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.model.config.Model;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
@@ -159,9 +163,10 @@ public final class BossSpawner {
 
         LOGGER.atInfo().log("[%s] %s spawned in %s", game, boss.roleId(), point.zoneId());
         GaiaLog.atWarning().log("Boss " + boss.roleId() + " spawned in " + point.zoneId()).withGameId(game);
-        Announce.title(arena, Message.raw("BOSS APPEARED"),
-                Message.raw(boss.displayText() + " has appeared in " + point.zoneId() + "!"), SOUND_SPAWN);
-        Events.dispatch(new BossEvents.Spawned(game, arena, boss, point.zoneId()));
+        Announcer.title(arena, Message.raw("BOSS APPEARED"),
+                Message.raw(boss.displayText() + " has appeared in " + point.zoneId() + "!"), EventTitleStyle.Major, SOUND_SPAWN);
+
+        GauntletEventRegistry.dispatch(new BossEvents.Spawned(boss, point.zoneId()));
     }
 
     /** Called by the death system when a marked boss dies. */
@@ -171,8 +176,8 @@ public final class BossSpawner {
         var name = boss == null ? bossId.replace('_', ' ') : boss.displayText();
         LOGGER.atInfo().log("[%s] %s defeated", game, bossId);
         GaiaLog.atWarning().log("Boss " + bossId + " defeated").withGameId(game);
-        Announce.title(arena, Message.raw("BOSS DEFEATED"), Message.raw(name + " has been defeated!"), SOUND_DEFEAT);
-        Events.dispatch(new BossEvents.Defeated(game, arena, bossId));
+        Announcer.title(arena, Message.raw("BOSS DEFEATED"), Message.raw(name + " has been defeated!"), EventTitleStyle.Major, SOUND_DEFEAT);
+        GauntletEventRegistry.dispatch(new BossEvents.Defeated(bossId));
     }
 
     /** True when the point is one of this boss's, in a zone it may use that is open. */
