@@ -32,6 +32,11 @@ public class TeamsPlugin implements PersistentGamePlugin {
     public static final String ID = "TeamsPlugin";
 
     @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
     public void init(JavaPlugin host) {
         host.getAssetRegistry().register(HytaleAssetStore.builder(TeamListAsset.class, new DefaultAssetMap<>())
                 .setPath("Gauntlet/Plugins/" + ID + "/Teams")
@@ -64,11 +69,6 @@ public class TeamsPlugin implements PersistentGamePlugin {
 
         AssetEditorPlugin assetEditor = AssetEditorPlugin.get();
         if (assetEditor == null) return;
-    }
-
-    @Override
-    public String getId() {
-        return ID;
     }
 
     @Override
