@@ -14,11 +14,12 @@ import com.hypixel.hytale.server.core.asset.common.CommonAssetValidator;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-
 import lombok.Getter;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,77 +31,83 @@ import java.util.UUID;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-/** The single component for an entire team. Holds all team-specific data */
+/**
+ * The single component for an entire team. Holds all team-specific data
+ */
 public class TeamComponent {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     public static BuilderCodec<@NotNull TeamComponent> CODEC = BuilderCodec
-            .builder(TeamComponent.class, TeamComponent::new)
-            .append(new KeyedCodec<>("Name", Codec.STRING),
-                    (team, v) -> team.name = v == null ? "" : v,
-                    team -> team.name)
-            .documentation("The display name shown to players. Defaults to the asset id when blank.")
-            .add()
-            .append(new KeyedCodec<>("TeamType", new EnumCodec<>(TeamType.class)),
-                    (team, v) -> team.teamType = v,
-                    team -> team.teamType)
-            .documentation("The display name shown to players. Defaults to the asset id when blank.")
-            .add()
-            .append(new KeyedCodec<>("Icon", Codec.STRING),
-                    (team, v) -> team.icon = v == null ? "" : v,
-                    team -> team.icon)
-            .addValidator(new CommonAssetValidator("png", "UI/Custom/"))
-            .documentation("UI asset team icon, for example GG/TeamIcons/Tricky_Trorks.png. Optional.")
-            .add()
-            .append(new KeyedCodec<>("Players", new ArrayCodec<>(Codec.STRING, String[]::new)),
-                    (team, v) -> team.rawPlayerNames = v,
-                    team -> team.rawPlayerNames)
-            .documentation("The team roster")
-            .add()
-            .append(new KeyedCodec<>("PlayerUUIDs", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
-                    (config, s) -> {
-                        config.players.clear();
-                        config.players.addAll(s);
-                    },
-                    team -> team.players)
-            .documentation("The team roster")
-            .metadata(UIDisplayMode.HIDDEN)
-            .add()
-            .afterDecode(team -> {
-                // converts the player names into valid UUIDs in the event that the button was
-                // not pressed
+        .builder(TeamComponent.class, TeamComponent::new)
+        .append(new KeyedCodec<>("Name", Codec.STRING),
+            (team, v) -> team.name = v == null ? "" : v,
+            team -> team.name)
+        .documentation("The display name shown to players. Defaults to the asset id when blank.")
+        .add()
+        .append(new KeyedCodec<>("TeamType", new EnumCodec<>(TeamType.class)),
+            (team, v) -> team.teamType = v,
+            team -> team.teamType)
+        .documentation("The display name shown to players. Defaults to the asset id when blank.")
+        .add()
+        .append(new KeyedCodec<>("Icon", Codec.STRING),
+            (team, v) -> team.icon = v == null ? "" : v,
+            team -> team.icon)
+        .addValidator(new CommonAssetValidator("png", "UI/Custom/"))
+        .documentation("UI asset team icon, for example GG/TeamIcons/Tricky_Trorks.png. Optional.")
+        .add()
+        .append(new KeyedCodec<>("Players", new ArrayCodec<>(Codec.STRING, String[]::new)),
+            (team, v) -> team.rawPlayerNames = v,
+            team -> team.rawPlayerNames)
+        .documentation("The team roster")
+        .add()
+        .append(new KeyedCodec<>("PlayerUUIDs", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
+            (config, s) -> {
+                config.players.clear();
+                config.players.addAll(s);
+            },
+            team -> team.players)
+        .documentation("The team roster")
+        .metadata(UIDisplayMode.HIDDEN)
+        .add()
+        .append(new KeyedCodec<>("Score", Codec.DOUBLE),
+            (team, v) -> team.score = v,
+            TeamComponent::getScore)
+        .add()
+        .afterDecode(team -> {
+            // converts the player names into valid UUIDs in the event that the button was
+            // not pressed
 
-                // this also genuinely is a very sphaghetti way to handle this. I would like to
-                // clean this up a bit later
-                var entries = team.rawPlayerNames;
-                if (entries == null || entries.length == 0)
-                    return;
-                var lookups = Arrays.stream(entries)
-                        .map(entry -> {
-                            if (entry == null) return null;
-                            var uuid = parseUuid(entry);
-                            return uuid != null
-                                    ? CompletableFuture.completedFuture(uuid)
-                                    : PlayerUtils.uuidOf(entry);
-                        })
-                        .toList();
+            // this also genuinely is a very sphaghetti way to handle this. I would like to
+            // clean this up a bit later
+            var entries = team.rawPlayerNames;
+            if (entries.length == 0)
+                return;
+            var lookups = Arrays.stream(entries)
+                .map(entry -> {
+                    if (entry == null) return null;
+                    var uuid = parseUuid(entry);
+                    return uuid != null
+                        ? CompletableFuture.completedFuture(uuid)
+                        : PlayerUtils.uuidOf(entry);
+                })
+                .toList();
 
-                CompletableFuture.allOf(
-                    lookups.toArray(CompletableFuture[]::new)
-                ).join();
+            CompletableFuture.allOf(
+                lookups.toArray(CompletableFuture[]::new)
+            ).join();
 
-                var players = new HashSet<UUID>(entries.length);
-                for (var i = 0; i < entries.length; i++) {
-                    var uuid = lookups.get(i).join();
-                    if (uuid == null) {
-                        LOGGER.atWarning().log("Team roster entry '%s' could not be resolved to a player", entries[i]);
-                        continue;
-                    }
-                    players.add(uuid);
+            var players = new HashSet<UUID>(entries.length);
+            for (var i = 0; i < entries.length; i++) {
+                var uuid = lookups.get(i).join();
+                if (uuid == null) {
+                    LOGGER.atWarning().log("Team roster entry '%s' could not be resolved to a player", entries[i]);
+                    continue;
                 }
-                team.players = players;
-            })
-            .build();
+                players.add(uuid);
+            }
+            team.players = players;
+        })
+        .build();
 
     public static UUID parseUuid(@Nonnull String value) {
         try {
@@ -114,6 +121,7 @@ public class TeamComponent {
     @Getter @Nonnull String name = "";
     @Getter @Nonnull TeamType teamType = TeamType.Participant;
     @Getter @Nonnull Set<UUID> players = new HashSet<>();
+    @Getter @Setter double score;
     /**
      * List of player names - this is ONLY intended to be added via the asset
      * editor. Values normalized into the player's UUIDs after decoding. Ideally,
@@ -126,11 +134,12 @@ public class TeamComponent {
     String icon;
 
     public TeamComponent(
-            String id,
-            @Nullable String name,
-            @Nullable TeamType teamType,
-            int maxSize,
-            @Nullable String icon) {
+        String id,
+        @Nullable String name,
+        @Nullable TeamType teamType,
+        int maxSize,
+        @Nullable String icon
+    ) {
         this.id = id;
         this.name = name != null ? name : "";
         this.teamType = teamType != null ? teamType : TeamType.Participant;
@@ -149,9 +158,10 @@ public class TeamComponent {
         teamType = other.teamType;
         players = new HashSet<>(other.players);
         icon = other.icon;
+        score = other.score;
     }
 
-    public TeamComponent() {
+    private TeamComponent() {
         id = "";
     }
 
@@ -194,12 +204,14 @@ public class TeamComponent {
         return players.add(player);
     }
 
-    /** Use {@code TeamUtils.removePlayerFromTeam} for cached player assignment safety */
+    /**
+     * Use {@code TeamUtils.removePlayerFromTeam} for cached player assignment safety
+     */
     public boolean remove(@Nonnull UUID uuidToRemove) {
         var removed = players.remove(uuidToRemove);
         if (!removed) {
             LOGGER.atSevere().log("Could not remove UUID " + uuidToRemove + " from team " + id
-                    + "because they are not in this team.");
+                + "because they are not in this team.");
         }
         return removed;
     }
@@ -207,6 +219,22 @@ public class TeamComponent {
     public void clear() {
         this.players.clear();
     }
+
+    // Score
+
+    public double grantScore(double score) {
+        this.score += score;
+        return this.score;
+    }
+
+    public double revokeScore(double score) {
+        return grantScore(-score);
+    }
+
+    public void clearScore() {
+        this.score = 0;
+    }
+
 
     public TeamComponent clone() {
         return new TeamComponent(this);

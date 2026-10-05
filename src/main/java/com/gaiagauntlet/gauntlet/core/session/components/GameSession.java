@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.core.session.components;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,8 +17,11 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 import com.gaiagauntlet.gauntlet.utils.codec.StringRegistryCodec;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
@@ -48,8 +53,8 @@ public class GameSession {
                     holder -> holder.sessionComponents)
             .add()
             .append(new KeyedCodec<>("Sequence", Codec.STRING_ARRAY),
-                    (holder, v) -> holder.gameSequence = v,
-                    holder -> holder.gameSequence)
+                    (holder, v) -> holder.setGames(Arrays.asList(v)),
+                    holder -> holder.gameSequence.toArray(new String[0]))
             .add()
             .append(new KeyedCodec<>("CurrentGame", Codec.STRING),
                     (holder, v) -> holder.currentGame = v,
@@ -80,7 +85,7 @@ public class GameSession {
     }
 
     @Getter
-    private String[] gameSequence;
+    private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
 
     @Getter
     // design here may change. My head canon is that the currentGame will pop from
@@ -92,7 +97,10 @@ public class GameSession {
 
     @Getter
     @NotNull
-    private SessionState sessionState = SessionState.SETTING_UP;
+    private SessionState sessionState = SessionState.IDLE;
+    @Getter
+    @Nullable
+    private String errorReason;
 
     public GameSession() {
         sessionComponents = new ConcurrentHashMap<>();
@@ -104,13 +112,43 @@ public class GameSession {
     }
 
     public boolean available() {
-        return sessionState == SessionState.FINISHED || sessionState == SessionState.IDLE;
+        return !sessionState.active();
     }
 
     /** gets the next available game */
     @Nullable
     public String getNext() {
-        return gameSequence == null || gameSequence.length == 0 ? null : gameSequence[0];
+        return gameSequence.peekFirst();
+    }
+
+    private boolean transitionBlocked(SessionState state, @Nullable String gameIdCheck) {
+        if (gameIdCheck != null && !gameIdCheck.equals(currentGame)) {
+            error().log("Game " + gameIdCheck + " in " + getId() + " failed to switch to " + state.toString() + "! Game "
+                            + currentGame
+                            + " was somehow registered instead");
+            return true;
+        }
+
+        if (sessionState.to(state)) {
+            logger().log(MessageUtils.msg("server.gauntlet.session.transition.success")
+                .param("sessionId", this.id)
+                .param("newState", state.toString())
+                .param("oldState", sessionState.toString())
+            );
+            return false; // transition allowed, not blocked
+        }
+
+        error().log("Game failed to switch to " + state.toString() + "! State is " + sessionState.toString()
+                        + " instead!");
+        
+        return true;
+    }
+
+    private GaiaLog logger() {
+        return GaiaLog.atInfo().withSession(this);
+    }
+    private GaiaLog error() {
+        return GaiaLog.atError().withSession(this);
     }
 
     /**
@@ -119,88 +157,92 @@ public class GameSession {
      */
     @Nullable
     public String startNext() {
-        String nextGame = getNext();
-        if (nextGame == null) {
-            currentGame = null;
+        if (transitionBlocked(SessionState.SETTING_UP, null))
+            return null;
+
+        currentGame = gameSequence.pollFirst();
+        
+        if (currentGame == null) {
             return null;
         }
-
-        currentGame = nextGame;
-        sessionState = SessionState.RUNNING;
-        int remainingGames = gameSequence.length - 1;
-        if (remainingGames == 0) {
-            gameSequence = new String[0];
-        } else {
-            System.arraycopy(gameSequence, 1, gameSequence, 0, remainingGames);
-            gameSequence = Arrays.copyOf(gameSequence, remainingGames);
-        }
-
+        
+        errorReason = null;
+        sessionState = SessionState.SETTING_UP;
         return currentGame;
     }
 
     /**
      * Checks if the current game is still the current game, and then sets it as
      * running
+     * <br />
+     * <br />
+     * <b>MANAGED BY THE ORCHESTRATOR</b>
      */
     public boolean setRunning(String gameIdCheck) {
-        if (!currentGame.equals(gameIdCheck)) {
-            AdminLog.add(gameIdCheck,
-                    "Game failed to switch to running! Game " + currentGame + " was somehow registered instead");
+        if (transitionBlocked(SessionState.RUNNING, gameIdCheck))
             return false;
-        }
-        if (sessionState == SessionState.RUNNING) {
-            AdminLog.add(gameIdCheck,
-                    "Game " + currentGame + " attempted to double-start");
-            return true; // actually fine, the game is already running. Double-marking is not the end of
-                         // the world
-        }
-        if (sessionState != SessionState.SETTING_UP) {
-            AdminLog.add(gameIdCheck,
-                    "Game failed to switch to running! State is " + sessionState + " instead of setting up!");
-            return false;
-        }
+
+        errorReason = null;
         sessionState = SessionState.RUNNING;
         return true;
     }
 
-    /** adds a game to the sequence */
-    public void addGame(@Nonnull String gameId) {
-
-        if (gameSequence == null || gameSequence.length == 0) {
-            gameSequence = new String[] { gameId };
-            return;
-        }
-
-        String[] updatedSequence = Arrays.copyOf(gameSequence, gameSequence.length + 1);
-        updatedSequence[gameSequence.length] = gameId;
-        gameSequence = updatedSequence;
+    /**
+     * RULE: Can switch to Complete if currently in Running state. Warns if already
+     * finished/idle but returns true
+     * <br />
+     * <br />
+     * Recovers from an errored state - but keeps the error reason
+     * 
+     * @param gameIdCheck
+     * @return
+     */
+    public boolean setComplete(String gameIdCheck) {
+        if (transitionBlocked(SessionState.FINISHED, gameIdCheck))
+            return false;
+        errorReason = null;
+        sessionState = SessionState.FINISHED;
+        return true;
     }
 
-    /** removes a game from the sequence */
-    public void removeGame(int index) {
-        if (gameSequence == null || index < 0 || index >= gameSequence.length) {
-            return;
-        }
+    /**
+     * Returns TRUE if the transition happened. Returns FALSE if already in cleaning
+     * or game is not running
+     * 
+     * @param gameIdCheck
+     * @return
+     */
+    public boolean setCleaning(String gameIdCheck) {
+        if (transitionBlocked(SessionState.CLEANING, gameIdCheck))
+            return false;
+        sessionState = SessionState.CLEANING;
+        return true;
+    }
 
-        int remainingGames = gameSequence.length - index - 1;
-        if (remainingGames > 0) {
-            System.arraycopy(gameSequence, index + 1, gameSequence, index, remainingGames);
+    /** Set if the session resulted in an error of some kind */
+    public void setErrored(String errorReason) {
+        sessionState = SessionState.ERROR;
+        this.errorReason = errorReason;
+    }
+
+    /** adds a game to the sequence */
+    public void addGame(@Nonnull String gameId) {
+        gameSequence.addLast(gameId);
+    }
+
+    public void addGames(@Nonnull Collection<String> games) {
+        gameSequence.addAll(games);
+    }
+
+    public void setGames(Collection<String> games) {
+        gameSequence.clear();
+        if (games != null) {
+            gameSequence.addAll(games);
         }
-        gameSequence = Arrays.copyOf(gameSequence, gameSequence.length - 1);
     }
 
     /** removes a game if it is present */
-    public boolean removeGameIfPresent(@Nonnull String gameId) {
-        if (gameSequence == null) {
-            return false;
-        }
-
-        for (int index = 0; index < gameSequence.length; index++) {
-            if (gameId.equals(gameSequence[index])) {
-                removeGame(index);
-                return true;
-            }
-        }
-        return false;
+    public boolean removeGame(@Nonnull String gameId) {
+        return gameSequence.removeFirstOccurrence(gameId);
     }
 }

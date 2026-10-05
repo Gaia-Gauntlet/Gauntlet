@@ -79,7 +79,7 @@ public final class Widgets {
             entries.add(new DropdownEntryInfo(LocalizableString.fromString(option.label()), option.value()));
         }
         cmd.set(picker + ".Entries", entries);
-        if (!options.isEmpty()) {
+        if (!options.isEmpty() && options.getFirst().value() != null) {
             cmd.set(picker + ".Value", options.getFirst().value());
         }
     }

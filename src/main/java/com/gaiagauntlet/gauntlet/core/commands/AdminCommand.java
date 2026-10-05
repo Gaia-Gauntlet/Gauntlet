@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.commands;
 
-import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;

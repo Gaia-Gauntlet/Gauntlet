@@ -1,16 +1,17 @@
 package com.gaiagauntlet.gauntlet.plugins.teams;
 
-import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
-import com.gaiagauntlet.gauntlet.core.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
@@ -27,6 +28,7 @@ import com.hypixel.hytale.event.EventRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.List;
@@ -34,6 +36,11 @@ import java.util.List;
 public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     public static final String ID = "TeamsPlugin";
+
+    @Override
+    public String getId() {
+        return ID;
+    }
 
     @Override
     public void init(JavaPlugin host) {
@@ -71,11 +78,6 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     }
 
     @Override
-    public String getId() {
-        return ID;
-    }
-
-    @Override
     public List<String> getDependencies() {
         return List.of(AnnouncerPlugin.ID);
     }
@@ -86,8 +88,8 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     }
 
     @Override
-    public void writeSession(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId) {
-
+    public SessionWriter capture(World world, GameEcs store, String sessionId) {
+        return null;
     }
 
     @Override

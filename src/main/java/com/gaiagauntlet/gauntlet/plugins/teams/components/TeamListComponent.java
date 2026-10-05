@@ -4,23 +4,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.hypixel.hytale.codec.Codec;
 import org.jetbrains.annotations.NotNull;
-
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponent;
-import com.gaiagauntlet.gauntlet.core.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,9 +27,12 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     @Nonnull
     public static final String ID = "TeamListComponent";
 
-    @Getter @Setter private static GameComponentType<TeamListComponent> gameComponentType;
-    @Getter @Setter private static SessionComponentType<TeamListComponent> sessionComponentType;
-
+    @Getter
+    @Setter
+    private static GameComponentType<TeamListComponent> gameComponentType;
+    @Getter
+    @Setter
+    private static SessionComponentType<TeamListComponent> sessionComponentType;
 
     public static final BuilderCodec<@NotNull TeamListComponent> CODEC = AssetBuilderCodec
             .builder(
@@ -41,22 +43,31 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
                     team -> team.teamList)
             .documentation("The full list of teams in this session.")
             .add()
+            .append(new KeyedCodec<>("TeamSize", Codec.INTEGER),
+                    TeamListComponent::setTeamSize, TeamListComponent::getTeamSize)
+            .documentation("Whether team distribution should respect player defined parties.")
+            .add()
+            .append(new KeyedCodec<>("RespectParties", Codec.BOOLEAN),
+                    TeamListComponent::setRespectParties, TeamListComponent::isRespectParties)
+            .documentation("Whether team distribution should respect player defined parties.")
+            .add()
             .afterDecode((teams) -> {
                 teams.teamList.replaceAll(TeamListComponent::withId);
 
                 // wipe the map before rebuilding it
-                teams.playerToMap.clear();
+                teams.playerToTeam.clear();
 
                 // iterate over every player of every team
                 for (var teamEntry : teams.getTeams().entrySet()) {
                     for (var player : teamEntry.getValue().getPlayers()) {
                         // Resynchronizes the teams
-                        var prev = teams.playerToMap.put(player, teamEntry.getKey());
+                        var prev = teams.playerToTeam.put(player, teamEntry.getKey());
                         if (prev != null) {
                             // the player is on two teams - whoops - not much to be done about that though
                             // other than cry
-                            AdminLog.add("Player " + PlayerUtils.resolveOnline(player) + " is on both team " + prev
-                                    + " and team " + teamEntry.getKey());
+                            GaiaLog.atWarning()
+                                    .log("Player " + PlayerUtils.resolveOnline(player) + " is on both team " + prev
+                                            + " and team " + teamEntry.getKey());
                             teams.remove(player, prev);
                         }
                     }
@@ -66,7 +77,13 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
 
     @Nonnull
     private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
-    private Map<UUID, String> playerToMap = new ConcurrentHashMap<>();
+    private final Map<UUID, String> playerToTeam = new ConcurrentHashMap<>();
+    @Setter
+    @Getter
+    private int teamSize;
+    @Setter
+    @Getter
+    private boolean respectParties;
 
     public Map<String, TeamComponent> getTeams() {
         return teamList;
@@ -80,13 +97,13 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
         // the lookup table
         if (existing != null) {
             for (var player : existing.getPlayers()) {
-                playerToMap.remove(player);
+                playerToTeam.remove(player);
             }
         }
 
         // add the players in the new team to the lookup table
         for (var player : team.getPlayers()) {
-            var prev = playerToMap.put(player, team.getId());
+            var prev = playerToTeam.put(player, team.getId());
             if (prev != null) { // if a new player is already in a team, remove them from that team
                 remove(player, prev);
             }
@@ -100,7 +117,7 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
 
     @Nullable
     public TeamComponent get(UUID player) {
-        var teamId = playerToMap.get(player);
+        var teamId = playerToTeam.get(player);
         if (teamId == null) {
             // ik we spend so much time making the map, but go ahead and manually search
             // just in case someone DIDN'T se the teamList to add a player to a team >.>
@@ -115,13 +132,15 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
         return get(teamId);
     }
 
-    /** Puts a player on a team, returning the previous team */
+    /**
+     * Puts a player on a team, returning the previous team
+     */
     @Nullable
     public String put(UUID player, String teamId) {
         var team = get(teamId);
         if (team == null)
             return null; // new team does not exist
-        var existing = playerToMap.put(player, teamId);
+        var existing = playerToTeam.put(player, teamId);
         if (teamId.equals(existing))
             return null; // player already on the team
         if (existing != null) {
@@ -133,9 +152,9 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     }
 
     public void remove(UUID player, String teamId) {
-        var existingTeam = playerToMap.get(player);
+        var existingTeam = playerToTeam.get(player);
         if (existingTeam != null && existingTeam.equals(teamId)) {
-            playerToMap.remove(player);
+            playerToTeam.remove(player);
         }
 
         var team = get(teamId);
@@ -146,7 +165,7 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     }
 
     public Set<UUID> getPlayers() {
-        return playerToMap.keySet();
+        return playerToTeam.keySet();
     }
 
     // add more here, since this is not enough

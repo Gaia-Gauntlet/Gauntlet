@@ -1,0 +1,127 @@
+package com.gaiagauntlet.gauntlet.core.party.components;
+
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
+import com.hypixel.hytale.codec.Codec;
+import com.hypixel.hytale.codec.KeyedCodec;
+import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.set.SetCodec;
+import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import lombok.Getter;
+
+import java.security.InvalidParameterException;
+import java.util.*;
+
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
+
+public class PartyComponent {
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
+    public static final BuilderCodec<PartyComponent> CODEC = BuilderCodec
+        .builder(PartyComponent.class, PartyComponent::new)
+        .append(new KeyedCodec<>("Id", Codec.STRING),
+            (c, v) -> c.id = v,
+            c -> c.id
+        ).add()
+        .append(new KeyedCodec<>("Players", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
+            (c, v) -> {
+                c.players.clear();
+                c.players.addAll(v);
+            },
+            c -> c.players
+        ).add()
+        .append(new KeyedCodec<>("Owner", Codec.UUID_STRING),
+            (c, v) -> c.owner = v,
+            c -> c.owner
+        ).add()
+        .build();
+
+    @Getter String id;
+    Set<UUID> players = new HashSet<>();
+    @Getter UUID owner;
+
+    private PartyComponent() {}
+
+    public PartyComponent(String id, Set<UUID> players) {
+        if (players.isEmpty()) {
+            throw new InvalidParameterException("Party cannot be formed with no players");
+        }
+        this.id = id;
+        this.players = players;
+        this.owner = players.stream().findAny().get();
+    }
+    public PartyComponent(String id, Set<UUID> players, UUID owner) {
+        this.id = id;
+        this.players = players;
+        this.owner = owner;
+    }
+
+    public void addPlayer(UUID player) {
+        var playerRef = PlayerUtils.get(player);
+        if (Objects.nonNull(playerRef)) {
+            sendMessage(msg("server.gg.commands.party.joined")
+                .param("player", playerRef.getUsername())
+            );
+        }
+        players.add(player);
+    }
+
+    public boolean removePlayer(UUID player) {
+        var playerRef = PlayerUtils.get(player);
+
+        boolean isOwner = owner.equals(player);
+        if (isOwner && players.size() <= 1) {
+            GauntletUtils.withResource().removeParty(id);
+            return true;
+        }
+        boolean removed = players.remove(player);
+        if (removed) {
+            if (Objects.nonNull(playerRef)) {
+                sendMessage(msg("server.gg.commands.party.left")
+                    .param("player", playerRef.getUsername())
+                );
+            }
+        }
+        if (isOwner) setOwner(players.stream().findAny().get());
+        return removed;
+    }
+
+    public void setOwner(UUID owner) {
+        if (owner == null) {
+            LOGGER.atSevere().log("Parties must always have an owner");
+            return;
+        } else if (players.stream().noneMatch(p -> p.equals(owner))) {
+            LOGGER.atSevere().log("Player with UUID " + owner + " cannot be set as owner of" +
+                "party with ID " + id + "because they are not in the team.");
+            return;
+        }
+        this.owner = owner;
+    }
+
+    public List<PlayerRef> getAllOnlinePlayers() {
+        var players = new ArrayList<PlayerRef>();
+        for (UUID uuid : this.players) {
+            var player = PlayerUtils.get(uuid);
+            if (Objects.nonNull(player)) {
+                players.add(player);
+            }
+        }
+        return players;
+    }
+
+    public boolean includesPlayer(UUID player) {
+        return players.contains(player);
+    }
+
+    public int size() {
+        return players.size();
+    }
+
+    public void sendMessage(Message message) {
+        for (PlayerRef partyMember : getAllOnlinePlayers()) {
+            partyMember.sendMessage(message);
+        }
+    }
+}

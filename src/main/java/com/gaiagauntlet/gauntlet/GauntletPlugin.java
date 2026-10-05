@@ -1,16 +1,19 @@
 package com.gaiagauntlet.gauntlet;
 
+import com.gaiagauntlet.gauntlet.core.GauntletCore;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.resources.UniverseGameResource;
+import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
+import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
+import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.systems.PlayerEvents;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
-import com.gaiagauntlet.gauntlet.core.gamestore.GameStorePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
-import com.gaiagauntlet.gauntlet.plugins.scoring.ScoringPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
@@ -18,7 +21,6 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.Universe;
-
 import lombok.Getter;
 
 public class GauntletPlugin extends JavaPlugin {
@@ -42,27 +44,47 @@ public class GauntletPlugin extends JavaPlugin {
     @Override
     protected void setup() {
         LOGGER.atInfo().log("Setting up Gauntlet!");
+        setupCore();
         setupResources();
         setupComponents();
         setupPlugins();
         setupEvents();
     }
 
+    // sets up internal or core operations like registries or event handlers
+    private void setupCore() {
+        // Setup the events
+        GauntletEventRegistry.setup(this);
+        GauntletCore.setup(this);
+    }
+
     private void setupResources() {
-        UniverseGameResource.setResourceType(
-                Universe.registerResource(UniverseGameResource.class, UniverseGameResource.ID,
-                        UniverseGameResource.CODEC));
+        UniverseGauntletResource.setResourceType(
+            Universe.registerResource(UniverseGauntletResource.class, UniverseGauntletResource.ID,
+                    UniverseGauntletResource.CODEC));
     }
 
     private void setupCommands() {
-        gauntletCommand = new GauntletCommand();
-        getCommandRegistry().registerCommand(gauntletCommand);
+        getCommandRegistry().registerCommand(new GauntletCommand());
+        getCommandRegistry().registerCommand(new PartyCommands());
     }
 
     private void setupComponents() {
         var entityRegistry = getEntityStoreRegistry();
         PlayerComponent.setComponentType(
-                entityRegistry.registerComponent(PlayerComponent.class, PlayerComponent.ID, PlayerComponent.CODEC));
+            entityRegistry.registerComponent(
+                PlayerComponent.class,
+                PlayerComponent.ID,
+                PlayerComponent.CODEC
+            )
+        );
+        PartyInvitesComponent.setComponentType(
+            entityRegistry.registerComponent(
+                PartyInvitesComponent.class,
+                PartyInvitesComponent.ID,
+                PartyInvitesComponent.CODEC
+            )
+        );
     }
 
     private void setupPlugins() {
@@ -72,7 +94,6 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
         GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
         GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
-        GameRegistry.registerPlugin(ScoringPlugin.ID, this, ScoringPlugin::new);
     }
 
     private void setupEvents() {

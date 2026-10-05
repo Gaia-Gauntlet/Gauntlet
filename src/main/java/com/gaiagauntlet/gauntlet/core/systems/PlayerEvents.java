@@ -2,7 +2,7 @@ package com.gaiagauntlet.gauntlet.core.systems;
 
 import javax.annotation.Nonnull;
 
-import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;

@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
@@ -16,7 +17,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  * Holds all of the game-specific setting configurations
  */
 public abstract class GameController {
-    public abstract String getId();    
+    public abstract String getId();
 
     /**
      * Note: this sets up registries and worlds. This does NOT start the game. The
@@ -27,13 +28,13 @@ public abstract class GameController {
     /**
      * Should be callable at any point to force-end the match that is happening
      */
-    public abstract CompletableFuture<Void> cleanGame(ComponentAccessor<EntityStore> hubAccessor, GameSession session);
+    public abstract CompletableFuture<Void> cleanGame(World hubWorld, GameSession session);
 
     /** Triggered when a player joins back while in this game */
-    public abstract CompletableFuture<Void> playerJoin(ComponentAccessor<EntityStore> hubAccessor, String sessionId, PlayerRef player);
-    
+    public abstract CompletableFuture<Void> playerJoin(World hubAccessor, String sessionId, PlayerRef player);
+
     /** Triggered when a player leaves while in this game */
-    public abstract CompletableFuture<Void> playerLeave(ComponentAccessor<EntityStore> hubAccessor, String sessionId, PlayerRef player);
+    public abstract CompletableFuture<Void> playerLeave(World hubAccessor, String sessionId, PlayerRef player);
 
     /**
      * Returns new admin tabs for configuring / managing this game, or an empty list if it has none.
@@ -47,5 +48,5 @@ public abstract class GameController {
      */
     public abstract List<HudElement> getHudElements();
 
-    public abstract List<String> requiredPlugins();
+    public abstract List<String> getRequiredPlugins();
 }
