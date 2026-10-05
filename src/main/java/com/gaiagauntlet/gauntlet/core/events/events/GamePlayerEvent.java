@@ -10,10 +10,13 @@ public class GamePlayerEvent extends GauntletEvent {
     private PlayerRef player;
     @Getter
     private String sessionId;
+    @Getter 
+    private PlayerOp operation;
 
-    public GamePlayerEvent(PlayerRef player, String sessionId) {
+    public GamePlayerEvent(PlayerRef player, String sessionId, PlayerOp operation) {
         this.player = player;
         this.sessionId = sessionId;
+        this.operation = operation;
     }
 
     public enum PlayerOp {

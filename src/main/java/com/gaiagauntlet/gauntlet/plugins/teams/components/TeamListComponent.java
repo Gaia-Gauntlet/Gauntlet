@@ -47,10 +47,6 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
                     TeamListComponent::setTeamSize, TeamListComponent::getTeamSize)
             .documentation("Whether team distribution should respect player defined parties.")
             .add()
-            .append(new KeyedCodec<>("RespectParties", Codec.BOOLEAN),
-                    TeamListComponent::setRespectParties, TeamListComponent::isRespectParties)
-            .documentation("Whether team distribution should respect player defined parties.")
-            .add()
             .afterDecode((teams) -> {
 
                 // wipe the map before rebuilding it
@@ -74,15 +70,9 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
             })
             .build();
 
-    @Nonnull
-    private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
+    @Nonnull private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
     private final Map<UUID, String> playerToTeam = new ConcurrentHashMap<>();
-    @Setter
-    @Getter
-    private int teamSize;
-    @Setter
-    @Getter
-    private boolean respectParties;
+    @Setter @Getter private int teamSize;
 
     public Map<String, TeamComponent> getTeams() {
         return teamList;

@@ -1,8 +1,10 @@
 package com.gaiagauntlet.gauntlet.core.party.utils;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
@@ -16,6 +18,7 @@ import java.awt.*;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -23,14 +26,16 @@ import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg
 
 public class PartyUtils {
     public static final long EXPIRY_SECONDS = 180;
-    private PartyUtils() {}
+
+    private PartyUtils() {
+    }
 
     public static Collection<PartyComponent> getParties() {
         var resource = GauntletUtils.withResource();
         return resource.getParties().values();
     }
 
-    public static PartyComponent getParty(String partyId) {
+    public static Optional<PartyComponent> getParty(String partyId) {
         var resource = GauntletUtils.withResource();
         return resource.getParty(partyId);
     }
@@ -47,13 +52,13 @@ public class PartyUtils {
         }
         // No pre-existing party exists, create a new one with this player as captain.
         return resource.createParty(
-            player.getUsername().toLowerCase(Locale.ROOT) + "'s Party",
-            player.getUuid()
-        );
+                PlayerUtils.normalize(player.getUsername()) + "'s Party",
+                player.getUuid());
     }
 
     /**
-     * Gets the party for the player without making a new one if they aren't in one already.
+     * Gets the party for the player without making a new one if they aren't in one
+     * already.
      */
     @Nullable
     private static PartyComponent getPartyForPlayerNullable(PlayerRef player) {
@@ -102,31 +107,29 @@ public class PartyUtils {
         World world = Universe.get().getWorld(uuid);
         assert world != null;
         var expiry = world.scheduleAfter(
-            () -> expireInvite(party.getId(), sender, recipient),
-            EXPIRY_SECONDS, TimeUnit.SECONDS
-        );
+                () -> expireInvite(party.getId(), sender, recipient),
+                EXPIRY_SECONDS, TimeUnit.SECONDS);
         invites.putInvite(party.getId(), sender.getUuid(), expiry);
         recipient.sendMessage(msg("server.gg.commands.party.invite.received")
-            .param("sender", sender.getUsername())
-            .param("party", party.getId())
-            .param("expiry", EXPIRY_SECONDS));
+                .param("sender", sender.getUsername())
+                .param("party", party.getId())
+                .param("expiry", EXPIRY_SECONDS));
         sender.sendMessage(msg("server.gg.commands.party.invite.sent")
-            .param("recipient", recipient.getUsername())
-            .param("party", party.getId())
-            .param("expiry", EXPIRY_SECONDS));
+                .param("recipient", recipient.getUsername())
+                .param("party", party.getId())
+                .param("expiry", EXPIRY_SECONDS));
     }
 
     public static void expireInvite(String partyId, PlayerRef sender, PlayerRef recipient) {
         var invites = getInvitesComp(recipient);
         var invite = invites.removeInvite(partyId);
-        if (Objects.isNull(invite)) return;
+        if (Objects.isNull(invite))
+            return;
 
         recipient.sendMessage(Message.raw("Your invite from " + sender.getUsername()
-            + " has expired."
-        ));
+                + " has expired."));
         sender.sendMessage(Message.raw("Your invite to " + recipient.getUsername()
-            + " has expired."
-        ));
+                + " has expired."));
 
         invite.cancel();
     }
@@ -158,16 +161,16 @@ public class PartyUtils {
         PlayerRef sender = PlayerUtils.get(invite.getSender());
         if (Objects.nonNull(sender)) {
             sender.sendMessage(msg("party.invite.declined")
-                .param("recipient", recipient.getUsername())
-                .param("party", party.getId())
-            );
+                    .param("recipient", recipient.getUsername())
+                    .param("party", party.getId()));
         }
     }
 
     static boolean hasActiveInvite(String partyId, PlayerRef recipient) {
         var invites = getInvitesComp(recipient);
         var invite = invites.getInvite(partyId);
-        if (Objects.isNull(invite)) return false;
+        if (Objects.isNull(invite))
+            return false;
         if (Objects.isNull(invite.getExpiryFuture())) {
             // This is a stale invite, discount it
             return false;
@@ -180,5 +183,15 @@ public class PartyUtils {
         assert recipRef != null;
         var recipStore = recipRef.getStore();
         return recipStore.ensureAndGetComponent(recipRef, PartyInvitesComponent.getComponentType());
+    }
+
+    /** Party current session is owned by the owner's current session */
+    public static String getCurrentSession(String partyId) {
+        var party = getParty(partyId).orElse(null);
+        if (party == null)
+            return null;
+        var player = GauntletUtils.playerFor(party.getOwner()).orElse(null);
+        if (player == null) return null;
+        return player.getCurrentSession();
     }
 }
