@@ -32,14 +32,22 @@ public class UniverseGauntletResource {
             .add()
             .append(new KeyedCodec<>("Parties",
                     new MapCodec<>(PartyComponent.CODEC, ConcurrentHashMap::new, false)),
-                (resource, v) -> resource.parties = v,
-                resource -> resource.parties)
+                    (resource, v) -> resource.parties = v,
+                    resource -> resource.parties)
             .add()
             .build();
 
-    @Setter @Getter private static UniverseResourceType<UniverseGauntletResource> resourceType;
-    @Nonnull @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
-    @Nonnull @Getter private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
+    @Setter
+    @Getter
+    private static UniverseResourceType<UniverseGauntletResource> resourceType;
+    @Nonnull
+    @Getter
+    private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
+    @Nonnull
+    @Getter
+    private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
+
+    private static Map<String, String> partyIdToGameSession = new ConcurrentHashMap<>();
 
     // Sessions
 
@@ -61,7 +69,8 @@ public class UniverseGauntletResource {
      * This does zero clean-up and may lead to stale/missing/broken data
      */
     public boolean removeSession(GameSession session) {
-        if (session == null || session.getId() == null) return false;
+        if (session == null || session.getId() == null)
+            return false;
         if (!sessions.containsKey(session.getId())) {
             return false; // to remove
         }
@@ -75,17 +84,71 @@ public class UniverseGauntletResource {
         return Optional.ofNullable(parties.get(partyId));
     }
 
-    public PartyComponent createParty(String partyId, UUID owner) {
-        var players = new HashSet<UUID>();
-        players.add(owner);
-
-        var newParty = new PartyComponent(partyId, players);
-        parties.put(partyId, newParty);
-        return newParty;
+    /** Returns the existing party component if present */
+    public PartyComponent addParty(PartyComponent party) {
+        var existing = parties.put(party.getId(), party);
+        return existing;
     }
 
     public PartyComponent removeParty(String partyId) {
         return parties.remove(partyId);
+    }
+
+    public Optional<GameSession> sessionFor(String partyId) {
+        var sessionId = partyIdToGameSession.get(partyId);
+        return getSession(sessionId);
+    }
+
+    /**
+     * Should only be set via the owner joining/leaving a session, never set
+     * manually
+     * anywhere or else things WILL become desynced
+     * 
+     * @return existing session if it was in one
+     */
+    public String addPartyToSession(String partyId, String sessionId) {
+        var party = getParty(partyId).orElse(null);
+        if (party == null)
+            return null;
+
+        String existing;
+        if (sessionId == null) {
+            existing = partyIdToGameSession.put(partyId, sessionId);
+        } else {
+            existing = partyIdToGameSession.remove(partyId);
+        }
+        removePartyFromSession(partyId, existing);
+
+        var session = sessions.get(sessionId);
+        if (session == null)
+            return existing;
+        // don't use a provided accessor - since we don't want anyone else removing
+        // parties
+        session.getParties().add(partyId);
+        return existing;
+    }
+
+    /**
+     * Removes a party from the session - should only be called via events
+     * 
+     * @param partyId
+     */
+    public void removePartyFromSession(String partyId) {
+        var sessionId = partyIdToGameSession.get(partyId);
+        if (sessionId == null)
+            return;
+        removePartyFromSession(partyId, sessionId);
+    }
+
+    public void removePartyFromSession(String partyId, String sessionId) {
+        var party = getParty(partyId).orElse(null);
+        if (party == null)
+            return;
+        var session = sessions.get(sessionId);
+        if (session == null)
+            return;
+        session.getParties().remove(partyId);
+
     }
 
 }

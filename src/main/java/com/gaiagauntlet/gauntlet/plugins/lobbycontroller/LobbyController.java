@@ -96,6 +96,18 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
+    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'playerJoin'");
+    }
+
+    @Override
+    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'playerLeave'");
+    }
+
+    @Override
     public final CompletableFuture<Void> cleanGame(World hubAccessor, GameSession session) {
         // remove the game
         return CompletableFuture.completedFuture(null);

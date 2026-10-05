@@ -1,12 +1,12 @@
 package com.gaiagauntlet.gauntlet.core.party.utils;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -14,9 +14,10 @@ import com.hypixel.hytale.server.core.universe.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.awt.*;
 import java.util.Collection;
-import java.util.Locale;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,20 +41,33 @@ public class PartyUtils {
         return resource.getParty(partyId);
     }
 
+    @Nonnull
+    public static PartyComponent createParty(String label, UUID owner) {
+        var players = new HashSet<UUID>();
+        players.add(owner);
+        var party = new PartyComponent(UUID.randomUUID().toString(), label, players, owner);
+        return party;
+    }
+
     /**
      * Ensures that the player is always in a party, even if it's a singleton.
+     * 
+     * Auto-reconnects disconnected players
+     * 
+     * Creates a party for the player if it doesn't exist
      */
     @Nonnull
-    public static PartyComponent getPartyForPlayer(PlayerRef player) {
+    public static PartyComponent getParty(PlayerRef player) {
         var resource = GauntletUtils.withResource();
         for (PartyComponent party : resource.getParties().values()) {
-            party.includesPlayer(player.getUuid());
+            if (!party.includesPlayer(player.getUuid()))
+                continue;
             return party;
         }
+
         // No pre-existing party exists, create a new one with this player as captain.
-        return resource.createParty(
-                PlayerUtils.normalize(player.getUsername()) + "'s Party",
-                player.getUuid());
+        return resource
+                .addParty(createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid()));
     }
 
     /**
@@ -61,33 +75,30 @@ public class PartyUtils {
      * already.
      */
     @Nullable
-    private static PartyComponent getPartyForPlayerNullable(PlayerRef player) {
+    public static Optional<PartyComponent> getPartyNullable(PlayerRef player) {
         var resource = GauntletUtils.withResource();
         for (PartyComponent party : resource.getParties().values()) {
-            party.includesPlayer(player.getUuid());
-            return party;
+            if (!party.includesPlayer(player.getUuid()))
+                continue;
+            return Optional.of(party);
         }
-        return null;
+        return Optional.empty();
     }
 
-    public static void leaveParty(PlayerRef playerRef) {
-        var party = getPartyForPlayer(playerRef);
-        if (party.size() == 1) {
-            playerRef.sendMessage(msg("You're the only one in this party, so you cannot leave.").color(Color.RED));
-            return;
-        }
-        var success = party.removePlayer(playerRef.getUuid());
-        if (success) {
-            playerRef.sendMessage(msg("server.gg.commands.party.left.you").param("party", party.getId()));
-        } else {
-            playerRef.sendMessage(msg("Failed to leave the party. See logs.").color(Color.RED));
-        }
+    public static Optional<GameSession> sessionFor(PartyComponent party) {
+        return sessionFor(party.getId());
+    }
+
+    public static Optional<GameSession> sessionFor(String partyId) {
+        var resource = GauntletUtils.withResource();
+        var session = resource.sessionFor(partyId);
+        return session;
     }
 
     // Invites
 
     public static void sendPartyInvite(PlayerRef sender, PlayerRef recipient) {
-        var party = getPartyForPlayer(sender);
+        var party = getParty(sender);
         var invites = getInvitesComp(recipient);
         if (sender.getUuid().equals(recipient.getUuid())) {
             sender.sendMessage(msg("You can't invite yourself to a party!").color(Color.RED));
@@ -135,19 +146,17 @@ public class PartyUtils {
     }
 
     public static void acceptInvite(PartyComponent party, PlayerRef recipient) {
-        var recipParty = getPartyForPlayerNullable(recipient);
-        if (Objects.nonNull(recipParty)) { // Remove player from current party
-            recipParty.removePlayer(recipient.getUuid());
-        }
         if (!hasActiveInvite(party.getId(), recipient)) {
             recipient.sendMessage(msg("You don't have an invite from this party!").color(Color.RED));
             return;
         }
+
         var invites = getInvitesComp(recipient);
         var invite = invites.getInvite(party.getId());
         invite.cancel();
-        party.addPlayer(recipient.getUuid());
-        recipient.sendMessage(msg("server.gg.commands.party.joined.you").param("party", party.getId()));
+
+        // emit the join party event
+        GauntletEventRegistry.dispatch(PlayerPartyEvent.Join(recipient, party.getId()));
     }
 
     public static void declineInvite(PartyComponent party, PlayerRef recipient) {
@@ -185,13 +194,30 @@ public class PartyUtils {
         return recipStore.ensureAndGetComponent(recipRef, PartyInvitesComponent.getComponentType());
     }
 
-    /** Party current session is owned by the owner's current session */
-    public static String getCurrentSession(String partyId) {
-        var party = getParty(partyId).orElse(null);
+    public static void promote(PlayerRef player) {
+        var party = getParty(player);
         if (party == null)
-            return null;
-        var player = GauntletUtils.playerFor(party.getOwner()).orElse(null);
-        if (player == null) return null;
-        return player.getCurrentSession();
+            return;
+        var existingId = party.getOwner();
+        var existing = PlayerUtils.get(existingId);
+        party.setOwner(player.getUuid());
+        var members = party.getAllOnlinePlayers();
+        for (var member : members) {
+
+            // demoted message
+            if (member.equals(existing)) {
+                player.sendMessage(msg("party.ownership.demote.self"));
+            } else if (existing != null) {
+                member.sendMessage(msg("party.ownership.demote").param("player", existing.getUsername()));
+            }
+
+            // promoted message
+            if (member.equals(player)) {
+                player.sendMessage(msg("party.ownership.promote.self"));
+            } else {
+                member.sendMessage(msg("party.ownership.promote").param("player", player.getUsername()));
+            }
+
+        }
     }
 }

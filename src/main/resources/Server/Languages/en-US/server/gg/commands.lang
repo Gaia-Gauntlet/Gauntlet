@@ -38,6 +38,10 @@ party.joined.you = You <color is="#77ed7d">joined</color> <b>{party}</b>!
 party.joined = <b>{player}</b> <color is="#77ed7d">joined</color> your party!
 party.left.you = You <color is="#ed7f77">left</color> <b>{party}</b>.
 party.left = <b>{player}</b> <color is="#ed7f77">left</color> your party!
+party.ownership.promote = {player} is now the party owner of {party}
+party.ownership.promote.self = You are now the party owner of {party}
+party.ownership.demote.self = You have been demoted in {party}
+party.ownership.demote = {player} has been demoted in {party}
 
 party.invite.leaderonly = Only the <b>party leader</b> can send party invites!
 party.invite.declined.you = <color is="#ed7f77">Declined</color> invite to join <b>{party}</b>.
