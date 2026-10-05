@@ -3,6 +3,8 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.assets.ZonesAsset;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
@@ -33,9 +35,9 @@ public final class LootFountains {
     }
 
     /** Loads every chunk the zones cover, then thins the fountains once they are all in. */
-    public static void randomize(@Nonnull World arena) {
+    public static void randomize(@Nonnull World arena, String game) {
         var indexes = new java.util.LinkedHashSet<Long>();
-        for (var zone : Zones.get().zones()) {
+        for (var zone : GameStore.ensureStore(arena, game).ensure(ZoneComponent.TYPE, ZoneComponent::new).order()) {
             if (zone.lootFountains().isEmpty()) {
                 continue;
             }
@@ -49,19 +51,19 @@ public final class LootFountains {
                 }
             }
         }
-        if (indexes.isEmpty()) {
-            return;
-        }
+        if (indexes.isEmpty()) return;
+
         var loads = new ArrayList<java.util.concurrent.CompletableFuture<?>>();
         for (long index : indexes) {
-            loads.add(arena.getChunkAsync(index).exceptionally(e -> null));
+            // TODO: Load chunks
+//            loads.add(arena.getChunkAsync(index).exceptionally(e -> null));
         }
         LOGGER.atInfo().log("Loading %d chunks of %s before thinning loot fountains", loads.size(), arena.getName());
         java.util.concurrent.CompletableFuture.allOf(loads.toArray(java.util.concurrent.CompletableFuture[]::new))
-                .whenComplete((ignored, error) -> arena.execute(() -> thin(arena)));
+                .whenComplete((ignored, error) -> arena.execute(() -> thin(arena, game)));
     }
 
-    private static void thin(@Nonnull World arena) {
+    private static void thin(@Nonnull World arena, String game) {
         var tierByBlockId = new HashMap<Integer, Integer>();
         for (int tier = MIN_TIER; tier <= MAX_TIER; tier++) {
             var id = BLOCK_PREFIX + tier;
@@ -75,7 +77,7 @@ public final class LootFountains {
             return;
         }
         int removedTotal = 0;
-        for (ZoneComponent zone : Zones.get().zones()) {
+        for (var zone : GameStore.ensureStore(arena, game).ensure(ZoneComponent.TYPE, ZoneComponent::new).order()) {
             var rules = new HashMap<Integer, LootFountainRule>();
             for (var rule : zone.lootFountains()) {
                 if (rule.enabled() && rule.tier() >= MIN_TIER && rule.tier() <= MAX_TIER) {
@@ -96,10 +98,10 @@ public final class LootFountains {
                 Collections.shuffle(candidates, ThreadLocalRandom.current());
                 int removed = 0;
                 for (var position : candidates.subList(keep, candidates.size())) {
-                    var chunk = arena.getChunkIfLoaded(ChunkUtil.indexChunkFromBlock(position.x(), position.z()));
-                    if (chunk != null) {
-                        chunk.setBlock(position.x(), position.y(), position.z(), BlockType.EMPTY_ID, BlockType.EMPTY, 0,
-                                FillerBlockUtil.NO_FILLER, 0);
+                    var blockSection = BlockUtils.getBlockSection(arena, position);
+                    if (blockSection != null) {
+                        blockSection.set(position.x(), position.y(), position.z(), BlockType.EMPTY_ID, 0,
+                                FillerBlockUtil.NO_FILLER);
                         removed++;
                     }
                 }

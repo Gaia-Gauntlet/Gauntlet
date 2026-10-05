@@ -17,7 +17,6 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
-import com.gaiagauntlet.gauntlet.plugins.scoring.ScoringPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -37,8 +36,7 @@ public class EZController extends LobbyController {
             GameStorePlugin.ID,
             LobbyControllerPlugin.ID,
             ProxyChatPlugin.ID,
-            TeamsPlugin.ID,
-            ScoringPlugin.ID);
+            TeamsPlugin.ID);
 
     private EZArenaManager arena = new EZArenaManager();
     private EZLobbyManager lobby = new EZLobbyManager();
