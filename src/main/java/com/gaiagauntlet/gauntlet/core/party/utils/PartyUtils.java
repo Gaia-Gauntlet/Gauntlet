@@ -185,41 +185,13 @@ public class PartyUtils {
         return recipStore.ensureAndGetComponent(recipRef, PartyInvitesComponent.getComponentType());
     }
 
+    /** Party current session is owned by the owner's current session */
     public static String getCurrentSession(String partyId) {
         var party = getParty(partyId).orElse(null);
         if (party == null)
             return null;
-        return party.getSession();
-    }
-
-    /**
-     * Sets the parties session. Updates every online player's session too
-     * Any offline player will auto-join the active session if their session is
-     * different
-     */
-    public static boolean setSession(String partyId, GameSession session) {
-        var party = getParty(partyId).orElse(null);
-        if (party == null) {
-            GaiaLog.atWarning().withSession(session)
-                    .log("Attempted to transition invalid party to " + session.getId() + " which doesn't exist!");
-            return false;
-        }
-
-        party.setSession(session.getId());
-
-        var players = party.getAllOnlinePlayers();
-        for (var player : players) {
-            var playerComp = GauntletUtils.playerFor(player).orElse(null);
-            if (playerComp == null) {
-                GaiaLog.atWarning().withSession(session)
-                        .log("Player " + player.getUsername() + " cannot transition to " + session.getId()
-                                + " because they don't have PlayerComponent!");
-                continue;
-            }
-
-            playerComp.setCurrentSession(session.getId());
-        }
-
-        return true;
+        var player = GauntletUtils.playerFor(party.getOwner()).orElse(null);
+        if (player == null) return null;
+        return player.getCurrentSession();
     }
 }

@@ -20,6 +20,7 @@ import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
 import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.world.World;
 
@@ -51,6 +52,7 @@ public class GauntletOrchestrator {
         GauntletEventRegistry.on(EventPriority.LATE, GamePlayerEvent.class, wrap(PlayerHandlers::handleGamePlayer));
         var registry = plugin.getEventRegistry();
         registry.register(PlayerConnectEvent.class, PlayerHandlers::onPlayerConnect);
+        registry.registerGlobal(PlayerReadyEvent.class, PlayerHandlers::onPlayerReady);
         registry.register(PlayerDisconnectEvent.class, PlayerHandlers::onPlayerDisconnect);
     }
 

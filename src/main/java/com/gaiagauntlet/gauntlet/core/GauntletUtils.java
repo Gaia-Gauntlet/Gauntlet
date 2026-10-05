@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.core;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -42,6 +43,12 @@ public class GauntletUtils {
         return Optional.empty();
     }
 
+    @Nonnull
+    public static Optional<PlayerComponent> playerFor(@Nonnull UUID playerId) {
+        var playerRef = Universe.get().getPlayer(playerId);
+        if (playerRef == null) return Optional.empty();
+        return playerFor(playerRef);
+    }
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));

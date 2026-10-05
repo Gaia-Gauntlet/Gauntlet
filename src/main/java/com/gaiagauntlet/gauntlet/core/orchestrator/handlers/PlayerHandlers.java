@@ -1,6 +1,9 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
@@ -10,12 +13,16 @@ import com.gaiagauntlet.gauntlet.core.events.events.GamePlayerEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.GamePlayerEvent.PlayerOp;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
+import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class PlayerHandlers extends HandlerUtils {
@@ -58,18 +65,19 @@ public class PlayerHandlers extends HandlerUtils {
     }
 
     // player requested to join the session / game
-    private static void handlePlayerJoin(GamePlayerEvent evt, GameSession session, PlayerComponent playerComp) {
+    private static void handlePlayerJoin(GamePlayerEvent evt, GameSession session, PlayerComponent player) {
+
         var sessionId = evt.getSessionId();
         var playerRef = evt.getPlayer();
-        var existing = playerComp.getCurrentSession();
+        var existing = player.getCurrentSession();
         var party = PartyUtils.getPartyForPlayer(playerRef);
-        var partySessionId = party.getSession();
+        var partySessionId = PartyUtils.getCurrentSession(party.getId());
+        var isOwner = party.getOwner().equals(playerRef.getUuid());
         // can only join if they are the party leader
-        if (!playerRef.getUuid().equals(party.getOwner())) {
-            // player is not the owner - cannot join the session. Check if the session is
-            // new
+        // - if party not already in session and not party leader, return
+        if (!isOwner) {
             if (!sessionId.equals(partySessionId)) {
-                // attempting to go to a new session, prevent action
+                // not owner and owner is not already in session
                 Resolve.error(evt, session, msg("server.gg.events.players.join.existing.error")
                         .param("playerName", playerRef.getUsername())
                         .param("partySessionId", partySessionId)
@@ -79,8 +87,11 @@ public class PlayerHandlers extends HandlerUtils {
             }
         }
 
-        // joining a session you are already in is fine and should be allowed in case
-        // stuff goes wrong
+        // set the player (and the party if in a party) to the current session. No going
+        // back now
+        player.setCurrentSession(sessionId);
+
+        // - leave old session (pulls all party members out of session if party leader)
         if (existing != null && !existing.equals(sessionId)) {
             // disconnect from prior session first
             // because this is all in the same thread, this will execute and resolve
@@ -101,14 +112,95 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("oldSessionId", existing));
         }
 
-        // now to add the player to the new session
+        if (isOwner) {
+            // connect all of the party members to this session also
+            var members = party.getAllOnlinePlayers();
+            for (var member : members) {
+                if (member.getUuid().equals(playerRef.getUuid()))
+                    continue; // party owner - no need
+                try {
+                    GauntletEventRegistry.dispatch(new GamePlayerEvent(playerRef, sessionId, PlayerOp.ADD));
+                } catch (Exception e) {
+                    Resolve.error(evt, session, msg("server.gg.events.players.join.new.error")
+                            .param("playerName", playerRef.getUsername()), e);
+                    return;
+                }
+            }
+        }
 
-        // add the player to the game
+        // actually join the session now
+        if (session.available()) {
+            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "session is not active"));
+            return;
+        }
+        var gameId = session.getCurrentGame();
+        if (gameId == null || gameId.isEmpty()) {
+            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "no game is active"));
+            return;
+        }
+        if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
+            GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.join.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "game is not registered"));
+            return;
+        }
+        var hubWorld = GauntletUtils.withHubWorld();
+        GauntletUtils.run(hubWorld, () -> {
+            try {
+                // run the player connection logic
+                game.playerJoin(hubWorld, partySessionId, playerRef);
+            } catch (Exception e) {
+                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
+                        .param("playerName", playerRef.getUsername())
+                        .param("reason", "Exception when handling player connect"));
+            }
+        });
     }
 
     // player requested to leave the session / game (you can only do both)
-    private static void handlePlayerLeave(GamePlayerEvent evt, GameSession session, PlayerComponent playerComp) {
+    private static void handlePlayerLeave(GamePlayerEvent evt, GameSession session, PlayerComponent player) {
+        var sessionId = evt.getSessionId();
+        var playerRef = evt.getPlayer();
+        var existing = player.getCurrentSession();
+        var party = PartyUtils.getPartyForPlayer(playerRef);
+        var partySessionId = PartyUtils.getCurrentSession(party.getId());
+        var isOwner = party.getOwner().equals(playerRef.getUuid());
+        // can only leave if they are the party leader
+        // - if party not already in session and not party leader, return
+        if (!isOwner) {
+            if (!sessionId.equals(partySessionId)) {
+                // not owner and owner is not already in session
+                Resolve.error(evt, session, msg("server.gg.events.players.leave.existing.error")
+                        .param("playerName", playerRef.getUsername())
+                        .param("partySessionId", partySessionId)
+                        .param("sessionId", sessionId)
+                        .param("partyName", party.getId()));
+                return;
+            }
+        }
+        // - if player not in provided, return (no leave event, not present)
 
+        // - if party in provided and not party leader, return (only party leader can
+        // leave)
+        // - if session == provided, null the session (no longer in session)
+        // - if party leader, run event for each party member too
+        // - get current game
+        // - run onLeave for the current game
+    }
+
+    public static void onPlayerReady(PlayerReadyEvent event) {
+        var ref = event.getPlayerRef();
+        var store = ref.getStore();
+        var playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+        if (playerRef == null)
+            return;
+
+        // TODO: Uncomment once huds are merged
+        // GauntletOrchestrator.showHud(store, ref, playerRef);
     }
 
     /**
@@ -130,7 +222,7 @@ public class PlayerHandlers extends HandlerUtils {
         var holder = evt.getHolder();
         var playerComponent = holder.ensureAndGetComponent(PlayerComponent.getComponentType());
         var party = PartyUtils.getPartyForPlayer(playerRef);
-        var partySessionId = party.getSession();
+        var partySessionId = PartyUtils.getCurrentSession(party.getId());
         var partySession = sessionFor(partySessionId).orElse(null);
         var sessionId = Optional.of(playerComponent.getCurrentSession()).orElse(partySessionId);
         if (sessionId == null || sessionId.isEmpty()) {
@@ -141,11 +233,13 @@ public class PlayerHandlers extends HandlerUtils {
             return;
         }
 
+        // resolve desired session based on sessionId and partyId
         if (partySession != null && partySessionId.equals(sessionId)) {
             // if player is in a different session from the party
             GaiaLog.atWarning().withSession(partySession).log(msg("server.gg.events.players.connect.wrongsession")
                     .param("playerName", playerRef.getUsername()));
             try {
+                // leave old session (they differ - party moved on)
                 GauntletEventRegistry.dispatch(new GamePlayerEvent(playerRef, sessionId, PlayerOp.REMOVE));
             } catch (Exception e) {
                 GaiaLog.atError(e).withSession(partySession).log(msg("server.gg.events.players.join.existing.error")
@@ -160,7 +254,7 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("oldSessionId", sessionId));
         }
 
-        if (!(sessionFor(sessionId).orElse(null) instanceof GameSession session)) {
+        if (!(sessionFor(partySessionId).orElse(null) instanceof GameSession session)) {
             GaiaLog.atWarning().log(msg("server.gg.events.players.connect.warn")
                     .param("playerName", playerRef.getUsername())
                     .param("reason", "Session not present"));
@@ -190,7 +284,9 @@ public class PlayerHandlers extends HandlerUtils {
         var hubWorld = GauntletUtils.withHubWorld();
         GauntletUtils.run(hubWorld, () -> {
             try {
-                game.playerConnect(hubWorld, sessionId, playerRef);
+
+                // run the player join logic
+                game.playerConnect(hubWorld, partySessionId, playerRef);
             } catch (Exception e) {
                 GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.connect.warn")
                         .param("playerName", playerRef.getUsername())
@@ -214,10 +310,25 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("reason", "Player's reference is not present"));
             return;
         }
+        // TODO: Uncomment once HUDs are merged
+        // GauntletOrchestrator.forgetHud(playerRef);
+
+        // leave party
+        var party = PartyUtils.getPartyForPlayer(playerRef);
+        if (party != null) {
+
+            var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+                party.clearOffline(playerRef.getUuid());
+            }, 180, TimeUnit.SECONDS);
+
+            party.setOffline(playerRef.getUuid(), future);
+        }
+
         var reason = evt.getDisconnectReason();
         GaiaLog.atInfo().log("Player " + playerRef.getUsername() + " disconnected because " + reason);
         var playerComponent = playerRef.getComponentConcurrent(PlayerComponent.getComponentType());
-        // safely assume the player component is synced with the party because i'm too lazy to do the party lookup rn
+        // safely assume the player component is synced with the party because i'm too
+        // lazy to do the party lookup rn
         var sessionId = playerComponent.getCurrentSession();
         if (sessionId == null || sessionId.isEmpty()) {
             // player not in a session, no-op from here
