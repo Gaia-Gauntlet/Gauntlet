@@ -1,10 +1,9 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -20,7 +19,7 @@ public final class WinnerHud implements HudElement {
     }
 
     @Nonnull @Override public String getMarkup() {
-        return "Gauntlet/Plugins/" + GameStatePlugin.ID + "/WinnerHud.ui";
+        return "Gauntlet/Games/EliminationZone/WinnerHud.ui";
     }
 
     @Override public int getOrder() {

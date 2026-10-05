@@ -8,6 +8,9 @@ import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.BossesTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ScoreboardHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.TimerHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
@@ -76,7 +79,7 @@ public class EZController extends LobbyController {
 
     @Override
     public List<HudElement> getHudElements() {
-        return List.of(new ZonesHud());
+        return List.of(new ZonesHud(), new TimerHud(), new ScoreboardHud(), new WinnerHud());
     }
 
     @Override // temp, just messing around here

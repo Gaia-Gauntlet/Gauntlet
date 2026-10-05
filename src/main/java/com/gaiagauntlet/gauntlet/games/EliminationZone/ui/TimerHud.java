@@ -1,30 +1,29 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 /**
- * Event standings in the lobby: every team ranked by its event score, the viewer's own team
- * highlighted. Hidden until event scores are tracked.
+ * The countdown banner at the top of the screen: the header art for the current phase over the
+ * remaining time. Hidden until the match countdown exists.
  */
-public final class ScoreboardHud implements HudElement {
+public final class TimerHud implements HudElement {
 
     @Nonnull @Override public String getId() {
-        return "Scoreboard";
+        return "Timer";
     }
 
     @Nonnull @Override public String getMarkup() {
-        return "Gauntlet/Plugins/" + GameStatePlugin.ID + "/ScoreboardHud.ui";
+        return "Gauntlet/Games/EliminationZone/TimerHud.ui";
     }
 
     @Override public int getOrder() {
-        return 40;
+        return 20;
     }
 
     @Override
@@ -34,6 +33,7 @@ public final class ScoreboardHud implements HudElement {
 
     @Override
     public void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        cmd.clear("#ScoreRows");
+        cmd.set("#TimerImage.Background", "GG/TimerHeaderUntilPortalOpens.png");
+        cmd.set("#TimerLabel.Text", "00:00");
     }
 }

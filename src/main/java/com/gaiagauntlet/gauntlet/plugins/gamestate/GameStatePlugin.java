@@ -3,11 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.gamestate;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.MatchTab;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.ScoreboardHud;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.TimerHud;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.WinnerHud;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -41,10 +37,5 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
     @Override
     public List<AdminTab> getAdminTabs() {
         return List.of(new MatchTab());
-    }
-
-    @Override
-    public List<HudElement> getHudElements() {
-        return List.of(new TimerHud(), new ScoreboardHud(), new WinnerHud());
     }
 }
