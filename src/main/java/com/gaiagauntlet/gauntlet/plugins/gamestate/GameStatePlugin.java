@@ -35,7 +35,7 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
     public void init(JavaPlugin host) {}
 
     @Override
-    public AdminTab getAdminTab() {
-        return new SessionTab();
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new SessionTab());
     }
 }

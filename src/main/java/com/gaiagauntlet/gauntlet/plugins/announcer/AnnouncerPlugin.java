@@ -30,11 +30,8 @@ public class AnnouncerPlugin implements GamePlugin, UiGamePlugin {
         return List.of();
     }
 
-    /**
-     * Admin tab or admin configurations
-     */
     @Override
-    public AdminTab getAdminTab() {
-        return new LogTab();
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new LogTab());
     }
 }

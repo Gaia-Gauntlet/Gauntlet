@@ -65,9 +65,9 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public AdminTab getAdminTab() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAdminTab'");
+    public List<AdminTab> getAdminTabs() {
+        // TODO: EZ admin tabs
+        return List.of();
     }
 
     @Override // temp, just messing around here

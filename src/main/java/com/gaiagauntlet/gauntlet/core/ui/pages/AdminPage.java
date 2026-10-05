@@ -7,9 +7,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
-import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -32,6 +31,8 @@ import lombok.Getter;
  * calls the same orchestrator and components the commands do. Dangerous actions ask first.
  */
 public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
+
+    public static final String ID = "Admin";
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String PAGE = "Gauntlet/Admin/Dashboard.ui";
@@ -78,11 +79,8 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         Widgets.bind(evt, "#ConfirmNo", "page.confirmNo");
         Widgets.bindChange(evt, "#SessionPicker", "page.selectSession");
 
-        var uiPlugins = GameRegistry.getPlugins(UiGamePlugin.class);
-        if (!uiPlugins.isEmpty()) tabs = new ArrayList<>();
-        for (UiGamePlugin plugin : uiPlugins) {
-            tabs.add(plugin.getAdminTab());
-        }
+        var registered = GauntletOrchestrator.getAdminTabs();
+        if (!registered.isEmpty()) tabs = registered;
         selectTab(tabs.getFirst().getId());
 
         for (AdminTab tab : tabs) {

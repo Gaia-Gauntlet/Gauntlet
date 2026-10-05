@@ -1,12 +1,21 @@
 package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 
 /**
  * UiGamePlugin
  */
 public interface UiGamePlugin extends GamePlugin {
 
-    /** Admin tab or admin configurations */
-    public AdminTab getAdminTab();
+    /** New admin tabs for the dashboard. Called once per opened admin page */
+    public List<AdminTab> getAdminTabs();
+
+    /** Pages the orchestrator can open, keyed by page id */
+    public default Map<String, PageFactory> getPages() {
+        return Map.of();
+    }
 }

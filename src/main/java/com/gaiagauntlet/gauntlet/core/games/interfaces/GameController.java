@@ -34,8 +34,11 @@ public abstract class GameController {
     /** Triggered when a player leaves while in this game */
     public abstract CompletableFuture<Void> playerLeave(ComponentAccessor<EntityStore> hubAccessor, String sessionId, PlayerRef player);
 
-    /** Returns the admin tab for configuring / managing this game */
-    public abstract AdminTab getAdminTab();
+    /**
+     * Returns new admin tabs for configuring / managing this game, or an empty list if it has none.
+     * Called once per opened admin page.
+     */
+    public abstract List<AdminTab> getAdminTabs();
 
     public abstract List<String> requiredPlugins();
 }
