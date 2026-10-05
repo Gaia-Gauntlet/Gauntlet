@@ -1,9 +1,0 @@
-{
-  "Type": "SingleTrack",
-  "AudioCategory": "AudioCat_Music",
-  "Track": "Music/Gaia Awakens.ogg",
-  "Volume": -6.4,
-  "TransitionType": "Immediate",
-  "ResumeMemoryDuration": 0,
-  "PlayToCompletion": false
-}

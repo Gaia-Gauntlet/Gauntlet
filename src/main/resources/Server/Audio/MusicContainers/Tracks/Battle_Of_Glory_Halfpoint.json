@@ -1,8 +1,0 @@
-{
-  "Type": "SingleTrack",
-  "PlayToCompletion": true,
-  "AudioCategory": "AudioCat_Music",
-  "Track": "Music/zUnused/BattleofGloryHalfpoint.ogg",
-  "Volume": 0,
-  "TransitionType": "Crossfade"
-}
