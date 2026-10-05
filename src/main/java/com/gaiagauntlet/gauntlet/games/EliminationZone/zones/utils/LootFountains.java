@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils;
 
-import com.gaiagauntlet.gg.zone.ZoneDefinition;
-import com.gaiagauntlet.gg.zone.Zones;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
+import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
@@ -73,7 +75,7 @@ public final class LootFountains {
             return;
         }
         int removedTotal = 0;
-        for (var zone : Zones.get().zones()) {
+        for (ZoneComponent zone : Zones.get().zones()) {
             var rules = new HashMap<Integer, LootFountainRule>();
             for (var rule : zone.lootFountains()) {
                 if (rule.enabled() && rule.tier() >= MIN_TIER && rule.tier() <= MAX_TIER) {
@@ -111,7 +113,7 @@ public final class LootFountains {
     /** Every fountain block of a ruled tier inside the zone, except the protected positions. */
     @Nonnull
     private static Map<Integer, List<Vector3i>> discover(@Nonnull World arena, @Nonnull ZoneDefinition zone,
-            @Nonnull Map<Integer, LootFountainRule> rules, @Nonnull Map<Integer, Integer> tierByBlockId) {
+                                                         @Nonnull Map<Integer, LootFountainRule> rules, @Nonnull Map<Integer, Integer> tierByBlockId) {
         var result = new HashMap<Integer, List<Vector3i>>();
         var protectedByTier = new HashMap<Integer, Set<Vector3i>>();
         rules.forEach((tier, rule) -> {
@@ -123,47 +125,36 @@ public final class LootFountains {
             }
             protectedByTier.put(tier, positions);
         });
-        IntList wanted = new IntArrayList();
+        var wanted = new ArrayList<>();
         tierByBlockId.forEach((blockId, tier) -> {
             if (rules.containsKey(tier)) {
-                wanted.add((int) blockId);
+                wanted.add(blockId);
             }
         });
+
+        // This is likely wildly inefficient, but it takes place while the game is preparing so there's
+        // plenty of time. Still... it could do with optimising for sure.
         int minY = Math.max(ChunkUtil.MIN_Y, (int) Math.floor(zone.minY()));
         int maxY = Math.min(ChunkUtil.HEIGHT - 1, (int) Math.floor(zone.maxY()));
-        int minChunkX = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerX() - zone.outerRadius()));
-        int maxChunkX = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerX() + zone.outerRadius()));
-        int minChunkZ = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerZ() - zone.outerRadius()));
-        int maxChunkZ = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerZ() + zone.outerRadius()));
-        int minSection = ChunkUtil.indexSection(minY);
-        int maxSection = ChunkUtil.indexSection(maxY);
-        for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
-            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
-                var chunk = arena.getChunkIfLoaded(ChunkUtil.indexChunk(chunkX, chunkZ));
-                if (chunk == null) {
-                    continue;
-                }
-                int worldMinX = ChunkUtil.minBlock(chunkX);
-                int worldMinZ = ChunkUtil.minBlock(chunkZ);
-                for (int sectionIndex = minSection; sectionIndex <= maxSection; sectionIndex++) {
-                    var section = chunk.getBlockChunk().getSectionAtBlockY(ChunkUtil.minBlock(sectionIndex));
-                    if (section == null || !section.containsAny(wanted)) {
-                        continue;
+        int minX = (int) Math.floor(zone.centerX() - zone.outerRadius());
+        int maxX = (int) Math.floor(zone.centerX() + zone.outerRadius());
+        int minZ = (int) Math.floor(zone.centerZ() - zone.outerRadius());
+        int maxZ = (int) Math.floor(zone.centerZ() + zone.outerRadius());
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    var pos = new Vector3i(x, y, z);
+                    int block = BlockUtils.getBlockId(arena, pos);
+                    if (!wanted.contains(block)) continue;
+                    var tier = tierByBlockId.get(block);
+                    if (tier == null
+                        || y < minY || y > maxY
+                        || !contains(zone, x + 0.5, z + 0.5)
+                    ) continue;
+                    if (!protectedByTier.get(tier).contains(pos)) {
+                        result.computeIfAbsent(tier, ignored -> new ArrayList<>()).add(pos);
                     }
-                    int sectionMinY = ChunkUtil.minBlock(sectionIndex);
-                    section.find(wanted, (blockIndex, blockId) -> {
-                        int x = worldMinX + ChunkUtil.xFromIndex(blockIndex);
-                        int y = sectionMinY + ChunkUtil.yFromIndex(blockIndex);
-                        int z = worldMinZ + ChunkUtil.zFromIndex(blockIndex);
-                        var tier = tierByBlockId.get(blockId);
-                        if (tier == null || y < minY || y > maxY || !contains(zone, x + 0.5, z + 0.5)) {
-                            return;
-                        }
-                        var position = new Vector3i(x, y, z);
-                        if (!protectedByTier.get(tier).contains(position)) {
-                            result.computeIfAbsent(tier, ignored -> new ArrayList<>()).add(position);
-                        }
-                    });
                 }
             }
         }

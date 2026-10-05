@@ -1,6 +1,9 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services;
 
-import com.gaiagauntlet.gg.store.GlobalStore;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneVisualisationComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -39,14 +42,15 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
     @Override
     public void tick(float dt, int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store,
             @Nonnull CommandBuffer<EntityStore> commandBuffer) {
-        var zones = Zones.get().zones();
-        if (zones.isEmpty()) {
-            return;
-        }
+        // TODO: get zones
+        List<ZoneDefinition> zones = new ArrayList<>();
+
+        if (zones.isEmpty()) {return;}
         var world = store.getExternalData().getWorld();
-        var globalStore = GlobalStore.find();
-        var game = globalStore == null ? null : globalStore.gameFor(world).orElse(null);
-        var component = game != null && game.has(ZoneComponent.TYPE) ? ZoneComponent.TYPE.of(game) : null;
+
+        // TODO: Get game
+        String game = "";
+        var component = GameStore.ensureStore(world, game).ensure(ZoneComponent.TYPE, ZoneComponent::new);
         var player = chunk.getComponent(index, PlayerRef.getComponentType());
         for (var zone : zones) {
             var sealed = component != null && component.closedZones().stream().anyMatch(z -> z.id().equals(zone.id()));
@@ -59,10 +63,9 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
         }
     }
 
-    @Nullable
     @Override
     public Query<EntityStore> getQuery() {
-        return ZoneVisualisation.getComponentType();
+        return ZoneVisualisationComponent.getComponentType();
     }
 
     private record Segment(double x1, double y1, double z1, double x2, double y2, double z2) {

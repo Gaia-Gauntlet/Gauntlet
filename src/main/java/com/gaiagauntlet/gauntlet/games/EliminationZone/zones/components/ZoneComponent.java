@@ -1,19 +1,23 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.VoidTerrain;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.events.ZoneEvents;
-import com.gaiagauntlet.gg.events.Events;
-import com.gaiagauntlet.gg.store.GameComponent;
-import com.gaiagauntlet.gg.store.GameComponentType;
-import com.gaiagauntlet.gg.store.GameComponents;
-import com.gaiagauntlet.gg.ui.Announce;
-import com.gaiagauntlet.gg.ui.PlayerHuds;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services.ZoneTickSystem;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
+import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +31,14 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public final class ZoneComponent implements GameComponent {
 
-    public static final GameComponentType<ZoneComponent> TYPE = GameComponents.register(
-            "Zones", ZoneComponent.class, ZoneComponent::new);
+    public static final GameComponentType<ZoneComponent> TYPE = GameComponentRegistry.register(
+            "Zones", ZoneComponent.class, ZoneComponent.CODEC);
+
+    // TODO: Populate if necessary? This doesn't need to be preserved if the server shuts down so I
+    //  don't know if we need a codec?
+    public static final BuilderCodec<ZoneComponent> CODEC = BuilderCodec.builder(
+        ZoneComponent.class, ZoneComponent::new
+    ).build();
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String SOUND_ZONE_CLOSING = "SFX_Discovery_Z4_Short";
@@ -43,7 +53,6 @@ public final class ZoneComponent implements GameComponent {
     private List<ZonePhase> phases = List.of();
     private final List<ZoneDefinition> closed = new ArrayList<>();
     private final VoidTerrain voidTerrain = new VoidTerrain();
-    @Nullable private PlayerHuds hud;
 
     private boolean active;
     private boolean paused;
@@ -54,6 +63,8 @@ public final class ZoneComponent implements GameComponent {
     private boolean holding;
     private boolean warningFired;
     private double closeRadius;
+
+    public ZoneComponent() {}
 
     // Sequence control
 
@@ -220,11 +231,13 @@ public final class ZoneComponent implements GameComponent {
         var phase = phaseFor(index);
         LOGGER.atInfo().log("[%s] Zone %d '%s' closing over %.0fs (%.0f to %.0f)", gameId, index, zone.id(),
                 phase.durationSeconds(), zone.outerRadius(), zone.innerRadius());
-        com.gaiagauntlet.gg.ui.AdminLog.add(gameId, "Zone " + zone.id() + " closing over " + Math.round(phase.durationSeconds()) + "s");
+        GaiaLog.atInfo().log("Zone " + zone.id() + " closing over " + Math.round(phase.durationSeconds()) + "s").withGameId(gameId);
         if (arena != null) {
-            Announce.title(arena, Message.raw(zone.id()), Message.raw("ZONE CLOSING"), SOUND_ZONE_CLOSING);
-            Announce.chat(arena, Message.raw(zone.id() + " is closing in!").color(Announce.COLOR_WARNING));
-            Events.dispatch(new ZoneEvents.ClosingStarted(gameId, arena, index, zone, phase.durationSeconds()));
+            Announcer.title(arena, Message.raw(zone.id()), Message.raw("ZONE CLOSING"), EventTitleStyle.VoidEviction, SOUND_ZONE_CLOSING);
+            Announcer.chat(arena, Message.raw(zone.id() + " is closing in!").color(Color.RED));
+            GauntletEventRegistry.dispatch(
+                new ZoneEvents.ClosingStarted(index, zone, phase.durationSeconds())
+            );
         }
     }
 
@@ -243,10 +256,10 @@ public final class ZoneComponent implements GameComponent {
             holdElapsed = 0.0;
         }
         LOGGER.atInfo().log("[%s] Zone '%s' sealed%s", gameId, zone.id(), last ? " (final zone)" : "");
-        com.gaiagauntlet.gg.ui.AdminLog.add(gameId, "Zone " + zone.id() + " sealed" + (last ? ", every zone is closed" : ""));
+        GaiaLog.atInfo().log("Zone " + zone.id() + " sealed" + (last ? ", every zone is closed" : "")).withGameId(gameId);
         if (arena != null) {
-            Announce.chat(arena, Message.raw(zone.id() + " is sealed!").color(Announce.COLOR_DANGER));
-            Events.dispatch(new ZoneEvents.Closed(gameId, arena, last ? order.size() - 1 : stepIndex, zone, last));
+            Announcer.chat(arena, Message.raw(zone.id() + " is sealed!").color(Color.RED));
+            GauntletEventRegistry.dispatch(new ZoneEvents.Closed(last ? order.size() - 1 : stepIndex, zone, last));
         }
     }
 
@@ -268,8 +281,8 @@ public final class ZoneComponent implements GameComponent {
         var text = next == null
                 ? zone.id() + " seals in " + Math.round(remaining) + "s, the last zone!"
                 : zone.id() + " seals in " + Math.round(remaining) + "s, " + next.id() + " is next!";
-        Announce.chat(arena, Message.raw(text).color(Announce.COLOR_WARNING));
-        Events.dispatch(new ZoneEvents.Warning(gameId, arena, zone, remaining));
+        Announcer.chat(arena, Message.raw(text).color(Color.RED));
+        GauntletEventRegistry.dispatch(new ZoneEvents.Warning(zone, remaining));
     }
 
     // Admin controls
@@ -446,22 +459,12 @@ public final class ZoneComponent implements GameComponent {
         return voidTerrain;
     }
 
-    @Nullable
-    public PlayerHuds hud() {
-        return hud;
-    }
-
-    public void setHud(@Nullable PlayerHuds hud) {
-        this.hud = hud;
-    }
-
     @Nonnull
     private ZonePhase phaseFor(int index) {
         return phases.get(Math.clamp(index, 0, phases.size() - 1));
     }
 
-    @Override
-    public void resetMatch() {
+    public void reset() {
         active = false;
         paused = false;
         stepIndex = -1;
@@ -470,10 +473,6 @@ public final class ZoneComponent implements GameComponent {
         pendingDelaySeconds = 0.0;
         holding = false;
         voidTerrain.reset();
-        if (hud != null) {
-            hud.hideAll();
-            hud = null;
-        }
         arena = null;
     }
 }

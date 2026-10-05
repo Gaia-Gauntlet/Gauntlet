@@ -1,6 +1,5 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components;
 
-import com.gaiagauntlet.gg.loot.LootFountainRule;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

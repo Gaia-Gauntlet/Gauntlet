@@ -1,8 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.events;
 
+import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
-import com.gaiagauntlet.gg.events.GgEvent;
-import com.hypixel.hytale.server.core.universe.world.World;
 
 import javax.annotation.Nonnull;
 
@@ -13,13 +12,13 @@ public final class ZoneEvents {
     }
 
     /** A zone started closing: its edge begins sweeping inward. */
-    public static final class ClosingStarted extends GgEvent {
+    public static final class ClosingStarted extends GauntletEvent {
         private final int step;
         private final ZoneDefinition zone;
         private final double durationSeconds;
 
-        public ClosingStarted(@Nonnull String gameId, @Nonnull World arena, int step, @Nonnull ZoneDefinition zone, double durationSeconds) {
-            super(gameId, arena);
+        public ClosingStarted(int step, @Nonnull ZoneDefinition zone, double durationSeconds) {
+            super();
             this.step = step;
             this.zone = zone;
             this.durationSeconds = durationSeconds;
@@ -40,12 +39,12 @@ public final class ZoneEvents {
     }
 
     /** The closing zone seals in a few seconds. */
-    public static final class Warning extends GgEvent {
+    public static final class Warning extends GauntletEvent {
         private final ZoneDefinition zone;
         private final double secondsLeft;
 
-        public Warning(@Nonnull String gameId, @Nonnull World arena, @Nonnull ZoneDefinition zone, double secondsLeft) {
-            super(gameId, arena);
+        public Warning(@Nonnull ZoneDefinition zone, double secondsLeft) {
+            super();
             this.zone = zone;
             this.secondsLeft = secondsLeft;
         }
@@ -61,13 +60,13 @@ public final class ZoneEvents {
     }
 
     /** A zone sealed: its whole band is void now. */
-    public static final class Closed extends GgEvent {
+    public static final class Closed extends GauntletEvent {
         private final int step;
         private final ZoneDefinition zone;
         private final boolean last;
 
-        public Closed(@Nonnull String gameId, @Nonnull World arena, int step, @Nonnull ZoneDefinition zone, boolean last) {
-            super(gameId, arena);
+        public Closed(int step, @Nonnull ZoneDefinition zone, boolean last) {
+            super();
             this.step = step;
             this.zone = zone;
             this.last = last;
