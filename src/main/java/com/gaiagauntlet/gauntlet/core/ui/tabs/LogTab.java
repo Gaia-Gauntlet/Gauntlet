@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.announcer.ui;
+package com.gaiagauntlet.gauntlet.core.ui.tabs;
 
 import java.util.ArrayList;
 
@@ -24,6 +24,14 @@ public final class LogTab implements AdminTab {
 
     @Nonnull @Override public String getId() {
         return "Log";
+    }
+
+    @Nonnull @Override public String getPanel() {
+        return "Gauntlet/Admin/Panels/PanelLog.ui";
+    }
+
+    @Override public int getOrder() {
+        return 100;
     }
     @Override
     public void bind(@Nonnull UIEventBuilder evt) {

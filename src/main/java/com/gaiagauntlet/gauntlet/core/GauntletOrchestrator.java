@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.core;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +17,8 @@ import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
+import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
+import com.gaiagauntlet.gauntlet.core.ui.tabs.SessionTab;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -77,15 +80,16 @@ public class GauntletOrchestrator {
         return CompletableFuture.completedFuture(game);
     }
 
-    /** Collects new admin tabs from every UI plugin and game, for one admin page */
+    /** Collects new admin tabs from the orchestrator, every UI plugin and every game, for one admin page, in tab order */
     public static List<AdminTab> getAdminTabs() {
-        var tabs = new ArrayList<AdminTab>();
+        var tabs = new ArrayList<AdminTab>(List.of(new SessionTab(), new LogTab()));
         for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
             tabs.addAll(plugin.getAdminTabs());
         }
         for (var gameId : GameRegistry.getGameIds()) {
             GameRegistry.getGame(gameId).ifPresent(game -> tabs.addAll(game.getAdminTabs()));
         }
+        tabs.sort(Comparator.comparingInt(AdminTab::getOrder).thenComparing(AdminTab::getId));
         return tabs;
     }
 

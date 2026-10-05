@@ -11,15 +11,30 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
 /**
- * One tab of the admin page. The markup lives in {@code GG/Admin/Tab<Id>.ui}; the tab binds its
- * controls, fills the parts that only change when the selected game changes, renders its live
+ * One tab of the admin page. The plugin that owns the tab also ships its panel markup; the tab binds
+ * its controls, fills the parts that only change when the selected game changes, renders its live
  * fields on every refresh, and answers the actions it declared. Action ids are "<tab>.<name>".
  */
 public interface AdminTab {
 
-    /** Matches the panel id "#Panel<Id>" and the tab button "#Tab<Id>". */
+    /** Prefix of this tab's action ids. */
     @Nonnull
     String getId();
+
+    /** Text on the tab button. */
+    @Nonnull
+    default String getTitle() {
+        return getId();
+    }
+
+    /** Path of the panel markup, relative to Common/UI/Custom. */
+    @Nonnull
+    String getPanel();
+
+    /** Position in the tab strip. Lower comes first; ties are ordered by id. */
+    default int getOrder() {
+        return 0;
+    }
 
     /** Registers the bindings for the controls the markup declares. Runs once per page. */
     void bind(@Nonnull UIEventBuilder evt);

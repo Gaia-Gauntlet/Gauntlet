@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
+package com.gaiagauntlet.gauntlet.core.ui.tabs;
 
 import com.gaiagauntlet.gauntlet.core.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
@@ -31,6 +31,11 @@ public final class SessionTab implements AdminTab {
     }
 
     @Override
+    public @NonNull String getPanel() {
+        return "Gauntlet/Admin/Panels/PanelSession.ui";
+    }
+
+    @Override
     public void bind(@NonNull UIEventBuilder evt) {
         Widgets.bind(evt, "#DestroySession", "session.destroy");
 
@@ -53,7 +58,7 @@ public final class SessionTab implements AdminTab {
         Widgets.field(cmd, "StateField", Objects.isNull(session) ? "N/A" : session.getSessionState().name());
 
         Widgets.fillList(cmd, "GameList",
-            Objects.isNull(session) ? List.of() : Arrays.stream(session.getGameSequence()).toList(),
+            Objects.isNull(session) || Objects.isNull(session.getGameSequence()) ? List.of() : Arrays.stream(session.getGameSequence()).toList(),
             "No games added yet..."
         );
     }

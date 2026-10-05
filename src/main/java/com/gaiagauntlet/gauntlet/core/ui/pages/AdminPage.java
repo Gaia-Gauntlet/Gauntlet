@@ -36,6 +36,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String PAGE = "Gauntlet/Admin/Dashboard.ui";
+    private static final String TAB_BUTTON = "Gauntlet/Admin/TabButton.ui";
     private static final long REFRESH_MILLIS = 2000;
     private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove");
 
@@ -81,13 +82,15 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
         var registered = GauntletOrchestrator.getAdminTabs();
         if (!registered.isEmpty()) tabs = registered;
-        selectTab(tabs.getFirst().getId());
+        activeTab = tabs.getFirst();
 
-        for (AdminTab tab : tabs) {
-            cmd.append("#TopStrip", "Gauntlet/Admin/Tabs/Tab" + tab.getId() + ".ui");
-            cmd.append("#TabBody", "Gauntlet/Admin/Panels/Panel" + tab.getId() + ".ui");
+        for (int i = 0; i < tabs.size(); i++) {
+            var tab = tabs.get(i);
+            cmd.append("#TabStrip", TAB_BUTTON);
+            cmd.set("#TabStrip[" + i + "].Text", tab.getTitle());
+            cmd.append("#TabBody", tab.getPanel());
 
-            Widgets.bindArg(evt, "#Tab" + tab.getId(), "page.selectTab", tab.getId());
+            Widgets.bindArg(evt, "#TabStrip[" + i + "]", "page.selectTab", tab.getId());
             tab.bind(evt);
         }
         fillSessionPicker(cmd);
@@ -192,9 +195,10 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     }
 
     private void applyTab(@Nonnull UICommandBuilder cmd) {
-        for (AdminTab tab : tabs) {
-            cmd.set("#Panel" + tab.getId() + ".Visible", tab == activeTab);
-            cmd.set("#Tab" + tab.getId() + ".Disabled", tab == activeTab);
+        for (int i = 0; i < tabs.size(); i++) {
+            var tab = tabs.get(i);
+            cmd.set("#TabBody[" + i + "].Visible", tab == activeTab);
+            cmd.set("#TabStrip[" + i + "].Disabled", tab == activeTab);
         }
     }
 

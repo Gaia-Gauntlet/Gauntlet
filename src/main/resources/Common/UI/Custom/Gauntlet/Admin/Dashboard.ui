@@ -43,7 +43,8 @@ $Common.@PageOverlay #MainPage {
                 }
                 $G.@Picker #SessionPicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
 
-                // Tabs get dynamically added here
+                // Tab buttons get dynamically added here
+                Group #TabStrip { LayoutMode: Left; }
 
                 Group { FlexWeight: 1; }
             }
