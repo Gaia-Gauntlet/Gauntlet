@@ -13,13 +13,17 @@ import lombok.Getter;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+
+import org.jetbrains.annotations.NotNull;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 public class PartyComponent {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    public static final BuilderCodec<PartyComponent> CODEC = BuilderCodec
+    public static final BuilderCodec<@NotNull PartyComponent> CODEC = BuilderCodec
         .builder(PartyComponent.class, PartyComponent::new)
         .append(new KeyedCodec<>("Id", Codec.STRING),
             (c, v) -> c.id = v,
@@ -41,6 +45,8 @@ public class PartyComponent {
     @Getter String id;
     Set<UUID> players = new HashSet<>();
     @Getter UUID owner;
+    // list of offline players with their cancellation token - change type of 'string' once that cancellation token type is known
+    Map<UUID, ScheduledFuture<?>> offlinePlayers = new ConcurrentHashMap<>();
 
     private PartyComponent() {}
 
@@ -110,9 +116,16 @@ public class PartyComponent {
         }
         return players;
     }
+    public Set<UUID> getAllPlayers() {
+        return players;
+    }
 
     public boolean includesPlayer(UUID player) {
-        return players.contains(player);
+        if (players.contains(player)) return true;
+        if (!offlinePlayers.containsKey(player)) return false;
+
+        setOnline(player);
+        return true;
     }
 
     public int size() {
@@ -123,5 +136,40 @@ public class PartyComponent {
         for (PlayerRef partyMember : getAllOnlinePlayers()) {
             partyMember.sendMessage(message);
         }
+    }
+    
+    // moves a player back to being connected
+    public void setOffline(UUID playerId, ScheduledFuture<?> disconnectFuture) {
+        if (!players.remove(playerId)) return;
+        offlinePlayers.put(playerId, disconnectFuture);
+    }
+    
+    // clears all offline players
+    public void clearOffline() {
+        for (var offlinePlayer : offlinePlayers.entrySet()) {
+            clearOffline(offlinePlayer.getKey());
+        }
+    }
+    
+    // clears an offline player
+    public void clearOffline(UUID playerId) {
+        if (offlinePlayers.remove(playerId) == null) return;
+        players.remove(playerId);
+    }
+
+    /**
+     *  sets a player as online again - removing their offine token
+     * @returns the cancel token
+     */
+    public ScheduledFuture<?> setOnline(UUID playerId) {
+        var cancelToken = offlinePlayers.get(playerId);
+        if (cancelToken == null) return null;
+        offlinePlayers.remove(playerId); // remove from offline
+        if (cancelToken.isCancelled()) return cancelToken;
+        cancelToken.cancel(false);
+        return cancelToken;
+    }
+    public Set<UUID> getOffline() {
+        return this.offlinePlayers.keySet();
     }
 }
