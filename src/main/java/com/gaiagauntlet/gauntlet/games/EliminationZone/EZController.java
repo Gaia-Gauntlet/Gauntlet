@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.BossesTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
@@ -66,8 +69,7 @@ public class EZController extends LobbyController {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        // TODO: EZ admin tabs
-        return List.of();
+        return List.of(new ZonesTab(), new BossesTab(), new EventsTab());
     }
 
     @Override // temp, just messing around here

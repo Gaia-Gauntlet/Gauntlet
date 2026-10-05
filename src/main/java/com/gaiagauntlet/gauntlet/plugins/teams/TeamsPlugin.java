@@ -2,17 +2,20 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.core.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
+import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsTab;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.asseteditor.AssetEditorPlugin;
 import com.hypixel.hytale.builtin.asseteditor.event.AssetEditorActivateButtonEvent;
@@ -25,7 +28,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.List;
 
-public class TeamsPlugin implements PersistentGamePlugin {
+public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     public static final String ID = "TeamsPlugin";
 
@@ -82,5 +85,10 @@ public class TeamsPlugin implements PersistentGamePlugin {
     @Override
     public void writeSession(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId) {
 
+    }
+
+    @Override
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new TeamsTab());
     }
 }

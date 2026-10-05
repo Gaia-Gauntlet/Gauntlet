@@ -1,8 +1,9 @@
 // Bosses tab: bosses to spawn and weather to force.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
-@Content = Group {
+Group {
     LayoutMode: Left;
+    Visible: false;
 
     $G.@Column {
         $G.@Card {
@@ -35,4 +36,4 @@ $G = "Common.ui";
             }
         }
     }
-};
+}

@@ -1,8 +1,9 @@
 // Teams tab: put players on teams, see every team at a glance, and shape the roster.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
-@Content = Group {
+Group {
     LayoutMode: Left;
+    Visible: false;
 
     $G.@Column {
         $G.@Card {
@@ -52,4 +53,4 @@ $G = "Common.ui";
             $G.@ScrollPanel #TeamList {}
         }
     }
-};
+}

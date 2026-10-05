@@ -1,8 +1,9 @@
 // Events tab: the live queue, ad hoc events, and the preset.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
-@Content = Group {
+Group {
     LayoutMode: Left;
+    Visible: false;
 
     $G.@Column {
         $G.@Card {
@@ -49,4 +50,4 @@ $G = "Common.ui";
             $G.@ListPanel #PresetList {}
         }
     }
-};
+}
