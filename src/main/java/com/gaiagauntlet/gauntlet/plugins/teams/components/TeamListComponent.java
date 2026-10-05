@@ -36,12 +36,13 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
             .builder(
                     TeamListComponent.class,
                     TeamListComponent::new)
-            .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, ConcurrentHashMap::new)),
+            .append(new KeyedCodec<>("TeamList", new MapCodec<>(TeamComponent.CODEC, ConcurrentHashMap::new, false)),
                     (team, v) -> team.teamList = v,
                     team -> team.teamList)
             .documentation("The full list of teams in this session.")
             .add()
             .afterDecode((teams) -> {
+                teams.teamList.replaceAll(TeamListComponent::withId);
 
                 // wipe the map before rebuilding it
                 teams.playerToMap.clear();
@@ -72,6 +73,7 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     }
 
     public void addTeam(String teamId, TeamComponent team) {
+        team = withId(teamId, team);
         // puts the team
         var existing = teamList.put(teamId, team);
         // if there was an existing team with the same id, remove all the players from
@@ -148,4 +150,9 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     }
 
     // add more here, since this is not enough
+
+    /** Stored teams do not carry their id, only their key in the list, so a team is copied under its key when they differ */
+    private static TeamComponent withId(String teamId, TeamComponent team) {
+        return teamId.equals(team.getId()) ? team : new TeamComponent(teamId, team);
+    }
 }
