@@ -171,17 +171,16 @@ public class PlayerHandlers extends HandlerUtils {
         var isOwner = party.getOwner().equals(playerRef.getUuid());
         // can only leave if they are the party leader
         // - if party not already in session and not party leader, return
-        if (!isOwner) {
-            if (!sessionId.equals(partySessionId)) {
-                // not owner and owner is not already in session
-                Resolve.error(evt, session, msg("server.gg.events.players.leave.existing.error")
-                        .param("playerName", playerRef.getUsername())
-                        .param("partySessionId", partySessionId)
-                        .param("sessionId", sessionId)
-                        .param("partyName", party.getId()));
-                return;
-            }
+        if (!isOwner && sessionId.equals(partySessionId)) {
+            // not owner and owner is not already in session
+            Resolve.error(evt, session, msg("server.gg.events.players.leave.existing.error")
+                    .param("playerName", playerRef.getUsername())
+                    .param("partySessionId", partySessionId)
+                    .param("sessionId", sessionId)
+                    .param("partyName", party.getId()));
+            return;
         }
+
         if (existing.equals(sessionId)) {
             // player is in the game being left - set to null
             player.setCurrentSession(null);
@@ -196,7 +195,7 @@ public class PlayerHandlers extends HandlerUtils {
                 try {
                     GauntletEventRegistry.dispatch(new GamePlayerEvent(playerRef, sessionId, PlayerOp.REMOVE));
                 } catch (Exception e) {
-                    Resolve.error(evt, session, msg("server.gg.events.players.join.new.error")
+                    Resolve.error(evt, session, msg("server.gg.events.players.leave.new.error")
                             .param("playerName", playerRef.getUsername()), e);
                     return;
                 }
@@ -205,13 +204,13 @@ public class PlayerHandlers extends HandlerUtils {
 
         var gameId = session.getCurrentGame();
         if (gameId == null || gameId.isEmpty()) {
-            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
+            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.leave.warn")
                     .param("playerName", playerRef.getUsername())
                     .param("reason", "no game is active"));
             return;
         }
         if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
-            GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.join.warn")
+            GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.leave.warn")
                     .param("playerName", playerRef.getUsername())
                     .param("reason", "game is not registered"));
             return;
@@ -222,7 +221,7 @@ public class PlayerHandlers extends HandlerUtils {
                 // run the player connection logic
                 game.playerLeave(hubWorld, partySessionId, playerRef);
             } catch (Exception e) {
-                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
+                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
                         .param("playerName", playerRef.getUsername())
                         .param("reason", "Exception when handling player connect"));
             }

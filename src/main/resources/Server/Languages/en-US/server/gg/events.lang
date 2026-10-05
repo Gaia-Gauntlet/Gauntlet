@@ -35,9 +35,11 @@ players.disconnect.warn=Player {playerName} disconnecting. Controller not notifi
 players.error=Player {playerName} unable to {operation} {sessionId} because {reason}
 players.join.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
 players.join.warn=Player {playerName} joining "{gameId}" failed because {reason}
+players.join.new.error=Failed adding {playerName} to {sessionId}. {cause}
 players.join.existed=Removed {playerName} from {oldSessionId}, joining {sessionId}
 players.join.existing.error=Failed removing {playerName} from {oldSessionId}. {cause}
-players.join.new.error=Failed adding {playerName} to {sessionId}. {cause}
 players.join.perms.error={playerName} is not an owner of party {partyName} - which is in {partySessionId} - and cannot change it to {sessionId}
 
 players.leave.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
+players.join.warn=Player {playerName} leaving "{gameId}" failed because {reason}
+players.join.new.error=Failed removing {playerName} from {sessionId}. {cause}
