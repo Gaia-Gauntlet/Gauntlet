@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 
 /**
@@ -17,5 +18,10 @@ public interface UiGamePlugin extends GamePlugin {
     /** Pages the orchestrator can open, keyed by page id */
     public default Map<String, PageFactory> getPages() {
         return Map.of();
+    }
+
+    /** New HUD elements for the player HUD. Called once per shown HUD */
+    public default List<HudElement> getHudElements() {
+        return List.of();
     }
 }

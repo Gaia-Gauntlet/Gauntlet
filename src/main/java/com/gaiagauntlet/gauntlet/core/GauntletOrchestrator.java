@@ -5,7 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +16,9 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.core.ui.huds.GauntletHud;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
@@ -35,6 +39,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 public class GauntletOrchestrator {
 
     private static final Map<String, PageFactory> corePages = Map.of(AdminPage.ID, AdminPage::new);
+
+    /** The HUD currently shown to each player, so a replaced or abandoned HUD stops refreshing */
+    private static final Map<UUID, GauntletHud> huds = new ConcurrentHashMap<>();
 
     /**
      * Business rules because I have nowhere else to put them.
@@ -116,5 +123,35 @@ public class GauntletOrchestrator {
             return;
         }
         player.getPageManager().openCustomPage(ref, store, factory.get().create(playerRef, session));
+    }
+
+    /** Collects new HUD elements from every UI plugin and every game, for one player's HUD, in draw order */
+    public static List<HudElement> getHudElements() {
+        var elements = new ArrayList<HudElement>();
+        for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
+            elements.addAll(plugin.getHudElements());
+        }
+        for (var gameId : GameRegistry.getGameIds()) {
+            GameRegistry.getGame(gameId).ifPresent(game -> elements.addAll(game.getHudElements()));
+        }
+        elements.sort(Comparator.comparingInt(HudElement::getOrder).thenComparing(HudElement::getId));
+        return elements;
+    }
+
+    /** Shows the player HUD, replacing the one the player had. Every HUD is shown through here */
+    public static void showHud(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef) {
+        var player = store.getComponent(ref, Player.getComponentType());
+        if (player == null) return;
+
+        var hud = new GauntletHud(playerRef);
+        var previous = huds.put(playerRef.getUuid(), hud);
+        if (previous != null) previous.stop();
+        player.getHudManager().addCustomHud(playerRef, hud);
+    }
+
+    /** Stops the HUD of a player who left */
+    public static void forgetHud(PlayerRef playerRef) {
+        var hud = huds.remove(playerRef.getUuid());
+        if (hud != null) hud.stop();
     }
 }

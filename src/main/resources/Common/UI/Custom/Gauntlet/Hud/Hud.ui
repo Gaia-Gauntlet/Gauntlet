@@ -1,0 +1,5 @@
+// Gaia Gauntlet player HUD: the shell only. GauntletHud appends every HUD element here, and each
+// element anchors itself against the whole screen.
+Group #Hud {
+    Anchor: (Full: 0);
+}

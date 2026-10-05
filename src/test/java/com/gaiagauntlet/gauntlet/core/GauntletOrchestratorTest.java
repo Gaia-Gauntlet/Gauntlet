@@ -16,6 +16,7 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -47,6 +48,20 @@ class GauntletOrchestratorTest {
         }
     }
 
+    private record Hud(String id, int order) implements HudElement {
+        @Nonnull @Override public String getId() {
+            return id;
+        }
+
+        @Nonnull @Override public String getMarkup() {
+            return "Test/" + id + ".ui";
+        }
+
+        @Override public int getOrder() {
+            return order;
+        }
+    }
+
     private static final class TestUiPlugin implements UiGamePlugin {
         @Override public String getId() {
             return "TestUiPlugin";
@@ -65,6 +80,10 @@ class GauntletOrchestratorTest {
 
         @Override public Map<String, PageFactory> getPages() {
             return Map.of("TestPage", TEST_PAGE);
+        }
+
+        @Override public List<HudElement> getHudElements() {
+            return List.of(new Hud("Timer", 5), new Hud("Banner", 50));
         }
     }
 
@@ -93,6 +112,10 @@ class GauntletOrchestratorTest {
             return List.of(new Tab("Alpha", 0), new Tab("First", -10));
         }
 
+        @Override public List<HudElement> getHudElements() {
+            return List.of(new Hud("Zones", 5), new Hud("Teams", -1));
+        }
+
         @Override public List<String> requiredPlugins() {
             return List.of();
         }
@@ -117,6 +140,12 @@ class GauntletOrchestratorTest {
         for (int i = 0; i < first.size(); i++) {
             assertNotSame(first.get(i), second.get(i));
         }
+    }
+
+    @Test
+    void collectsHudElementsFromPluginsAndGamesInOrder() {
+        var ids = GauntletOrchestrator.getHudElements().stream().map(HudElement::getId).toList();
+        assertEquals(List.of("Teams", "Timer", "Zones", "Banner"), ids);
     }
 
     @Test

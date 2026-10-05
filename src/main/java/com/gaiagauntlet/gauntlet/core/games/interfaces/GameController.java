@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -39,6 +40,12 @@ public abstract class GameController {
      * Called once per opened admin page.
      */
     public abstract List<AdminTab> getAdminTabs();
+
+    /**
+     * Returns new HUD elements for this game, or an empty list if it has none.
+     * Called once per shown HUD.
+     */
+    public abstract List<HudElement> getHudElements();
 
     public abstract List<String> requiredPlugins();
 }
