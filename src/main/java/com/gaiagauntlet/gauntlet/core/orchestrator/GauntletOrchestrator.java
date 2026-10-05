@@ -45,13 +45,13 @@ public class GauntletOrchestrator {
      * 2) SessionId states should be cleared between games
      * 3) Games should be setup before any player is allowed to join
      * 4) Eventing needs
-     * a) Failure Events
-     * b) Session status updates
+     *     a) Failure Events
+     *     b) Session status updates
      * 5) threading needs
-     * a) player join
-     * b) player leave
-     * c) server shutdown
-     * d) server startup (load up from crashed server - attempt recovery?)
+     *     a) player join
+     *     b) player leave
+     *     c) server shutdown
+     *     d) server startup (load up from crashed server - attempt recovery?)
      */
 
     /**

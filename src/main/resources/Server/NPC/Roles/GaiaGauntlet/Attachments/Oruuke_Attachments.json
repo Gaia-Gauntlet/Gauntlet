@@ -1,8 +1,0 @@
-{
-  "Type": "Variant",
-  "Reference": "Template_Attachments",
-  "NameTranslationKey": "Oruuke Attachments",
-  "Modify": {
-    "Appearance": "Oruuke_Attachments"
-  }
-}

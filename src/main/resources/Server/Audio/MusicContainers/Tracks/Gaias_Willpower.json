@@ -1,8 +1,0 @@
-{
-  "Type": "SingleTrack",
-  "AudioCategory": "AudioCat_Music",
-  "Track": "Music/Gaias_Willpower.ogg",
-  "Volume": -10.9,
-  "MaxInstance": 1,
-  "TransitionType": "Crossfade"
-}
