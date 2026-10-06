@@ -77,7 +77,7 @@ public class TeamsPlugin implements PersistentGamePlugin {
     }
 
     @Override
-    public void read(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
+    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
         // sets up the game with the team stuff
     }
 

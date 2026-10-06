@@ -142,26 +142,14 @@ public class PlayerHandlers extends HandlerUtils {
             return;
         }
 
-        // join the game
-        var gameId = session.getCurrentGame();
-        if (gameId == null || gameId.isEmpty()) {
-            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
-                    .param("playerName", playerRef.getUsername())
-                    .param("reason", "no game is active"));
-            return;
-        }
-        if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
-            GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.join.warn")
-                    .param("playerName", playerRef.getUsername())
-                    .param("reason", "game is not registered"));
-            return;
-        }
-        player.setCurrentGame(gameId);
         var hubWorld = GauntletUtils.withHubWorld();
+        joinGame(hubWorld, partySession, List.of(playerRef));
+
+        // join the game
         GauntletUtils.run(hubWorld, () -> {
             try {
                 // run the player connection logic
-                game.playerJoin(hubWorld, sessionId, List.of(playerRef)).whenComplete((_, error) -> {
+                joinGame(hubWorld, partySession, List.of(playerRef)).whenComplete((_, error) -> {
                     if (error != null) {
                         Resolve.error(evt, session, error("Error was thrown while joining the world"), error);
                         return;
@@ -170,9 +158,9 @@ public class PlayerHandlers extends HandlerUtils {
                     return;
                 });
             } catch (Exception e) {
-                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
+                evt.complete(GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                         .param("playerName", playerRef.getUsername())
-                        .param("reason", "Exception when handling player connect"));
+                        .param("reason", e.getLocalizedMessage())));
             }
         });
     }

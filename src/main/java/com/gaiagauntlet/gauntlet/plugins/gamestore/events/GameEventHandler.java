@@ -41,7 +41,10 @@ public class GameEventHandler {
             var gameEcs = GameStore.ensureStore(gameWorld, sessionId);
             for (var plugin : persistentPlugins) {
                 try {
-                    writes.add(plugin.capture(gameWorld, gameEcs, sessionId));
+                    var writer = plugin.capture(gameWorld, gameEcs, sessionId);
+                    if (writer != null) {
+                        writes.add(writer);
+                    }
                 } catch (Exception e) {
                     evt.log(GaiaLog.atWarning().withSession(session).withCause(e)
                             .log(plugin.getId() + " plugin failed to read state from " + gameId + " with error "

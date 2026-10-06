@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces;
 
+import javax.annotation.Nullable;
+
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -15,10 +17,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  */
 public interface PersistentGamePlugin extends GamePlugin {
     /** Reads the component data off of the session object and writes into the game store */
-    public void read(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId);
+    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId);
 
     /**
      * Runs on the Arena thread, capture any state from the component here to be applied during the write
      */
+    @Nullable 
     SessionWriter capture(World arenaWorld, GameEcs store, String sessionId);
 }

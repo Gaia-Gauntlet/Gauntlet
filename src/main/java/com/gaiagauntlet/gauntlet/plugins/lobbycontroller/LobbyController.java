@@ -6,9 +6,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
-import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
-import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
@@ -85,7 +82,7 @@ public abstract class LobbyController extends GameController {
                 var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
                 for (var plugin : persistentPlugins) {
                     try {
-                        plugin.read(lobbyStore, session, gameStore, getId());
+                        plugin.setup(lobbyStore, session, gameStore, getId());
                     } catch (Exception e) {
                         GaiaLog.atWarning().withCause(e).withSession(session)
                                 .log("Persistent Plugin " + plugin.getId() + " failed while loading for " + getId());

@@ -45,16 +45,23 @@ public class GauntletUtils {
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull UUID playerId) {
         var playerRef = Universe.get().getPlayer(playerId);
-        if (playerRef == null) return Optional.empty();
+        if (playerRef == null)
+            return Optional.empty();
         return playerFor(playerRef);
     }
 
-    @Nonnull 
+    @Nonnull
     public static Set<PlayerRef> playersFor(@Nonnull String sessionId) {
         var session = sessionFor(sessionId).orElse(null);
+        return playersFor(session);
+    }
+
+    @Nonnull
+    public static Set<PlayerRef> playersFor(@Nonnull GameSession session) {
         var players = new HashSet<PlayerRef>();
-        if (session == null) return players;
-        
+        if (session == null)
+            return players;
+
         var parties = session.getParties();
         for (var partyId : parties) {
             PartyUtils.getParty(partyId).ifPresent(party -> {
