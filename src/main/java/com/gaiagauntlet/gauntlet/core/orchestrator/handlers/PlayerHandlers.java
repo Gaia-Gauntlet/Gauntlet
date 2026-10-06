@@ -1,10 +1,9 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.concurrent.TimeUnit;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
@@ -12,21 +11,13 @@ import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent.PlayerOp;
-import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
-import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
-
-import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
-import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
-
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
@@ -164,7 +155,7 @@ public class PlayerHandlers extends HandlerUtils {
         GauntletUtils.run(hubWorld, () -> {
             try {
                 // run the player connection logic
-                game.playerJoin(hubWorld, partySessionId, playerRef);
+                game.playerJoin(hubWorld, sessionId, playerRef);
             } catch (Exception e) {
                 GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                         .param("playerName", playerRef.getUsername())
@@ -196,7 +187,7 @@ public class PlayerHandlers extends HandlerUtils {
 
         // remove the party from the session if they match
         if (sessionId.equals(partySessionId)) {
-            withResource().removePartyFromSession(partySessionId, sessionId);
+            withResource().removePartyFromSession(party.getId(), sessionId);
         }
 
         if (isOwner) {
@@ -232,7 +223,7 @@ public class PlayerHandlers extends HandlerUtils {
         GauntletUtils.run(hubWorld, () -> {
             try {
                 // run the player disconnection logic
-                game.playerLeave(hubWorld, partySessionId, playerRef);
+                game.playerLeave(hubWorld, sessionId, playerRef);
                 var currentGame = player.getCurrentGame();
                 if (currentGame.equals(gameId)) {
                     // only remove as current game once we've confirmed it is still their current
@@ -280,7 +271,7 @@ public class PlayerHandlers extends HandlerUtils {
         var oldGame = playerComponent.getCurrentGame();
         var party = PartyUtils.getParty(playerRef);
         var partySession = PartyUtils.sessionFor(party.getId()).orElse(null);
-        var sessionId = partySession.getId();
+        var sessionId = partySession != null ? partySession.getId() : null;
         if (sessionId == null || sessionId.isEmpty()) {
             // player and their party not in a session, no-op from here
             GaiaLog.atWarning().log(msg("server.gg.events.players.connect.warn")
@@ -300,20 +291,41 @@ public class PlayerHandlers extends HandlerUtils {
 
         var hubWorld = GauntletUtils.withHubWorld();
 
-        // if the player's previous game is not the current game, clean up the previous game's components off the player.
+        // if the player's previous game is not the current game, clean up the previous
+        // game's components off the player.
         if (oldGame != null && !oldGame.equals(gameId)) {
-            if (GameRegistry.getGame(oldGame).orElse(null) instanceof GameController game) {
-                GauntletUtils.run(hubWorld, () -> {
-                    try {
-                        // run the player leave logic
-                        game.playerLeave(hubWorld, sessionId, playerRef);
-                    } catch (Exception e) {
-                        GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
-                                .param("playerName", playerRef.getUsername())
-                                .param("reason", "Exception when handling player connect"));
-                    }
-                });
-            }
+            /**
+             * I'm not sure this is necessary, and here's why
+             * 
+             * 1) When the player disconnects, they will run the onDisconnect hook on the
+             * controller.
+             * 2) The only way for the game to change out from under them is for
+             * a- The game ends
+             * b- The party moves to another session
+             * c- The game crashes
+             * Under this assumption, each of those states should clean any session-specific
+             * logic up.
+             * 
+             * Any player-specific logic should be cleaned during the onDisconnect hook.
+             * 
+             * {@code 
+             if (GameRegistry.getGame(oldGame).orElse(null) instanceof GameController game) {
+                 GauntletUtils.run(hubWorld, () -> {
+                     try {
+                         // run the player leave logic
+                         GaiaLog.atInfo().withSession(session).log("Player " + playerRef.getUsername() + " being cleaned from old game ("+ oldGame +") before continuing");
+                         // cleans the rest of the player, with access to the pl
+                         game.playerLeave(hubWorld, null, playerRef);
+                     } catch (Exception e) {
+                         GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
+                                 .param("playerName", playerRef.getUsername())
+                                 .param("reason", "Exception when handling player connect"));
+                     }
+                 });
+             }
+             }
+             * 
+             */
         }
 
         if (session.available()) {
@@ -390,7 +402,7 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("reason", "Session not present"));
         }
 
-        var gameId = playerComponent.getCurrentGame();
+        var gameId = playerComponent == null ? null : playerComponent.getCurrentGame();
         if (gameId == null || gameId.isEmpty()) {
             GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
                     .param("playerName", playerRef.getUsername())
@@ -473,7 +485,6 @@ public class PlayerHandlers extends HandlerUtils {
         }
         Resolve.success(evt, msg("server.gg.events.players.party.joined").param("player", playerRef.getUsername())
                 .param("party", newParty.getLabel()));
-
     }
 
     public static void playerLeaveParty(PlayerPartyEvent evt, PartyComponent oldParty, GameSession partySession) {
@@ -483,15 +494,17 @@ public class PlayerHandlers extends HandlerUtils {
             return;
         }
         var isAlone = oldParty.getAllPlayers().size() == 1;
-        var resource = withResource();
 
         // if not alone, leave the party
         if (!isAlone) {
             // leave party - new owner automatically found
+            var isOwner = oldParty.getOwner().equals(playerRef.getUuid());
             oldParty.removePlayer(playerRef.getUuid());
             var newOwnerRef = PlayerUtils.get(oldParty.getOwner());
-            PartyUtils.promote(newOwnerRef);
-            playerRef.sendMessage(msg("server.gg.commands.party.left.you").param("party", oldParty.getLabel()));
+            if (isOwner) {
+                PartyUtils.promote(newOwnerRef);
+                playerRef.sendMessage(msg("server.gg.commands.party.left.you").param("party", oldParty.getLabel()));
+            }
         }
 
         // leave session

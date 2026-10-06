@@ -61,10 +61,10 @@ public class PartyUtils {
         var resource = GauntletUtils.withResource();
         return resource.getParty(player).orElseGet(() -> {
             // No pre-existing party exists, create a new one with this player as captain.
-            return resource
-                    .addParty(createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid()));
+            var newParty = createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid());
+            resource.addParty(newParty);
+            return newParty;
         });
-        
 
     }
 
@@ -152,6 +152,7 @@ public class PartyUtils {
         var invites = getInvitesComp(recipient);
         var invite = invites.getInvite(party.getId());
         invite.cancel();
+        invites.removeInvite(party.getId());
 
         // emit the join party event
         GauntletEventRegistry.dispatch(PlayerPartyEvent.Join(recipient, party.getId()));

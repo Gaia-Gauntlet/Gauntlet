@@ -114,8 +114,13 @@ public class UniverseGauntletResource {
         return Optional.empty();
     }
 
+    // simply removes from the party with no side effects
+    public void removeParty(UUID playerId) {
+        playerToPartyId.remove(playerId);
+    }
+
     public Optional<PartyComponent> getParty(String partyId) {
-        return Optional.ofNullable(parties.get(partyId));
+        return Optional.ofNullable(partyId == null ? null : parties.get(partyId));
     }
 
     /** Returns the existing party component if present */
@@ -131,7 +136,8 @@ public class UniverseGauntletResource {
 
     public PartyComponent removeParty(String partyId) {
         var party = parties.remove(partyId);
-        if (party == null) return null;
+        if (party == null)
+            return null;
         // clean the player-to-party map
         for (var player : party.getAllPlayers()) {
             playerToPartyId.remove(player);
@@ -139,6 +145,9 @@ public class UniverseGauntletResource {
 
         // remove the party from the session
         var sessionId = partyIdToGameSession.remove(partyId);
+        if (sessionId == null)
+            return party; // not in session before
+
         var session = sessions.get(sessionId);
         if (session != null) {
             session.getParties().remove(partyId);
@@ -166,7 +175,8 @@ public class UniverseGauntletResource {
             }
         }
 
-        // remove the incorrect map - the party truly does not have a session they are in. Rip
+        // remove the incorrect map - the party truly does not have a session they are
+        // in. Rip
         partyIdToGameSession.remove(partyId);
         return Optional.empty();
     }
@@ -185,9 +195,9 @@ public class UniverseGauntletResource {
 
         String existing;
         if (sessionId == null) {
-            existing = partyIdToGameSession.put(partyId, sessionId);
-        } else {
             existing = partyIdToGameSession.remove(partyId);
+        } else {
+            existing = partyIdToGameSession.put(partyId, sessionId);
         }
         removePartyFromSession(partyId, existing);
 
@@ -216,11 +226,12 @@ public class UniverseGauntletResource {
         var party = getParty(partyId).orElse(null);
         if (party == null)
             return;
+        if (sessionId == null)
+            return; // session was passed as null
+
         var session = sessions.get(sessionId);
         if (session == null)
             return;
         session.getParties().remove(partyId);
-
     }
-
 }
