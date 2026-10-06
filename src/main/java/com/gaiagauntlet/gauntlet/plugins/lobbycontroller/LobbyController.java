@@ -59,7 +59,7 @@ public abstract class LobbyController extends GameController {
     @Override
     public final CompletableFuture<Void> setupGame(ComponentAccessor<EntityStore> hubAccessor, GameSession session) {
         var sessionId = session.getId();
-        if (!(GameStore.withStore(hubAccessor, sessionId).orElse(null) instanceof GameEcs hubStore)) {
+        if (!(GameStore.ensureStore(hubAccessor, sessionId) instanceof GameEcs hubStore)) {
             return CompletableFuture.completedFuture(null);
         }
         var existing = hubStore.get(LobbyComponent.getComponentType());
