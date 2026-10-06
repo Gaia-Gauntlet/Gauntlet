@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.core;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -10,6 +12,7 @@ import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
+import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -32,15 +35,16 @@ public class GauntletUtils {
 
     @Nonnull
     public static Optional<GameSession> sessionFor(@Nonnull PlayerRef player) {
-        if (!(playerFor(player).orElse(null) instanceof PlayerComponent comp)) {
-            return Optional.empty();
-        }
-        if (comp.getActiveSession() != null)
-            return sessionFor(comp.getActiveSession());
-        
-        return Optional.empty();
+        var party = PartyUtils.getParty(player);
+        return PartyUtils.sessionFor(party.getId());
     }
 
+    @Nonnull
+    public static Optional<PlayerComponent> playerFor(@Nonnull UUID playerId) {
+        var playerRef = Universe.get().getPlayer(playerId);
+        if (playerRef == null) return Optional.empty();
+        return playerFor(playerRef);
+    }
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));

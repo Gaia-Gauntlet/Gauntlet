@@ -1,0 +1,47 @@
+success=<color is="#06f906">Completed {event} - {message}</color>
+
+# Generic Events
+session.missing=Session <b>{sessionId}</b> is not present!
+
+
+# Game Events
+game.deferral.error=Failed to finalize deferred tasks for {sessionId} when closing {gameId}
+game.deferral.success=<color is="#06f906">Finalized game end in {sessionId} for game {gameId}</success>
+game.end.ended=Game {gameId} in {sessionId} already ended 
+game.end.success=Ended game {gameId} in {sessionId} 
+game.queue.missing=No games to remove!
+
+# Session Events
+session.generic.missing.game=Game {gameId} not registered
+session.error.unavailable=Session {sessionId} is in state {sessionState} and is not available for {action}
+session.error.notpending=Session {sessionId} has no pending game
+session.setup.error=Starting game {gameId} for session {sessionId} failed with reason {reason}
+session.setup.invalid=Session {sessionId} in a weird start during starting {gameId}! Incorrect game registered! Cleaning game {gameId}
+session.setup.success=<color is="#00FF00">Successfully setup {gameId} for {sessionId}</color>
+
+session.clean.success=<color is="#00FF00">Successfully cleaned {gameId} for {sessionId}</color>
+session.clean.error=Cancelling game {gameId} for session {sessionId} failed with reason {reason}
+
+session.destroy.success=<color is="#06f906">Deleted session {sessionId}</color>
+
+session.game.success=<color is="#06f906">Successfully {action} in {sessionId}</color>
+session.game.removal.success=<color is="#06f906">Successfully removed {games} game(s) from {sessionId}</color>
+
+# Player Events
+players.connect.warn=Player {playerName} not routed because {reason}
+players.connect.wrongsession=Player {playerName} in a different session from party! Leaving old session
+players.disconnect.warn=Player {playerName} disconnecting. Controller not notified because {reason}
+
+players.error=Player {playerName} unable to {operation} {sessionId} because {reason}
+players.join.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
+players.join.warn=Player {playerName} joining "{gameId}" failed because {reason}
+players.join.new.error=Failed adding {playerName} to {sessionId}. {cause}
+players.join.existed=Removed {playerName} from {oldSessionId}, joining {sessionId}
+players.join.existing.error=Failed removing {playerName} from {oldSessionId}. {cause}
+players.join.perms.error={playerName} is not an owner of party {partyName} - which is in {partySessionId} - and cannot change it to {sessionId}
+
+players.leave.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
+players.join.warn=Player {playerName} leaving "{gameId}" failed because {reason}
+players.join.new.error=Failed removing {playerName} from {sessionId}. {cause}
+
+players.party.joined = <b>{player}</b> <color is="#77ed7d">joined</color> {party}'s party!
