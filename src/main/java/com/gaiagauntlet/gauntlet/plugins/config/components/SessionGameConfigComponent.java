@@ -30,7 +30,7 @@ public class SessionGameConfigComponent implements SessionComponent {
     /** Map from gameId to gameConfig */
     @Getter private Map<String, String> gameToConfigMap = new HashMap<>();
 
-    public GameConfigAsset getConfig(String game) {
-        return GameConfigAsset.getAssetMap().get(gameToConfigMap.get(game));
+    public String getConfig(String game) {
+        return gameToConfigMap.get(game);
     }
 }

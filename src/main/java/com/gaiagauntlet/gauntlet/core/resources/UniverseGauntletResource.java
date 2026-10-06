@@ -38,15 +38,9 @@ public class UniverseGauntletResource {
             .add()
             .build();
 
-    @Setter
-    @Getter
-    private static UniverseResourceType<UniverseGauntletResource> resourceType;
-    @Nonnull
-    @Getter
-    private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
-    @Nonnull
-    @Getter
-    private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
+    @Setter @Getter private static UniverseResourceType<UniverseGauntletResource> resourceType;
+    @Nonnull @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
+    @Nonnull @Getter private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
 
     // faster lookup maps for hotpath efficiency. Should not be considered the
     // source of truth
