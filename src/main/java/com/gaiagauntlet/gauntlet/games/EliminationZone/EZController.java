@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
 

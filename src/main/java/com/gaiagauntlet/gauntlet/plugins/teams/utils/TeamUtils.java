@@ -145,9 +145,9 @@ public class TeamUtils {
         // First pass - Clean offline players, fill from parties if enabled.
         for (var team : teams.getTeams().values()) {
             for (UUID uuid : team.getPlayers()) {
-                // Remove offline players from team
+                // Remove offline/uncalled for players from team
                 PlayerRef player = PlayerUtils.get(uuid);
-                if (Objects.isNull(player)) {
+                if (Objects.isNull(player) || !players.contains(player)) {
                     team.remove(uuid);
                     continue;
                 }
@@ -155,9 +155,7 @@ public class TeamUtils {
                 unassigned.remove(player);
             }
 
-            if (!teams.isRespectParties()) continue;
-
-            // Check if any existing parties will fit in this team.
+            // Check if any parties will fit in this team.
             for (PartyComponent party : PartyUtils.getParties()) {
                 if (team.getSize() + party.getAllOnlinePlayers().size() <= teams.getTeamSize()) {
                     // Party fits, add all players to the team
@@ -169,14 +167,6 @@ public class TeamUtils {
                     }
                 }
             }
-        }
-
-        // Second pass - Fill gaps with players not yet assigned (and not in a party if enabled)
-        for (var team : teams.getTeams().values()) {
-            while (team.getSize() < teams.getTeamSize() && !unassigned.isEmpty()) {
-                team.add(unassigned.removeFirst().getUuid());
-            }
-            if (unassigned.isEmpty()) break;
         }
     }
 }

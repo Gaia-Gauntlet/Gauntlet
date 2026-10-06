@@ -1,0 +1,26 @@
+items.Void_Pipe_Corner.name = Void Pipe Corner
+items.Void_Roof.name = Void Roof
+items.Void_Roof_Flat.name = Void Flat Roof
+items.Void_Roof_Shallow.name = Void Shallow Roof
+items.Void_Roof_Steep.name = Void Steep Roof
+items.Void_Plant.name = Void Plant
+items.Void_Plant_Ground.name = Void Ground Plant
+items.Void_Plant_Wall.name = Void Wall Plant
+items.Void_Plant_Ceiling.name = Void Ceiling Plant
+items.Void_Trapdoor.name = Void Trapdoor
+items.Void_Light.name = Void Light
+items.Void_Light_Ground.name = Void Ground Light
+items.Void_Light_Wall.name = Void Wall Light
+items.Void_Light_Ceiling.name = Void Ceiling Light
+items.Void_Fluid.name = Void Fluid
+general.damageCauses.gg_void = The Void
+items.Food_Cheese.name = Foog Cheese
+items.varyns_scythe.name = Varyn's Scythe
+general.damageCauses.environmental = The Void
+general.damageCauses.fire = fire
+
+commands.kitGg1.desc = Clear inventory, then give every tier 1 (Crude) weapon and armor piece retuned in the balance pass.
+commands.kitGg2.desc = Clear inventory, then give every tier 2 (Copper) weapon and armor piece retuned in the balance pass.
+commands.kitGg3.desc = Clear inventory, then give every tier 3 (Iron) weapon and armor piece retuned in the balance pass.
+commands.kitGg4.desc = Clear inventory, then give every tier 4 (Thorium / Doomed) weapon and armor piece retuned in the balance pass.
+commands.kitGg5.desc = Clear inventory, then give every tier 5 (Mithril / Onyxium) weapon and armor piece retuned in the balance pass.

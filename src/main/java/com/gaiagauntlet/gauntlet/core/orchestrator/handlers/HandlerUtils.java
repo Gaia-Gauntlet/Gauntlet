@@ -40,10 +40,16 @@ public class HandlerUtils {
     }
 
     public class Resolve {
-        public static void error(GauntletEvent evt, GameSession session, Message mes) {
+        public static void error(GauntletEvent evt, GameSession session, Message mes, Throwable e) {
             evt.complete(
-                    GaiaLog.atError().withSession(session)
-                            .log(mes.param("sessionId", session.getId()).param("gameId", session.getCurrentGame())));
+                    GaiaLog.atError(e).withSession(session)
+                            .log(mes
+                                .param("sessionId", session.getId())
+                                .param("cause", e.getLocalizedMessage())
+                                .param("gameId", session.getCurrentGame())));
+        }
+        public static void error(GauntletEvent evt, GameSession session, Message mes) {
+            error(evt, session, mes, new IllegalStateException("Invalid State"));
         }
 
         public static void error(GauntletEvent evt, Message mes) {
@@ -58,8 +64,13 @@ public class HandlerUtils {
 
         public static void success(GauntletEvent evt, String key) {
             evt.complete(
-                    GaiaLog.atError()
+                    GaiaLog.atInfo()
                             .log(key));
+        }
+        public static void success(GauntletEvent evt, Message mes) {
+            evt.complete(
+                    GaiaLog.atInfo()
+                            .log(mes));
         }
 
         public static void success(GauntletEvent evt, GameSession session, Message mes) {

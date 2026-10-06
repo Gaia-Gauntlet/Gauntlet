@@ -8,6 +8,6 @@ import com.riprod.configly.Configly;
 public class GauntletCore {
     public static void setup(JavaPlugin plugin) {
         Configly.register(GauntletConfig.TYPE, GauntletConfig.class, GauntletConfig.CODEC);
-        GauntletOrchestrator.setupListeners();
+        GauntletOrchestrator.setupListeners(plugin);
     }
 }
