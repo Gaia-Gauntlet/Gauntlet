@@ -141,6 +141,8 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("reason", "session is not active"));
             return;
         }
+
+        // join the game
         var gameId = session.getCurrentGame();
         if (gameId == null || gameId.isEmpty()) {
             GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
@@ -159,7 +161,14 @@ public class PlayerHandlers extends HandlerUtils {
         GauntletUtils.run(hubWorld, () -> {
             try {
                 // run the player connection logic
-                game.playerJoin(hubWorld, sessionId, List.of(playerRef));
+                game.playerJoin(hubWorld, sessionId, List.of(playerRef)).whenComplete((_, error) -> {
+                    if (error != null) {
+                        Resolve.error(evt, session, error("Error was thrown while joining the world"), error);
+                        return;
+                    }
+                    Resolve.success(evt, "Successfully transferred player!");
+                    return;
+                });
             } catch (Exception e) {
                 GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                         .param("playerName", playerRef.getUsername())
@@ -226,8 +235,6 @@ public class PlayerHandlers extends HandlerUtils {
         var hubWorld = GauntletUtils.withHubWorld();
         GauntletUtils.run(hubWorld, () -> {
             try {
-                // run the player disconnection logic
-                game.playerLeave(hubWorld, sessionId, List.of(playerRef));
                 var currentGame = player.getCurrentGame();
                 if (currentGame != null && currentGame.equals(gameId)) {
                     // only remove as current game once we've confirmed it is still their current
@@ -235,10 +242,19 @@ public class PlayerHandlers extends HandlerUtils {
                     // this task may be really long, and the player might've changed games during it
                     player.setCurrentGame(null);
                 }
+                // run the player disconnection logic
+                game.playerLeave(hubWorld, sessionId, List.of(playerRef)).whenComplete((_, error) -> {
+                    if (error != null) {
+                        Resolve.error(evt, session, error("Error was thrown while joining the world"), error);
+                        return;
+                    }
+                    Resolve.success(evt, "Successfully transferred player!");
+                    return;
+                });
             } catch (Exception e) {
-                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
+                evt.complete(GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
                         .param("playerName", playerRef.getUsername())
-                        .param("reason", "Exception when handling player connect"));
+                        .param("reason", "Exception when handling player connect")));
             }
         });
     }
@@ -328,7 +344,6 @@ public class PlayerHandlers extends HandlerUtils {
                  });
              }
              }
-             * 
              */
         }
 

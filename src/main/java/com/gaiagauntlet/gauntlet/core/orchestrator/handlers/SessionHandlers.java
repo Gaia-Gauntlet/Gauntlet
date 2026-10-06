@@ -93,6 +93,7 @@ public class SessionHandlers extends HandlerUtils {
         session.startNext();
         var future = game.setupGame(hub.getEntityStore().getStore(), session);
         future.whenComplete((value, error) -> {
+            // run on the hub thread
             GauntletUtils.run(hub, () -> {
                 if (error != null) {
                     // errored

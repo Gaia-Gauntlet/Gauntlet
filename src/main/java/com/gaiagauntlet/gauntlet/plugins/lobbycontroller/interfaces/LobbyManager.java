@@ -16,6 +16,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
  */
 public interface LobbyManager {
     public CompletableFuture<World> setupWorld();
+    /** Cleans up the world - runs on the hub thread*/
+    public CompletableFuture<Void> cleanWorld(World arenaWorld);
     /** Adds a player to the lobby world */
     public CompletableFuture<Void> playerTo(World lobbyWorld, PlayerRef player);
     /** Bulk-adds players to the lobby */

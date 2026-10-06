@@ -111,10 +111,7 @@ public abstract class LobbyController extends GameController {
         })
                 .whenComplete((_, error) -> {
                     if (error != null) {
-                        LOGGER.atSevere()
-                                .withCause(error)
-                                .log("Failed to initialize game %s for session %s", getId(), sessionId);
-                        GaiaLog.atError(error).withSession(session)
+                        GaiaLog.atError(error).withCause(error).withSession(session)
                                 .log("Failed to initialize game " + getId() + " for session " + sessionId);
                         // emit a clean command to the event registry
                         return;
@@ -136,8 +133,9 @@ public abstract class LobbyController extends GameController {
 
     @Override
     public final CompletableFuture<Void> cleanGame(World hubAccessor, GameSession session) {
-        // remove the game
-        return CompletableFuture.completedFuture(null);
+        var arenaWorld = withArenaWorld(hubAccessor, session.getId()).orElse(null);
+        if (arenaWorld == null) return CompletableFuture.completedFuture(null);
+        return getLobbyManager().cleanWorld(arenaWorld);
     };
 
     @Override

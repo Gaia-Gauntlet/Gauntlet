@@ -62,10 +62,10 @@ public class HandlerUtils {
             error(evt, session, MessageUtils.msg(key));
         }
 
-        public static void success(GauntletEvent evt, String key) {
+        public static void success(GauntletEvent evt, String text) {
             evt.complete(
                     GaiaLog.atInfo()
-                            .log(key));
+                            .log(text));
         }
         public static void success(GauntletEvent evt, Message mes) {
             evt.complete(
