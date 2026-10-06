@@ -113,7 +113,7 @@ public class PartyCommands extends AbstractPlayerCommand {
         @Override
         protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             var partyId = partyArg.get(context);
-            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-1)); // Remove speech marks
+            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-1)).orElse(null); // Remove speech marks
             if (Objects.isNull(party)) {
                 context.sendMessage(msg("server.gg.commands.party.invalidname").param("party", partyId));
                 return;
@@ -135,7 +135,7 @@ public class PartyCommands extends AbstractPlayerCommand {
         @Override
         protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             var partyId = partyArg.get(context);
-            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-1)); // Remove speech marks
+            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-1)).orElse(null); // Remove speech marks
             if (Objects.isNull(party)) {
                 context.sendMessage(msg("server.gg.commands.party.invalidname").param("party", partyId));
                 return;

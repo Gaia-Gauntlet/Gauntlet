@@ -1,5 +1,8 @@
 package com.gaiagauntlet.gauntlet.plugins.config.components.assets;
 
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.assetstore.AssetRegistry;
@@ -8,18 +11,18 @@ import com.hypixel.hytale.assetstore.codec.AssetCodecMapCodec;
 import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
 import com.hypixel.hytale.assetstore.map.JsonAssetWithMap;
 import com.hypixel.hytale.codec.Codec;
-import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
-import static com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset.ASSET_STORE;
+public class GameConfig implements JsonAssetWithMap<String, IndexedLookupTableAssetMap<String, GameConfig>>, GameComponent {
 
-public class GameConfig implements JsonAssetWithMap<String, IndexedLookupTableAssetMap<String, GameConfig>> {
-
+    @Getter @Setter private static GameComponentType<GameConfig> gameComponentType;
     protected AssetExtraInfo.Data data;
     @Getter private String id;
 
@@ -55,7 +58,7 @@ public class GameConfig implements JsonAssetWithMap<String, IndexedLookupTableAs
         return ASSET_STORE;
     }
 
-    public static IndexedLookupTableAssetMap<String, GameConfig> getAssetMap() {
-        return getAssetStore().getAssetMap();
+    public static Map<String, GameConfig> getAssetMap() {
+        return getAssetStore().getAssetMap().getAssetMap();
     }
 }

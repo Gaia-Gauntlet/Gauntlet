@@ -5,6 +5,7 @@ import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -47,14 +48,16 @@ public class EZController extends LobbyController {
             GameStorePlugin.ID,
             LobbyControllerPlugin.ID,
             ProxyChatPlugin.ID,
-            TeamsPlugin.ID);
+            TeamsPlugin.ID,
+            ConfigPlugin.ID
+    );
 
-    private EZArenaManager arena = new EZArenaManager();
-    private EZLobbyManager lobby = new EZLobbyManager();
+    private final EZArenaManager arena = new EZArenaManager();
+    private final EZLobbyManager lobby = new EZLobbyManager();
 
     @NotNull
     public static EZController get() {
-        var gameController = GameRegistry.getGame(ID).get();
+        var gameController = GameRegistry.getGame(ID).orElse(null);
         if (gameController != null) {
             if (gameController instanceof EZController ezController) {
                 return ezController;
@@ -86,6 +89,7 @@ public class EZController extends LobbyController {
 
     @Override
     public void setupGame(World world, GameEcs gameStore, String sessionId) {
-
+        var config = EZGameConfig.getAssetMap().get(EZGameConfig.ID);
+        if (config != null) gameStore.put(EZGameConfig.getGameComponentType(), config);
     }
 }

@@ -1,0 +1,2161 @@
+{
+  "Volumes": {
+    "10452c3d-a483-4753-b44d-06282e42c2a6": {
+      "Position": {
+        "X": -98.5,
+        "Y": 122.5,
+        "Z": -414.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -0.5,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 0.5,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": true,
+      "Tags": {
+        "gg.boss.spawn.Varyns_Shadow": "Empty"
+      },
+      "Name": "Boss Spawn - Varyns_Shadow"
+    },
+    "09421b5e-a8e8-4719-8af9-37a436cb6f2c": {
+      "Position": {
+        "X": -102.5,
+        "Y": 49.0,
+        "Z": 41.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 4.712388634681702,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (75)"
+    },
+    "f1250d5f-f676-4df2-b82d-790d53c198db": {
+      "Position": {
+        "X": -65.5,
+        "Y": 49.0,
+        "Z": -26.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (46)"
+    },
+    "1426b319-8741-4140-8278-2d8b46dd24b1": {
+      "Position": {
+        "X": 291.5,
+        "Y": 163.5,
+        "Z": 261.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -0.5,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 0.5,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": true,
+      "Tags": {
+        "gg.boss.spawn.Lava_Dragon": "Empty"
+      },
+      "Name": "Boss Spawn - Lava_Dragon"
+    },
+    "eaab7f73-1744-482a-ad7d-946680096f8a": {
+      "Position": {
+        "X": -57.5,
+        "Y": 49.0,
+        "Z": -9.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (42)"
+    },
+    "5f6650d1-ca70-4dc3-847a-4d98e8c86550": {
+      "Position": {
+        "X": -139.5,
+        "Y": 49.0,
+        "Z": 8.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (4)"
+    },
+    "7a451b53-8d73-445c-99a2-18b190003aaa": {
+      "Position": {
+        "X": -113.5,
+        "Y": 49.0,
+        "Z": -39.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": -1.5707963705062866,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (21)"
+    },
+    "3d1ce03f-c05f-4108-a930-bf17719cfae6": {
+      "Position": {
+        "X": -107.5,
+        "Y": 49.0,
+        "Z": -41.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": -1.5707963705062866,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (22)"
+    },
+    "cdbce79b-976b-4145-9a57-40b7f605c7d6": {
+      "Position": {
+        "X": -173.5,
+        "Y": 85.25,
+        "Z": -41.0
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 4.0,
+        "Height": 2.75
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 20.0,
+            "Z": -13.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 2"
+    },
+    "0ae18b0a-7a4b-42b5-a7d3-0a19a9482471": {
+      "Position": {
+        "X": -131.5,
+        "Y": 49.0,
+        "Z": 25.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn"
+    },
+    "fda8f05e-2729-4362-ba39-24accd43f57b": {
+      "Position": {
+        "X": -65.5,
+        "Y": 49.0,
+        "Z": 25.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 6.283185005187988,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (60)"
+    },
+    "369bc563-58a0-42c6-9893-60e385208ee2": {
+      "Position": {
+        "X": -165.5,
+        "Y": 88.0,
+        "Z": -34.0
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 2.5,
+        "Height": 2.0
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 14.0,
+            "Z": -15.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 1"
+    },
+    "f1c28b59-6366-400a-b357-518730ac12e9": {
+      "Position": {
+        "X": -57.5,
+        "Y": 49.0,
+        "Z": 8.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 6.283185005187988,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (48)"
+    },
+    "884e6e8c-9e21-448e-b58f-7da43e5282eb": {
+      "Position": {
+        "X": -119.5,
+        "Y": 49.0,
+        "Z": -36.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": -1.5707963705062866,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (32)"
+    },
+    "ec1bbbc4-695a-40e8-a8a0-6b12865caf8d": {
+      "Position": {
+        "X": -391.5,
+        "Y": 87.25,
+        "Z": -314.0
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 4.0,
+        "Height": 1.75
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 20.0,
+            "Z": -13.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 4"
+    },
+    "5b2706ee-6705-4d63-9e4e-fb0d00be8e05": {
+      "Position": {
+        "X": -69.5,
+        "Y": 49.0,
+        "Z": 28.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 6.283185005187988,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (113)"
+    },
+    "7eaa8710-29fe-45ee-bf08-68afdf0e74f3": {
+      "Position": {
+        "X": 201.0,
+        "Y": 93.0,
+        "Z": -265.0
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.0,
+          "Y": -2.0,
+          "Z": -1.0
+        },
+        "Max": {
+          "X": 1.0,
+          "Y": 2.0,
+          "Z": 1.0
+        }
+      },
+      "Effects": [
+        {
+          "Type": "Teleport",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Position": {
+            "X": 0.0,
+            "Y": 40.0,
+            "Z": 0.0
+          },
+          "World": "",
+          "ResetVelocity": true,
+          "RelativeToEntity": true,
+          "RelativeToVolume": false,
+          "UseRotation": false,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "PA Hotel Elevator UP"
+    },
+    "0abcad6e-4384-45eb-b19f-e900a5ab91f0": {
+      "Position": {
+        "X": -137.5,
+        "Y": 49.0,
+        "Z": -15.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (6)"
+    },
+    "850372dc-08b0-42b6-b1a0-007eaa23b7c0": {
+      "Position": {
+        "X": -83.5,
+        "Y": 49.0,
+        "Z": 38.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (61)"
+    },
+    "729f8866-0593-4ae4-b9c6-6d27648f1d4d": {
+      "Position": {
+        "X": -56.5,
+        "Y": 49.0,
+        "Z": 3.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 6.283185005187988,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (59)"
+    },
+    "b393ce17-5741-458a-82bc-a4ee438d81dd": {
+      "Position": {
+        "X": -89.5,
+        "Y": 49.0,
+        "Z": -41.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (28)"
+    },
+    "d2960122-9140-49c3-bec7-f5c3edf0c5f8": {
+      "Position": {
+        "X": -140.5,
+        "Y": 49.0,
+        "Z": 3.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (5)"
+    },
+    "f47662b0-b804-4040-890e-8968918b7662": {
+      "Position": {
+        "X": -124.5,
+        "Y": 49.0,
+        "Z": -33.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": -1.5707963705062866,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (26)"
+    },
+    "b10f7d76-cf64-4987-af06-6d16567a4bf6": {
+      "Position": {
+        "X": -102.5,
+        "Y": 49.0,
+        "Z": -42.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": -1.5707963705062866,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (36)"
+    },
+    "ead8b28d-4c70-48bb-b9bf-b78236478185": {
+      "Position": {
+        "X": -98.5,
+        "Y": 176.0,
+        "Z": -0.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn.spectator": "Empty"
+      },
+      "Name": "Spectator Spawn"
+    },
+    "ab2584b7-8438-4626-9f62-9fc066c9f704": {
+      "Position": {
+        "X": -89.5,
+        "Y": 49.0,
+        "Z": 40.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (62)"
+    },
+    "6831ca5a-2655-4459-88d5-d68c95c5f688": {
+      "Position": {
+        "X": -216.5,
+        "Y": 81.5,
+        "Z": -89.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -0.5,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 0.5,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.boss.spawn.Sporeback_Snail": "Empty"
+      },
+      "Name": "Boss Spawn - Sporeback_Snail"
+    },
+    "da8aefaf-b3a3-4e9e-9c8e-b2535dc30ae4": {
+      "Position": {
+        "X": -131.5,
+        "Y": 49.0,
+        "Z": -26.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (13)"
+    },
+    "51d837a5-5d5e-4d31-afc6-862ce3c877fd": {
+      "Position": {
+        "X": -30.5,
+        "Y": 142.5,
+        "Z": 414.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -0.5,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 0.5,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": true,
+      "Tags": {
+        "gg.boss.spawn.Frostbone_Mammoth": "Empty"
+      },
+      "Name": "Boss Spawn - Frostbone_Mammoth"
+    },
+    "39c114da-df79-4518-b4ee-ef63c90336b2": {
+      "Position": {
+        "X": -56.5,
+        "Y": 49.0,
+        "Z": -4.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (56)"
+    },
+    "2ef149dd-13ec-4c14-96c2-783fcbfffde8": {
+      "Position": {
+        "X": -137.5,
+        "Y": 49.0,
+        "Z": 14.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (3)"
+    },
+    "5d821d7f-ff51-4d15-85dc-09e9eaf390b6": {
+      "Position": {
+        "X": -186.5,
+        "Y": 85.25,
+        "Z": -46.0
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 4.0,
+        "Height": 2.75
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 15.0,
+            "Z": -15.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 3"
+    },
+    "a39ca2e1-6a83-42ac-8cde-a360a93916fe": {
+      "Position": {
+        "X": 212.5,
+        "Y": 126.0,
+        "Z": 205.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.5,
+          "Y": -11.0,
+          "Z": -1.5
+        },
+        "Max": {
+          "X": 1.5,
+          "Y": 11.0,
+          "Z": 1.5
+        }
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "TICK",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 1.2,
+            "Z": 0.0
+          },
+          "Additive": true,
+          "RelativeMode": "Absolute"
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "LJP Hidden Float"
+    },
+    "02def92b-7e15-4c62-915b-2c77730e2303": {
+      "Position": {
+        "X": -127.5,
+        "Y": 49.0,
+        "Z": -29.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (88)"
+    },
+    "1c857e4c-7b3d-4c67-82d4-5c3cfd22b51a": {
+      "Position": {
+        "X": -72.5,
+        "Y": 49.0,
+        "Z": 32.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (66)"
+    },
+    "55e7cece-9da8-4a8b-bf1a-025c9b296da0": {
+      "Position": {
+        "X": -62.5,
+        "Y": 49.0,
+        "Z": -21.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (52)"
+    },
+    "67e524c3-0014-4fcd-a2c5-09b28d218c62": {
+      "Position": {
+        "X": -107.5,
+        "Y": 49.0,
+        "Z": 40.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 4.712388634681702,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (68)"
+    },
+    "f3e6a8da-b747-456a-8e60-2de7ca0fc13f": {
+      "Position": {
+        "X": -94.5,
+        "Y": 49.0,
+        "Z": -42.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (39)"
+    },
+    "e4bbf859-1fc2-460b-8741-c5a7a643b9c8": {
+      "Position": {
+        "X": -59.5,
+        "Y": 49.0,
+        "Z": 14.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 6.283185005187988,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (50)"
+    },
+    "4f92c827-91aa-4800-a99c-b2acfcdb08d2": {
+      "Position": {
+        "X": -77.5,
+        "Y": 49.0,
+        "Z": 35.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (72)"
+    },
+    "9be9f8b0-e2ac-4722-8463-9e564c777b54": {
+      "Position": {
+        "X": 200.5,
+        "Y": 179.0,
+        "Z": 372.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.5,
+          "Y": -20.0,
+          "Z": -1.5
+        },
+        "Max": {
+          "X": 1.5,
+          "Y": 20.0,
+          "Z": 1.5
+        }
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "TICK",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 1.2,
+            "Z": 0.0
+          },
+          "Additive": true,
+          "RelativeMode": "Absolute"
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "LJP Tower Float"
+    },
+    "3d115e64-e12f-4246-9500-4afd065874bf": {
+      "Position": {
+        "X": -503.0,
+        "Y": 87.25,
+        "Z": -125.5
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 4.0,
+        "Height": 1.75
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 20.0,
+            "Z": -13.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": -0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 6"
+    },
+    "f2f88f57-ed3c-436a-95d6-63a4209dfb25": {
+      "Position": {
+        "X": -401.5,
+        "Y": 101.5,
+        "Z": 172.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -0.5,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 0.5,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": true,
+      "Tags": {
+        "gg.boss.spawn.Pirate_Queen_Bloodlocks": "Empty"
+      },
+      "Name": "Boss Spawn - Pirate_Queen_Bloodlocks"
+    },
+    "c922f10e-7c3c-42cc-a499-e500203c65b7": {
+      "Position": {
+        "X": -94.5,
+        "Y": 49.0,
+        "Z": 41.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (76)"
+    },
+    "0dc8931b-8fc5-4904-9d39-3ec50af807d1": {
+      "Position": {
+        "X": -113.5,
+        "Y": 49.0,
+        "Z": 38.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 4.712388634681702,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (71)"
+    },
+    "c721781c-74c0-491f-8a58-114c9ccc3529": {
+      "Position": {
+        "X": -62.5,
+        "Y": 49.0,
+        "Z": 20.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 6.283185005187988,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (43)"
+    },
+    "42710aa2-8247-443d-b2d6-ac804d07cc14": {
+      "Position": {
+        "X": -72.5,
+        "Y": 49.0,
+        "Z": -33.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (27)"
+    },
+    "f292f9b2-063c-48ef-bd8a-c925ce8e075c": {
+      "Position": {
+        "X": 200.0,
+        "Y": 131.5,
+        "Z": -268.0
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.0,
+          "Y": -1.5,
+          "Z": -1.0
+        },
+        "Max": {
+          "X": 1.0,
+          "Y": 1.5,
+          "Z": 1.0
+        }
+      },
+      "Effects": [
+        {
+          "Type": "Teleport",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Position": {
+            "X": 0.0,
+            "Y": -39.0,
+            "Z": 0.0
+          },
+          "World": "",
+          "ResetVelocity": true,
+          "RelativeToEntity": true,
+          "RelativeToVolume": false,
+          "UseRotation": false,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "PA Hotel Elevator DOWN"
+    },
+    "0c65bdfd-d159-4f19-a2c7-72732e2f4a7d": {
+      "Position": {
+        "X": -124.5,
+        "Y": 49.0,
+        "Z": 32.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 4.712388634681702,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (67)"
+    },
+    "5b1aa4a6-ac2d-4738-8f91-d8ec4d9a533f": {
+      "Position": {
+        "X": -134.5,
+        "Y": 49.0,
+        "Z": 20.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (2)"
+    },
+    "d0407d1d-ef67-4523-bbbe-b26df13e2e92": {
+      "Position": {
+        "X": -452.0,
+        "Y": 85.0,
+        "Z": -102.5
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 4.5,
+        "Height": 2.0
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 20.0,
+            "Z": -13.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": -0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 7"
+    },
+    "dedeeb71-bc04-4565-a990-c54b570554c4": {
+      "Position": {
+        "X": 214.0,
+        "Y": 96.0,
+        "Z": -310.0
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": 0.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": true,
+      "Tags": {
+        "gg.boss.spawn.Zombie_Trex": "Empty"
+      },
+      "Name": "Boss Spawn - Zombie_Trex"
+    },
+    "276c9a7d-27cf-4229-8eb3-5dfdc409232d": {
+      "Position": {
+        "X": -508.5,
+        "Y": 86.25,
+        "Z": -133.0
+      },
+      "Shape": {
+        "Type": "Cylinder",
+        "Center": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 4.0,
+        "Height": 1.75
+      },
+      "Effects": [
+        {
+          "Type": "SetVelocity",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": 0.0,
+            "Y": 20.0,
+            "Z": -13.0
+          },
+          "Additive": false,
+          "RelativeMode": "HorizontalFacing"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "ENTER",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Player_Pickup_Item",
+          "Volume": 1.0,
+          "Pitch": 1.5,
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Name": "GMJ Bounce 5"
+    },
+    "f62ba4e2-3d47-4271-ad2b-7f7fe220d797": {
+      "Position": {
+        "X": -139.5,
+        "Y": 49.0,
+        "Z": -9.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (17)"
+    },
+    "c9fb5e23-3d4d-429d-8f75-435bd86d68ff": {
+      "Position": {
+        "X": -59.5,
+        "Y": 49.0,
+        "Z": -15.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (41)"
+    },
+    "f274a704-f61e-44d8-b832-8cb4fb6ecf83": {
+      "Position": {
+        "X": -83.5,
+        "Y": 49.0,
+        "Z": -39.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (34)"
+    },
+    "8c3b2f11-2f02-4f7f-a69d-427631fe75b7": {
+      "Position": {
+        "X": -134.5,
+        "Y": 49.0,
+        "Z": -21.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (19)"
+    },
+    "b64a58a7-c3d7-4924-81c7-34e7a263168a": {
+      "Position": {
+        "X": -77.5,
+        "Y": 49.0,
+        "Z": -36.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 1.5707961320877075,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (38)"
+    },
+    "daaee3a9-a152-4703-a531-3168bf65ff30": {
+      "Position": {
+        "X": -140.5,
+        "Y": 49.0,
+        "Z": -4.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (9)"
+    },
+    "b7ea13b9-2e6e-4a1a-bc76-049aee0ed360": {
+      "Position": {
+        "X": -119.5,
+        "Y": 49.0,
+        "Z": 35.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 4.712388634681702,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (69)"
+    }
+  }
+}

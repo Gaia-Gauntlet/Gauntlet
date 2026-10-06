@@ -13,7 +13,7 @@ import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
-public class EZGamePlugin extends GameConfig {
+public class EZGamePlugin extends JavaPlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     public EZGamePlugin(JavaPluginInit init) {
@@ -30,10 +30,8 @@ public class EZGamePlugin extends GameConfig {
         LOGGER.atInfo().log("Setting up EZGame!");
         // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
-        getAssetRegistry().register(HytaleAssetStore.builder(EZConfig.class,
-            new IndexedLookupTableAssetMap<>(EZConfig[]::new))
-            .setPath("")
-        ))
+
+        GameConfig.CODEC.register(EZGameConfig.ID, EZGameConfig.class, EZGameConfig.CODEC);
 
         // Setup each section - keeps the top-level plugin cleaner this way
         EZBosses.setup(this);

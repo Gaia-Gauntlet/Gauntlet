@@ -1,10 +1,9 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
+import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfig;
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
-import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
-import com.hypixel.hytale.assetstore.map.JsonAssetWithMap;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
@@ -25,7 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class EZConfig implements JsonAssetWithMap<String, IndexedLookupTableAssetMap<String, EZConfig>> {
+public class EZGameConfig extends GameConfig {
+
+    public static final String ID = "Elimination_Zone";
 
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
         @Override
@@ -40,17 +41,17 @@ public class EZConfig implements JsonAssetWithMap<String, IndexedLookupTableAsse
         }
     };
 
-    public static final BuilderCodec<@NotNull EZConfig> CODEC = BuilderCodec
-        .builder(EZConfig.class, EZConfig::new)
+    public static final BuilderCodec<@NotNull EZGameConfig> CODEC = BuilderCodec
+        .builder(EZGameConfig.class, EZGameConfig::new, GameConfig.ABSTRACT_CODEC)
         .append(new KeyedCodec<>("InstanceTemplateName", Codec.STRING),
             (t, v) -> t.instanceTemplateName = v,
-            EZConfig::getInstanceTemplateName)
+            EZGameConfig::getInstanceTemplateName)
         .addValidator(InstanceValidator.INSTANCE)
         .documentation("The name of the instance to use for this game.")
         .add()
         .append(new KeyedCodec<>("FriendlyFireEnabled", Codec.BOOLEAN),
             (t, v) -> t.friendlyFireEnabled = v,
-            EZConfig::isFriendlyFireEnabled)
+            EZGameConfig::isFriendlyFireEnabled)
         .documentation("When enabled, teammates can damage each other during team matches.")
         .add()
 //        .append(new KeyedCodec<>("Zones", new ArrayCodec<>(SectorZone.CODEC, SectorZone[]::new)),
@@ -165,7 +166,4 @@ public class EZConfig implements JsonAssetWithMap<String, IndexedLookupTableAsse
     @Getter private long cornucopiaDurationSeconds = 27;
 //    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois;
-
-    private AssetExtraInfo.Data data;
-    @Getter private String id;
 }
