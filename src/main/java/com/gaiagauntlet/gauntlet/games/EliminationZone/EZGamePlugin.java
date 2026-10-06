@@ -1,15 +1,12 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
-import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.EZBosses;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfig;
-import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
+import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
@@ -31,7 +28,7 @@ public class EZGamePlugin extends JavaPlugin {
         // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
 
-        GameConfig.CODEC.register(EZGameConfig.ID, EZGameConfig.class, EZGameConfig.CODEC);
+        GameConfigAsset.CODEC.register(EZGameConfigAsset.ID, EZGameConfigAsset.class, EZGameConfigAsset.CODEC);
 
         // Setup each section - keeps the top-level plugin cleaner this way
         EZBosses.setup(this);

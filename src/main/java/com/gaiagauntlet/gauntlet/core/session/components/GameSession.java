@@ -76,14 +76,9 @@ public class GameSession {
             .add()
             .build();
 
-    @Getter
-    private Map<String, SessionComponent> sessionComponents;
-
-    @Getter 
-    private Set<String> parties = ConcurrentHashMap.newKeySet();
-
-    @Getter
-    private String id;
+    @Getter private Map<String, SessionComponent> sessionComponents;
+    @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
+    @Getter private String id;
 
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
