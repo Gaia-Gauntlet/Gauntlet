@@ -93,37 +93,39 @@ public class SessionHandlers extends HandlerUtils {
         session.startNext();
         var future = game.setupGame(hub.getEntityStore().getStore(), session);
         future.whenComplete((value, error) -> {
-            if (error != null) {
-                // errored
-                GaiaLog.atError().withSession(session).withCause(error)
-                        .log(MessageUtils.msg("server.gg.events.session.setup.error")
+            GauntletUtils.run(hub, () -> {
+                if (error != null) {
+                    // errored
+                    GaiaLog.atError().withSession(session).withCause(error)
+                            .log(MessageUtils.msg("server.gg.events.session.setup.error")
+                                    .param("sessionId", session.getId())
+                                    .param("gameId", nextGameId)
+                                    .param("reason", error.getLocalizedMessage()));
+
+                    session.setErrored("Error thrown during setup");
+                    // cancel the game immediately - run on the hub thread
+                    cleanGame(hub, sessionEvt, session);
+                    return;
+                }
+
+                var check = session.setRunning(nextGameId);
+                if (!check) {
+                    // something has gone horribly wrong
+                    GaiaLog.atError().withSession(session)
+                            .log(MessageUtils.msg("server.gg.events.session.setup.invalid")
+                                    .param("sessionId", session.getId())
+                                    .param("gameId", nextGameId));
+
+                    session.setErrored("Game was in a weird state when starting (session state mismatch)");
+                    // cancel the game immediately - run on the hub thread
+                    cleanGame(hub, sessionEvt, session);
+                    return;
+                }
+                sessionEvt.complete(GaiaLog.atInfo().withSession(session)
+                        .log(MessageUtils.msg("server.gg.events.session.setup.success")
                                 .param("sessionId", session.getId())
-                                .param("gameId", nextGameId)
-                                .param("reason", error.getLocalizedMessage()));
-
-                session.setErrored("Error thrown during setup");
-                // cancel the game immediately - run on the hub thread
-                GauntletUtils.run(hub, () -> cleanGame(hub, sessionEvt, session));
-                return;
-            }
-
-            var check = session.setRunning(nextGameId);
-            if (!check) {
-                // something has gone horribly wrong
-                GaiaLog.atError().withSession(session)
-                        .log(MessageUtils.msg("server.gg.events.session.setup.invalid")
-                                .param("sessionId", session.getId())
-                                .param("gameId", nextGameId));
-
-                session.setErrored("Game was in a weird state when starting (session state mismatch)");
-                // cancel the game immediately - run on the hub thread
-                GauntletUtils.run(hub, () -> cleanGame(hub, sessionEvt, session));
-                return;
-            }
-            sessionEvt.complete(GaiaLog.atInfo().withSession(session)
-                    .log(MessageUtils.msg("server.gg.events.session.setup.success")
-                            .param("sessionId", session.getId())
-                            .param("gameId", nextGameId)));
+                                .param("gameId", nextGameId)));
+            });
         });
     }
 
@@ -226,11 +228,11 @@ public class SessionHandlers extends HandlerUtils {
                 var removed = 0;
                 for (var game : gameQueue) {
                     var success = session.removeGame(game);
-                    if (success) removed++;
+                    if (success)
+                        removed++;
                 }
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.removal.success")
-                        .param("games", removed)
-                    );
+                        .param("games", removed));
                 return;
             }
             case APPEND -> {

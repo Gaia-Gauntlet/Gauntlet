@@ -142,10 +142,11 @@ public class PartyComponent {
         setOnline(player.getUuid());
         return true;
     }
+
     public boolean includesPlayer(UUID player) {
         if (players.contains(player))
             return true;
-        
+
         return false;
     }
 
@@ -189,7 +190,9 @@ public class PartyComponent {
         var cancelToken = offlinePlayers.get(playerId);
         if (cancelToken == null)
             return null;
+        
         offlinePlayers.remove(playerId); // remove from offline
+        players.add(playerId);
         if (cancelToken.isCancelled())
             return cancelToken;
         cancelToken.cancel(false);

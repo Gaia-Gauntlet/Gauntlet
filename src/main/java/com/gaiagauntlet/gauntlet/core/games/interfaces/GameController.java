@@ -33,8 +33,10 @@ public abstract class GameController {
     /** Triggered when a player reconnects in the game */
     public abstract CompletableFuture<Void> playerConnect(World hubWorld, String sessionId, PlayerRef player);
 
-    /** Triggered when a player disconnects in the game - should purely be cleanup logic off the player */
-    public abstract CompletableFuture<Void> playerDisconnect(World hubWorld, PlayerRef player);
+    /** Triggered when a player disconnects in the game - should purely be cleanup logic off the player
+     * Runs on whatever thread the player disconnected from. Does NOT exist only on the hub world
+    */
+    public abstract CompletableFuture<Void> playerDisconnect(World hubWorld, GameSession session, PlayerRef player);
     
     /** Triggered when a player joins the game (either first time or tries to join back) */
     public abstract CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> player);

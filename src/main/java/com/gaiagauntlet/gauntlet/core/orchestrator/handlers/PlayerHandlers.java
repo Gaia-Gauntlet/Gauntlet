@@ -229,7 +229,7 @@ public class PlayerHandlers extends HandlerUtils {
                 // run the player disconnection logic
                 game.playerLeave(hubWorld, sessionId, List.of(playerRef));
                 var currentGame = player.getCurrentGame();
-                if (currentGame.equals(gameId)) {
+                if (currentGame != null && currentGame.equals(gameId)) {
                     // only remove as current game once we've confirmed it is still their current
                     // game
                     // this task may be really long, and the player might've changed games during it
@@ -389,6 +389,7 @@ public class PlayerHandlers extends HandlerUtils {
 
             var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
                 party.clearOffline(playerRef.getUuid());
+
             }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
 
             party.setOffline(playerRef.getUuid(), future);
@@ -422,15 +423,13 @@ public class PlayerHandlers extends HandlerUtils {
         }
 
         var hubWorld = GauntletUtils.withHubWorld();
-        GauntletUtils.run(hubWorld, () -> {
-            try {
-                game.playerDisconnect(hubWorld, playerRef);
-            } catch (Exception e) {
-                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                        .param("playerName", playerRef.getUsername())
-                        .param("reason", "Exception when handling player join"));
-            }
-        });
+        try {
+            game.playerDisconnect(hubWorld, session, playerRef);
+        } catch (Exception e) {
+            GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "Exception when handling player join"));
+        }
     }
 
     public static void handlePartyPlayer(World hub, PlayerPartyEvent evt) {
@@ -491,7 +490,7 @@ public class PlayerHandlers extends HandlerUtils {
                 .param("party", newParty.getLabel()));
     }
 
-    public static void playerLeaveParty(PlayerPartyEvent evt, PartyComponent oldParty, GameSession partySession) {
+    private static void playerLeaveParty(PlayerPartyEvent evt, PartyComponent oldParty, GameSession partySession) {
         var playerRef = evt.getPlayer();
         if (oldParty == null) {
             Resolve.error(evt, error("Unable to leave party. Old party not found!"));

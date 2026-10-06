@@ -117,7 +117,6 @@ public abstract class LobbyController extends GameController {
                         GaiaLog.atError(error).withSession(session)
                                 .log("Failed to initialize game " + getId() + " for session " + sessionId);
                         // emit a clean command to the event registry
-                        GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, sessionId));
                         return;
                     }
                 });
@@ -149,8 +148,7 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
-    public final CompletableFuture<Void> playerDisconnect(World hubAccessor,
-            PlayerRef player) {
+    public final CompletableFuture<Void> playerDisconnect(World hubAccessor, GameSession session, PlayerRef player) {
         return CompletableFuture.completedFuture(null);
         // remove a player from the game
     };
