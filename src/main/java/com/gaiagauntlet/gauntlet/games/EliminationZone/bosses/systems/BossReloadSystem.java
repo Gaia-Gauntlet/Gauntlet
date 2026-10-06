@@ -1,14 +1,18 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.systems;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
-import com.gaiagauntlet.gg.store.GlobalStore;
+import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfig;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /** Re-links a boss that is out to its entity when the entity loads back in with its chunk. */
 public final class BossReloadSystem extends RefSystem<EntityStore> {
@@ -26,11 +30,22 @@ public final class BossReloadSystem extends RefSystem<EntityStore> {
             return;
         }
         var marker = store.getComponent(ref, BossMarkerComponent.getComponentType());
-        var globalStore = GlobalStore.find();
-        if (marker == null || globalStore == null) {
-            return;
-        }
-        globalStore.game(marker.gameId()).ifPresent(game -> BossesComponent.TYPE.of(game).rebind(marker.bossId(), ref));
+        if (marker == null) return;
+
+        // TODO: This is unsafe! It currently just finds the first game with EZ config on it.
+        //  This should technically work for now but isn't ideal.
+        var world = store.getExternalData().getWorld();
+        Collection<GameEcs> games = GameStore.withResource(world).getAll();
+        GameEcs game = games.stream().filter((g) -> {
+            GameConfig config = g.get(GameConfig.TYPE).orElse(null);
+            if (config == null) return false;
+            return config instanceof EZGameConfig;
+        }).findFirst().orElse(null);
+        String gameId = GameStore.withResource(world).getId(game);
+
+        var bosses = GameStore.ensureStore(world, gameId).get(BossesComponent.TYPE).orElse(null);
+        assert bosses != null;
+        bosses.rebind(marker.bossId(), ref);
     }
 
     @Override

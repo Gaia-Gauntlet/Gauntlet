@@ -17,7 +17,7 @@ public final class BossUtils {
     /** Every loaded {@code GaiaBoss} role, by role name. */
     @Nonnull
     public static Map<String, BossScalingComponent> getBosses() {
-        var infos = new ArrayList<BuilderInfo>(NPCPlugin.get().getBuilderManager().getAllBuilders().values());
+        var infos = new ArrayList<>(NPCPlugin.get().getBuilderManager().getAllBuilders().values());
         infos.sort(Comparator.comparing(BuilderInfo::getKeyName, Comparator.nullsLast(Comparator.naturalOrder())));
         var result = new LinkedHashMap<String, BossScalingComponent>();
         for (var info : infos) {

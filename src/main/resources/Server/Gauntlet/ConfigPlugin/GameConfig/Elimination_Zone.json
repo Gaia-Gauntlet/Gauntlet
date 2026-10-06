@@ -7,6 +7,7 @@
   "ClosingVoidBlock": "Build_Lightsource_Pink",
   "ZoneClosingPhaseSet": "Standard",
   "ZoneTickSeconds": 2,
+  "MaxActiveBosses": 3,
   "GameEvents": {
     "IntervalSeconds": 45,
     "FirstDrawAtSeconds": 90,

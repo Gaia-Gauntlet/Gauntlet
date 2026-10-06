@@ -2,19 +2,20 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
-import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossScalingComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.events.BossEvents;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.builtin.triggervolumes.TriggerVolumesPlugin;
 import com.hypixel.hytale.builtin.triggervolumes.manager.VolumeEntry;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
@@ -22,7 +23,6 @@ import com.hypixel.hytale.server.core.asset.type.model.config.Model;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.modules.entity.component.ModelComponent;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import org.joml.Vector3d;
@@ -67,16 +67,16 @@ public final class BossSpawner {
             throw new IllegalStateException(boss.roleId() + " is already in the arena");
         }
 
-        // TODO: Game settings
-//        int limit = GlobalStore.get().settingsOf(game).get(Settings.BOSS_MAX_ACTIVE);
-        int limit = 3;
+        EZGameConfig ezGameConfig = (EZGameConfig) GameStore.ensureStore(arena, game).get(EZGameConfig.TYPE).orElse(null);
+        if (ezGameConfig == null) return;
+        int limit = ezGameConfig.getMaxActiveBosses();
 
         if (bosses.count() >= limit) {
             throw new IllegalStateException("Boss limit reached (" + limit + ")");
         }
         var points = new ArrayList<SpawnPoint>();
-        for (var point : spawnPoints(arena)) {
-            if (isUsable(game, boss, point)) {
+        for (var point : spawnPoints(arena, game)) {
+            if (isUsable(game, arena, boss, point)) {
                 points.add(point);
             }
         }
@@ -120,14 +120,14 @@ public final class BossSpawner {
     public static void spawnRandom(@Nonnull String game, @Nonnull World arena) {
         BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
 
-        var points = spawnPoints(arena);
+        var points = spawnPoints(arena, game);
         var candidates = new ArrayList<String>();
         for (var boss : BossUtils.getBosses().values()) {
             if (!boss.isEnabled() || bosses.isActive(boss.roleId()) || bosses.getPending().contains(boss.roleId())) {
                 continue;
             }
             for (var point : points) {
-                if (isUsable(game, boss, point)) {
+                if (isUsable(game, arena, boss, point)) {
                     candidates.add(boss.roleId());
                     break;
                 }
@@ -180,7 +180,7 @@ public final class BossSpawner {
     }
 
     /** Called by the death system when a marked boss dies. */
-    static void onDefeated(@Nonnull String game, @Nonnull World arena, @Nonnull String bossId) {
+    public static void onDefeated(@Nonnull String game, @Nonnull World arena, @Nonnull String bossId) {
         BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
         bosses.remove(bossId);
         var boss = BossUtils.getBoss(bossId);
@@ -192,14 +192,17 @@ public final class BossSpawner {
     }
 
     /** True when the point is one of this boss's, in a zone it may use that is open. */
-    private static boolean isUsable(@Nonnull String game, @Nonnull BossScalingComponent boss, @Nonnull SpawnPoint point) {
+    private static boolean isUsable(@Nonnull String game, World arena, @Nonnull BossScalingComponent boss, @Nonnull SpawnPoint point) {
         return BossScalingComponent.normalize(point.bossId()).equals(BossScalingComponent.normalize(boss.roleId()))
-                && boss.allowsZone(point.zoneId()) && isZoneOpen(game, point.zoneId());
+                && boss.allowsZone(point.zoneId()) && isZoneOpen(game, arena, point.zoneId());
     }
 
     /** Every boss spawn volume in the world with the zone it sits in. */
     @Nonnull
-    public static List<SpawnPoint> spawnPoints(@Nonnull World arena) {
+    public static List<SpawnPoint> spawnPoints(@Nonnull World arena, String game) {
+        EZGameConfig ezGameConfig = (EZGameConfig) GameStore.ensureStore(arena, game).get(EZGameConfig.TYPE).orElse(null);
+        if (ezGameConfig == null) return List.of();
+
         var manager = arena.getEntityStore().getStore().getResource(TriggerVolumesPlugin.get().getManagerResourceType());
         var points = new ArrayList<SpawnPoint>();
         for (VolumeEntry volume : manager.getVolumes()) {
@@ -211,41 +214,34 @@ public final class BossSpawner {
                 var max = new Vector3d();
                 volume.getShape().getWorldAABB(volume.getPosition(), min, max);
                 var center = new Vector3d((min.x() + max.x()) / 2, (min.y() + max.y()) / 2, (min.z() + max.z()) / 2);
-                points.add(new SpawnPoint(tag.substring(TAG_PREFIX.length()), center, zoneAt(center)));
+                points.add(new SpawnPoint(tag.substring(TAG_PREFIX.length()), center, zoneAt(ezGameConfig, center)));
             }
         }
         return points;
     }
 
     @Nonnull
-    private static String zoneAt(@Nonnull Vector3d position) {
-        // TODO
-//        for (ZoneDefinition zone : Zones.get().zones()) {
-//            double dx = position.x() - zone.centerX();
-//            double dz = position.z() - zone.centerZ();
-//            double distance = Math.sqrt(dx * dx + dz * dz);
-//            if (distance >= zone.innerRadius() && distance <= zone.outerRadius() && zone.isInSweep(dx, dz)) {
-//                return zone.id();
-//            }
-//        }
+    private static String zoneAt(EZGameConfig gameConfig, @Nonnull Vector3d position) {
+        for (ZoneDefinition zone : gameConfig.getZones()) {
+            double dx = position.x() - zone.centerX();
+            double dz = position.z() - zone.centerZ();
+            double distance = Math.sqrt(dx * dx + dz * dz);
+            if (distance >= zone.innerRadius() && distance <= zone.outerRadius() && zone.isInSweep(dx, dz)) {
+                return zone.id();
+            }
+        }
         return "";
     }
 
     /** True unless the zone feature says the zone is closing or sealed. */
-    private static boolean isZoneOpen(@Nonnull String game, @Nonnull String zoneId) {
-        return true;
-        // TODO
-//        if (zoneId.isEmpty() || !game.has(ZoneComponent.TYPE)) {
-//            return true;
-//        }
-//        var zones = ZoneComponent.TYPE.of(game);
-//        if (!zones.isActive()) {
-//            return true;
-//        }
-//        var active = zones.activeZone();
-//        if (active != null && active.id().equals(zoneId)) {
-//            return false;
-//        }
-//        return zones.closedZones().stream().noneMatch(z -> z.id().equals(zoneId));
+    private static boolean isZoneOpen(@Nonnull String game, World arena, @Nonnull String zoneId) {
+
+        var zones = GameStore.ensureStore(arena, game).get(ZoneComponent.TYPE).orElse(null);
+        if (zoneId.isEmpty() || zones == null || zones.isActive()) return true;
+
+        var active = zones.activeZone();
+        if (active != null && active.id().equals(zoneId)) return false;
+
+        return zones.closedZones().stream().noneMatch(z -> z.id().equals(zoneId));
     }
 }

@@ -156,6 +156,12 @@ public class EZGameConfig extends GameConfig {
         .documentation("How often the zone should update, in seconds. This only affects the rate at "
             + "which it updates, it does not affect the speed.")
         .add()
+        .append(new KeyedCodec<>("MaxActiveBosses", Codec.INTEGER),
+            (p, v) -> p.maxActiveBosses = v,
+            p -> p.maxActiveBosses)
+        .addValidator(Validators.greaterThanOrEqual(0))
+        .documentation("How many bosses can be active in the map at any given time.")
+        .add()
         .build();
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
@@ -175,4 +181,5 @@ public class EZGameConfig extends GameConfig {
 //    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois;
     @Getter private float zoneTickSeconds = 2;
+    @Getter private int maxActiveBosses = 3;
 }

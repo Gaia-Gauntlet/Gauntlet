@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.npc.asset.builder.Builder;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.role.builders.BuilderRoleVariant;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nonnull;
 
@@ -30,8 +31,8 @@ public final class GaiaBossRoleBuilder extends BuilderRoleVariant {
     }
 
     @Override
-    public Builder<Role> readConfig(@Nonnull JsonElement config) {
-        if (config != null && config.isJsonObject() && config.getAsJsonObject().has(SCALING_KEY)) {
+    public @NonNull Builder<Role> readConfig(@Nonnull JsonElement config) {
+        if (config.isJsonObject() && config.getAsJsonObject().has(SCALING_KEY)) {
             var json = config.getAsJsonObject().get(SCALING_KEY).toString();
             try (var reader = RawJsonReader.fromBuffer(json.toCharArray())) {
                 reader.consumeWhiteSpace();
