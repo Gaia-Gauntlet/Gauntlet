@@ -57,7 +57,7 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
         var gameEcs = GameStore.withStore(world, game).orElse(null);
         if (gameEcs == null) return;
         var config = gameEcs.get(EZGameConfig.TYPE).orElse(null);
-        if (config == null || !(config instanceof EZGameConfig gameConfig)) return;
+        if (!(config instanceof EZGameConfig gameConfig)) return;
         List<ZoneDefinition> zones = Arrays.asList(gameConfig.getZones());
 
         if (zones.isEmpty()) {return;}
