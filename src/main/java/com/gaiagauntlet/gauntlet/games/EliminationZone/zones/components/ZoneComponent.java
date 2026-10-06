@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services.ZoneTickSy
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -153,7 +154,7 @@ public final class ZoneComponent implements GameComponent {
     }
 
     /** Repaints the newly voided ground behind the edge. Chunk loads are asynchronous, so this catches up over ticks. */
-    public void paintVoid() {
+    public void paintVoid(String game) {
         if (!active || arena == null || stepIndex < 0) {
             return;
         }
@@ -165,7 +166,7 @@ public final class ZoneComponent implements GameComponent {
         if (current != null && !closed.contains(current)) {
             bands.add(new VoidTerrain.Band(current, closeRadius));
         }
-        voidTerrain.advance(arena, bands, this::isInVoid);
+        voidTerrain.advance(game, arena, bands, this::isInVoid);
     }
 
     private void advanceClose(double step) {

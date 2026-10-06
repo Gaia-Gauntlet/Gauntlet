@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.assets.ZonesAsset;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.component.Ref;
@@ -104,12 +106,13 @@ public final class VoidTerrain {
     }
 
     /** Queues the columns that became void since the last advance and paints what can be painted now. */
-    public void advance(@Nonnull World world, @Nonnull List<Band> bands, @Nonnull VoidTest test) {
-        ZonesAsset file = ZonesAsset.get();
-        var voidType = resolveVoidBlock(file.getVoidBlock());
-        if (voidType == null) {
-            return;
-        }
+    public void advance(String game, @Nonnull World world, @Nonnull List<Band> bands, @Nonnull VoidTest test) {
+        var config = (EZGameConfig) GameStore.ensureStore(world, game).get(EZGameConfig.TYPE).orElse(null);
+        assert config != null;
+
+        var voidType = resolveVoidBlock(config.getClosingVoidBlock());
+        if (voidType == null) return;
+
         var newColumns = new LongArrayList();
         for (var band : bands) {
             var zone = band.zone();
@@ -143,7 +146,7 @@ public final class VoidTerrain {
                 }
             }
         }
-        drain(world, voidType, file.getVoidBlockMap(), fluids);
+        drain(world, voidType, config.getClosingVoidBlockMap(), fluids);
     }
 
     private static int topFor(@Nonnull List<Band> bands, int x, int z) {
@@ -244,12 +247,11 @@ public final class VoidTerrain {
 
     @Nullable
     private static BlockType resolveVoidBlock(@Nonnull String id) {
-        if (id.isBlank()) {
-            return null;
-        }
+        if (id.isBlank()) return null;
+
         var type = BlockType.getAssetMap().getAsset(id);
         if (type == null) {
-            LOGGER.atWarning().log("VoidBlock '%s' is not a known block; the void paints nothing", id);
+            GaiaLog.atInfo().log("VoidBlock '" + id + "' is not a known block; the void paints nothing");
         }
         return type;
     }

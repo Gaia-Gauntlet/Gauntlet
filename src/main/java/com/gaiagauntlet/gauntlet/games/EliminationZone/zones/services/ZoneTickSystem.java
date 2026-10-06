@@ -30,7 +30,7 @@ public final class ZoneTickSystem extends TickingSystem<EntityStore> {
         GameEcs game = games.stream().filter((g) -> {
             GameConfig config = g.get(GameConfig.TYPE).orElse(null);
             if (config == null) return false;
-            return config instanceof EZGameConfig gameConfig;
+            return config instanceof EZGameConfig;
         }).findFirst().orElse(null);
 
         if (game == null) return;
@@ -43,13 +43,13 @@ public final class ZoneTickSystem extends TickingSystem<EntityStore> {
 
         float elapsed = accumulated;
         accumulated = 0;
-        
+
         String gameId = GameStore.withResource(world).getId(game);
 
         var zones = GameStore.ensureStore(world, gameId).ensure(ZoneComponent.TYPE, ZoneComponent::new);
         if (!zones.isActive()) return;
 
         zones.tick(elapsed);
-        zones.paintVoid();
+        zones.paintVoid(gameId);
     }
 }

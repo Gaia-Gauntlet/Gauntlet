@@ -3,7 +3,6 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.assets.ZonesAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -11,8 +10,6 @@ import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
