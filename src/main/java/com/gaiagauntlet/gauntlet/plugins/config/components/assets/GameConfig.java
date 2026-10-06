@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.config.components.assets;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.AssetKeyValidator;
@@ -22,7 +24,9 @@ import java.util.Map;
 
 public class GameConfig implements JsonAssetWithMap<String, IndexedLookupTableAssetMap<String, GameConfig>>, GameComponent {
 
-    @Getter @Setter private static GameComponentType<GameConfig> gameComponentType;
+    public static final GameComponentType<GameConfig> TYPE = GameComponentRegistry.register(
+        "GameConfig", GameConfig.class, GameConfig.ABSTRACT_CODEC);
+
     protected AssetExtraInfo.Data data;
     @Getter private String id;
 

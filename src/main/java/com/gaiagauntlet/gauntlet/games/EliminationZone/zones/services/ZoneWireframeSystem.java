@@ -1,9 +1,12 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services;
 
+import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneVisualisationComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -13,6 +16,8 @@ import com.hypixel.hytale.math.matrix.Matrix4dUtil;
 import com.hypixel.hytale.protocol.DebugShape;
 import com.hypixel.hytale.protocol.packets.player.DisplayDebug;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.joml.Matrix4d;
 import org.joml.Vector3f;
@@ -20,6 +25,7 @@ import org.joml.Vector3f;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,22 +48,27 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
     @Override
     public void tick(float dt, int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store,
             @Nonnull CommandBuffer<EntityStore> commandBuffer) {
-        // TODO: get zones
-        List<ZoneDefinition> zones = new ArrayList<>();
+        var playerComp = chunk.getComponent(index, PlayerComponent.getComponentType());
+        var playerRef = chunk.getComponent(index, PlayerRef.getComponentType());
+        assert playerComp != null;
+        assert playerRef != null;
+        var world = store.getExternalData().getWorld();
+        String game = playerComp.getCurrentGame();
+        var gameEcs = GameStore.withStore(world, game).orElse(null);
+        if (gameEcs == null) return;
+        var config = gameEcs.get(EZGameConfig.TYPE).orElse(null);
+        if (config == null || !(config instanceof EZGameConfig gameConfig)) return;
+        List<ZoneDefinition> zones = Arrays.asList(gameConfig.getZones());
 
         if (zones.isEmpty()) {return;}
-        var world = store.getExternalData().getWorld();
 
-        // TODO: Get game
-        String game = "";
         var component = GameStore.ensureStore(world, game).ensure(ZoneComponent.TYPE, ZoneComponent::new);
-        var player = chunk.getComponent(index, PlayerRef.getComponentType());
         for (var zone : zones) {
             var sealed = component != null && component.closedZones().stream().anyMatch(z -> z.id().equals(zone.id()));
             for (var segment : segments(zone)) {
                 var packet = line(segment, sealed ? SEALED : OPEN);
                 if (packet != null) {
-                    player.getPacketHandler().write(packet);
+                    playerRef.getPacketHandler().write(packet);
                 }
             }
         }
@@ -65,7 +76,10 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
 
     @Override
     public Query<EntityStore> getQuery() {
-        return ZoneVisualisationComponent.getComponentType();
+        return Query.and(
+            ZoneVisualisationComponent.getComponentType(),
+            PlayerComponent.getComponentType()
+        );
     }
 
     private record Segment(double x1, double y1, double z1, double x2, double y2, double z2) {

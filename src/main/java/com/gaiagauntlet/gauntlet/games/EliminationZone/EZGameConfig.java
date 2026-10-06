@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfig;
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
@@ -54,11 +55,11 @@ public class EZGameConfig extends GameConfig {
             EZGameConfig::isFriendlyFireEnabled)
         .documentation("When enabled, teammates can damage each other during team matches.")
         .add()
-//        .append(new KeyedCodec<>("Zones", new ArrayCodec<>(SectorZone.CODEC, SectorZone[]::new)),
-//            (t, v) -> t.zones = v,
-//            EZGameManager::getZones)
-//        .documentation("Circle segment arena zones")
-//        .add()
+        .append(new KeyedCodec<>("Zones", new ArrayCodec<>(ZoneDefinition.CODEC, ZoneDefinition[]::new)),
+            (t, v) -> t.zones = v,
+            EZGameConfig::getZones)
+        .documentation("Circle segment arena zones")
+        .add()
 //        .append(new KeyedCodec<>("WeatherPool",
 //                new ArrayCodec<>(WeatherPoolOptionComponent.CODEC,
 //                    WeatherPoolOptionComponent[]::new)),
@@ -152,7 +153,7 @@ public class EZGameConfig extends GameConfig {
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
     @Getter private boolean friendlyFireEnabled = false;
-//    @Getter private SectorZone[] zones = new SectorZone[0];
+    @Getter private ZoneDefinition[] zones = new ZoneDefinition[0];
 //    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
