@@ -121,7 +121,7 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
-    public final CompletableFuture<Void> playerDisconnect(World hubAccessor, String sessionId,
+    public final CompletableFuture<Void> playerDisconnect(World hubAccessor,
             PlayerRef player) {
         return CompletableFuture.completedFuture(null);
         // remove a player from the game
