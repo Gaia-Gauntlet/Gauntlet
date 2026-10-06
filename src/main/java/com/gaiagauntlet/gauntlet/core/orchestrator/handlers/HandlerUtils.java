@@ -64,8 +64,13 @@ public class HandlerUtils {
 
         public static void success(GauntletEvent evt, String key) {
             evt.complete(
-                    GaiaLog.atError()
+                    GaiaLog.atInfo()
                             .log(key));
+        }
+        public static void success(GauntletEvent evt, Message mes) {
+            evt.complete(
+                    GaiaLog.atInfo()
+                            .log(mes));
         }
 
         public static void success(GauntletEvent evt, GameSession session, Message mes) {

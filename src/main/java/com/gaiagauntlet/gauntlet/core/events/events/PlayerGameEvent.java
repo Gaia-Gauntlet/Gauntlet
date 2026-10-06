@@ -5,7 +5,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import lombok.Getter;
 
-public class GamePlayerEvent extends GauntletEvent {
+public class PlayerGameEvent extends GauntletEvent {
     @Getter
     private PlayerRef player;
     @Getter
@@ -13,10 +13,17 @@ public class GamePlayerEvent extends GauntletEvent {
     @Getter 
     private PlayerOp operation;
 
-    public GamePlayerEvent(PlayerRef player, String sessionId, PlayerOp operation) {
+    public PlayerGameEvent(PlayerRef player, String sessionId, PlayerOp operation) {
         this.player = player;
         this.sessionId = sessionId;
         this.operation = operation;
+    }
+
+    public static PlayerGameEvent Add(PlayerRef player, String sessionId) {
+        return new PlayerGameEvent(player, sessionId, PlayerOp.ADD);
+    }
+    public static PlayerGameEvent Remove(PlayerRef player, String sessionId) {
+        return new PlayerGameEvent(player, sessionId, PlayerOp.REMOVE);
     }
 
     public enum PlayerOp {
