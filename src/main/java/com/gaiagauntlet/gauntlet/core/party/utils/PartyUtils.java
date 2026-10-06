@@ -58,8 +58,8 @@ public class PartyUtils {
      */
     @Nonnull
     public static PartyComponent getParty(PlayerRef player) {
-        var resource = GauntletUtils.withResource();
-        return resource.getParty(player).orElseGet(() -> {
+        return getPartyNullable(player).orElseGet(() -> {
+            var resource = GauntletUtils.withResource();
             // No pre-existing party exists, create a new one with this player as captain.
             var newParty = createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid());
             resource.addParty(newParty);
@@ -71,11 +71,10 @@ public class PartyUtils {
      * Gets the party for the player without making a new one if they aren't in one
      * already.
      */
-    @Nullable
     public static Optional<PartyComponent> getPartyNullable(PlayerRef player) {
         var resource = GauntletUtils.withResource();
         for (PartyComponent party : resource.getParties().values()) {
-            if (!party.includesPlayer(player.getUuid()))
+            if (!party.includesPlayer(player))
                 continue;
             return Optional.of(party);
         }
@@ -106,7 +105,7 @@ public class PartyUtils {
         } else if (hasActiveInvite(party.getId(), recipient)) {
             sender.sendMessage(msg(recipient.getUsername() + " already has an active invite from you."));
             return;
-        } else if (party.includesPlayer(recipient.getUuid())) {
+        } else if (party.includesPlayer(recipient)) {
             sender.sendMessage(msg(recipient.getUsername() + " is already in this party!"));
             return;
         }

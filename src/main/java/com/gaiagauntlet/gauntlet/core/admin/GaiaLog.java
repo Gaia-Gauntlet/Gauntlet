@@ -71,12 +71,13 @@ public final class GaiaLog {
     }
 
     public GaiaLog withSession(GameSession session) {
-        if (session != null && session.getCurrentGame() != null) {
-            this.gameId = session.getCurrentGame();
-            this.sessionId = session.getId();
-            return this;
+        sessionId = GLOBAL;
+        gameId = GLOBAL;
+        if (session != null) {
+            sessionId = session.getId();
+            if (session.getCurrentGame() != null)
+                gameId = session.getCurrentGame();
         }
-        this.gameId = GLOBAL;
         return this;
     }
 

@@ -22,7 +22,7 @@ public class PlayerComponent implements Component<EntityStore> {
     public static final String ID = "GamePlayerComponent";
     public static final BuilderCodec<@NotNull PlayerComponent> CODEC = BuilderCodec
             .builder(PlayerComponent.class, PlayerComponent::new)
-            .append(new KeyedCodec<>("CurrentSession", Codec.STRING),
+            .append(new KeyedCodec<>("CurrentGame", Codec.STRING),
                     (p, v) -> p.currentGame = v,
                     p -> p.getCurrentGame())
             .documentation("The cached current session for the player. Used for disconnect logic")
