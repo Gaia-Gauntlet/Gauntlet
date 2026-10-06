@@ -14,8 +14,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  * bloat
  */
 public interface PersistentGamePlugin extends GamePlugin {
-    /** Installs the plugin into a game */
-    public void setup(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId);
+    /** Reads the component data off of the session object and writes into the game store */
+    public void read(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId);
 
     /**
      * Runs on the Arena thread, capture any state from the component here to be applied during the write

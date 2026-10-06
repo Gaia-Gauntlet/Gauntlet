@@ -24,6 +24,11 @@ public class GauntletConfig extends Config {
                     config -> config.getHubId())
             .documentation("The world name of the hub. Falls back to the universe default world")
             .add()
+            .append(new KeyedCodec<>("TimeoutSeconds", Codec.LONG),
+                    (config, v) -> config.timeoutSeconds = v,
+                    config -> config.getTimeoutSeconds())
+            .documentation("The amount of time allowed to pass before a player is kicked")
+            .add()
             .build();
 
     @Nonnull
@@ -31,6 +36,8 @@ public class GauntletConfig extends Config {
         return Configly.getOrElse(TYPE, GauntletConfig.class, new GauntletConfig());
     }
 
+    @Getter
+    private Long timeoutSeconds = 180L;
     @Getter
     private String hubId = null;
 }

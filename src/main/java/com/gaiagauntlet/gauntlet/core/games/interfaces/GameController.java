@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -36,10 +37,10 @@ public abstract class GameController {
     public abstract CompletableFuture<Void> playerDisconnect(World hubWorld, PlayerRef player);
     
     /** Triggered when a player joins the game (either first time or tries to join back) */
-    public abstract CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player);
+    public abstract CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> player);
 
     /** Triggered when a player leaves the game */
-    public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player);
+    public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player);
 
     /** Returns the admin tab for configuring / managing this game */
     public abstract AdminTab getAdminTab();

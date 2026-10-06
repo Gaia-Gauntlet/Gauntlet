@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent.PlayerOp;
@@ -164,7 +166,7 @@ public class PlayerHandlers extends HandlerUtils {
         GauntletUtils.run(hubWorld, () -> {
             try {
                 // run the player connection logic
-                game.playerJoin(hubWorld, partySessionId, playerRef);
+                game.playerJoin(hubWorld, partySessionId, List.of(playerRef));
             } catch (Exception e) {
                 GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                         .param("playerName", playerRef.getUsername())
@@ -232,7 +234,7 @@ public class PlayerHandlers extends HandlerUtils {
         GauntletUtils.run(hubWorld, () -> {
             try {
                 // run the player disconnection logic
-                game.playerLeave(hubWorld, partySessionId, playerRef);
+                game.playerLeave(hubWorld, partySessionId, List.of(playerRef));
                 var currentGame = player.getCurrentGame();
                 if (currentGame.equals(gameId)) {
                     // only remove as current game once we've confirmed it is still their current
@@ -306,7 +308,7 @@ public class PlayerHandlers extends HandlerUtils {
                 GauntletUtils.run(hubWorld, () -> {
                     try {
                         // run the player leave logic
-                        game.playerLeave(hubWorld, sessionId, playerRef);
+                        game.playerLeave(hubWorld, sessionId, List.of(playerRef));
                     } catch (Exception e) {
                         GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
                                 .param("playerName", playerRef.getUsername())
@@ -373,7 +375,7 @@ public class PlayerHandlers extends HandlerUtils {
 
             var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
                 party.clearOffline(playerRef.getUuid());
-            }, 180, TimeUnit.SECONDS);
+            }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
 
             party.setOffline(playerRef.getUuid(), future);
         }

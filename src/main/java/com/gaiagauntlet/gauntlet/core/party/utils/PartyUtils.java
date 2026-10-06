@@ -64,8 +64,6 @@ public class PartyUtils {
             return resource
                     .addParty(createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid()));
         });
-        
-
     }
 
     /**

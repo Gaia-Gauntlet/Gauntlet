@@ -1,6 +1,9 @@
 package com.gaiagauntlet.gauntlet.core;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -45,6 +48,22 @@ public class GauntletUtils {
         if (playerRef == null) return Optional.empty();
         return playerFor(playerRef);
     }
+
+    @Nonnull 
+    public static Set<PlayerRef> playersFor(@Nonnull String sessionId) {
+        var session = sessionFor(sessionId).orElse(null);
+        var players = new HashSet<PlayerRef>();
+        if (session == null) return players;
+        
+        var parties = session.getParties();
+        for (var partyId : parties) {
+            PartyUtils.getParty(partyId).ifPresent(party -> {
+                players.addAll(party.getAllOnlinePlayers());
+            });
+        }
+        return players;
+    }
+
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));

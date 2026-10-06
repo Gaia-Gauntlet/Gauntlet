@@ -1,7 +1,14 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller;
 
+import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
@@ -28,6 +35,22 @@ public abstract class LobbyController extends GameController {
 
     public abstract void setupGame(World world, GameEcs gameStore, String sessionId);
 
+    private Optional<World> withArenaWorld(World hubWorld, String sessionId) {
+        return withArenaWorld(hubWorld.getEntityStore().getStore(), sessionId);
+    }
+
+    private Optional<World> withArenaWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
+        if (!(GameStore.withStore(hubAccessor, sessionId).orElse(null) instanceof GameEcs hubStore)) {
+            return null;
+        }
+
+        var existing = hubStore.get(LobbyComponent.getComponentType());
+        if (!existing.isPresent())
+            return Optional.empty();
+
+        return Optional.of(existing.get().getWorld());
+    }
+
     /**
      * Sets up the game and wraps `setupGame` for the underlying controller to
      * implement. Creates the lobby world and preps things for players to start
@@ -41,68 +64,73 @@ public abstract class LobbyController extends GameController {
         }
         var existing = hubStore.get(LobbyComponent.getComponentType());
         if (existing.isPresent()) {
-            LOGGER.atWarning().log(
-                    "Initializing %s with session %s where a game was already initialized! Previous game did not shut down correctly. Clearing and continuing",
-                    getId(), sessionId);
+            GaiaLog.atWarning().withSession(session)
+                    .log("Initializing " + getId() + " with session " + sessionId
+                            + " where a game was already initialized! Previous game did not shut down correctly. Clearing and continuing");
             hubStore.clear();
         }
 
-        // register the early plugins
-        var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
-        for (var plugin : persistentPlugins) {
-            try {
-                plugin.setup(hubAccessor, session, getId());
-            } catch (Exception e) {
-                LOGGER.atWarning().withCause(e).log("Persistent Plugin %s failed while loading for %s", plugin.getId(),
-                        getId());
-            }
-        }
-
         return getLobbyManager().setupWorld().thenCompose(world -> {
-            hubAccessor.getExternalData().getWorld().execute(() -> {
+            GauntletUtils.run(hubAccessor.getExternalData().getWorld(), () -> {
                 // hop to the hub thread again to finalize the initialization of the component
                 hubStore.put(LobbyComponent.getComponentType(), new LobbyComponent(world));
-
             });
             // ensure that a weird world doesn't throw us into an odd thread, hop into the
             // world thread
-            return onWorld(world, () -> {
+            return GauntletUtils.runAsync(world, () -> {
                 var lobbyStore = world.getEntityStore().getStore();
                 var gameStore = GameStore.withResource(world).create(sessionId);
+
+                // register the plugins that have persistence
+                var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
+                for (var plugin : persistentPlugins) {
+                    try {
+                        plugin.read(lobbyStore, session, gameStore, getId());
+                    } catch (Exception e) {
+                        GaiaLog.atWarning().withCause(e).withSession(session)
+                                .log("Persistent Plugin " + plugin.getId() + " failed while loading for " + getId());
+                    }
+                }
 
                 var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
                 for (var plugin : simplePlugins) {
                     try {
                         plugin.setup(lobbyStore, getId());
                     } catch (Exception e) {
-                        LOGGER.atWarning().withCause(e).log("Simple Plugin %s failed while loading for %s",
-                                plugin.getId(), getId());
+                        GaiaLog.atWarning().withCause(e).withSession(session)
+                                .log("Simple Plugin " + plugin.getId() + " failed while loading for " + getId());
+
                     }
                 }
 
                 setupGame(world, gameStore, sessionId);
+
+                // begin the player joining process
+                var parties = session.getParties();
             });
         })
-                .whenComplete((ignored, error) -> {
+                .whenComplete((_, error) -> {
                     if (error != null) {
                         LOGGER.atSevere()
                                 .withCause(error)
                                 .log("Failed to initialize game %s for session %s", getId(), sessionId);
-                        // Mark session ERROR and begin cleanup.
-                        // TODO: add eventing so that the admin GUI can be notified of the errored state
-                        // and take recovery action
+                        GaiaLog.atError(error).withSession(session)
+                                .log("Failed to initialize game " + getId() + " for session " + sessionId);
+                        // emit a clean command to the event registry
+                        GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, sessionId));
+                        return;
                     }
                 });
     };
 
     @Override
-    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
+    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> player) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'playerJoin'");
     }
 
     @Override
-    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
+    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'playerLeave'");
     }
@@ -126,30 +154,4 @@ public abstract class LobbyController extends GameController {
         return CompletableFuture.completedFuture(null);
         // remove a player from the game
     };
-
-    private CompletableFuture<Void> onWorld(World world, Runnable runner) {
-        var result = new CompletableFuture<Void>();
-
-        Runnable guarded = () -> {
-            try {
-                runner.run();
-                result.complete(null);
-            } catch (Exception exception) {
-                result.completeExceptionally(exception);
-            }
-        };
-
-        try {
-            if (world.isInThread()) {
-                guarded.run();
-                result.complete(null);
-            } else {
-                world.execute(guarded);
-            }
-        } catch (Exception exception) {
-            result.completeExceptionally(exception);
-        }
-
-        return result;
-    }
 }

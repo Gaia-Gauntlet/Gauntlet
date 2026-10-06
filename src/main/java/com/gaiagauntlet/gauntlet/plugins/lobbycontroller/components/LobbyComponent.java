@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
