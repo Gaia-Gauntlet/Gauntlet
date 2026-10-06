@@ -41,7 +41,7 @@ public abstract class LobbyController extends GameController {
 
     private Optional<World> withArenaWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
         if (!(GameStore.withStore(hubAccessor, sessionId).orElse(null) instanceof GameEcs hubStore)) {
-            return null;
+            return Optional.empty();
         }
 
         var existing = hubStore.get(LobbyComponent.getComponentType());
