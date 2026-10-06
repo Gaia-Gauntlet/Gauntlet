@@ -50,8 +50,8 @@ public class UniverseGauntletResource {
 
     // faster lookup maps for hotpath efficiency. Should not be considered the
     // source of truth
-    private static Map<String, String> partyIdToGameSession = new ConcurrentHashMap<>();
-    private static Map<UUID, String> playerToPartyId = new ConcurrentHashMap<>();
+    private Map<String, String> partyIdToGameSession = new ConcurrentHashMap<>();
+    private Map<UUID, String> playerToPartyId = new ConcurrentHashMap<>();
 
     // Sessions
 
@@ -95,14 +95,14 @@ public class UniverseGauntletResource {
             var party = getParty(fastParty).orElse(null);
             // verify the player is still in the party (else stale data may corrupt the
             // quick lookup)
-            if (party != null && party.includesPlayer(player.getUuid())) {
+            if (party != null && party.includesPlayer(player)) {
                 return Optional.of(party);
             }
         }
 
         // fallback to a scan across all parties
         for (PartyComponent party : getParties().values()) {
-            if (!party.includesPlayer(player.getUuid()))
+            if (!party.includesPlayer(player))
                 continue;
 
             // rebuild the quick map

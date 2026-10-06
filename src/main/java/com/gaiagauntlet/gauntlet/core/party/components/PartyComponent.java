@@ -135,14 +135,18 @@ public class PartyComponent {
         return players;
     }
 
+    public boolean includesPlayer(PlayerRef player) {
+        if (!offlinePlayers.containsKey(player.getUuid()))
+            return includesPlayer(player.getUuid());
+
+        setOnline(player.getUuid());
+        return true;
+    }
     public boolean includesPlayer(UUID player) {
         if (players.contains(player))
             return true;
-        if (!offlinePlayers.containsKey(player))
-            return false;
-
-        setOnline(player);
-        return true;
+        
+        return false;
     }
 
     public int size() {
