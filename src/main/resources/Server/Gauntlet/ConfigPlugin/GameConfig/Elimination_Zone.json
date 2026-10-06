@@ -6,6 +6,7 @@
   "TeamsSpawnTogether": false,
   "ClosingVoidBlock": "Build_Lightsource_Pink",
   "ZoneClosingPhaseSet": "Standard",
+  "ZoneTickSeconds": 2,
   "GameEvents": {
     "IntervalSeconds": 45,
     "FirstDrawAtSeconds": 90,

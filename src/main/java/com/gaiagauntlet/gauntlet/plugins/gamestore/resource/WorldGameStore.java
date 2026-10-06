@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestore.resource;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,6 +35,21 @@ public class WorldGameStore implements Resource<EntityStore> {
 
     public Optional<GameEcs> get(String sessionId) {
         return Optional.ofNullable(games.get(sessionId));
+    }
+
+    public Collection<GameEcs> getAll() {
+        return games.values();
+    }
+
+    /**
+     * This is a bodge method and ideally shouldn't be used, but I'm using it in the absence of
+     * something better for now...
+     */
+    public String getId(GameEcs gameEcs) {
+        for (String key : games.keySet()) {
+            if (games.get(key).equals(gameEcs)) return key;
+        }
+        return null;
     }
 
     public GameEcs create(String sessionId) {

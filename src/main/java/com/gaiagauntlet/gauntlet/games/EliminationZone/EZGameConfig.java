@@ -149,6 +149,13 @@ public class EZGameConfig extends GameConfig {
             + "here is ignored, because the arena display is always rendered into the live match "
             + "world, which is a fresh instance every match.")
         .add()
+        .append(new KeyedCodec<>("ZoneTickSeconds", Codec.FLOAT),
+            (p, v) -> p.zoneTickSeconds = v,
+            p -> p.zoneTickSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("How often the zone should update, in seconds. This only affects the rate at "
+            + "which it updates, it does not affect the speed.")
+        .add()
         .build();
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
@@ -167,4 +174,5 @@ public class EZGameConfig extends GameConfig {
     @Getter private long cornucopiaDurationSeconds = 27;
 //    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois;
+    @Getter private float zoneTickSeconds = 2;
 }
