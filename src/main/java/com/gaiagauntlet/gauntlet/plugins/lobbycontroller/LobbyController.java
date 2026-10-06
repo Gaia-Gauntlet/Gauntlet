@@ -36,7 +36,7 @@ public abstract class LobbyController extends GameController {
     @Override
     public final CompletableFuture<Void> setupGame(ComponentAccessor<EntityStore> hubAccessor, GameSession session) {
         var sessionId = session.getId();
-        if (!(GameStore.withStore(hubAccessor, sessionId).orElse(null) instanceof GameEcs hubStore)) {
+        if (!(GameStore.ensureStore(hubAccessor, sessionId) instanceof GameEcs hubStore)) {
             return CompletableFuture.completedFuture(null);
         }
         var existing = hubStore.get(LobbyComponent.getComponentType());
@@ -96,6 +96,18 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
+    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'playerJoin'");
+    }
+
+    @Override
+    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'playerLeave'");
+    }
+
+    @Override
     public final CompletableFuture<Void> cleanGame(World hubAccessor, GameSession session) {
         // remove the game
         return CompletableFuture.completedFuture(null);
@@ -109,7 +121,7 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
-    public final CompletableFuture<Void> playerDisconnect(World hubAccessor, String sessionId,
+    public final CompletableFuture<Void> playerDisconnect(World hubAccessor,
             PlayerRef player) {
         return CompletableFuture.completedFuture(null);
         // remove a player from the game

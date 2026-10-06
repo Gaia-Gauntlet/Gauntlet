@@ -43,3 +43,5 @@ players.join.perms.error={playerName} is not an owner of party {partyName} - whi
 players.leave.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
 players.join.warn=Player {playerName} leaving "{gameId}" failed because {reason}
 players.join.new.error=Failed removing {playerName} from {sessionId}. {cause}
+
+players.party.joined = <b>{player}</b> <color is="#77ed7d">joined</color> {party}'s party!

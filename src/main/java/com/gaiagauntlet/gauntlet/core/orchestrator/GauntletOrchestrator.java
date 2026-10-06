@@ -10,7 +10,8 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
-import com.gaiagauntlet.gauntlet.core.events.events.GamePlayerEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
@@ -39,17 +40,18 @@ public class GauntletOrchestrator {
      */
     public static void setupListeners(JavaPlugin plugin) {
         // session event handling
-        GauntletEventRegistry.on(EventPriority.LATE, SessionEvent.class, wrap(SessionHandlers::handleSession));
-        GauntletEventRegistry.on(EventPriority.LATE, SessionQueueEvent.class,
+        GauntletEventRegistry.on(EventPriority.LAST, SessionEvent.class, wrap(SessionHandlers::handleSession));
+        GauntletEventRegistry.on(EventPriority.LAST, SessionQueueEvent.class,
                 wrap(SessionHandlers::handleSessionQueue));
-        GauntletEventRegistry.on(EventPriority.LATE, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
+        GauntletEventRegistry.on(EventPriority.LAST, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
 
         // game event handling
-        GauntletEventRegistry.on(EventPriority.LATE, GameEvent.class, wrap(GameHandlers::handleGame));
-        GauntletEventRegistry.on(EventPriority.LATE, GameEndEvent.class, wrap(GameHandlers::handleGameEnd));
+        GauntletEventRegistry.on(EventPriority.LAST, GameEvent.class, wrap(GameHandlers::handleGame));
+        GauntletEventRegistry.on(EventPriority.LAST, GameEndEvent.class, wrap(GameHandlers::handleGameEnd));
 
         // player event handling
-        GauntletEventRegistry.on(EventPriority.LATE, GamePlayerEvent.class, wrap(PlayerHandlers::handleGamePlayer));
+        GauntletEventRegistry.on(EventPriority.LAST, PlayerGameEvent.class, wrap(PlayerHandlers::handleGamePlayer));
+        GauntletEventRegistry.on(EventPriority.LAST, PlayerPartyEvent.class, wrap(PlayerHandlers::handlePartyPlayer));
         var registry = plugin.getEventRegistry();
         registry.register(PlayerConnectEvent.class, PlayerHandlers::onPlayerConnect);
         registry.registerGlobal(PlayerReadyEvent.class, PlayerHandlers::onPlayerReady);

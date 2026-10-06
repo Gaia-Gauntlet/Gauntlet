@@ -1,6 +1,8 @@
 package com.gaiagauntlet.gauntlet.core.party.commands;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -62,7 +64,7 @@ public class PartyCommands extends AbstractPlayerCommand {
 
     @Override
     protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
-        var party = PartyUtils.getPartyForPlayer(playerRef);
+        var party = PartyUtils.getParty(playerRef);
         context.sendMessage(msg("server.gg.commands.party.header").param("name", party.getId()));
         var players = party.getAllOnlinePlayers();
         for (int i = 0; i < players.size(); i++) {
@@ -151,7 +153,7 @@ public class PartyCommands extends AbstractPlayerCommand {
 
         @Override
         protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
-            PartyUtils.leaveParty(playerRef);
+            GauntletEventRegistry.dispatch(PlayerPartyEvent.Leave(playerRef));
         }
     }
 
