@@ -10,6 +10,7 @@ import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.resources.UniverseResourceType;
 
 import lombok.Getter;
@@ -47,7 +48,10 @@ public class UniverseGauntletResource {
     @Getter
     private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
 
+    // faster lookup maps for hotpath efficiency. Should not be considered the
+    // source of truth
     private static Map<String, String> partyIdToGameSession = new ConcurrentHashMap<>();
+    private static Map<UUID, String> playerToPartyId = new ConcurrentHashMap<>();
 
     // Sessions
 
@@ -75,10 +79,40 @@ public class UniverseGauntletResource {
             return false; // to remove
         }
         sessions.remove(session.getId());
+        // clean the lookup map
+        for (var partyId : session.getParties()) {
+            partyIdToGameSession.remove(partyId);
+        }
         return true;
     }
 
     // Parties
+
+    public Optional<PartyComponent> getParty(PlayerRef player) {
+        // quick lookup
+        var fastParty = playerToPartyId.get(player.getUuid());
+        if (fastParty != null) {
+            var party = getParty(fastParty).orElse(null);
+            // verify the player is still in the party (else stale data may corrupt the
+            // quick lookup)
+            if (party != null && party.includesPlayer(player.getUuid())) {
+                return Optional.of(party);
+            }
+        }
+
+        // fallback to a scan across all parties
+        for (PartyComponent party : getParties().values()) {
+            if (!party.includesPlayer(player.getUuid()))
+                continue;
+
+            // rebuild the quick map
+            playerToPartyId.put(player.getUuid(), party.getId());
+            return Optional.of(party);
+        }
+
+        // no party found
+        return Optional.empty();
+    }
 
     public Optional<PartyComponent> getParty(String partyId) {
         return Optional.ofNullable(parties.get(partyId));
@@ -87,16 +121,54 @@ public class UniverseGauntletResource {
     /** Returns the existing party component if present */
     public PartyComponent addParty(PartyComponent party) {
         var existing = parties.put(party.getId(), party);
+        // build the player-to-party map - override is fine
+        for (var player : party.getAllPlayers()) {
+            playerToPartyId.put(player, party.getId());
+        }
+
         return existing;
     }
 
     public PartyComponent removeParty(String partyId) {
-        return parties.remove(partyId);
+        var party = parties.remove(partyId);
+        if (party == null) return null;
+        // clean the player-to-party map
+        for (var player : party.getAllPlayers()) {
+            playerToPartyId.remove(player);
+        }
+
+        // remove the party from the session
+        var sessionId = partyIdToGameSession.remove(partyId);
+        var session = sessions.get(sessionId);
+        if (session != null) {
+            session.getParties().remove(partyId);
+        }
+        return party;
     }
 
+    /** Gets the session for the party */
     public Optional<GameSession> sessionFor(String partyId) {
         var sessionId = partyIdToGameSession.get(partyId);
-        return getSession(sessionId);
+        if (sessionId != null) {
+            var session = getSession(sessionId).orElse(null);
+            // validate that the session does, in fact, contain that party (source of truth
+            // accuracy)
+            if (session != null && session.getParties().contains(partyId)) {
+                return Optional.of(session);
+            }
+        }
+
+        // fall back to a linear scan of the sessions, repair the lookup map with result
+        for (var session : getSessions().values()) {
+            if (session.getParties().contains(partyId)) {
+                partyIdToGameSession.put(partyId, session.getId());
+                return Optional.of(session);
+            }
+        }
+
+        // remove the incorrect map - the party truly does not have a session they are in. Rip
+        partyIdToGameSession.remove(partyId);
+        return Optional.empty();
     }
 
     /**

@@ -59,15 +59,13 @@ public class PartyUtils {
     @Nonnull
     public static PartyComponent getParty(PlayerRef player) {
         var resource = GauntletUtils.withResource();
-        for (PartyComponent party : resource.getParties().values()) {
-            if (!party.includesPlayer(player.getUuid()))
-                continue;
-            return party;
-        }
+        return resource.getParty(player).orElseGet(() -> {
+            // No pre-existing party exists, create a new one with this player as captain.
+            return resource
+                    .addParty(createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid()));
+        });
+        
 
-        // No pre-existing party exists, create a new one with this player as captain.
-        return resource
-                .addParty(createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid()));
     }
 
     /**
