@@ -87,6 +87,10 @@ public class PartyUtils {
     // Invites
 
     public static void sendPartyInvite(PlayerRef sender, PlayerRef recipient) {
+        onWorldOf(recipient, () -> sendPartyInviteNow(sender, recipient));
+    }
+
+    private static void sendPartyInviteNow(PlayerRef sender, PlayerRef recipient) {
         var party = getParty(sender);
         var invites = getInvitesComp(recipient);
         if (sender.getUuid().equals(recipient.getUuid())) {
@@ -121,6 +125,10 @@ public class PartyUtils {
     }
 
     public static void expireInvite(String partyId, PlayerRef sender, PlayerRef recipient) {
+        onWorldOf(recipient, () -> expireInviteNow(partyId, sender, recipient));
+    }
+
+    private static void expireInviteNow(String partyId, PlayerRef sender, PlayerRef recipient) {
         var invites = getInvitesComp(recipient);
         var invite = invites.removeInvite(partyId);
         if (Objects.isNull(invite))
@@ -175,6 +183,14 @@ public class PartyUtils {
             return false;
         }
         return true;
+    }
+
+    /** Invites live on the recipient's entity, so they are only touched on the recipient's world thread. */
+    private static void onWorldOf(PlayerRef player, Runnable task) {
+        var ref = player.getReference();
+        if (ref == null || !ref.isValid())
+            return;
+        GauntletUtils.run(ref.getStore().getExternalData().getWorld(), task);
     }
 
     private static PartyInvitesComponent getInvitesComp(PlayerRef recipient) {
