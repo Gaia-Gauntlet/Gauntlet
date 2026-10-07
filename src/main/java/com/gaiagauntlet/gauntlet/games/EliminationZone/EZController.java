@@ -91,20 +91,5 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public void setupGame(World world, GameEcs gameStore, String sessionId) {
-        var session = GauntletUtils.sessionFor(sessionId).orElse(null);
-        assert session != null;
-        var sessionGameConfigComponent = session.get(SessionGameConfigComponent.getSessionComponentType()).orElse(null);
-        var config = getDefaultConfigAssetId();
-        if (sessionGameConfigComponent != null) {
-            var overrideConfig = sessionGameConfigComponent.getConfig(session.getNext());
-            config = overrideConfig == null ? config : overrideConfig;
-        }
-        if (config != null) gameStore.put(GameConfigComponent.getComponentType(), new GameConfigComponent(config));
-    }
-
-    @Override
-    public String getDefaultConfigAssetId() {
-        return ID;
-    }
+    public void setupGame(World world, GameEcs gameStore, String sessionId) {}
 }
