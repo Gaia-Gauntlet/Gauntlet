@@ -29,6 +29,16 @@ public final class HudWidgets {
         cmd.setObject(selector + ".Anchor", anchor);
     }
 
+    /** Replaces the anchor of a group placed from the left edge of the screen. */
+    public static void anchorLeft(@Nonnull UICommandBuilder cmd, @Nonnull String selector, int top, int left, int width, int height) {
+        var anchor = new Anchor();
+        anchor.setTop(Value.of(top));
+        anchor.setLeft(Value.of(left));
+        anchor.setWidth(Value.of(width));
+        anchor.setHeight(Value.of(height));
+        cmd.setObject(selector + ".Anchor", anchor);
+    }
+
     /** The last value pushed for each property, so a refresh only sends changes. */
     public static final class Sent {
 
@@ -48,6 +58,12 @@ public final class HudWidgets {
         public void text(@Nonnull UICommandBuilder cmd, @Nonnull String selector, @Nonnull String text) {
             if (!text.equals(values.put(selector + ".Text", text))) {
                 cmd.set(selector + ".Text", text);
+            }
+        }
+
+        public void background(@Nonnull UICommandBuilder cmd, @Nonnull String selector, @Nonnull String texture) {
+            if (!texture.equals(values.put(selector + ".Background", texture))) {
+                cmd.set(selector + ".Background", texture);
             }
         }
     }

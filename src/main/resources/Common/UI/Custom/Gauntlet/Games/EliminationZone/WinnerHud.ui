@@ -27,7 +27,8 @@ Group {
 
         Label #Place {
             Anchor: (Height: 26);
-            Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center);
+            Text: "1ST";
+            Style: (FontSize: 22, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: Center);
         }
         Group {
             Anchor: (Top: 4, Height: 64);
@@ -67,7 +68,8 @@ Group {
 
         Label #Place {
             Anchor: (Height: 26);
-            Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center);
+            Text: "2ND";
+            Style: (FontSize: 22, RenderBold: true, TextColor: #c9d1d9, HorizontalAlignment: Center);
         }
         Group {
             Anchor: (Top: 4, Height: 64);
@@ -107,7 +109,8 @@ Group {
 
         Label #Place {
             Anchor: (Height: 26);
-            Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center);
+            Text: "3RD";
+            Style: (FontSize: 22, RenderBold: true, TextColor: #cd7f32, HorizontalAlignment: Center);
         }
         Group {
             Anchor: (Top: 4, Height: 64);

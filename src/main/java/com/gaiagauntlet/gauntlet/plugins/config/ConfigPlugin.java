@@ -3,7 +3,10 @@ package com.gaiagauntlet.gauntlet.plugins.config;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
+import com.gaiagauntlet.gauntlet.plugins.config.ui.ConfigTab;
 import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.EmptyGameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
@@ -23,7 +26,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.List;
 
-public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
+public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlugin {
 
     public static final String ID = "ConfigPlugin";
 
@@ -74,10 +77,15 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
         var config = overrideConfig == null
             ? getId() // Game ID is the default config ID
             : overrideConfig;
-        GameStore.ensureStore(arenaAccessor, gameId).put(
+        gameStore.put(
             GameConfigComponent.getComponentType(),
             new GameConfigComponent(config)
         );
+    }
+
+    @Override
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new ConfigTab());
     }
 
     @Override

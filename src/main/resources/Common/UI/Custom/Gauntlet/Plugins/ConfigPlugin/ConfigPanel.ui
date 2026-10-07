@@ -1,0 +1,40 @@
+// Config tab: which game config each game in the selected session uses, and session overrides.
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "This session"; }
+            $G.@ListPanel #ConfigList {}
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Override"; }
+            $G.@Caption { @Text = "Game"; }
+            $G.@PickerRow {
+                $G.@Picker #ConfigGamePicker {}
+            }
+            $G.@Caption { @Text = "Config"; }
+            $G.@PickerRow {
+                $G.@Picker #ConfigAssetPicker {}
+            }
+            $G.@ButtonRow {
+                $G.@Confirm #ConfigApply { @Anchor = (Right: 3); Text: "Use for this session"; }
+                $G.@Action #ConfigClear  { @Anchor = (Left: 3); Text: "Back to default"; }
+            }
+            $G.@Note { @Text = "Overrides apply the next time the game is set up in this session."; }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Loaded configs"; }
+            $G.@ListPanel #ConfigAssetList {}
+        }
+    }
+}

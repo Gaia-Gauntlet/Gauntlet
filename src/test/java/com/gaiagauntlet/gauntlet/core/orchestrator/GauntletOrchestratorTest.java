@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.orchestrator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -101,11 +102,19 @@ class GauntletOrchestratorTest {
             return CompletableFuture.completedFuture(null);
         }
 
-        @Override public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
+        @Override public CompletableFuture<Void> playerConnect(World hubWorld, String sessionId, PlayerRef player) {
             return CompletableFuture.completedFuture(null);
         }
 
-        @Override public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
+        @Override public CompletableFuture<Void> playerDisconnect(World hubWorld, GameSession session, PlayerRef player) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> players) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> players) {
             return CompletableFuture.completedFuture(null);
         }
 
@@ -131,7 +140,7 @@ class GauntletOrchestratorTest {
     @Test
     void collectsCoreTabsAndTabsFromPluginsAndGamesInOrder() {
         var ids = GauntletOrchestrator.getAdminTabs().stream().map(AdminTab::getId).toList();
-        assertEquals(List.of("First", "Alpha", "Session", "Zeta", "Late", "Log"), ids);
+        assertEquals(List.of("First", "Alpha", "Session", "Zeta", "Plugins", "Late", "Log"), ids);
     }
 
     @Test
@@ -144,9 +153,9 @@ class GauntletOrchestratorTest {
     }
 
     @Test
-    void collectsHudElementsFromPluginsAndGamesInOrder() {
+    void collectsCoreHudElementsAndHudElementsFromPluginsAndGamesInOrder() {
         var ids = GauntletOrchestrator.getHudElements().stream().map(HudElement::getId).toList();
-        assertEquals(List.of("Teams", "Timer", "Zones", "Banner"), ids);
+        assertEquals(List.of("Teams", "Session", "Timer", "Zones", "Banner"), ids);
     }
 
     @Test

@@ -1,0 +1,164 @@
+package com.gaiagauntlet.gauntlet.core.ui.pages;
+
+import java.util.Arrays;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUICommand;
+import com.hypixel.hytale.server.core.HytaleServer;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
+import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
+import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+
+/**
+ * A player page that re-renders on a timer and answers each click with a line in its #Status label.
+ * Subclasses build the markup once, render the live parts, and handle their actions; "page.close"
+ * closes the page. Builds, renders and actions all run on the player's world thread, so subclasses
+ * can read the player's components and keep row caches unguarded.
+ */
+public abstract class GauntletPage extends InteractiveCustomUIPage<AdminPageEvent> {
+
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
+    private final long refreshMillis;
+    private final AtomicReference<ScheduledFuture<?>> refresh = new AtomicReference<>();
+    private final Object lock = new Object();
+
+    /** What the last timer refresh sent, so a refresh that would change nothing is skipped. */
+    @Nullable private CustomUICommand[] lastRefresh;
+
+    protected GauntletPage(@Nonnull PlayerRef playerRef, long refreshMillis) {
+        super(playerRef, CustomPageLifetime.CanDismiss, AdminPageEvent.CODEC);
+        this.refreshMillis = refreshMillis;
+    }
+
+    /** Appends the markup and binds the controls that are always there. */
+    protected abstract void build(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt);
+
+    /** Rewrites the live parts. Runs after the build, on the timer, and after every action. */
+    protected abstract void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt);
+
+    /** Performs one action. Returns the line to show in the status label, or null. */
+    @Nullable
+    protected abstract Message handle(@Nonnull AdminPageEvent event);
+
+    @Override
+    public final void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt,
+            @Nonnull Store<EntityStore> store) {
+        synchronized (lock) {
+            build(cmd, evt);
+            render(cmd, evt);
+        }
+        startRefresh();
+    }
+
+    @Override
+    public final void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull AdminPageEvent data) {
+        switch (data.action()) {
+            case "" -> sendUpdate(null, false);
+            case "page.close" -> close();
+            default -> {
+                Message status;
+                synchronized (lock) {
+                    try {
+                        status = handle(data);
+                    } catch (IllegalStateException | IllegalArgumentException e) {
+                        status = Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage());
+                    } catch (RuntimeException e) {
+                        LOGGER.atWarning().withCause(e).log("Page action %s failed", data.action());
+                        status = Widgets.fail("Failed: " + e.getMessage());
+                    }
+                }
+                updateNow(status);
+            }
+        }
+    }
+
+    /** Shows a status line from any thread, rendering the page with it. */
+    public void pushStatus(@Nonnull Message status) {
+        update(status);
+    }
+
+    /** Renders on the player's world thread, where entity components are safe to read. */
+    private void update(@Nullable Message status) {
+        var ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) return;
+        GauntletUtils.run(ref.getStore().getExternalData().getWorld(), () -> updateNow(status));
+    }
+
+    private void updateNow(@Nullable Message status) {
+        synchronized (lock) {
+            var cmd = new UICommandBuilder();
+            var evt = new UIEventBuilder();
+            if (status != null) {
+                cmd.set("#Status.TextSpans", status);
+            }
+            try {
+                render(cmd, evt);
+            } catch (RuntimeException e) {
+                LOGGER.atWarning().withCause(e).log("%s failed to render, so nothing was sent", getClass().getSimpleName());
+                return;
+            }
+            // Clicks that arrive while an update awaits the client's acknowledgment are dropped, so
+            // refreshes that change nothing are not sent.
+            var commands = cmd.getCommands();
+            var quiet = status == null && evt.getEvents().length == 0;
+            if (quiet && Arrays.equals(commands, lastRefresh)) {
+                return;
+            }
+            lastRefresh = quiet ? commands : null;
+            sendUpdate(cmd, evt, false);
+        }
+    }
+
+    private void startRefresh() {
+        var task = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(this::refreshTick, refreshMillis, refreshMillis, TimeUnit.MILLISECONDS);
+        if (!refresh.compareAndSet(null, task)) {
+            task.cancel(false);
+        }
+    }
+
+    private void refreshTick() {
+        try {
+            var ref = playerRef.getReference();
+            if (ref == null || !ref.isValid()) {
+                stopRefresh();
+                return;
+            }
+            update(null);
+        } catch (Throwable t) {
+            LOGGER.atWarning().withCause(t).log("%s refresh failed, so it stopped", getClass().getSimpleName());
+            stopRefresh();
+        }
+    }
+
+    private void stopRefresh() {
+        var task = refresh.getAndSet(null);
+        if (task != null) {
+            task.cancel(false);
+        }
+    }
+
+    @Override
+    protected void close() {
+        stopRefresh();
+        super.close();
+    }
+
+    @Override
+    public void onDismiss(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {
+        stopRefresh();
+    }
+}

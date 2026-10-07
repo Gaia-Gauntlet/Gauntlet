@@ -1,2 +1,4 @@
 editor.button=Convert Usernames
 session.transition.success=Transitioning {sessionId} to {newState} from {oldState}
+editor.usernamesResolved=Every username was converted
+editor.usernamesUnresolved=Could not find these players: {names}

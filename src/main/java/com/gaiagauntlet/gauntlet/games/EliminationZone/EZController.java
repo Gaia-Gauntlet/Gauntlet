@@ -39,6 +39,11 @@ public class EZController extends LobbyController {
         return ID;
     }
 
+    @Override
+    public String getDisplayName() {
+        return "Elimination Zone";
+    }
+
     private static final List<String> requiredPlugins = List.of(
         AnnouncerPlugin.ID,
         GameStatePlugin.ID,

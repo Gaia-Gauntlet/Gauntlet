@@ -1,15 +1,56 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.*;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GameHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.core.ui.huds.GauntletHud;
+import com.gaiagauntlet.gauntlet.core.ui.huds.SessionHud;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
+import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
+import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
+import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
+import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
+import com.gaiagauntlet.gauntlet.core.ui.tabs.PluginsTab;
+import com.gaiagauntlet.gauntlet.core.ui.tabs.SessionTab;
+import com.hypixel.hytale.component.ComponentAccessor;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.GauntletHud;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -22,6 +63,8 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
@@ -36,6 +79,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
  * The very thin big boi router
@@ -47,7 +91,10 @@ import java.util.function.Consumer;
  */
 public class GauntletOrchestrator {
 
-    private static final Map<String, PageFactory> corePages = Map.of(AdminPage.ID, AdminPage::new);
+    private static final Map<String, PageFactory> corePages = Map.of(
+            AdminPage.ID, AdminPage::new,
+            SessionsPage.ID, SessionsPage::new,
+            PartyPage.ID, PartyPage::new);
 
     /** The HUD currently shown to each player, so a replaced or abandoned HUD stops refreshing */
     private static final Map<UUID, GauntletHud> huds = new ConcurrentHashMap<>();
@@ -88,7 +135,7 @@ public class GauntletOrchestrator {
 
     /** Collects new admin tabs from the orchestrator, every UI plugin and every game, for one admin page, in tab order */
     public static List<AdminTab> getAdminTabs() {
-        var tabs = new ArrayList<AdminTab>(List.of(new SessionTab(), new LogTab()));
+        var tabs = new ArrayList<AdminTab>(List.of(new SessionTab(), new LogTab(), new PluginsTab()));
         for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
             tabs.addAll(plugin.getAdminTabs());
         }
@@ -124,9 +171,9 @@ public class GauntletOrchestrator {
         player.getPageManager().openCustomPage(ref, store, factory.get().create(playerRef, session));
     }
 
-    /** Collects new HUD elements from every UI plugin and every game, for one player's HUD, in draw order */
+    /** Collects new HUD elements from the orchestrator, every UI plugin and every game, for one player's HUD, in draw order */
     public static List<HudElement> getHudElements() {
-        var elements = new ArrayList<HudElement>();
+        var elements = new ArrayList<HudElement>(List.of(new SessionHud()));
         for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
             elements.addAll(plugin.getHudElements());
         }

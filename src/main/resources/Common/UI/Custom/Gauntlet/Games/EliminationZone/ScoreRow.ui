@@ -1,28 +1,38 @@
-// One team on the event standings: place, icon, name, and event points.
+// One team on the event standings: place, icon, name, and event points, over a highlight shown on the
+// viewer's own team.
 Group {
     Anchor: (Height: 30, Top: 4);
-    LayoutMode: Left;
+    LayoutMode: Full;
 
-    Label #Place {
-        Anchor: (Width: 26);
-        Style: (FontSize: 13, RenderBold: true, TextColor: #878e9c, HorizontalAlignment: Center, VerticalAlignment: Center);
+    Group #Highlight {
+        Background: (Color: #E8A93B(0.22));
+        Visible: false;
     }
-    Group #Icon {
-        Anchor: (Width: 30, Height: 30);
-        Background: (Color: #ffffff(0.08));
 
-        Label #Initial {
-            Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center);
+    Group {
+        LayoutMode: Left;
+
+        Label #Place {
+            Anchor: (Width: 26);
+            Style: (FontSize: 13, RenderBold: true, TextColor: #878e9c, HorizontalAlignment: Center, VerticalAlignment: Center);
         }
-    }
-    Label #Name {
-        FlexWeight: 1;
-        Anchor: (Left: 8);
-        Style: (FontSize: 13, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
-    }
-    Label #Points {
-        Anchor: (Width: 56, Right: 6);
-        Text: "0";
-        Style: (FontSize: 16, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: End, VerticalAlignment: Center);
+        Group #Icon {
+            Anchor: (Width: 30, Height: 30);
+            Background: (Color: #ffffff(0.08));
+
+            Label #Initial {
+                Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center);
+            }
+        }
+        Label #Name {
+            FlexWeight: 1;
+            Anchor: (Left: 8);
+            Style: (FontSize: 13, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+        }
+        Label #Points {
+            Anchor: (Width: 56, Right: 6);
+            Text: "0";
+            Style: (FontSize: 16, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: End, VerticalAlignment: Center);
+        }
     }
 }

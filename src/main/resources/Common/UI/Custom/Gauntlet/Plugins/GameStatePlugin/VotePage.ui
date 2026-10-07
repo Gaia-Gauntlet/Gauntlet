@@ -1,0 +1,66 @@
+// The next-game vote: how long is left, how many have voted, and one row per game with its share of
+// the votes and a button to pick it. VotePage fills the rows.
+$Common = "../../../Common.ui";
+$G = "../../Admin/Common.ui";
+
+$Common.@PageOverlay {
+    Anchor: (Full: 0);
+    LayoutMode: Middle;
+
+    $Common.@DecoratedContainer {
+        @CloseButton = true;
+        Anchor: (Width: 620, Height: 520);
+
+        #Title {
+            $Common.@Title {
+                @Text = "Vote for the next game";
+            }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 12);
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Height: 40, Bottom: 8);
+
+                // While the vote is open the clock counts down on the client. Once it closes, the result
+                // takes its place.
+                Label #TimerText {
+                    Anchor: (Width: 112);
+                    Text: "Closes in";
+                    Style: (FontSize: 24, RenderBold: true, TextColor: #E8A93B, VerticalAlignment: Center);
+                }
+                TimerLabel #TimerClock {
+                    Anchor: (Width: 90);
+                    Style: (FontSize: 24);
+                    Seconds: 0;
+                }
+                Label #Result {
+                    FlexWeight: 1;
+                    Style: (FontSize: 24, RenderBold: true, TextColor: #E8A93B, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+                Label #Summary {
+                    Anchor: (Width: 220);
+                    Style: (FontSize: 12, TextColor: #878e9c, HorizontalAlignment: End, VerticalAlignment: Center);
+                }
+            }
+
+            $G.@ScrollPanel #Options {}
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Height: 26, Top: 8);
+                Background: (Color: #000000(0.22));
+                Padding: (Horizontal: 10);
+
+                Label #Status {
+                    FlexWeight: 1;
+                    Text: "Pick a game. You can change your vote until it closes.";
+                    Style: (FontSize: 12, TextColor: #7a9cc6, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+            }
+        }
+    }
+}

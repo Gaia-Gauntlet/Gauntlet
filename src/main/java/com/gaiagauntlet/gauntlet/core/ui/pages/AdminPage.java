@@ -38,7 +38,7 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     private static final String PAGE = "Gauntlet/Admin/Dashboard.ui";
     private static final String TAB_BUTTON = "Gauntlet/Admin/TabButton.ui";
     private static final long REFRESH_MILLIS = 2000;
-    private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove");
+    private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove", "session.destroy", "session.game.stop");
 
     private List<AdminTab> tabs = List.of(new NoTab());//new LogTab(), new MatchTab(), new GamesTab(), new ZonesTab(), new EventsTab(),
             // new BossesTab(), new TeamsTab(), new SettingsTab(), new LogTab());
@@ -231,6 +231,26 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         sendUpdate(cmd, evt, false);
     }
 
+    /**
+     * Refills the session picker and shows the given session, or the first one when it is gone. Tabs
+     * call this from any thread after creating or destroying a session.
+     */
+    public void showSession(@Nullable String id) {
+        synchronized (lock) {
+            var sessions = GauntletUtils.withResource().getSessions();
+            var chosen = id == null ? null : sessions.get(id);
+            session = chosen != null ? chosen : sessions.values().stream().findFirst().orElse(null);
+            var cmd = new UICommandBuilder();
+            var evt = new UIEventBuilder();
+            fillSessionPicker(cmd);
+            for (var tab : tabs) {
+                tab.buildOnce(cmd, evt, session);
+            }
+            activeTab.render(cmd, evt, session);
+            sendUpdate(cmd, evt, false);
+        }
+    }
+
     /** Refills the session picker; called on open and after sessions are created or removed. */
     void fillSessionPicker(@Nonnull UICommandBuilder cmd) {
         var sessions = GauntletUtils.withResource().getSessions();
@@ -252,29 +272,31 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     // Confirm prompt
 
     private void openConfirm(@Nonnull AdminPageEvent event) {
-        // pendingConfirm = event;
-        // var cmd = new UICommandBuilder();
-        // cmd.set("#MainPage.Visible", false);
-        // cmd.set("#ConfirmPage.Visible", true);
-        // cmd.set("#ConfirmMessage.Text", switch (event.action()) {
-        //     case "match.stop" -> "Stop the match in " + game.id() + " and send everyone back to their lobby?";
-        //     case "match.end" -> "End the live match in " + game.id() + " now and show the standings?";
-        //     case "games.close" -> "Close " + game.id() + ", sending everyone in its lobbies to the hub and removing the lobbies?";
-        //     default -> "Remove " + game.id() + " for good?";
-        // });
-        // sendUpdate(cmd, null, false);
+        pendingConfirm = event;
+        var target = session == null ? "this session" : session.getId();
+        var cmd = new UICommandBuilder();
+        cmd.set("#MainPage.Visible", false);
+        cmd.set("#ConfirmPage.Visible", true);
+        cmd.set("#ConfirmMessage.Text", switch (event.action()) {
+            case "match.stop" -> "Stop the match in " + target + " and send everyone back to the lobby?";
+            case "match.end" -> "End the live match in " + target + " now and show the standings?";
+            case "session.destroy" -> "Destroy " + target + "? Its game is stopped and its parties are let go.";
+            case "session.game.stop" -> "Stop the game running in " + target + "?";
+            default -> "Go ahead with " + event.action() + " on " + target + "?";
+        });
+        sendUpdate(cmd, null, false);
     }
 
     private void closeConfirm(@Nullable Message status) {
-        // var cmd = new UICommandBuilder();
-        // var evt = new UIEventBuilder();
-        // cmd.set("#ConfirmPage.Visible", false);
-        // cmd.set("#MainPage.Visible", true);
-        // if (status != null) {
-        //     cmd.set("#ActionStatus.TextSpans", status);
-        // }
-        // activeTab.render(cmd, evt, game);
-        // sendUpdate(cmd, evt, false);
+        var cmd = new UICommandBuilder();
+        var evt = new UIEventBuilder();
+        cmd.set("#ConfirmPage.Visible", false);
+        cmd.set("#MainPage.Visible", true);
+        if (status != null) {
+            cmd.set("#ActionStatus.TextSpans", status);
+        }
+        activeTab.render(cmd, evt, session);
+        sendUpdate(cmd, evt, false);
     }
 
     // Refresh timer
