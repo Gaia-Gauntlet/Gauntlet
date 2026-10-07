@@ -1,9 +1,9 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.spectator.systems;
+package com.gaiagauntlet.gauntlet.plugins.spectator.systems;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spectator.SpectatorCamera;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spectator.components.SpectatorComponent;
+import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorCamera;
+import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.Order;

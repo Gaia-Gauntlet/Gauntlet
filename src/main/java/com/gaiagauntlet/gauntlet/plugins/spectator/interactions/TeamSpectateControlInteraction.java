@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.spectator.interactions;
+package com.gaiagauntlet.gauntlet.plugins.spectator.interactions;
 
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

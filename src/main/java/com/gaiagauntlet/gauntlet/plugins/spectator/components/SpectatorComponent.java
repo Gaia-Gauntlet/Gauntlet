@@ -1,5 +1,7 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.spectator.components;
+package com.gaiagauntlet.gauntlet.plugins.spectator.components;
 
+import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorCamera;
+import com.gaiagauntlet.gauntlet.plugins.spectator.systems.SpectatingSystems;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.ComponentType;

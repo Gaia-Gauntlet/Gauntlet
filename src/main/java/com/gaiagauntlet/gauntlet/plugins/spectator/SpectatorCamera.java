@@ -1,7 +1,7 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.spectator;
+package com.gaiagauntlet.gauntlet.plugins.spectator;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spectator.components.SpectatorComponent;
+import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.component.ComponentAccessor;
