@@ -20,7 +20,10 @@ public class EZGamePlugin extends JavaPlugin {
 
     @Override
     protected void start() {
-        LOGGER.atInfo().log("Setting up EZGame!");
+        LOGGER.atInfo().log("Starting EZGame!");
+
+        // Start each section - keeps the top-level plugin cleaner this way
+        EZSpectator.start(this);
     }
 
     @Override

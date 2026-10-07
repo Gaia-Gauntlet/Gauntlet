@@ -63,7 +63,7 @@ public final class TeamSpectateControlInteraction extends SimpleInstantInteracti
 //        }
 //        var next = SpectatorCamera.nextTarget(game, spectator, commandBuffer, current, action != Action.Previous);
 //        if (next != null) {
-//            commandBuffer.putComponent(spectator, Spectator.getComponentType(), new Spectator(next));
+//            commandBuffer.putComponent(spectator, SpectatorComponent.getComponentType(), new SpectatorComponent(next));
 //        }
     }
 }
