@@ -76,14 +76,9 @@ public class GameSession {
             .add()
             .build();
 
-    @Getter
-    private Map<String, SessionComponent> sessionComponents;
-
-    @Getter 
-    private Set<String> parties = ConcurrentHashMap.newKeySet();
-
-    @Getter
-    private String id;
+    @Getter private Map<String, SessionComponent> sessionComponents;
+    @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
+    @Getter private String id;
 
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
@@ -95,6 +90,16 @@ public class GameSession {
             return Optional.empty();
 
         return Optional.of(type.getTypeClass().cast(sesComp));
+    }
+
+    public <T extends SessionComponent> T ensure(SessionComponentType<T> type, T component) {
+        var sesComp = get(type);
+        if (sesComp.isEmpty()) {
+            put(type, component);
+            return component;
+        } else {
+            return sesComp.get();
+        }
     }
 
     @Getter

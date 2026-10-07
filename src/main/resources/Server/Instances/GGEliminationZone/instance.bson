@@ -1,0 +1,96 @@
+{
+  "Version": 4,
+  "UUID": {
+    "$binary": "0ygCrheKS5i3j7M6zsZ5rw==",
+    "$type": "04"
+  },
+  "Seed": 1783446880686,
+  "SpawnProvider": {
+    "Id": "Global",
+    "SpawnPoint": {
+      "X": -99,
+      "Y": 128.0,
+      "Z": 0,
+      "Pitch": -90,
+      "Yaw": 0,
+      "Roll": 0.0
+    }
+  },
+  "WorldMap": {
+    "Type": "WorldGen"
+  },
+  "ChunkStorage": {
+    "Type": "Hytale"
+  },
+  "ChunkConfig": {
+    "KeepLoadedRegion": {
+      "Min": {
+        "X": -600,
+        "Y": -500
+      },
+      "Max": {
+        "X": 400,
+        "Y": 500
+      }
+    },
+    "PregenerateRegion": {
+      "Min": {
+        "X": -600,
+        "Y": -500
+      },
+      "Max": {
+        "X": 400,
+        "Y": 500
+      }
+    }
+  },
+  "IsTicking": true,
+  "IsBlockTicking": true,
+  "IsPvpEnabled": true,
+  "IsFallDamageEnabled": true,
+  "IsGameTimePaused": true,
+  "GameTime": "0001-08-08T12:00:46.000047857Z",
+  "ForcedWeather": "Zone1_Sunny",
+  "ClientEffects": {
+    "SunHeightPercent": 100.0,
+    "SunAngleDegrees": 0.0,
+    "BloomIntensity": 0.30000001192092896,
+    "BloomPower": 8.0,
+    "SunIntensity": 0.25,
+    "SunshaftIntensity": 0.30000001192092896,
+    "SunshaftScaleFactor": 4.0
+  },
+  "RequiredPlugins": {},
+  "IsSpawningNPC": true,
+  "IsBlockSpawnersEnabled": true,
+  "IsSpawnMarkersEnabled": true,
+  "IsAllNPCFrozen": false,
+  "GameplayConfig": "EliminationZone",
+  "IsCompassUpdating": true,
+  "IsSavingPlayers": true,
+  "IsSavingChunks": true,
+  "SaveNewChunks": true,
+  "IsUnloadingChunks": true,
+  "IsObjectiveMarkersEnabled": true,
+  "DeleteOnUniverseStart": true,
+  "DeleteOnRemove": true,
+  "DisabledFluidTickers": [],
+  "ResourceStorage": {
+    "Type": "Hytale"
+  },
+  "Plugin": {
+    "Instance": {
+      "RemovalConditions": [
+        {
+          "Type": "IdleTimeout",
+          "TimeoutSeconds": 300
+        }
+      ]
+    }
+  },
+  "DisplayName": "Elimination Zone",
+  "GameMode": "Adventure",
+  "GameModeTypeOnDeath": "HardcoreSpectator",
+  "HardcoreMode": "PerPlayer",
+  "HardcoreLives": 1
+}
