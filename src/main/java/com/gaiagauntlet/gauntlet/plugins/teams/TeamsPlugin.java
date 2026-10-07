@@ -83,7 +83,7 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     }
 
     @Override
-    public void setup(ComponentAccessor<EntityStore> accessor, GameSession sessionObject, String gameId) {
+    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
         // sets up the game with the team stuff
     }
 

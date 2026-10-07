@@ -80,7 +80,14 @@ public class GameSession {
     @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
     @Getter private String id;
 
+    private volatile boolean locked = false;
+
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
+        if (locked) {
+            GaiaLog.atWarning().log("Attempted to write " + type.getIndex() + " to " + getId()
+                    + " while game is locked (state is " + sessionState.toString() + ") - addition was blocked!");
+            return;
+        }
         sessionComponents.put(type.getIndex(), component);
     }
 
@@ -141,7 +148,8 @@ public class GameSession {
 
     private boolean transitionBlocked(SessionState state, @Nullable String gameIdCheck) {
         if (gameIdCheck != null && !gameIdCheck.equals(currentGame)) {
-            error().log("Game " + gameIdCheck + " in " + getId() + " failed to switch to " + state.toString() + "! Game "
+            error().log(
+                    "Game " + gameIdCheck + " in " + getId() + " failed to switch to " + state.toString() + "! Game "
                             + currentGame
                             + " was somehow registered instead");
             return true;
@@ -149,22 +157,22 @@ public class GameSession {
 
         if (sessionState.to(state)) {
             logger().log(MessageUtils.msg("server.gauntlet.session.transition.success")
-                .param("sessionId", this.id)
-                .param("newState", state.toString())
-                .param("oldState", sessionState.toString())
-            );
+                    .param("sessionId", this.id)
+                    .param("newState", state.toString())
+                    .param("oldState", sessionState.toString()));
             return false; // transition allowed, not blocked
         }
 
         error().log("Game failed to switch to " + state.toString() + "! State is " + sessionState.toString()
-                        + " instead!");
-        
+                + " instead!");
+
         return true;
     }
 
     private GaiaLog logger() {
         return GaiaLog.atInfo().withSession(this);
     }
+
     private GaiaLog error() {
         return GaiaLog.atError().withSession(this);
     }
@@ -179,11 +187,14 @@ public class GameSession {
             return null;
 
         currentGame = gameSequence.pollFirst();
-        
+
         if (currentGame == null) {
             return null;
         }
-        
+
+        // set the lock
+        locked = true;
+
         errorReason = null;
         sessionState = SessionState.SETTING_UP;
         return currentGame;
@@ -220,6 +231,8 @@ public class GameSession {
             return false;
         errorReason = null;
         sessionState = SessionState.FINISHED;
+        // ensure the lock is off - it should already be though
+        locked = false;
         return true;
     }
 
@@ -234,6 +247,7 @@ public class GameSession {
         if (transitionBlocked(SessionState.CLEANING, gameIdCheck))
             return false;
         sessionState = SessionState.CLEANING;
+        locked = false;
         return true;
     }
 
@@ -241,6 +255,7 @@ public class GameSession {
     public void setErrored(String errorReason) {
         sessionState = SessionState.ERROR;
         this.errorReason = errorReason;
+        locked = false;
     }
 
     /** adds a game to the sequence */

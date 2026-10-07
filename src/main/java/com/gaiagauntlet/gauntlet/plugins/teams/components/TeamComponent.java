@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The single component for an entire team. Holds all team-specific data
@@ -60,7 +61,7 @@ public class TeamComponent {
             team -> team.rawPlayerNames)
         .documentation("The team roster")
         .add()
-        .append(new KeyedCodec<>("PlayerUUIDs", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
+        .append(new KeyedCodec<>("PlayerUUIDs", new SetCodec<>(Codec.UUID_STRING, () -> ConcurrentHashMap.newKeySet(), false)),
             (config, s) -> {
                 config.players.clear();
                 config.players.addAll(s);
@@ -120,7 +121,7 @@ public class TeamComponent {
     @Getter final String id;
     @Getter @Nonnull String name = "";
     @Getter @Nonnull TeamType teamType = TeamType.Participant;
-    @Getter @Nonnull Set<UUID> players = new HashSet<>();
+    @Getter @Nonnull Set<UUID> players = ConcurrentHashMap.newKeySet();
     @Getter @Setter double score;
     /**
      * List of player names - this is ONLY intended to be added via the asset

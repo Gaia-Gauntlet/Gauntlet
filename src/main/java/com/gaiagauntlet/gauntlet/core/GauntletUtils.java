@@ -1,14 +1,14 @@
 package com.gaiagauntlet.gauntlet.core;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
@@ -29,8 +29,8 @@ public class GauntletUtils {
     }
 
     @Nonnull
-    public static Optional<GameSession> sessionFor(@Nonnull String id) {
-        return withResource().getSession(id);
+    public static Optional<GameSession> sessionFor(@Nonnull String sessionId) {
+        return withResource().getSession(sessionId);
     }
 
     @Nonnull
@@ -42,9 +42,32 @@ public class GauntletUtils {
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull UUID playerId) {
         var playerRef = Universe.get().getPlayer(playerId);
-        if (playerRef == null) return Optional.empty();
+        if (playerRef == null)
+            return Optional.empty();
         return playerFor(playerRef);
     }
+
+    @Nonnull
+    public static Set<PlayerRef> playersFor(@Nonnull String sessionId) {
+        var session = sessionFor(sessionId).orElse(null);
+        return playersFor(session);
+    }
+
+    @Nonnull
+    public static Set<PlayerRef> playersFor(@Nonnull GameSession session) {
+        var players = new HashSet<PlayerRef>();
+        if (session == null)
+            return players;
+
+        var parties = session.getParties();
+        for (var partyId : parties) {
+            PartyUtils.getParty(partyId).ifPresent(party -> {
+                players.addAll(party.getAllOnlinePlayers());
+            });
+        }
+        return players;
+    }
+
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));

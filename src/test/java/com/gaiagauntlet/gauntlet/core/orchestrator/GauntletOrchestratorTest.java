@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.orchestrator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -101,11 +102,19 @@ class GauntletOrchestratorTest {
             return CompletableFuture.completedFuture(null);
         }
 
-        @Override public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
+        @Override public CompletableFuture<Void> playerConnect(World hubWorld, String sessionId, PlayerRef player) {
             return CompletableFuture.completedFuture(null);
         }
 
-        @Override public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
+        @Override public CompletableFuture<Void> playerDisconnect(World hubWorld, GameSession session, PlayerRef player) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> players) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> players) {
             return CompletableFuture.completedFuture(null);
         }
 

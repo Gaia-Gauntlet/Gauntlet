@@ -12,7 +12,6 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
@@ -36,7 +35,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
     public void init(JavaPlugin plugin) {
         plugin.getAssetRegistry().register(HytaleAssetStore.builder(GameConfigAsset.class,
                 new IndexedLookupTableAssetMap<>(GameConfigAsset[]::new))
-            .setPath("Gauntlet/Plugins/" + ID + "/GameConfigAsset")
+            .setPath("Gauntlet/Plugins/" + ID + "/GameConfig")
             .setCodec(GameConfigAsset.CODEC)
             .setKeyFunction(GameConfigAsset::getId)
             .setReplaceOnRemove(_ -> new EmptyGameConfigAsset())
@@ -65,7 +64,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
     }
 
     @Override
-    public void setup(ComponentAccessor<EntityStore> accessor, GameSession session, String gameId) {
+    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession session, GameEcs gameStore, String gameId) {
         var sessionGameConfigComponent = session.ensure(
             SessionGameConfigComponent.getSessionComponentType(),
             new SessionGameConfigComponent()
@@ -74,7 +73,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
         var config = overrideConfig == null
             ? getId() // Game ID is the default config ID
             : overrideConfig;
-        GameStore.ensureStore(accessor, gameId).put(
+        gameStore.put(
             GameConfigComponent.getComponentType(),
             new GameConfigComponent(config)
         );
