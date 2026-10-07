@@ -16,12 +16,10 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class EZController extends LobbyController {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -30,16 +28,6 @@ public class EZController extends LobbyController {
     @Override
     public String getId() {
         return ID;
-    }
-
-    @Override
-    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
-        return null;
     }
 
     private static final List<String> requiredPlugins = List.of(

@@ -1,11 +1,12 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces;
 
-import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletableFuture;
 
-import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.hypixel.hytale.component.ComponentAccessor;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
  * The Lobby Manager
@@ -15,9 +16,12 @@ import com.hypixel.hytale.server.core.universe.world.World;
  * - batching players into the lobby 
  */
 public interface LobbyManager {
-    public CompletableFuture<World> setupWorld();
-    /** Adds a player to the lobby world */
-    public CompletableFuture<Void> playerTo(World lobbyWorld, PlayerRef player);
-    /** Bulk-adds players to the lobby */
-    public CompletableFuture<Void> playersTo(World lobbyWorld, Collection<PlayerRef> players);
+    public CompletableFuture<World> setupWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId);
+    /** Cleans up the world - runs on the hub thread*/
+    public CompletableFuture<Void> cleanWorld(World arenaWorld);
+    /** 
+     * Triggered when a player connects to the world
+     * Must do routing based
+     */
+    public void onJoin(Ref<EntityStore> ref, ComponentAccessor<EntityStore> accessor, String sessionId);
 }

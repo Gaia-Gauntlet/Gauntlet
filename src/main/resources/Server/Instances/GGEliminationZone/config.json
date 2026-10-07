@@ -58,7 +58,7 @@
   "IsAllNPCFrozen": false,
   "GameplayConfig": "Default",
   "IsCompassUpdating": true,
-  "IsSavingPlayers": true,
+  "IsSavingPlayers": false,
   "IsSavingChunks": true,
   "SaveNewChunks": true,
   "IsUnloadingChunks": false,

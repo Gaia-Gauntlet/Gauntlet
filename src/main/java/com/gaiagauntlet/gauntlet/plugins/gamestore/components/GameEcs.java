@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
@@ -42,7 +44,11 @@ public class GameEcs {
         return newComp;
     }
 
+    @Nonnull
     public <T extends GameComponent> Optional<T> get(GameComponentType<T> type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Component was not registered properly! Unable to retrieve from GameECS store");
+        }
         var sesComp = sessionComponents.get(type.getIndex());
         if (sesComp == null)
             return Optional.empty();

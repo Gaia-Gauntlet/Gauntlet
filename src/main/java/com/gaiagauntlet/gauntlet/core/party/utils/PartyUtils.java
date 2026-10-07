@@ -52,8 +52,6 @@ public class PartyUtils {
     /**
      * Ensures that the player is always in a party, even if it's a singleton.
      * 
-     * Auto-reconnects disconnected players
-     * 
      * Creates a party for the player if it doesn't exist
      */
     @Nonnull
@@ -65,7 +63,6 @@ public class PartyUtils {
             resource.addParty(newParty);
             return newParty;
         });
-
     }
 
     /**
@@ -74,12 +71,7 @@ public class PartyUtils {
      */
     public static Optional<PartyComponent> getPartyNullable(PlayerRef player) {
         var resource = GauntletUtils.withResource();
-        for (PartyComponent party : resource.getParties().values()) {
-            if (!party.includesPlayer(player))
-                continue;
-            return Optional.of(party);
-        }
-        return Optional.empty();
+        return resource.getParty(player);
     }
 
     public static Optional<GameSession> sessionFor(PartyComponent party) {

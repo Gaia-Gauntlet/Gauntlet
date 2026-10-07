@@ -6,7 +6,10 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.PlayerMarker;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.systems.PlayerSystems;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 /**
@@ -19,6 +22,9 @@ public class LobbyControllerPlugin implements GamePlugin {
     @Override
     public void init(JavaPlugin host) {
         LobbyComponent.setComponentType(GameComponentRegistry.register(LobbyComponent.ID, LobbyComponent.class));
+        PlayerMarker.setComponentType(host.getEntityStoreRegistry().registerComponent(PlayerMarker.class, PlayerMarker::new));
+        var registry = host.getEventRegistry();
+        registry.registerGlobal(PlayerReadyEvent.class, PlayerSystems::onPlayerConnect);
     }
 
     @Override

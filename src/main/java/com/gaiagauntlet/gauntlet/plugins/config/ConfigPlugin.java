@@ -36,7 +36,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
     public void init(JavaPlugin plugin) {
         plugin.getAssetRegistry().register(HytaleAssetStore.builder(GameConfigAsset.class,
                 new IndexedLookupTableAssetMap<>(GameConfigAsset[]::new))
-            .setPath("Gauntlet/Plugins/" + ID + "/GameConfigAsset")
+            .setPath("Gauntlet/Plugins/" + ID + "/GameConfig")
             .setCodec(GameConfigAsset.CODEC)
             .setKeyFunction(GameConfigAsset::getId)
             .setReplaceOnRemove(_ -> new EmptyGameConfigAsset())

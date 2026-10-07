@@ -9,6 +9,7 @@ import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
@@ -86,6 +87,7 @@ public class GauntletPlugin extends JavaPlugin {
     private void setupPlugins() {
         GameRegistry.registerPlugin(AnnouncerPlugin.ID, this, AnnouncerPlugin::new);
         GameRegistry.registerPlugin(GameStatePlugin.ID, this, GameStatePlugin::new);
+        GameRegistry.registerPlugin(ConfigPlugin.ID, this, ConfigPlugin::new);
         GameRegistry.registerPlugin(GameStorePlugin.ID, this, GameStorePlugin::new);
         GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
         GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);

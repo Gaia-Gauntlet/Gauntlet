@@ -1,0 +1,3 @@
+error.world=Player {player} unabe to transfer to world due to {reason}
+success=Moved {player} to other world successfully
+failed=Failed to move {player} to other reason: {cause}
