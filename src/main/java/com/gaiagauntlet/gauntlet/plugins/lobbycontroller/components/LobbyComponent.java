@@ -13,7 +13,7 @@ import lombok.Setter;
 
 /** Holds context on the hub world about the current lobby state */
 public class LobbyComponent implements GameComponent {
-    public static final String ID = "ArenaComponent";
+    public static final String ID = "LobbyComponent";
     @Getter @Setter private static GameComponentType<@NotNull LobbyComponent> componentType;
     // the game world
     @Getter

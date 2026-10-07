@@ -29,6 +29,16 @@ public class GauntletConfig extends Config {
                     config -> config.getTimeoutSeconds())
             .documentation("The amount of time allowed to pass before a player is kicked")
             .add()
+            .append(new KeyedCodec<>("BatchSize", Codec.LONG),
+                    (config, v) -> config.batchSize = v,
+                    config -> config.getBatchSize())
+            .documentation("How big the batches are")
+            .add()
+            .append(new KeyedCodec<>("BatchDelay", Codec.LONG),
+                    (config, v) -> config.batchDelay = v,
+                    config -> config.getBatchDelay())
+            .documentation("How long the delay is between batches")
+            .add()
             .build();
 
     @Nonnull
@@ -38,6 +48,10 @@ public class GauntletConfig extends Config {
 
     @Getter
     private Long timeoutSeconds = 180L;
+    @Getter
+    private Long batchSize = 10L;
+    @Getter
+    private Long batchDelay = 5L;
     @Getter
     private String hubId = null;
 }

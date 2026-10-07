@@ -136,11 +136,10 @@ public class PartyComponent {
     }
 
     public boolean includesPlayer(PlayerRef player) {
-        if (!offlinePlayers.containsKey(player.getUuid()))
-            return includesPlayer(player.getUuid());
-
-        setOnline(player.getUuid());
-        return true;
+        return includesPlayer(player.getUuid());
+    }
+    public boolean includesOfflinePlayer(PlayerRef player) {
+        return offlinePlayers.containsKey(player.getUuid());
     }
 
     public boolean includesPlayer(UUID player) {

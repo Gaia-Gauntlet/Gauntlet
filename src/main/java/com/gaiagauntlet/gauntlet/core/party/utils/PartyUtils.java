@@ -74,7 +74,7 @@ public class PartyUtils {
     public static Optional<PartyComponent> getPartyNullable(PlayerRef player) {
         var resource = GauntletUtils.withResource();
         for (PartyComponent party : resource.getParties().values()) {
-            if (!party.includesPlayer(player))
+            if (!party.includesPlayer(player) && !party.includesOfflinePlayer(player))
                 continue;
             return Optional.of(party);
         }

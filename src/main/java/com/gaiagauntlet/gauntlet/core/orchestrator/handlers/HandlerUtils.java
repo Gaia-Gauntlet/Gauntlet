@@ -76,7 +76,7 @@ public class HandlerUtils {
         }
 
         // add all of the players to the game
-        return game.playerJoin(hub, gameId, players);
+        return game.playerJoin(hub, session.getId(), players);
     }
 
     public class Resolve {

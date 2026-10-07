@@ -1,17 +1,14 @@
 package com.gaiagauntlet.gauntlet.core;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
@@ -32,8 +29,8 @@ public class GauntletUtils {
     }
 
     @Nonnull
-    public static Optional<GameSession> sessionFor(@Nonnull String id) {
-        return withResource().getSession(id);
+    public static Optional<GameSession> sessionFor(@Nonnull String sessionId) {
+        return withResource().getSession(sessionId);
     }
 
     @Nonnull

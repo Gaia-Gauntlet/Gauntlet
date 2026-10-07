@@ -29,10 +29,8 @@ public class PlayerComponent implements Component<EntityStore> {
             .add()
             .build();
 
-    @Getter
-    @Setter 
-    @Nullable
-    private String currentGame;
+    /** The game the player currently is in. */
+    @Getter @Setter @Nullable private String currentGame;
 
     public PlayerComponent() {
     }

@@ -18,12 +18,9 @@ public class BatchItem {
     World destination;
     Map<UUID, PlayerRef> players;
 
-    public BatchItem(List<PlayerRef> playerList) {
+    public BatchItem(World world) {
         players = new HashMap<>();
-        
     }
 
-    public double size() {
-        return players.size();
-    }
+    
 }

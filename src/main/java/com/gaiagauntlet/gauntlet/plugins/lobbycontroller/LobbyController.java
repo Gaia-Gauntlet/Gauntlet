@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
@@ -9,6 +11,7 @@ import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
@@ -16,8 +19,10 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
+import com.gaiagauntlet.gauntlet.plugins.transfer.TransferPlugin;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -67,7 +72,7 @@ public abstract class LobbyController extends GameController {
             hubStore.clear();
         }
 
-        return getLobbyManager().setupWorld().thenCompose(world -> {
+        return getLobbyManager().setupWorld(hubAccessor, sessionId).thenCompose(world -> {
             GauntletUtils.run(hubAccessor.getExternalData().getWorld(), () -> {
                 // hop to the hub thread again to finalize the initialization of the component
                 hubStore.put(LobbyComponent.getComponentType(), new LobbyComponent(world));
@@ -101,25 +106,22 @@ public abstract class LobbyController extends GameController {
                 }
 
                 setupGame(world, gameStore, sessionId);
-
-                // begin the player joining process
-                var parties = session.getParties();
             });
-        })
-                .whenComplete((_, error) -> {
-                    if (error != null) {
-                        GaiaLog.atError(error).withCause(error).withSession(session)
-                                .log("Failed to initialize game " + getId() + " for session " + sessionId);
-                        // emit a clean command to the event registry
-                        return;
-                    }
-                });
+        });
     };
 
     @Override
-    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'playerJoin'");
+    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> players) {
+        var store = hubWorld.getEntityStore().getStore();
+        // TODO: Get the defaut transform location for players. the onConnect should
+        // handle moving the player to the right location after warping
+        var arena = withArenaWorld(hubWorld, sessionId).filter(World::isAlive).orElse(null);
+
+        if (arena == null)
+            return CompletableFuture.failedFuture(new IllegalStateException("No live arena for session " + sessionId));
+
+        TransferPlugin.queue(store, arena, sessionId, new HashSet<>(players), new Transform());
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
@@ -131,14 +133,15 @@ public abstract class LobbyController extends GameController {
     @Override
     public final CompletableFuture<Void> cleanGame(World hubAccessor, GameSession session) {
         var arenaWorld = withArenaWorld(hubAccessor, session.getId()).orElse(null);
-        if (arenaWorld == null) return CompletableFuture.completedFuture(null);
+        if (arenaWorld == null)
+            return CompletableFuture.completedFuture(null);
         return getLobbyManager().cleanWorld(arenaWorld);
     };
 
     @Override
     public final CompletableFuture<Void> playerConnect(World hubAccessor, String sessionId,
             PlayerRef player) {
-        // add a player to the game
+        // TODO logic stuff
         return CompletableFuture.completedFuture(null);
     };
 
