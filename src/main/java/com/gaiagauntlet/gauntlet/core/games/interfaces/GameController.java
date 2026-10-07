@@ -20,6 +20,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 public abstract class GameController {
     public abstract String getId();
 
+    /** The name players see for this game. */
+    public String getDisplayName() {
+        return getId();
+    }
+
     /**
      * Note: this sets up registries and worlds. This does NOT start the game. The
      * "Start Game" trigger is handled by the game's own implementation

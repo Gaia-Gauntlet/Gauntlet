@@ -153,9 +153,9 @@ class GauntletOrchestratorTest {
     }
 
     @Test
-    void collectsHudElementsFromPluginsAndGamesInOrder() {
+    void collectsCoreHudElementsAndHudElementsFromPluginsAndGamesInOrder() {
         var ids = GauntletOrchestrator.getHudElements().stream().map(HudElement::getId).toList();
-        assertEquals(List.of("Teams", "Timer", "Zones", "Banner"), ids);
+        assertEquals(List.of("Teams", "Session", "Timer", "Zones", "Banner"), ids);
     }
 
     @Test

@@ -2,12 +2,14 @@ package com.gaiagauntlet.gauntlet;
 
 import com.gaiagauntlet.gauntlet.core.GauntletCore;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
+import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
+import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
@@ -64,6 +66,7 @@ public class GauntletPlugin extends JavaPlugin {
     private void setupCommands() {
         getCommandRegistry().registerCommand(new GauntletCommand());
         getCommandRegistry().registerCommand(new PartyCommands());
+        getCommandRegistry().registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
     }
 
     private void setupComponents() {

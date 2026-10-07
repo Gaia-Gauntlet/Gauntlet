@@ -34,10 +34,12 @@ import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.GauntletHud;
+import com.gaiagauntlet.gauntlet.core.ui.huds.SessionHud;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
+import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.SessionTab;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -63,7 +65,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  */
 public class GauntletOrchestrator {
 
-    private static final Map<String, PageFactory> corePages = Map.of(AdminPage.ID, AdminPage::new);
+    private static final Map<String, PageFactory> corePages = Map.of(
+            AdminPage.ID, AdminPage::new,
+            SessionsPage.ID, SessionsPage::new);
 
     /** The HUD currently shown to each player, so a replaced or abandoned HUD stops refreshing */
     private static final Map<UUID, GauntletHud> huds = new ConcurrentHashMap<>();
@@ -140,9 +144,9 @@ public class GauntletOrchestrator {
         player.getPageManager().openCustomPage(ref, store, factory.get().create(playerRef, session));
     }
 
-    /** Collects new HUD elements from every UI plugin and every game, for one player's HUD, in draw order */
+    /** Collects new HUD elements from the orchestrator, every UI plugin and every game, for one player's HUD, in draw order */
     public static List<HudElement> getHudElements() {
-        var elements = new ArrayList<HudElement>();
+        var elements = new ArrayList<HudElement>(List.of(new SessionHud()));
         for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
             elements.addAll(plugin.getHudElements());
         }
