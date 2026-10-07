@@ -50,5 +50,11 @@ public final class HudWidgets {
                 cmd.set(selector + ".Text", text);
             }
         }
+
+        public void background(@Nonnull UICommandBuilder cmd, @Nonnull String selector, @Nonnull String texture) {
+            if (!texture.equals(values.put(selector + ".Background", texture))) {
+                cmd.set(selector + ".Background", texture);
+            }
+        }
     }
 }

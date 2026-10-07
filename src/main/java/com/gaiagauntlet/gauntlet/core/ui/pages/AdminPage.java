@@ -252,29 +252,29 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     // Confirm prompt
 
     private void openConfirm(@Nonnull AdminPageEvent event) {
-        // pendingConfirm = event;
-        // var cmd = new UICommandBuilder();
-        // cmd.set("#MainPage.Visible", false);
-        // cmd.set("#ConfirmPage.Visible", true);
-        // cmd.set("#ConfirmMessage.Text", switch (event.action()) {
-        //     case "match.stop" -> "Stop the match in " + game.id() + " and send everyone back to their lobby?";
-        //     case "match.end" -> "End the live match in " + game.id() + " now and show the standings?";
-        //     case "games.close" -> "Close " + game.id() + ", sending everyone in its lobbies to the hub and removing the lobbies?";
-        //     default -> "Remove " + game.id() + " for good?";
-        // });
-        // sendUpdate(cmd, null, false);
+        pendingConfirm = event;
+        var target = session == null ? "this session" : session.getId();
+        var cmd = new UICommandBuilder();
+        cmd.set("#MainPage.Visible", false);
+        cmd.set("#ConfirmPage.Visible", true);
+        cmd.set("#ConfirmMessage.Text", switch (event.action()) {
+            case "match.stop" -> "Stop the match in " + target + " and send everyone back to the lobby?";
+            case "match.end" -> "End the live match in " + target + " now and show the standings?";
+            default -> "Go ahead with " + event.action() + " on " + target + "?";
+        });
+        sendUpdate(cmd, null, false);
     }
 
     private void closeConfirm(@Nullable Message status) {
-        // var cmd = new UICommandBuilder();
-        // var evt = new UIEventBuilder();
-        // cmd.set("#ConfirmPage.Visible", false);
-        // cmd.set("#MainPage.Visible", true);
-        // if (status != null) {
-        //     cmd.set("#ActionStatus.TextSpans", status);
-        // }
-        // activeTab.render(cmd, evt, game);
-        // sendUpdate(cmd, evt, false);
+        var cmd = new UICommandBuilder();
+        var evt = new UIEventBuilder();
+        cmd.set("#ConfirmPage.Visible", false);
+        cmd.set("#MainPage.Visible", true);
+        if (status != null) {
+            cmd.set("#ActionStatus.TextSpans", status);
+        }
+        activeTab.render(cmd, evt, session);
+        sendUpdate(cmd, evt, false);
     }
 
     // Refresh timer

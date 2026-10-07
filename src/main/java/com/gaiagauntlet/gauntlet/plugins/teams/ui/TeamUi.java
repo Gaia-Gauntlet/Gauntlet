@@ -16,8 +16,8 @@ import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.Universe;
 
-/** Lookups and drawing shared by the Teams plugin's admin tab and HUD elements. */
-final class TeamUi {
+/** Lookups and drawing shared by the Teams plugin's admin tab and HUD elements, and by games drawing teams. */
+public final class TeamUi {
 
     static final String DEAD_ICON = "GG/Dead.png";
     static final String DISCONNECTED_ICON = "GG/Disconnected.png";
@@ -26,19 +26,19 @@ final class TeamUi {
     }
 
     @Nullable
-    static TeamListComponent teamsOf(@Nullable GameSession session) {
+    public static TeamListComponent teamsOf(@Nullable GameSession session) {
         var type = TeamListComponent.getSessionComponentType();
         return session == null || type == null ? null : session.get(type).orElse(null);
     }
 
     @Nullable
-    static TeamComponent teamOf(@Nullable GameSession session, @Nonnull UUID player) {
+    public static TeamComponent teamOf(@Nullable GameSession session, @Nonnull UUID player) {
         var teams = teamsOf(session);
         return teams == null ? null : teams.get(player);
     }
 
     @Nonnull
-    static List<TeamComponent> sortedTeams(@Nonnull TeamListComponent teamList) {
+    public static List<TeamComponent> sortedTeams(@Nonnull TeamListComponent teamList) {
         var teams = new ArrayList<>(teamList.getTeams().values());
         teams.sort((a, b) -> a.getId().compareToIgnoreCase(b.getId()));
         return teams;
@@ -53,7 +53,7 @@ final class TeamUi {
     }
 
     @Nonnull
-    static String displayName(@Nonnull TeamComponent team) {
+    public static String displayName(@Nonnull TeamComponent team) {
         return team.getName().isEmpty() ? team.getId() : team.getName();
     }
 
@@ -79,7 +79,7 @@ final class TeamUi {
     }
 
     /** Shows the team's icon, or its initial on the tile the markup draws when it has none. */
-    static void icon(@Nonnull UICommandBuilder cmd, @Nonnull String icon, @Nonnull String initial, @Nonnull TeamComponent team) {
+    public static void icon(@Nonnull UICommandBuilder cmd, @Nonnull String icon, @Nonnull String initial, @Nonnull TeamComponent team) {
         var path = team.getUiIcon();
         if (!path.isBlank()) {
             cmd.set(icon + ".Background", path);
@@ -88,5 +88,14 @@ final class TeamUi {
         }
         var name = displayName(team);
         cmd.set(initial + ".Text", name.isEmpty() ? "?" : name.substring(0, 1).toUpperCase(Locale.ROOT));
+    }
+
+    /** Where a panel stacked just below the viewer's party panel starts. That panel is shorter for a team that only watches. */
+    public static int belowParty(@Nullable GameSession session, @Nonnull UUID player) {
+        var own = teamOf(session, player);
+        if (own == null) {
+            return PartyHud.TOP;
+        }
+        return PartyHud.TOP + (own.isParticipant() ? PartyHud.HEIGHT : PartyHud.SPECTATING_HEIGHT) + 10;
     }
 }

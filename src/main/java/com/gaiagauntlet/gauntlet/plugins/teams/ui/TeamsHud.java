@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
@@ -18,6 +19,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 /**
  * Every other participating team in the viewer's session, below the party panel: one row per team
  * with its members' portraits and scores. A row hides once nobody on it is online and standing.
+ * Games that track their match hand this spot to their lobby scoreboard until the match reaches the arena.
  */
 public final class TeamsHud implements HudElement {
 
@@ -47,6 +49,9 @@ public final class TeamsHud implements HudElement {
 
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        if (MatchUtils.get(session) != null && MatchUtils.inLobby(session)) {
+            return false;
+        }
         return !otherTeams(player, session).isEmpty();
     }
 
@@ -63,7 +68,7 @@ public final class TeamsHud implements HudElement {
             rows.add(TeamUi.membersOf(team));
         }
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = topBelowParty(player, session);
+        var top = TeamUi.belowParty(session, player.getUuid());
         if (!rows.equals(builtRows) || !ids.equals(builtTeams) || top != builtTop) {
             build(cmd, teams, rows, top);
         }
@@ -125,14 +130,5 @@ public final class TeamsHud implements HudElement {
             }
         }
         return teams;
-    }
-
-    /** Just below the viewer's party panel, which is shorter for a team that only watches. */
-    private static int topBelowParty(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        var own = TeamUi.teamOf(session, player.getUuid());
-        if (own == null) {
-            return PartyHud.TOP;
-        }
-        return PartyHud.TOP + (own.isParticipant() ? PartyHud.HEIGHT : PartyHud.SPECTATING_HEIGHT) + 10;
     }
 }
