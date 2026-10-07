@@ -7,6 +7,7 @@ import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyController;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.PlayerMarker;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -25,14 +26,19 @@ public class PlayerSystems {
         if (player == null)
             return;
 
+        var playerMarker = store.getComponent(ref, PlayerMarker.getComponentType());
+        if (playerMarker == null) return;
+
+        store.removeComponent(ref, PlayerMarker.getComponentType());
+        var desiredUuid = playerMarker.getDesiredWorld();
+        if (!desiredUuid.equals(destinationId)) return;
+
+        var sessionId = playerMarker.getSessionId();
+
         // run on hub thread
         GauntletUtils.run(hub, () -> {
-            var session = PartyUtils
-                    .getPartyNullable(player)
-                    .flatMap(PartyUtils::sessionFor)
-                    .filter(s -> !s.available())
-                    .orElse(null);
-            if (session == null) return;
+            var session = GauntletUtils.sessionFor(sessionId).orElse(null);
+            if (session == null) return; // session not valid
             var currentGame = session.getCurrentGame();
             if (currentGame == null)
                 return;
@@ -40,6 +46,15 @@ public class PlayerSystems {
             // get the lobby controller for the game
             if (!(GameRegistry.getGame(currentGame).orElse(null) instanceof LobbyController lobbyController)) {
                 // not even the right controller
+                return;
+            }
+
+            // final check that the player is still in the party
+            var party = PartyUtils.getPartyNullable(player).orElse(null);
+            if (party == null) return;
+            var partySession = GauntletUtils.withResource().sessionFor(party.getId()).orElse(null);
+
+            if (partySession == null || !partySession.getId().equals(sessionId) || !partySession.getCurrentGame().equals(currentGame)) {
                 return;
             }
 

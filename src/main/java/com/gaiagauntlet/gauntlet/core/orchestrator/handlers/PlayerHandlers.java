@@ -136,14 +136,13 @@ public class PlayerHandlers extends HandlerUtils {
 
         // actually join the session now
         if (session.available()) {
-            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
+            evt.complete(GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.join.warn")
                     .param("playerName", playerRef.getUsername())
-                    .param("reason", "session is not active"));
+                    .param("reason", "session is not active")));
             return;
         }
 
         var hubWorld = GauntletUtils.withHubWorld();
-        joinGame(hubWorld, partySession, List.of(playerRef));
 
         // join the game
         GauntletUtils.run(hubWorld, () -> {
@@ -298,13 +297,15 @@ public class PlayerHandlers extends HandlerUtils {
         // GauntletOrchestrator.forgetHud(playerRef);
 
         // leave party
-        var party = PartyUtils.getParty(playerRef);
+        var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
         if (party != null) {
 
             var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
                 party.clearOffline(playerRef.getUuid());
                 // TODO: fix mark offline logic
+                // ISSUE: Event currently expects a playerRef for the event. Unfortunately, we only have the player's UUID at this point
 
+                // this means we can't actually emit the playerLeave event :/
             }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
 
             party.setOffline(playerRef.getUuid(), future);
@@ -383,6 +384,7 @@ public class PlayerHandlers extends HandlerUtils {
 
         // leave old party
         PartyUtils.getPartyNullable(playerRef).ifPresent(party -> {
+            if (newParty.getId().equals(party.getId())) return; // joining party they are already in
             try {
                 GauntletEventRegistry.dispatch(PlayerPartyEvent.Leave(playerRef, party.getId()));
             } catch (Exception e) {

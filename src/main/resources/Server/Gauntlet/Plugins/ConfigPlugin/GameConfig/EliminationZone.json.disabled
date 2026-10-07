@@ -1,5 +1,5 @@
 {
-  "Type": "Elimination_Zone",
+  "Type": "EliminationZone",
   "Enabled": true,
   "InstanceTemplateName": "GGEliminationZone",
   "FriendlyFireEnabled": false,

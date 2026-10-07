@@ -20,7 +20,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
-import com.gaiagauntlet.gauntlet.plugins.transfer.TransferPlugin;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.transfer.TransferUtils;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Transform;
@@ -121,7 +121,7 @@ public abstract class LobbyController extends GameController {
         if (arena == null)
             return CompletableFuture.failedFuture(new IllegalStateException("No live arena for session " + sessionId));
 
-        TransferPlugin.queue(store, arena, sessionId, new HashSet<>(players), new Transform());
+        TransferUtils.queue(store, arena, sessionId, new HashSet<>(players), new Transform());
         return CompletableFuture.completedFuture(null);
     }
 

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.hypixel.hytale.builtin.adventure.reputation.command.ReputationAddCommand;
 import com.hypixel.hytale.component.Ref;
@@ -40,14 +41,14 @@ public class RejoinCommand extends AbstractTargetPlayerCommand {
             @Nonnull Store<EntityStore> store) {
 
         // rejoins a party the player is in
-        var party = PartyUtils.getParty(playerRef);
+        var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
+        if (party == null) return; // not in party
 
-        PartyUtils.sessionFor(party).ifPresent(sess -> {
+        if (!party.includesOfflinePlayer(playerRef)) {
+            return; // player is not considered offline
+        }
 
-            // TODO: Mark online and reconnect logic - this is not final or even that good tbh
-            GauntletEventRegistry.dispatch(PlayerGameEvent.Add(playerRef, sess.getId()));
-        });
-        ;
-
+        // dispatch add to party - marks as online again and joins the session if the session is active
+        GauntletEventRegistry.dispatch(PlayerPartyEvent.Join(playerRef, party.getId()));
     }
 }

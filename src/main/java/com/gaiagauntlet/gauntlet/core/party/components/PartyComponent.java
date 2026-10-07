@@ -33,7 +33,7 @@ public class PartyComponent {
                     (c, v) -> c.label = v,
                     c -> c.label)
             .add()
-            .append(new KeyedCodec<>("Players", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
+            .append(new KeyedCodec<>("Players", new SetCodec<>(Codec.UUID_STRING, () -> ConcurrentHashMap.newKeySet(), false)),
                     (c, v) -> {
                         c.players.clear();
                         c.players.addAll(v);
@@ -50,7 +50,7 @@ public class PartyComponent {
     String id;
     @Getter
     String label;
-    Set<UUID> players = new HashSet<>();
+    Set<UUID> players = ConcurrentHashMap.newKeySet();
     @Getter
     UUID owner;
     // list of offline players with their cancellation token - change type of
@@ -82,6 +82,10 @@ public class PartyComponent {
         if (Objects.nonNull(playerRef)) {
             sendMessage(msg("server.gg.commands.party.joined")
                     .param("player", playerRef.getUsername()));
+        }
+        if (includesOfflinePlayer(playerRef)) {
+            setOnline(player);
+            return;
         }
         players.add(player);
     }

@@ -1,7 +1,5 @@
-package com.gaiagauntlet.gauntlet.plugins.transfer;
+package com.gaiagauntlet.gauntlet.plugins.lobbycontroller.transfer;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -9,48 +7,22 @@ import java.util.concurrent.TimeUnit;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.PlayerMarker;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
-import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-public class TransferPlugin implements GamePlugin {
+public class TransferUtils {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    public static final String ID = "TransferPlugin";
-
-    @Override
-    public String getId() {
-        return ID;
-    }
-
-    @Override
-    public List<String> getDependencies() {
-        return List.of(GameStorePlugin.ID);
-    }
-
-    @Override
-    public void init(JavaPlugin host) {
-        // not sure if this is needed tbh - waiting to hear from melodic as to WHY these are being tracked
-        // TransferComponent
-        //         .setComponentType(GameComponentRegistry.register(TransferComponent.ID, TransferComponent.class));
-
-    }
 
     /** Queues a player to join, will be added on the next batch */
     public static void queue(ComponentAccessor<EntityStore> originAccessor, World destination, String sessionId,
             Set<PlayerRef> players, Transform location) {
-
-        // var hubEcs = GameStore.ensureStore(originAccessor, sessionId);
-
-        // var transferComponent = hubEcs.ensure(TransferComponent.getComponentType(),
-        //         () -> new TransferComponent(destination));
 
         var origin = originAccessor.getExternalData().getWorld();
 
@@ -61,10 +33,6 @@ public class TransferPlugin implements GamePlugin {
         // if this were an individual plugin, it would have it's own config.
         // it is not it's own plugin, thus it uses the global config :P
         var cfg = GauntletConfig.get();
-
-        // add all players into a batch
-        // var batch = new BatchItem(destination);
-        // transferComponent.add(batch);
 
         // process batch
         int index = 0;
@@ -104,6 +72,7 @@ public class TransferPlugin implements GamePlugin {
                     }
 
                     // put the teleport component
+                    originAccessor.putComponent(ref, PlayerMarker.getComponentType(), new PlayerMarker(sessionId, destination.getWorldConfig().getUuid()));
                     originAccessor.putComponent(ref, Teleport.getComponentType(), warpComponent);
                 });
             }, delay, TimeUnit.SECONDS);

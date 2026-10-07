@@ -38,16 +38,6 @@ public class EZController extends LobbyController {
         return ID;
     }
 
-    @Override
-    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
-        return null;
-    }
-
     private static final List<String> requiredPlugins = List.of(
             AnnouncerPlugin.ID,
             GameStatePlugin.ID,
@@ -97,13 +87,13 @@ public class EZController extends LobbyController {
     public void setupGame(World world, GameEcs gameStore, String sessionId) {
         var session = GauntletUtils.sessionFor(sessionId).orElse(null);
         assert session != null;
-        var sessionGameConfigComponent = session.get(SessionGameConfigComponent.getComponentType()).orElse(null);
+        // var sessionGameConfigComponent = session.get(SessionGameConfigComponent.getComponentType()).orElse(null);
         var config = getDefaultConfigAssetId();
-        if (sessionGameConfigComponent != null) {
-            var overrideConfig = sessionGameConfigComponent.getConfig(session.getNext());
-            config = overrideConfig == null ? config : overrideConfig;
-        }
-        if (config != null) gameStore.put(GameConfigComponent.getComponentType(), new GameConfigComponent(config));
+        // if (sessionGameConfigComponent != null) {
+            // var overrideConfig = sessionGameConfigComponent.getConfig(session.getNext());
+            // config = overrideConfig == null ? config : overrideConfig;
+        // }
+        // if (config != null) gameStore.put(GameConfigComponent.getComponentType(), new GameConfigComponent(config));
     }
 
     @Override
