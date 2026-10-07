@@ -44,6 +44,9 @@ public abstract class GameController {
     /** Triggered when a player leaves the game */
     public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player);
 
+    /** Get the ID of the GameConfigAsset to use by default for this game. */
+    public String getDefaultConfigAssetId() {return null;}
+
     /** Returns the admin tab for configuring / managing this game */
     public abstract AdminTab getAdminTab();
 
