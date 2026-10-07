@@ -65,11 +65,18 @@ public final class MatchUtils {
         onHub(() -> transitionNow(session, to, countdownSeconds));
     }
 
-    /** Ends the match with the given standings, best first, and starts the end screen. */
+    /**
+     * Ends the match with the given standings, best first, and starts the end screen. When there is
+     * more than one game to pick from, the session votes on its next game during the end screen.
+     */
     public static void end(@Nonnull GameSession session, @Nonnull List<Standing> standings) {
         onHub(() -> {
             ensure(session).setStandings(standings);
             transitionNow(session, MatchState.ENDED, END_SCREEN_SECONDS);
+            var games = VoteUtils.allGames();
+            if (games.size() > 1) {
+                VoteUtils.open(session, games, END_SCREEN_SECONDS);
+            }
         });
     }
 

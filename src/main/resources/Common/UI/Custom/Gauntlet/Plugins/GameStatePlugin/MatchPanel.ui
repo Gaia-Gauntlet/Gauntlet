@@ -64,6 +64,16 @@ Group {
                 $G.@Danger #ResetScores { Text: "Reset event scores"; }
             }
         }
+
+        $G.@Card {
+            $G.@Header { @Text = "Next game vote"; }
+            $G.@Field #VoteField { @Key = "Vote"; }
+            $G.@Note { @Text = "Opens on its own when a match ends and more than one game is registered."; }
+            $G.@ButtonRow {
+                $G.@Action #VoteOpen  { @Anchor = (Right: 3); Text: "Open vote"; }
+                $G.@Action #VoteClose { @Anchor = (Left: 3); Text: "Close vote now"; }
+            }
+        }
     }
 
     $G.@Gutter {}

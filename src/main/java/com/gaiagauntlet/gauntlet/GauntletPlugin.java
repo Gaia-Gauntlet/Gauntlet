@@ -13,6 +13,7 @@ import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
@@ -67,6 +68,7 @@ public class GauntletPlugin extends JavaPlugin {
         getCommandRegistry().registerCommand(new GauntletCommand());
         getCommandRegistry().registerCommand(new PartyCommands());
         getCommandRegistry().registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
+        getCommandRegistry().registerCommand(new OpenPageCommand("vote", "Vote for your session's next game", VoteUtils.PAGE_ID));
     }
 
     private void setupComponents() {
