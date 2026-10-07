@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;

@@ -88,8 +88,5 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public void setupGame(World world, GameEcs gameStore, String sessionId) {
-        var config = EZGameConfig.getAssetMap().get(EZGameConfig.ID);
-        if (config != null) gameStore.put(EZGameConfig.TYPE, config);
-    }
+    public void setupGame(World world, GameEcs gameStore, String sessionId) {}
 }

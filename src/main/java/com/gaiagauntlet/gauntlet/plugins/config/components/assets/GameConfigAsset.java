@@ -16,53 +16,48 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public class GameConfig implements JsonAssetWithMap<String, IndexedLookupTableAssetMap<String, GameConfig>>, GameComponent {
-
-    public static final GameComponentType<GameConfig> TYPE = GameComponentRegistry.register(
-        "GameConfig", GameConfig.class, GameConfig.ABSTRACT_CODEC);
+public class GameConfigAsset implements JsonAssetWithMap<String, IndexedLookupTableAssetMap<String, GameConfigAsset>> {
 
     protected AssetExtraInfo.Data data;
     @Getter private String id;
 
-    public static final AssetCodecMapCodec<String, @NotNull GameConfig> CODEC = new AssetCodecMapCodec<>(
+    public static final AssetCodecMapCodec<String, @NotNull GameConfigAsset> CODEC = new AssetCodecMapCodec<>(
         Codec.STRING,
         (t, k) -> t.id = k,
         t -> t.id,
         (t, data) -> t.data = data,
         t -> t.data);
 
-    public static final BuilderCodec<@NotNull GameConfig> ABSTRACT_CODEC = BuilderCodec
-        .abstractBuilder(GameConfig.class)
-        // NOTE: Add more config here ONLY if it is truly universal behaviour across all
-        // games
+    public static final BuilderCodec<@NotNull GameConfigAsset> ABSTRACT_CODEC = BuilderCodec
+        .abstractBuilder(GameConfigAsset.class)
+        // NOTE: Add more config here ONLY if it is truly universal behaviour across all games
         .build();
 
     /**
-     * The asset store for {@link GameConfig} assets.
+     * The asset store for {@link GameConfigAsset} assets.
      */
-    private static AssetStore<String, GameConfig, IndexedLookupTableAssetMap<String, GameConfig>> ASSET_STORE;
+    private static AssetStore<String, GameConfigAsset, IndexedLookupTableAssetMap<String, GameConfigAsset>> ASSET_STORE;
 
     /**
-     * The validator cache for {@link GameConfig} assets.
+     * The validator cache for {@link GameConfigAsset} assets.
      */
     @Nonnull
     public static final ValidatorCache<String> VALIDATOR_CACHE = new ValidatorCache<>(
-        new AssetKeyValidator<>(GameConfig::getAssetStore));
+        new AssetKeyValidator<>(GameConfigAsset::getAssetStore));
 
     @Nonnull
-    public static AssetStore<String, GameConfig, IndexedLookupTableAssetMap<String, GameConfig>> getAssetStore() {
+    public static AssetStore<String, GameConfigAsset, IndexedLookupTableAssetMap<String, GameConfigAsset>> getAssetStore() {
         if (ASSET_STORE == null)
-            ASSET_STORE = AssetRegistry.getAssetStore(GameConfig.class);
+            ASSET_STORE = AssetRegistry.getAssetStore(GameConfigAsset.class);
         return ASSET_STORE;
     }
 
-    public static Map<String, GameConfig> getAssetMap() {
+    public static Map<String, GameConfigAsset> getAssetMap() {
         return getAssetStore().getAssetMap().getAssetMap();
     }
 }

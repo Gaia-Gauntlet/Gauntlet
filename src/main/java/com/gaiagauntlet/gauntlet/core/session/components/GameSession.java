@@ -92,6 +92,16 @@ public class GameSession {
         return Optional.of(type.getTypeClass().cast(sesComp));
     }
 
+    public <T extends SessionComponent> T ensure(SessionComponentType<T> type, T component) {
+        var sesComp = get(type);
+        if (sesComp.isEmpty()) {
+            put(type, component);
+            return component;
+        } else {
+            return sesComp.get();
+        }
+    }
+
     @Getter private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
 
 
