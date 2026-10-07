@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  */
 public final class TeamSpectateControlInteraction extends SimpleInstantInteraction {
 
-    public static final String ID = "GG_TeamSpectateControl";
+    public static final String ID = "TeamSpectateControl";
 
     public enum Action { Previous, Next, Freefly }
 

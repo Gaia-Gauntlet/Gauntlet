@@ -1,0 +1,49 @@
+{
+  "Parent": "Spectator",
+  "InteractionOverrides": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "TeamSpectateControl",
+          "Action": "Previous"
+        }
+      ],
+      "RequireNewClick": true
+    },
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "TeamSpectateControl",
+          "Action": "Next"
+        }
+      ],
+      "RequireNewClick": true
+    },
+    "Dodge": {
+      "Interactions": [
+        {
+          "Type": "TeamSpectateControl",
+          "Action": "Next"
+        }
+      ],
+      "RequireNewClick": true
+    },
+    "Use": {
+      "Interactions": [
+        {
+          "Type": "TeamSpectateControl",
+          "Action": "Next"
+        }
+      ],
+      "RequireNewClick": true
+    }
+  },
+  "Spectator": true,
+  "Invulnerable": true,
+  "Intangible": true,
+  "Flying": true,
+  "NoClip": false,
+  "PreventInventoryAccess": true,
+  "PreventEmotes": true,
+  "OverrideAllInteractions": true
+}

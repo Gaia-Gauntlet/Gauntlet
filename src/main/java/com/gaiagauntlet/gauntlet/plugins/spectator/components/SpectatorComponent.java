@@ -9,6 +9,8 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.modules.entity.component.PersistentGameModeType;
 import com.hypixel.hytale.server.core.modules.entity.component.Spectating;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,11 +18,10 @@ import javax.annotation.Nullable;
 /** Marks a player as spectating. Adding or replacing it retargets the follow camera. */
 public final class SpectatorComponent implements Component<EntityStore> {
 
-    /** The game mode asset with the spectate controls, at Server/Entity/GameMode/GGSpectator.json. */
-    public static final String GAME_MODE = "GGSpectator";
+    /** The game mode asset with the spectate controls, at Server/Entity/GameMode/GauntletSpectator.json. */
+    public static final String GAME_MODE = "GauntletSpectator";
 
-    private static ComponentType<EntityStore, SpectatorComponent> type;
-
+    @Setter @Getter private static ComponentType<EntityStore, SpectatorComponent> componentType;
     @Nullable private final Ref<EntityStore> target;
 
     public SpectatorComponent() {
@@ -29,15 +30,6 @@ public final class SpectatorComponent implements Component<EntityStore> {
 
     public SpectatorComponent(@Nullable Ref<EntityStore> target) {
         this.target = target;
-    }
-
-    public static void setType(@Nonnull ComponentType<EntityStore, SpectatorComponent> componentType) {
-        type = componentType;
-    }
-
-    @Nonnull
-    public static ComponentType<EntityStore, SpectatorComponent> getComponentType() {
-        return type;
     }
 
     /** Who to follow, or null for whoever the spectating rules pick first. */
@@ -52,9 +44,9 @@ public final class SpectatorComponent implements Component<EntityStore> {
      * Returns true when the player was spectating. Runs on the player's world thread.
      */
     public static boolean clear(@Nonnull Ref<EntityStore> ref, @Nonnull ComponentAccessor<EntityStore> accessor) {
-        if (accessor.getComponent(ref, type) != null) {
+        if (accessor.getComponent(ref, componentType) != null) {
             // Removing the marker exits the gamemode and resets the camera through the change system.
-            accessor.tryRemoveComponent(ref, type);
+            accessor.tryRemoveComponent(ref, componentType);
             return true;
         }
         var mode = accessor.getComponent(ref, PersistentGameModeType.getComponentType());

@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.spectator.commands;
 
+import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -24,6 +25,11 @@ public class SpectatorCommand extends AbstractTargetPlayerCommand {
         @NonNull World targetWorld,
         @NonNull Store<EntityStore> targetStore
     ) {
-
+        var spectatorComponent = targetStore.getComponent(targetRef, SpectatorComponent.getComponentType());
+        if (spectatorComponent != null) { // Release spectator
+            targetStore.removeComponent(targetRef, SpectatorComponent.getComponentType());
+        } else { // Set to spectator
+            targetStore.addComponent(targetRef, SpectatorComponent.getComponentType(), new SpectatorComponent());
+        }
     }
 }

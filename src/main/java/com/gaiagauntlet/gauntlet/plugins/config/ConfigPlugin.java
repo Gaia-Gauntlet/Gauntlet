@@ -65,7 +65,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
     }
 
     @Override
-    public void setup(ComponentAccessor<EntityStore> accessor, GameSession session, String gameId) {
+    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession session, GameEcs gameStore, String gameId) {
         var sessionGameConfigComponent = session.ensure(
             SessionGameConfigComponent.getSessionComponentType(),
             new SessionGameConfigComponent()
@@ -74,7 +74,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
         var config = overrideConfig == null
             ? getId() // Game ID is the default config ID
             : overrideConfig;
-        GameStore.ensureStore(accessor, gameId).put(
+        GameStore.ensureStore(arenaAccessor, gameId).put(
             GameConfigComponent.getComponentType(),
             new GameConfigComponent(config)
         );

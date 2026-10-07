@@ -167,9 +167,8 @@ public final class SpectatorCamera {
     public static void release(@Nonnull Ref<EntityStore> spectator, @Nonnull ComponentAccessor<EntityStore> accessor) {
         FOLLOWING.remove(spectator);
         var player = accessor.getComponent(spectator, PlayerRef.getComponentType());
-        if (player == null) {
-            return;
-        }
+        if (player == null) return;
+
         var mode = GameModeTypes.getCurrentType(spectator, accessor);
         var locked = mode == null ? null : mode.getLockedCameraView();
         if (locked != null) {
@@ -205,13 +204,11 @@ public final class SpectatorCamera {
     public static void stop(@Nonnull Ref<EntityStore> spectator, @Nullable Ref<EntityStore> target,
             @Nonnull ComponentAccessor<EntityStore> accessor) {
         GameModeTypes.exit(spectator, accessor);
-        if (target == null || !target.isValid() || target.getStore() != spectator.getStore()) {
-            return;
-        }
+        if (target == null || !target.isValid() || target.getStore() != spectator.getStore()) return;
+
         var targetTransform = accessor.getComponent(target, TransformComponent.getComponentType());
-        if (targetTransform == null) {
-            return;
-        }
+        if (targetTransform == null) return;
+        
         var head = accessor.getComponent(spectator, HeadRotation.getComponentType());
         var cameraRotation = head != null ? head.getRotation() : targetTransform.getRotation();
         var pivotHeight = Math.max(ModelComponent.getEyeHeight(target, accessor), MIN_PIVOT_HEIGHT);
