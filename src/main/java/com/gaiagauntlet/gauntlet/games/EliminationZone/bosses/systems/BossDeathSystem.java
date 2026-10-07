@@ -1,9 +1,9 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.systems;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.BossSpawner;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfig;
+import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -37,9 +37,8 @@ public final class BossDeathSystem extends DeathSystems.OnDeathSystem {
         var world = store.getExternalData().getWorld();
         Collection<GameEcs> games = GameStore.withResource(world).getAll();
         GameEcs game = games.stream().filter((g) -> {
-            GameConfig config = g.get(GameConfig.TYPE).orElse(null);
-            if (config == null) return false;
-            return config instanceof EZGameConfig;
+            var gameConfigComponent = g.get(GameConfigComponent.getComponentType()).orElse(null);
+            return (gameConfigComponent != null) && (gameConfigComponent.getConfig() instanceof EZGameConfigAsset);
         }).findFirst().orElse(null);
         String gameId = GameStore.withResource(world).getId(game);
 

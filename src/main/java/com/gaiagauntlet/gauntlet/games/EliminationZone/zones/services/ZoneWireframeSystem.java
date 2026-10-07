@@ -1,12 +1,12 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services;
 
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneVisualisationComponent;
+import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
-import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -16,8 +16,6 @@ import com.hypixel.hytale.math.matrix.Matrix4dUtil;
 import com.hypixel.hytale.protocol.DebugShape;
 import com.hypixel.hytale.protocol.packets.player.DisplayDebug;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
-import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.joml.Matrix4d;
 import org.joml.Vector3f;
@@ -56,8 +54,10 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
         String game = playerComp.getCurrentGame();
         var gameEcs = GameStore.withStore(world, game).orElse(null);
         if (gameEcs == null) return;
-        var config = gameEcs.get(EZGameConfig.TYPE).orElse(null);
-        if (!(config instanceof EZGameConfig gameConfig)) return;
+        var configComp = gameEcs.get(GameConfigComponent.getComponentType()).orElse(null);
+        if (configComp == null) return;
+        var config = configComp.getConfig();
+        if (!(config instanceof EZGameConfigAsset gameConfig)) return;
         List<ZoneDefinition> zones = Arrays.asList(gameConfig.getZones());
 
         if (zones.isEmpty()) {return;}

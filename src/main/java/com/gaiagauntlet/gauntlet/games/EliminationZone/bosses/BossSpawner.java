@@ -2,7 +2,7 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossScalingComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
@@ -11,6 +11,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
+import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.builtin.triggervolumes.TriggerVolumesPlugin;
 import com.hypixel.hytale.builtin.triggervolumes.manager.VolumeEntry;
@@ -52,7 +53,7 @@ public final class BossSpawner {
     }
 
     /** Spawns the named boss at one of its points in an open zone. Throws with an admin-facing reason when it cannot. */
-    public static void spawn(@Nonnull String game, @Nonnull World arena, @Nonnull String bossId) {
+    public static void spawn(@Nonnull String session, @Nonnull World arena, @Nonnull String bossId) {
         var boss = BossUtils.getBoss(bossId);
         if (boss == null) {
             throw new IllegalArgumentException("No GaiaBoss role '" + bossId + "'. Bosses: " + String.join(", ", BossUtils.getBossNames()));
@@ -61,22 +62,22 @@ public final class BossSpawner {
             throw new IllegalStateException("Boss " + boss.roleId() + " is disabled in its role");
         }
 
-        BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
+        BossesComponent bosses = GameStore.ensureStore(arena, session).ensure(BossesComponent.TYPE, BossesComponent::new);
 
         if (bosses.isActive(boss.roleId()) || bosses.getPending().contains(boss.roleId())) {
             throw new IllegalStateException(boss.roleId() + " is already in the arena");
         }
 
-        EZGameConfig ezGameConfig = (EZGameConfig) GameStore.ensureStore(arena, game).get(EZGameConfig.TYPE).orElse(null);
-        if (ezGameConfig == null) return;
+        var gameConfig = ConfigUtils.getGameConfig(arena, session);
+        if (!(gameConfig instanceof EZGameConfigAsset ezGameConfig)) return;
         int limit = ezGameConfig.getMaxActiveBosses();
 
         if (bosses.count() >= limit) {
             throw new IllegalStateException("Boss limit reached (" + limit + ")");
         }
         var points = new ArrayList<SpawnPoint>();
-        for (var point : spawnPoints(arena, game)) {
-            if (isUsable(game, arena, boss, point)) {
+        for (var point : spawnPoints(arena, session)) {
+            if (isUsable(session, arena, boss, point)) {
                 points.add(point);
             }
         }
@@ -88,8 +89,8 @@ public final class BossSpawner {
 
 
         bosses.getPending().add(boss.roleId());
-        GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(game);
-        place(game, arena, boss, point);
+        GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(session);
+        place(session, arena, boss, point);
 
         // TODO: Find out if this chunk loading stuff is actually necessary or if there's a better way around it.
 //        var chunk = arena.getChunkIfLoaded(chunkIndex);
@@ -171,8 +172,7 @@ public final class BossSpawner {
         BossesComponent bosses = GameStore.ensureStore(arena, game).ensure(BossesComponent.TYPE, BossesComponent::new);
         bosses.add(new BossesComponent.Active(boss.roleId(), ref, point.zoneId));
 
-        LOGGER.atInfo().log("[%s] %s spawned in %s", game, boss.roleId(), point.zoneId());
-        GaiaLog.atWarning().log("Boss " + boss.roleId() + " spawned in " + point.zoneId()).withGameId(game);
+        GaiaLog.atInfo().log("Boss " + boss.roleId() + " spawned in " + point.zoneId()).withGameId(game);
         Announcer.title(arena, Message.raw("BOSS APPEARED"),
                 Message.raw(boss.displayText() + " has appeared in " + point.zoneId() + "!"), EventTitleStyle.Major, SOUND_SPAWN);
 
@@ -185,8 +185,7 @@ public final class BossSpawner {
         bosses.remove(bossId);
         var boss = BossUtils.getBoss(bossId);
         var name = boss == null ? bossId.replace('_', ' ') : boss.displayText();
-        LOGGER.atInfo().log("[%s] %s defeated", game, bossId);
-        GaiaLog.atWarning().log("Boss " + bossId + " defeated").withGameId(game);
+        GaiaLog.atInfo().log("Boss " + bossId + " defeated").withGameId(game);
         Announcer.title(arena, Message.raw("BOSS DEFEATED"), Message.raw(name + " has been defeated!"), EventTitleStyle.Major, SOUND_DEFEAT);
         GauntletEventRegistry.dispatch(new BossEvents.Defeated(bossId));
     }
@@ -199,9 +198,9 @@ public final class BossSpawner {
 
     /** Every boss spawn volume in the world with the zone it sits in. */
     @Nonnull
-    public static List<SpawnPoint> spawnPoints(@Nonnull World arena, String game) {
-        EZGameConfig ezGameConfig = (EZGameConfig) GameStore.ensureStore(arena, game).get(EZGameConfig.TYPE).orElse(null);
-        if (ezGameConfig == null) return List.of();
+    public static List<SpawnPoint> spawnPoints(@Nonnull World arena, String session) {
+        var gameConfig = ConfigUtils.getGameConfig(arena, session);
+        if (!(gameConfig instanceof EZGameConfigAsset ezGameConfig)) return List.of();
 
         var manager = arena.getEntityStore().getStore().getResource(TriggerVolumesPlugin.get().getManagerResourceType());
         var points = new ArrayList<SpawnPoint>();
@@ -221,7 +220,7 @@ public final class BossSpawner {
     }
 
     @Nonnull
-    private static String zoneAt(EZGameConfig gameConfig, @Nonnull Vector3d position) {
+    private static String zoneAt(EZGameConfigAsset gameConfig, @Nonnull Vector3d position) {
         for (ZoneDefinition zone : gameConfig.getZones()) {
             double dx = position.x() - zone.centerX();
             double dz = position.z() - zone.centerZ();
