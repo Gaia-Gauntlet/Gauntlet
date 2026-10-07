@@ -2,8 +2,8 @@ package com.gaiagauntlet.gauntlet.plugins.config.components;
 
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
-import com.hypixel.hytale.assetstore.AssetKeyValidator;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -14,7 +14,7 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SessionGameConfigComponent implements SessionComponent {
+public class SessionGameConfigComponent implements SessionComponent, GameComponent {
     public static final String ID = "SessionGameConfigComponent";
 
     public static BuilderCodec<SessionGameConfigComponent> CODEC = BuilderCodec
@@ -25,7 +25,8 @@ public class SessionGameConfigComponent implements SessionComponent {
         .add()
         .build();
 
-    @Getter @Setter private static SessionComponentType<SessionGameConfigComponent> componentType;
+    @Getter @Setter private static SessionComponentType<SessionGameConfigComponent> sessionComponentType;
+    @Getter @Setter private static GameComponentType<SessionGameConfigComponent> gameComponentType;
 
     /** Map from gameId to gameConfig */
     @Getter private Map<String, String> gameToConfigMap = new HashMap<>();
