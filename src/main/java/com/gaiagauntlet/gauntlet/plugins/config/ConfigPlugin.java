@@ -1,6 +1,5 @@
 package com.gaiagauntlet.gauntlet.plugins.config;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
@@ -44,10 +43,14 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
             .loadsAfter(GameplayConfig.class)
             .build());
 
-        SessionGameConfigComponent.setComponentType(SessionRegistry.register(
-                SessionGameConfigComponent.ID,
-                SessionGameConfigComponent.class,
-                SessionGameConfigComponent.CODEC
+        SessionGameConfigComponent.setSessionComponentType(SessionRegistry.register(
+            SessionGameConfigComponent.ID,
+            SessionGameConfigComponent.class,
+            SessionGameConfigComponent.CODEC
+        ));
+        SessionGameConfigComponent.setGameComponentType(GameComponentRegistry.register(
+            SessionGameConfigComponent.ID,
+            SessionGameConfigComponent.class
         ));
         GameConfigComponent.setComponentType(
             GameComponentRegistry.register(GameConfigComponent.ID, GameConfigComponent.class)
@@ -64,7 +67,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin {
     @Override
     public void setup(ComponentAccessor<EntityStore> accessor, GameSession session, String gameId) {
         var sessionGameConfigComponent = session.ensure(
-            SessionGameConfigComponent.getComponentType(),
+            SessionGameConfigComponent.getSessionComponentType(),
             new SessionGameConfigComponent()
         );
         var overrideConfig = sessionGameConfigComponent.getConfig(gameId);

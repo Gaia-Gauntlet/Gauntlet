@@ -2,8 +2,6 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
@@ -11,7 +9,6 @@ import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -97,7 +94,7 @@ public class EZController extends LobbyController {
     public void setupGame(World world, GameEcs gameStore, String sessionId) {
         var session = GauntletUtils.sessionFor(sessionId).orElse(null);
         assert session != null;
-        var sessionGameConfigComponent = session.get(SessionGameConfigComponent.getComponentType()).orElse(null);
+        var sessionGameConfigComponent = session.get(SessionGameConfigComponent.getSessionComponentType()).orElse(null);
         var config = getDefaultConfigAssetId();
         if (sessionGameConfigComponent != null) {
             var overrideConfig = sessionGameConfigComponent.getConfig(session.getNext());
