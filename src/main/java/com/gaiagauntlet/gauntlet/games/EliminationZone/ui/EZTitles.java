@@ -1,22 +1,21 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 
-import java.util.Locale;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
-import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 
-/** The big titles an Elimination Zone match shows its players as it moves through its phases. */
+/**
+ * The big titles an Elimination Zone match shows its players as it moves through its phases. The end
+ * screen has none, since the winner banner announces the result.
+ */
 public final class EZTitles {
 
     private static final String INFO = "#7EC8FF";
@@ -34,23 +33,11 @@ public final class EZTitles {
             case PORTAL_OPEN -> show(session, "THE PORTAL IS OPEN", "Get to the portal!", INFO, null);
             case ACTIVE -> show(session, "MATCH STARTED", "Last team standing wins", SUCCESS, null);
             case SUDDEN_DEATH -> show(session, "SUDDEN DEATH!", "Zones close twice as fast!", DANGER, SOUND_ALARM);
-            case ENDED -> showWinner(session);
             default -> {
             }
         }
     }
 
-    private static void showWinner(@Nonnull GameSession session) {
-        var match = MatchUtils.get(session);
-        var standings = match == null ? null : match.getStandings();
-        var teams = TeamUi.teamsOf(session);
-        var winner = standings == null || standings.isEmpty() || teams == null ? null : teams.get(standings.getFirst().getTeamId());
-        if (winner == null) {
-            show(session, "NO WINNER", "Everyone was eliminated", DANGER, null);
-            return;
-        }
-        show(session, TeamUi.displayName(winner).toUpperCase(Locale.ROOT), "wins the match!", SUCCESS, null);
-    }
 
     private static void show(@Nonnull GameSession session, @Nonnull String primary, @Nonnull String secondary,
             @Nonnull String color, @Nullable String sound) {
