@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.core.party.commands;
 
+import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
+import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
@@ -60,6 +62,7 @@ public class PartyCommands extends AbstractPlayerCommand {
         addSubCommand(new AcceptCommand());
         addSubCommand(new DeclineCommand());
         addSubCommand(new LeaveCommand());
+        addSubCommand(new OpenPageCommand("menu", "Open the party menu", PartyPage.ID));
     }
 
     @Override

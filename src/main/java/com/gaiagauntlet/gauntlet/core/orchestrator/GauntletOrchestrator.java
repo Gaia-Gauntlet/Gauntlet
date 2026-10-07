@@ -39,6 +39,7 @@ import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
+import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.SessionTab;
@@ -67,7 +68,8 @@ public class GauntletOrchestrator {
 
     private static final Map<String, PageFactory> corePages = Map.of(
             AdminPage.ID, AdminPage::new,
-            SessionsPage.ID, SessionsPage::new);
+            SessionsPage.ID, SessionsPage::new,
+            PartyPage.ID, PartyPage::new);
 
     /** The HUD currently shown to each player, so a replaced or abandoned HUD stops refreshing */
     private static final Map<UUID, GauntletHud> huds = new ConcurrentHashMap<>();

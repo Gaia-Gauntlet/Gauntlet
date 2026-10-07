@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -22,7 +23,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 /**
  * A player page that re-renders on a timer and answers each click with a line in its #Status label.
  * Subclasses build the markup once, render the live parts, and handle their actions; "page.close"
- * closes the page. Renders and actions take turns, so subclasses can keep row caches unguarded.
+ * closes the page. Builds, renders and actions all run on the player's world thread, so subclasses
+ * can read the player's components and keep row caches unguarded.
  */
 public abstract class GauntletPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
@@ -74,7 +76,7 @@ public abstract class GauntletPage extends InteractiveCustomUIPage<AdminPageEven
                         status = Widgets.fail("Failed: " + e.getMessage());
                     }
                 }
-                update(status);
+                updateNow(status);
             }
         }
     }
@@ -84,7 +86,14 @@ public abstract class GauntletPage extends InteractiveCustomUIPage<AdminPageEven
         update(status);
     }
 
+    /** Renders on the player's world thread, where entity components are safe to read. */
     private void update(@Nullable Message status) {
+        var ref = playerRef.getReference();
+        if (ref == null || !ref.isValid()) return;
+        GauntletUtils.run(ref.getStore().getExternalData().getWorld(), () -> updateNow(status));
+    }
+
+    private void updateNow(@Nullable Message status) {
         synchronized (lock) {
             var cmd = new UICommandBuilder();
             var evt = new UIEventBuilder();

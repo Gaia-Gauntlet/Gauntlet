@@ -1,0 +1,26 @@
+// One party member: portrait, name, role and connection, and the button that hands them the lead.
+$G = "../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Height: 44, Bottom: 4);
+    Background: (Color: #000000(0.2));
+    Padding: (Full: 4);
+
+    PlayerPortrait #Portrait { Anchor: (Width: 36, Height: 36); }
+    Group {
+        FlexWeight: 1;
+        Anchor: (Left: 10);
+        LayoutMode: Top;
+
+        Label #Name {
+            Anchor: (Height: 20);
+            Style: (FontSize: 14, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+        }
+        Label #Role {
+            Anchor: (Height: 16);
+            Style: (FontSize: 11, TextColor: #878e9c, VerticalAlignment: Center);
+        }
+    }
+    $G.@GoQuiet #Promote { @Anchor = (Width: 120, Top: 3); Text: "Make leader"; Visible: false; }
+}
