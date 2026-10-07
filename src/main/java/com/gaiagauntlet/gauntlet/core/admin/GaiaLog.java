@@ -20,11 +20,11 @@ import lombok.Getter;
  */
 public final class GaiaLog {
     public static HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    public static final String INFO = "server.logging.info";
-    public static final String DEBUG = "server.logging.debug";
-    public static final String ERROR = "server.logging.error";
-    public static final String SEVERE = "server.logging.severe";
-    public static final String WARNING = "server.logging.warning";
+    public static final String INFO = "server.gg.logging.info";
+    public static final String DEBUG = "server.gg.logging.debug";
+    public static final String ERROR = "server.gg.logging.error";
+    public static final String SEVERE = "server.gg.logging.severe";
+    public static final String WARNING = "server.gg.logging.warning";
 
     // global logs
     public static final String GLOBAL = "Global";

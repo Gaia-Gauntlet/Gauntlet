@@ -1,2 +1,0 @@
-$G = "../Common.ui";
-$G.@Tab #TabNoTab { @Anchor = (Right: 4); Text: "No Tab"; }

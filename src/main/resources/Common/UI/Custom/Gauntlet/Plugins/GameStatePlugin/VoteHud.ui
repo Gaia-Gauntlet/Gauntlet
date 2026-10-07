@@ -1,0 +1,26 @@
+// The open next-game vote at the top of the screen: time left, the leading game, and how to vote.
+Group #VoteBar {
+    Anchor: (Top: 12, Width: 440, Height: 58);
+    LayoutMode: Top;
+    Background: (Color: #0d1117(0.8));
+    Padding: (Horizontal: 12, Vertical: 6);
+
+    Group {
+        Anchor: (Height: 24);
+        LayoutMode: Left;
+
+        Label {
+            FlexWeight: 1;
+            Text: "VOTE FOR THE NEXT GAME";
+            Style: (FontSize: 13, RenderBold: true, TextColor: #E8A93B, LetterSpacing: 1, VerticalAlignment: Center);
+        }
+        Label #VoteTimer {
+            Anchor: (Width: 70);
+            Style: (FontSize: 18, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: End, VerticalAlignment: Center);
+        }
+    }
+    Label #VoteLeader {
+        Anchor: (Height: 18);
+        Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+    }
+}

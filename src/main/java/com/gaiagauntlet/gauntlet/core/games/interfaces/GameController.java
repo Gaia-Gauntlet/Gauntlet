@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -18,6 +19,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  */
 public abstract class GameController {
     public abstract String getId();
+
+    /** The name players see for this game. */
+    public String getDisplayName() {
+        return getId();
+    }
 
     /**
      * Note: this sets up registries and worlds. This does NOT start the game. The
@@ -47,8 +53,17 @@ public abstract class GameController {
     /** Get the ID of the GameConfigAsset to use by default for this game. */
     public String getDefaultConfigAssetId() {return null;}
 
-    /** Returns the admin tab for configuring / managing this game */
-    public abstract AdminTab getAdminTab();
+    /**
+     * Returns new admin tabs for configuring / managing this game, or an empty list if it has none.
+     * Called once per opened admin page.
+     */
+    public abstract List<AdminTab> getAdminTabs();
+
+    /**
+     * Returns new HUD elements for this game, or an empty list if it has none.
+     * Called once per shown HUD.
+     */
+    public abstract List<HudElement> getHudElements();
 
     public abstract List<String> getRequiredPlugins();
 }

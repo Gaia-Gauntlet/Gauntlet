@@ -1,0 +1,78 @@
+// The party page: the viewer's party and its members, inviting players, invites waiting for the
+// viewer, and leaving. PartyPage fills the member and invite rows.
+$Common = "../../Common.ui";
+$G = "../Admin/Common.ui";
+
+$Common.@PageOverlay {
+    Anchor: (Full: 0);
+    LayoutMode: Middle;
+
+    $Common.@DecoratedContainer {
+        @CloseButton = true;
+        Anchor: (Width: 680, Height: 620);
+
+        #Title {
+            $Common.@Title {
+                @Text = "Party";
+            }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 12);
+
+            Group {
+                LayoutMode: Top;
+                Anchor: (Height: 46, Bottom: 8);
+
+                Label #PartyName {
+                    Anchor: (Height: 26);
+                    Style: (FontSize: 20, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+                Label #PartyInfo {
+                    Anchor: (Height: 18);
+                    Style: (FontSize: 12, TextColor: #878e9c, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+            }
+
+            $G.@Header { @Text = "Members"; }
+            $G.@ScrollPanel #Members {}
+
+            Group #InviteCard {
+                LayoutMode: Top;
+                Anchor: (Top: 8);
+
+                $G.@Header { @Text = "Invite a player"; }
+                $G.@PickerRow {
+                    $G.@Input #InviteName { @Anchor = (Right: 6); @Placeholder = "username"; }
+                    $G.@Go #InviteSend { Text: "Invite"; }
+                }
+            }
+
+            Group {
+                LayoutMode: Top;
+                Anchor: (Top: 10);
+
+                $G.@Header { @Text = "Invites for you"; }
+                $G.@ListPanel #Invites {}
+            }
+
+            $G.@ButtonRow {
+                $G.@Danger #Leave { Text: "Leave party"; }
+            }
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Height: 26, Top: 8);
+                Background: (Color: #000000(0.22));
+                Padding: (Horizontal: 10);
+
+                Label #Status {
+                    FlexWeight: 1;
+                    Text: "Your party joins sessions together. Its leader picks the session.";
+                    Style: (FontSize: 12, TextColor: #7a9cc6, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+            }
+        }
+    }
+}

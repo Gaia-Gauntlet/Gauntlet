@@ -2,6 +2,14 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.BossesTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ScoreboardHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.TimerHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
@@ -28,6 +36,11 @@ public class EZController extends LobbyController {
     @Override
     public String getId() {
         return ID;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Elimination Zone";
     }
 
     private static final List<String> requiredPlugins = List.of(
@@ -65,9 +78,13 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public AdminTab getAdminTab() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAdminTab'");
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new ZonesTab(), new BossesTab(), new EventsTab());
+    }
+
+    @Override
+    public List<HudElement> getHudElements() {
+        return List.of(new ZonesHud(), new TimerHud(), new ScoreboardHud(), new WinnerHud());
     }
 
     @Override // temp, just messing around here

@@ -156,7 +156,7 @@ public class GameSession {
         }
 
         if (sessionState.to(state)) {
-            logger().log(MessageUtils.msg("server.gauntlet.session.transition.success")
+            logger().log(MessageUtils.msg("server.gg.gauntlet.session.transition.success")
                     .param("sessionId", this.id)
                     .param("newState", state.toString())
                     .param("oldState", sessionState.toString()));

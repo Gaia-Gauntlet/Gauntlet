@@ -1,0 +1,68 @@
+// The viewer's session in the top left corner: what it is playing, how it is doing, and the games
+// queued after it. A player outside every session sees how to find one instead.
+Group #SessionPanel {
+    Anchor: (Top: 12, Left: 12, Width: 260, Height: 102);
+    LayoutMode: Top;
+    Background: (Color: #0d1117(0.8));
+    Padding: (Full: 10);
+
+    Label #SessionTitle {
+        Anchor: (Height: 20);
+        Style: (FontSize: 13, RenderBold: true, RenderUppercase: true, TextColor: #E8A93B, LetterSpacing: 1, Wrap: true, WrapMaxLines: 1);
+    }
+
+    Group #SessionRows {
+        FlexWeight: 1;
+        LayoutMode: Top;
+
+        Group {
+            Anchor: (Height: 18);
+            LayoutMode: Left;
+
+            Label {
+                Anchor: (Width: 70);
+                Text: "NOW";
+                Style: (FontSize: 11, RenderBold: true, TextColor: #878e9c, VerticalAlignment: Center);
+            }
+            Label #SessionNow {
+                FlexWeight: 1;
+                Style: (FontSize: 12, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+            }
+        }
+        Group {
+            Anchor: (Height: 18);
+            LayoutMode: Left;
+
+            Label {
+                Anchor: (Width: 70);
+                Text: "STATUS";
+                Style: (FontSize: 11, RenderBold: true, TextColor: #878e9c, VerticalAlignment: Center);
+            }
+            Label #SessionState {
+                FlexWeight: 1;
+                Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+            }
+        }
+        Group {
+            Anchor: (Height: 26);
+            LayoutMode: Left;
+
+            Label {
+                Anchor: (Width: 70);
+                Text: "UP NEXT";
+                Style: (FontSize: 11, RenderBold: true, TextColor: #878e9c);
+            }
+            Label #SessionNext {
+                FlexWeight: 1;
+                Style: (FontSize: 12, TextColor: #c9d1d9, Wrap: true, WrapMaxLines: 2);
+            }
+        }
+    }
+
+    Label #SessionHint {
+        Anchor: (Height: 18);
+        Visible: false;
+        Text: "Type /sessions to find a game";
+        Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center);
+    }
+}

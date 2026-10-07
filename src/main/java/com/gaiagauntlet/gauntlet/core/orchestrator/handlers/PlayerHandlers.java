@@ -18,6 +18,7 @@ import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent.PlayerOp;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -253,8 +254,7 @@ public class PlayerHandlers extends HandlerUtils {
         if (playerRef == null)
             return;
 
-        // TODO: Uncomment once huds are merged
-        // GauntletOrchestrator.showHud(store, ref, playerRef);
+        GauntletOrchestrator.showHud(store, ref, playerRef);
     }
 
     /**
@@ -293,8 +293,7 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("reason", "Player's reference is not present"));
             return;
         }
-        // TODO: Uncomment once HUDs are merged
-        // GauntletOrchestrator.forgetHud(playerRef);
+        GauntletOrchestrator.forgetHud(playerRef);
 
         // leave party
         var party = PartyUtils.getPartyNullable(playerRef).orElse(null);

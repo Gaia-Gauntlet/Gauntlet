@@ -1,7 +1,7 @@
 // No tab: Displayed when no other tabs are available to be displayed
 $G = "../Common.ui";
 
-Group #PanelNoTab {
+Group {
     LayoutMode: Top;
     Visible: false;
 

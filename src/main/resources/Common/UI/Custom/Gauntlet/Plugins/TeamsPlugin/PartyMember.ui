@@ -1,0 +1,39 @@
+// One member card on the party HUD: portrait with dead and disconnected overlays, name, and score.
+Group {
+    FlexWeight: 1;
+    LayoutMode: Top;
+
+    Group {
+        Anchor: (Height: 64);
+        LayoutMode: Left;
+
+        Group { FlexWeight: 1; }
+        Group {
+            Anchor: (Width: 64, Height: 64);
+
+            PlayerPortrait #Portrait { Anchor: (Width: 64, Height: 64); }
+            Group #Dead {
+                Anchor: (Width: 64, Height: 64);
+                Background: (Color: #000000(0.55));
+                Visible: false;
+                Group #DeadIcon { Anchor: (Width: 64, Height: 64); }
+            }
+            Group #Off {
+                Anchor: (Width: 64, Height: 64);
+                Background: (Color: #000000(0.55));
+                Visible: false;
+                Group #OffIcon { Anchor: (Width: 64, Height: 64); }
+            }
+        }
+        Group { FlexWeight: 1; }
+    }
+
+    Label #Name {
+        Anchor: (Top: 2, Height: 16);
+        Style: (FontSize: 12, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+    }
+    Label #Score {
+        Anchor: (Height: 14);
+        Style: (FontSize: 11, TextColor: #E8A93B, HorizontalAlignment: Center);
+    }
+}

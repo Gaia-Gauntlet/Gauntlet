@@ -35,6 +35,11 @@ public class PartyInvitesComponent implements Component<EntityStore> {
     /** Map from partyId to a party invite */
     private Map<String, Invite> invites = new HashMap<>();
 
+    /** A copy of the pending invites, so callers can iterate while invites come and go. */
+    public List<Invite> getInvites() {
+        return new ArrayList<>(invites.values());
+    }
+
     public Invite getInvite(String partyId) {
         return invites.get(partyId);
     }
@@ -79,6 +84,7 @@ public class PartyInvitesComponent implements Component<EntityStore> {
 
         public Invite(String partyId, UUID sender, ScheduledFuture<?> expiryFuture) {
             this.partyId = partyId;
+            this.sender = sender;
             this.expiryFuture = expiryFuture;
         }
 

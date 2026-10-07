@@ -1,0 +1,18 @@
+// Event standings in the lobby, below the party panel: every team ranked by its event score, with
+// the viewer's own team highlighted.
+Group #Scoreboard {
+    Anchor: (Top: 240, Right: 12, Width: 250, Height: 38);
+    LayoutMode: Top;
+    Background: (Color: #0d1117(0.8));
+    Padding: (Full: 8);
+
+    Label {
+        Anchor: (Height: 22);
+        Text: "EVENT STANDINGS";
+        Style: (FontSize: 13, RenderBold: true, TextColor: #E8A93B, LetterSpacing: 1);
+    }
+    Group #ScoreRows {
+        FlexWeight: 1;
+        LayoutMode: Top;
+    }
+}

@@ -30,7 +30,7 @@ import com.hypixel.hytale.server.core.Message;
 public final class UsernameTransformButton {
 
     public static final String BUTTON_ID = "UsernameTransform";
-    public static final String BUTTON_TEXT_ID = "server.gauntlet.editor.button";
+    public static final String BUTTON_TEXT_ID = "server.gg.gauntlet.editor.button";
     public static final String TEAMS_LIST_ID = TeamListAsset.class.getSimpleName();
 
     private UsernameTransformButton() {
@@ -96,8 +96,8 @@ public final class UsernameTransformButton {
                     unresolved.isEmpty() ? AssetEditorPopupNotificationType.Success
                             : AssetEditorPopupNotificationType.Warning,
                     unresolved.isEmpty()
-                            ? Message.translation("server.gauntlet.editor.usernamesResolved")
-                            : Message.translation("server.gauntlet.editor.usernamesUnresolved").param("names",
+                            ? Message.translation("server.gg.gauntlet.editor.usernamesResolved")
+                            : Message.translation("server.gg.gauntlet.editor.usernamesUnresolved").param("names",
                                     String.join(", ", unresolved)));
         });
     }

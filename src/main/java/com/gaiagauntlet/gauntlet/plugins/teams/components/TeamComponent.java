@@ -149,7 +149,12 @@ public class TeamComponent {
     }
 
     public TeamComponent(TeamComponent other) {
-        id = other.id;
+        this(other.id, other);
+    }
+
+    /** A copy of another team under a different id */
+    public TeamComponent(String id, TeamComponent other) {
+        this.id = id;
         name = other.name;
         teamType = other.teamType;
         players = new HashSet<>(other.players);
@@ -167,6 +172,7 @@ public class TeamComponent {
      */
     @Nonnull
     public String getUiIcon() {
+        if (icon == null) return "";
         String prefix = "UI/Custom/";
         return icon.startsWith(prefix) ? icon.substring(prefix.length()) : icon;
     }
