@@ -8,8 +8,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
 public class ConfigUtils {
     private ConfigUtils() {}
 
-    public static GameConfigAsset getGameConfig(World world, String game) {
-        var configComponent = GameStore.ensureStore(world, game)
+    public static GameConfigAsset getGameConfig(World world, String sessionId) {
+        var configComponent = GameStore.ensureStore(world, sessionId)
             .get(GameConfigComponent.getComponentType())
             .orElse(null);
         if (configComponent == null) return null;
