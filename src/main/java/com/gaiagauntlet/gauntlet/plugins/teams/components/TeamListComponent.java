@@ -24,15 +24,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 public final class TeamListComponent implements SessionComponent, GameComponent {
-    @Nonnull
-    public static final String ID = "TeamListComponent";
+    @Nonnull public static final String ID = "TeamListComponent";
 
-    @Getter
-    @Setter
-    private static GameComponentType<TeamListComponent> gameComponentType;
-    @Getter
-    @Setter
-    private static SessionComponentType<TeamListComponent> sessionComponentType;
+    @Getter @Setter private static GameComponentType<TeamListComponent> gameComponentType;
+    @Getter @Setter private static SessionComponentType<TeamListComponent> sessionComponentType;
 
     public static final BuilderCodec<@NotNull TeamListComponent> CODEC = AssetBuilderCodec
             .builder(
@@ -45,10 +40,6 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
             .add()
             .append(new KeyedCodec<>("TeamSize", Codec.INTEGER),
                     TeamListComponent::setTeamSize, TeamListComponent::getTeamSize)
-            .documentation("Whether team distribution should respect player defined parties.")
-            .add()
-            .append(new KeyedCodec<>("RespectParties", Codec.BOOLEAN),
-                    TeamListComponent::setRespectParties, TeamListComponent::isRespectParties)
             .documentation("Whether team distribution should respect player defined parties.")
             .add()
             .afterDecode((teams) -> {
@@ -75,15 +66,9 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
             })
             .build();
 
-    @Nonnull
-    private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
+    @Nonnull private Map<String, TeamComponent> teamList = new ConcurrentHashMap<>();
     private final Map<UUID, String> playerToTeam = new ConcurrentHashMap<>();
-    @Setter
-    @Getter
-    private int teamSize;
-    @Setter
-    @Getter
-    private boolean respectParties;
+    @Setter @Getter private int teamSize;
 
     public Map<String, TeamComponent> getTeams() {
         return teamList;

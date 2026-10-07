@@ -21,11 +21,11 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
-import com.gaiagauntlet.gauntlet.core.events.events.GamePlayerEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
-import com.gaiagauntlet.gauntlet.core.events.events.UniversePlayerEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
@@ -45,8 +45,11 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.player.PlayerEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -66,37 +69,26 @@ public class GauntletOrchestrator {
     private static final Map<UUID, GauntletHud> huds = new ConcurrentHashMap<>();
 
     /**
-     * Business rules because I have nowhere else to put them.
-     * 1) All controller methods should be invoked on the HUB thread
-     * 2) SessionId states should be cleared between games
-     * 3) Games should be setup before any player is allowed to join
-     * 4) Eventing needs
-     *     a) Failure Events
-     *     b) Session status updates
-     * 5) threading needs
-     *     a) player join
-     *     b) player leave
-     *     c) server shutdown
-     *     d) server startup (load up from crashed server - attempt recovery?)
-     */
-
-    /**
      * Registers all of the events LATE so that they can be intercepted easily
      */
-    public static void setupListeners() {
+    public static void setupListeners(JavaPlugin plugin) {
         // session event handling
-        GauntletEventRegistry.on(EventPriority.LATE, SessionEvent.class, wrap(SessionHandlers::handleSession));
-        GauntletEventRegistry.on(EventPriority.LATE, SessionQueueEvent.class,
+        GauntletEventRegistry.on(EventPriority.LAST, SessionEvent.class, wrap(SessionHandlers::handleSession));
+        GauntletEventRegistry.on(EventPriority.LAST, SessionQueueEvent.class,
                 wrap(SessionHandlers::handleSessionQueue));
-        GauntletEventRegistry.on(EventPriority.LATE, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
+        GauntletEventRegistry.on(EventPriority.LAST, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
 
         // game event handling
-        GauntletEventRegistry.on(EventPriority.LATE, GameEvent.class, wrap(GameHandlers::handleGame));
-        GauntletEventRegistry.on(EventPriority.LATE, GameEndEvent.class, wrap(GameHandlers::handleGameEnd));
+        GauntletEventRegistry.on(EventPriority.LAST, GameEvent.class, wrap(GameHandlers::handleGame));
+        GauntletEventRegistry.on(EventPriority.LAST, GameEndEvent.class, wrap(GameHandlers::handleGameEnd));
 
         // player event handling
-        GauntletEventRegistry.on(EventPriority.LATE, UniversePlayerEvent.class, wrap(PlayerHandlers::handlePlayer));
-        GauntletEventRegistry.on(EventPriority.LATE, GamePlayerEvent.class, wrap(PlayerHandlers::handleGamePlayer));
+        GauntletEventRegistry.on(EventPriority.LAST, PlayerGameEvent.class, wrap(PlayerHandlers::handleGamePlayer));
+        GauntletEventRegistry.on(EventPriority.LAST, PlayerPartyEvent.class, wrap(PlayerHandlers::handlePartyPlayer));
+        var registry = plugin.getEventRegistry();
+        registry.register(PlayerConnectEvent.class, PlayerHandlers::onPlayerConnect);
+        registry.registerGlobal(PlayerReadyEvent.class, PlayerHandlers::onPlayerReady);
+        registry.register(PlayerDisconnectEvent.class, PlayerHandlers::onPlayerDisconnect);
     }
 
     /** Ensures the event handler is always run on the hub world */

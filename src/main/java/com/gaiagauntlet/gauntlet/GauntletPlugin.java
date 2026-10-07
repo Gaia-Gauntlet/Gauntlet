@@ -8,7 +8,6 @@ import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
-import com.gaiagauntlet.gauntlet.core.systems.PlayerEvents;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
@@ -16,8 +15,6 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
-import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -48,7 +45,6 @@ public class GauntletPlugin extends JavaPlugin {
         setupResources();
         setupComponents();
         setupPlugins();
-        setupEvents();
     }
 
     // sets up internal or core operations like registries or event handlers
@@ -94,11 +90,6 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
         GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
         GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
-    }
-
-    private void setupEvents() {
-        getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerEvents::onPlayerReady);
-        getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, PlayerEvents::onPlayerDisconnect);
     }
 
     @Override

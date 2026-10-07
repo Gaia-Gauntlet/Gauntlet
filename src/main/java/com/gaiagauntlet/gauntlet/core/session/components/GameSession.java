@@ -4,10 +4,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +30,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.EnumCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
+import com.hypixel.hytale.codec.codecs.set.SetCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
 
 import lombok.Getter;
@@ -64,13 +67,18 @@ public class GameSession {
                     (holder, v) -> holder.sessionState = v,
                     holder -> holder.sessionState)
             .add()
+            .append(new KeyedCodec<>("Parties", new SetCodec<>(Codec.STRING, HashSet::new, false)),
+                    (holder, v) -> {
+                        holder.parties.clear();
+                        holder.parties.addAll(v);
+                    },
+                    holder -> holder.parties)
+            .add()
             .build();
 
-    @Getter
-    private Map<String, SessionComponent> sessionComponents;
-
-    @Getter
-    private String id;
+    @Getter private Map<String, SessionComponent> sessionComponents;
+    @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
+    @Getter private String id;
 
     public <T extends SessionComponent> void put(SessionComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
@@ -82,6 +90,16 @@ public class GameSession {
             return Optional.empty();
 
         return Optional.of(type.getTypeClass().cast(sesComp));
+    }
+
+    public <T extends SessionComponent> T ensure(SessionComponentType<T> type, T component) {
+        var sesComp = get(type);
+        if (sesComp.isEmpty()) {
+            put(type, component);
+            return component;
+        } else {
+            return sesComp.get();
+        }
     }
 
     @Getter

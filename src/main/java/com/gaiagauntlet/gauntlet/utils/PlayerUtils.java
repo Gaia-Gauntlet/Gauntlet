@@ -53,6 +53,7 @@ public final class PlayerUtils {
 
     @Nullable
     public static PlayerRef get(UUID playerUuid) {
+        if (playerUuid == null) return null;
         return Universe.get().getPlayer(playerUuid);
     }
 

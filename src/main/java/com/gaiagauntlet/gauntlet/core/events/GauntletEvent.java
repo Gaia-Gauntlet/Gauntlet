@@ -44,6 +44,7 @@ public abstract class GauntletEvent implements IEvent<Void> {
     public void complete(GaiaLog reason) {
         if (!inProgress)
             return;
+        inProgress = false;
         if (this.onComplete != null) {
             try {
                 this.onComplete.accept(reason);

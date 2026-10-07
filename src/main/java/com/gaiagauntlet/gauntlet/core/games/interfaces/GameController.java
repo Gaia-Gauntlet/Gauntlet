@@ -30,11 +30,20 @@ public abstract class GameController {
      */
     public abstract CompletableFuture<Void> cleanGame(World hubWorld, GameSession session);
 
-    /** Triggered when a player joins back while in this game */
-    public abstract CompletableFuture<Void> playerJoin(World hubAccessor, String sessionId, PlayerRef player);
+    /** Triggered when a player reconnects in the game */
+    public abstract CompletableFuture<Void> playerConnect(World hubWorld, String sessionId, PlayerRef player);
 
-    /** Triggered when a player leaves while in this game */
-    public abstract CompletableFuture<Void> playerLeave(World hubAccessor, String sessionId, PlayerRef player);
+    /** Triggered when a player disconnects in the game - should purely be cleanup logic off the player */
+    public abstract CompletableFuture<Void> playerDisconnect(World hubWorld, PlayerRef player);
+    
+    /** Triggered when a player joins the game (either first time or tries to join back) */
+    public abstract CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player);
+
+    /** Triggered when a player leaves the game */
+    public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player);
+
+    /** Get the ID of the GameConfigAsset to use by default for this game. */
+    public String getDefaultConfigAssetId() {return null;}
 
     /**
      * Returns new admin tabs for configuring / managing this game, or an empty list if it has none.
