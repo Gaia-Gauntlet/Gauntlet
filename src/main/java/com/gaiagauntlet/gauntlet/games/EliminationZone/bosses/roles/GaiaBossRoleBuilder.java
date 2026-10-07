@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 public final class GaiaBossRoleBuilder extends BuilderRoleVariant {
 
     public static final String TYPE = "GaiaBoss";
-    private static final String SCALING_KEY = "BossScalingComponent";
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     private BossScalingComponent scaling = new BossScalingComponent();
@@ -32,13 +31,13 @@ public final class GaiaBossRoleBuilder extends BuilderRoleVariant {
 
     @Override
     public @NonNull Builder<Role> readConfig(@Nonnull JsonElement config) {
-        if (config.isJsonObject() && config.getAsJsonObject().has(SCALING_KEY)) {
-            var json = config.getAsJsonObject().get(SCALING_KEY).toString();
+        if (config.isJsonObject() && config.getAsJsonObject().has(BossScalingComponent.ID)) {
+            var json = config.getAsJsonObject().get(BossScalingComponent.ID).toString();
             try (var reader = RawJsonReader.fromBuffer(json.toCharArray())) {
                 reader.consumeWhiteSpace();
                 scaling = BossScalingComponent.CODEC.decodeJson(reader, new ExtraInfo());
             } catch (Exception e) {
-                LOGGER.atWarning().withCause(e).log("Could not read %s of a GaiaBoss role", SCALING_KEY);
+                LOGGER.atWarning().withCause(e).log("Could not read %s of a GaiaBoss role", BossScalingComponent.ID);
             }
         }
         return super.readConfig(config);

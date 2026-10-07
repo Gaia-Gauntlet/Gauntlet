@@ -44,7 +44,7 @@ public final class BossReloadSystem extends RefSystem<EntityStore> {
 
         var bosses = GameStore.ensureStore(world, gameId).get(BossesComponent.TYPE).orElse(null);
         assert bosses != null;
-        bosses.rebind(marker.bossId(), ref);
+        bosses.rebind(marker.getBossId(), ref);
     }
 
     @Override

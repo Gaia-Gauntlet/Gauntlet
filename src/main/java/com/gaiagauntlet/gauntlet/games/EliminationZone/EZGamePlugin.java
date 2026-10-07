@@ -28,13 +28,13 @@ public class EZGamePlugin extends JavaPlugin {
         // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
 
-        GameConfigAsset.CODEC.register(EZGameConfigAsset.ID, EZGameConfigAsset.class, EZGameConfigAsset.CODEC);
-
         // Setup each section - keeps the top-level plugin cleaner this way
         EZBosses.setup(this);
         EZCombat.setup(this);
         EZWeather.setup(this);
         EZZones.setup(this);
+
+        GameConfigAsset.CODEC.register(EZController.ID, EZGameConfigAsset.class, EZGameConfigAsset.CODEC);
     }
 
     @Override

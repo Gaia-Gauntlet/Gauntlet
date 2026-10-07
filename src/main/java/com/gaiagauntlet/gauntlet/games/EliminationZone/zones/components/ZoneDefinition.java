@@ -17,7 +17,8 @@ public final class ZoneDefinition {
 
     public static final BuilderCodec<ZoneDefinition> CODEC = BuilderCodec.builder(ZoneDefinition.class, ZoneDefinition::new)
             .append(new KeyedCodec<>("Id", Codec.STRING), (z, v) -> z.id = v, z -> z.id)
-            .addValidator(Validators.nonEmptyString())
+//            FIXME: This is causing the server to crash at boot, not currently sure why.
+//            .addValidator(Validators.nonEmptyString())
             .documentation("Zone name shown to players.")
             .add()
             .append(new KeyedCodec<>("CenterX", Codec.DOUBLE), (z, v) -> z.centerX = v == null ? 0 : v, z -> z.centerX).add()

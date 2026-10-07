@@ -7,6 +7,8 @@ import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.modules.i18n.I18nModule;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,21 +20,33 @@ import java.util.Locale;
  * and attached to every NPC built from it.
  */
 public final class BossScalingComponent implements Component<EntityStore> {
+    public static final String ID = "BossScaling";
 
     public static final BuilderCodec<BossScalingComponent> CODEC = BuilderCodec.builder(BossScalingComponent.class, BossScalingComponent::new)
-            .append(new KeyedCodec<>("DisplayNameKey", Codec.STRING), (c, v) -> c.displayNameKey = v == null ? "" : v, c -> c.displayNameKey)
+            .append(new KeyedCodec<>("DisplayNameKey", Codec.STRING),
+                (c, v) -> c.displayNameKey = v == null ? "" : v,
+                c -> c.displayNameKey
+            )
             .documentation("Translation key of the boss's name.")
             .add()
-            .append(new KeyedCodec<>("ZoneTags", Codec.STRING_ARRAY), (c, v) -> c.zoneTags = v == null ? new String[0] : v.clone(), c -> c.zoneTags.clone())
+            .append(new KeyedCodec<>("ZoneTags", Codec.STRING_ARRAY),
+                (c, v) -> c.zoneTags = v == null ? new String[0] : v.clone(),
+                c -> c.zoneTags.clone()
+            )
             .documentation("Zones the boss belongs to. Empty means any zone.")
             .add()
-            .append(new KeyedCodec<>("Enabled", Codec.BOOLEAN), (c, v) -> c.enabled = v == null || v, c -> c.enabled).add()
-            .append(new KeyedCodec<>("PhysicalScale", Codec.FLOAT), (c, v) -> c.physicalScale = v == null ? 1f : v, c -> c.physicalScale)
+            .append(new KeyedCodec<>("Enabled", Codec.BOOLEAN),
+                (c, v) -> c.enabled = v == null || v,
+                c -> c.enabled).add()
+            .append(new KeyedCodec<>("PhysicalScale", Codec.FLOAT),
+                (c, v) -> c.physicalScale = v == null ? 1f : v,
+                c -> c.physicalScale
+            )
             .documentation("Model scale applied on spawn.")
             .add()
             .build();
 
-    private static ComponentType<EntityStore, BossScalingComponent> type;
+    @Getter @Setter private static ComponentType<EntityStore, BossScalingComponent> componentType;
 
     private String roleId = "";
     private String displayNameKey = "";
@@ -41,15 +55,6 @@ public final class BossScalingComponent implements Component<EntityStore> {
     private float physicalScale = 1f;
 
     public BossScalingComponent() {
-    }
-
-    public static void setType(@Nonnull ComponentType<EntityStore, BossScalingComponent> componentType) {
-        type = componentType;
-    }
-
-    @Nonnull
-    public static ComponentType<EntityStore, BossScalingComponent> getComponentType() {
-        return type;
     }
 
     @Nonnull

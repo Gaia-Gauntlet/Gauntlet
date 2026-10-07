@@ -42,6 +42,6 @@ public final class BossDeathSystem extends DeathSystems.OnDeathSystem {
         }).findFirst().orElse(null);
         String gameId = GameStore.withResource(world).getId(game);
 
-        BossSpawner.onDefeated(gameId, world, marker.bossId());
+        BossSpawner.onDefeated(gameId, world, marker.getBossId());
     }
 }

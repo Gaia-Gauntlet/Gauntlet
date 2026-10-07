@@ -26,8 +26,6 @@ import java.util.Map;
 
 public class EZGameConfigAsset extends GameConfigAsset {
 
-    public static final String ID = "Elimination_Zone";
-
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
         @Override
         public void accept(String value, ValidationResults results) {

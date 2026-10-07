@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 public class GameRegistry {
 
     // Note: these shouldn't ever change. So it can be a hashmap instead of
-    // concurrent hash because there wont be any writes to the map
+    // concurrent hash because there won't be any writes to the map
     private static Map<String, GameController> controllerRegistry = new HashMap<>();
     private static Map<String, GamePlugin> pluginRegistry = new HashMap<>();
 

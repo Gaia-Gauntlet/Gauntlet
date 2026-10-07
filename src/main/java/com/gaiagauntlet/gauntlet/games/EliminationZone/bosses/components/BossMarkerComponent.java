@@ -6,6 +6,8 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 
@@ -14,6 +16,7 @@ import javax.annotation.Nonnull;
  * whose chunk unloads is still recognised when it loads again.
  */
 public final class BossMarkerComponent implements Component<EntityStore> {
+    public static final String ID = "BossMarker";
 
     public static final BuilderCodec<BossMarkerComponent> CODEC = BuilderCodec.builder(BossMarkerComponent.class, BossMarkerComponent::new)
             .append(new KeyedCodec<>("GameId", Codec.STRING), (m, v) -> m.gameId = v == null ? "" : v, m -> m.gameId)
@@ -22,36 +25,18 @@ public final class BossMarkerComponent implements Component<EntityStore> {
             .add()
             .build();
 
-    private static ComponentType<EntityStore, BossMarkerComponent> type;
+    @Getter @Setter
+    private static ComponentType<EntityStore, BossMarkerComponent> componentType;
 
-    private String gameId = "";
-    private String bossId = "";
+    @Getter private String gameId = "";
+    @Getter private String bossId = "";
 
-    public BossMarkerComponent() {
+    private BossMarkerComponent() {
     }
 
     public BossMarkerComponent(@Nonnull String gameId, @Nonnull String bossId) {
         this.gameId = gameId;
         this.bossId = bossId;
-    }
-
-    public static void setType(@Nonnull ComponentType<EntityStore, BossMarkerComponent> componentType) {
-        type = componentType;
-    }
-
-    @Nonnull
-    public static ComponentType<EntityStore, BossMarkerComponent> getComponentType() {
-        return type;
-    }
-
-    @Nonnull
-    public String gameId() {
-        return gameId;
-    }
-
-    @Nonnull
-    public String bossId() {
-        return bossId;
     }
 
     @Override
