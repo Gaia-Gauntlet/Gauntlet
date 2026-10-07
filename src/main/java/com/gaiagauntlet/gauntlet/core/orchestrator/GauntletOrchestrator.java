@@ -42,6 +42,7 @@ import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
+import com.gaiagauntlet.gauntlet.core.ui.tabs.PluginsTab;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.SessionTab;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
@@ -110,7 +111,7 @@ public class GauntletOrchestrator {
 
     /** Collects new admin tabs from the orchestrator, every UI plugin and every game, for one admin page, in tab order */
     public static List<AdminTab> getAdminTabs() {
-        var tabs = new ArrayList<AdminTab>(List.of(new SessionTab(), new LogTab()));
+        var tabs = new ArrayList<AdminTab>(List.of(new SessionTab(), new LogTab(), new PluginsTab()));
         for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
             tabs.addAll(plugin.getAdminTabs());
         }

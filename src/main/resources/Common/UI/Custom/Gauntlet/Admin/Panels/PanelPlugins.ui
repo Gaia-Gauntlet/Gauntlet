@@ -1,0 +1,31 @@
+// Plugins tab: every registered game with the plugins it needs, and every registered plugin with
+// what it can do, what it depends on, and which games use it.
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Games"; }
+            $G.@ListPanel #GameRegistryList {}
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Problems"; }
+            $G.@ListPanel #PluginProblems {}
+            $G.@Note { @Text = "Games and plugins are registered when the server starts and cannot be switched on or off while it runs."; }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            FlexWeight: 1;
+            $G.@Header { @Text = "Plugins"; }
+            $G.@ScrollPanel #PluginRegistryList {}
+        }
+    }
+}

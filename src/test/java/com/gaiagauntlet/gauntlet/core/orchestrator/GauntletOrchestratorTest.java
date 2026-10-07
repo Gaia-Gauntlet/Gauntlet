@@ -140,7 +140,7 @@ class GauntletOrchestratorTest {
     @Test
     void collectsCoreTabsAndTabsFromPluginsAndGamesInOrder() {
         var ids = GauntletOrchestrator.getAdminTabs().stream().map(AdminTab::getId).toList();
-        assertEquals(List.of("First", "Alpha", "Session", "Zeta", "Late", "Log"), ids);
+        assertEquals(List.of("First", "Alpha", "Session", "Zeta", "Plugins", "Late", "Log"), ids);
     }
 
     @Test
