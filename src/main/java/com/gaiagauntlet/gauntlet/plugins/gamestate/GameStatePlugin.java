@@ -3,7 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.gamestate;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.SessionTab;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.MatchTab;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -35,7 +35,7 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
     public void init(JavaPlugin host) {}
 
     @Override
-    public AdminTab getAdminTab() {
-        return new SessionTab();
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new MatchTab());
     }
 }

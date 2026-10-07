@@ -1,5 +1,5 @@
 // One zone closing phase: close, hold, and warning seconds.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
 Group {
     LayoutMode: Left;

@@ -7,9 +7,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
-import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -33,8 +32,11 @@ import lombok.Getter;
  */
 public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
 
+    public static final String ID = "Admin";
+
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String PAGE = "Gauntlet/Admin/Dashboard.ui";
+    private static final String TAB_BUTTON = "Gauntlet/Admin/TabButton.ui";
     private static final long REFRESH_MILLIS = 2000;
     private static final Set<String> NEEDS_CONFIRM = Set.of("match.stop", "match.end", "games.close", "games.remove");
 
@@ -78,18 +80,17 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         Widgets.bind(evt, "#ConfirmNo", "page.confirmNo");
         Widgets.bindChange(evt, "#SessionPicker", "page.selectSession");
 
-        var uiPlugins = GameRegistry.getPlugins(UiGamePlugin.class);
-        if (!uiPlugins.isEmpty()) tabs = new ArrayList<>();
-        for (UiGamePlugin plugin : uiPlugins) {
-            tabs.add(plugin.getAdminTab());
-        }
-        selectTab(tabs.getFirst().getId());
+        var registered = GauntletOrchestrator.getAdminTabs();
+        if (!registered.isEmpty()) tabs = registered;
+        activeTab = tabs.getFirst();
 
-        for (AdminTab tab : tabs) {
-            cmd.append("#TopStrip", "Gauntlet/Admin/Tabs/Tab" + tab.getId() + ".ui");
-            cmd.append("#TabBody", "Gauntlet/Admin/Panels/Panel" + tab.getId() + ".ui");
+        for (int i = 0; i < tabs.size(); i++) {
+            var tab = tabs.get(i);
+            cmd.append("#TabStrip", TAB_BUTTON);
+            cmd.set("#TabStrip[" + i + "].Text", tab.getTitle());
+            cmd.append("#TabBody", tab.getPanel());
 
-            Widgets.bindArg(evt, "#Tab" + tab.getId(), "page.selectTab", tab.getId());
+            Widgets.bindArg(evt, "#TabStrip[" + i + "]", "page.selectTab", tab.getId());
             tab.bind(evt);
         }
         fillSessionPicker(cmd);
@@ -194,9 +195,10 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
     }
 
     private void applyTab(@Nonnull UICommandBuilder cmd) {
-        for (AdminTab tab : tabs) {
-            cmd.set("#Panel" + tab.getId() + ".Visible", tab == activeTab);
-            cmd.set("#Tab" + tab.getId() + ".Disabled", tab == activeTab);
+        for (int i = 0; i < tabs.size(); i++) {
+            var tab = tabs.get(i);
+            cmd.set("#TabBody[" + i + "].Visible", tab == activeTab);
+            cmd.set("#TabStrip[" + i + "].Disabled", tab == activeTab);
         }
     }
 

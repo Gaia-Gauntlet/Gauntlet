@@ -1,0 +1,5 @@
+// Every other team in the viewer's session down the right side, below the party panel.
+Group #TeamsSidebar {
+    Anchor: (Top: 240, Right: 12, Width: 250);
+    LayoutMode: Top;
+}

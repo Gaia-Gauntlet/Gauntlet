@@ -1,6 +1,6 @@
 // One team on the Teams tab: a block with the name and headcount on the first line, the full
 // member list on the second, and the team's controls on the third.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
 Group {
     LayoutMode: Top;

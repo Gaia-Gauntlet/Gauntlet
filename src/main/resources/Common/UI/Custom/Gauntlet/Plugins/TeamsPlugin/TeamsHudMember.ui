@@ -1,0 +1,27 @@
+// One member on a teams HUD row: portrait with dead and disconnected overlays and their score.
+Group {
+    Anchor: (Width: 34, Height: 34, Top: 3, Right: 3);
+
+    PlayerPortrait #Portrait { Anchor: (Width: 34, Height: 34); }
+    Group #Dead {
+        Anchor: (Width: 34, Height: 34);
+        Background: (Color: #000000(0.55));
+        Visible: false;
+        Group #DeadIcon { Anchor: (Width: 34, Height: 34); }
+    }
+    Group #Off {
+        Anchor: (Width: 34, Height: 34);
+        Background: (Color: #000000(0.55));
+        Visible: false;
+        Group #OffIcon { Anchor: (Width: 34, Height: 34); }
+    }
+    Group {
+        Anchor: (Right: 0, Bottom: 0, Width: 16, Height: 14);
+        Background: (Color: #000000(0.75));
+
+        Label #Score {
+            Text: "0";
+            Style: (FontSize: 10, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: Center, VerticalAlignment: Center);
+        }
+    }
+}

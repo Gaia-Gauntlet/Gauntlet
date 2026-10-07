@@ -1,14 +1,15 @@
 // Match tab: where the game is, the timer, the life cycle actions, and preflight.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
-@Content = Group {
+Group {
     LayoutMode: Left;
+    Visible: false;
 
     $G.@Column {
         $G.@Card {
             $G.@Header { @Text = "Status"; }
-            $G.@Field #GameField    { @Key = "Game"; }
-            $G.@Field #StateField   { @Key = "State"; }
+            $G.@Field #MatchGameField  { @Key = "Game"; }
+            $G.@Field #MatchStateField { @Key = "State"; }
             $G.@Field #HubField     { @Key = "Hub"; }
             $G.@Field #LobbiesField { @Key = "Lobbies"; }
             $G.@Field #ArenaField   { @Key = "Arena"; }
@@ -74,4 +75,4 @@ $G = "Common.ui";
             $G.@ScrollPanel #PreflightList {}
         }
     }
-};
+}

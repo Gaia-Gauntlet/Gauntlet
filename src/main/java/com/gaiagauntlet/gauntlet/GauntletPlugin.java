@@ -17,6 +17,8 @@ import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -47,6 +49,7 @@ public class GauntletPlugin extends JavaPlugin {
         setupResources();
         setupComponents();
         setupPlugins();
+        setupEvents();
     }
 
     // sets up internal or core operations like registries or event handlers
@@ -95,6 +98,8 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
         GameRegistry.registerPlugin(SpectatorPlugin.ID, this, SpectatorPlugin::new);
     }
+
+    private void setupEvents() {}
 
     @Override
     protected void shutdown() {

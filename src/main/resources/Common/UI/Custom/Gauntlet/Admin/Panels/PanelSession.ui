@@ -1,7 +1,7 @@
 // Session tab: where the session is, the timer, the life cycle actions, and preflight.
-$G = "../Common.ui";
+$G = "../../Admin/Common.ui";
 
-Group #PanelSession {
+Group {
     LayoutMode: Left;
     Visible: false;
 

@@ -1,0 +1,66 @@
+// The viewer's own team in the top right: icon, name and team score over one card per member. A
+// team that only watches shows its name marked as spectating instead.
+Group #Party {
+    Anchor: (Top: 52, Right: 12, Width: 300, Height: 178);
+    LayoutMode: Top;
+    Background: (Color: #0d1117(0.8));
+    Padding: (Full: 10);
+
+    Group {
+        Anchor: (Height: 44);
+        LayoutMode: Left;
+
+        Group #PartyIcon {
+            Anchor: (Width: 44, Height: 44);
+            Background: (Color: #ffffff(0.08));
+
+            Label #PartyInitial {
+                Style: (FontSize: 22, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center);
+            }
+        }
+
+        Group {
+            FlexWeight: 1;
+            Anchor: (Left: 10);
+            LayoutMode: Top;
+
+            Label #PartyName {
+                Anchor: (Height: 26);
+                Style: (FontSize: 20, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+            }
+            Label #PartySpectating {
+                Anchor: (Height: 16);
+                Visible: false;
+                Text: "SPECTATING";
+                Style: (FontSize: 12, RenderBold: true, TextColor: #E8A93B, LetterSpacing: 1);
+            }
+        }
+
+        Group #PartyStat {
+            Anchor: (Width: 70);
+            LayoutMode: Top;
+
+            Label {
+                Anchor: (Height: 16);
+                Text: "SCORE";
+                Style: (FontSize: 11, RenderBold: true, TextColor: #878e9c, HorizontalAlignment: End);
+            }
+            Label #PartyScore {
+                Anchor: (Height: 28);
+                Text: "0";
+                Style: (FontSize: 24, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: End);
+            }
+        }
+    }
+
+    Group #PartyDivider {
+        Anchor: (Top: 8, Height: 2);
+        Background: (Color: #E8A93B(0.5));
+    }
+
+    Group #PartyMembers {
+        Anchor: (Top: 8);
+        FlexWeight: 1;
+        LayoutMode: Left;
+    }
+}

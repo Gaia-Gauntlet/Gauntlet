@@ -1,0 +1,3 @@
+// One generated button in the dashboard's tab strip. AdminPage sets its text.
+$G = "Common.ui";
+$G.@Tab { @Anchor = (Right: 4); }

@@ -15,6 +15,14 @@ final class NoTab implements AdminTab {
         return "NoTab";
     }
 
+    @Nonnull @Override public String getTitle() {
+        return "No Tab";
+    }
+
+    @Nonnull @Override public String getPanel() {
+        return "Gauntlet/Admin/Panels/PanelNoTab.ui";
+    }
+
     @Override
     public void bind(@Nonnull UIEventBuilder evt) {
     }

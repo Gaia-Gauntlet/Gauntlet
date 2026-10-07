@@ -1,8 +1,9 @@
 // Zones tab: the closing sequence and the phase pacing.
-$G = "Common.ui";
+$G = "../../Admin/Common.ui";
 
-@Content = Group {
+Group {
     LayoutMode: Left;
+    Visible: false;
 
     $G.@Column {
         $G.@Card {
@@ -35,4 +36,4 @@ $G = "Common.ui";
             Group #PhaseList { LayoutMode: Top; }
         }
     }
-};
+}

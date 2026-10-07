@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
+package com.gaiagauntlet.gauntlet.core.ui.tabs;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
@@ -35,6 +35,11 @@ public final class SessionTab implements AdminTab {
     @Override
     public @NonNull String getId() {
         return "Session";
+    }
+
+    @Override
+    public @NonNull String getPanel() {
+        return "Gauntlet/Admin/Panels/PanelSession.ui";
     }
 
     @Override
