@@ -164,10 +164,10 @@ public class PartyUtils {
             recipient.sendMessage(msg("You don't have an invite to that party to decline!").color(Color.RED));
             return;
         }
-        recipient.sendMessage(msg("party.invite.declined.you").param("party", party.getId()));
+        recipient.sendMessage(msg("server.gg.commands.party.invite.declined.you").param("party", party.getId()));
         PlayerRef sender = PlayerUtils.get(invite.getSender());
         if (Objects.nonNull(sender)) {
-            sender.sendMessage(msg("party.invite.declined")
+            sender.sendMessage(msg("server.gg.commands.party.invite.declined")
                     .param("recipient", recipient.getUsername())
                     .param("party", party.getId()));
         }
@@ -212,16 +212,16 @@ public class PartyUtils {
 
             // demoted message
             if (member.equals(existing)) {
-                player.sendMessage(msg("party.ownership.demote.self"));
+                player.sendMessage(msg("server.gg.commands.party.ownership.demote.self").param("party", party.getLabel()));
             } else if (existing != null) {
-                member.sendMessage(msg("party.ownership.demote").param("player", existing.getUsername()));
+                member.sendMessage(msg("server.gg.commands.party.ownership.demote").param("player", existing.getUsername()).param("party", party.getLabel()));
             }
 
             // promoted message
             if (member.equals(player)) {
-                player.sendMessage(msg("party.ownership.promote.self"));
+                player.sendMessage(msg("server.gg.commands.party.ownership.promote.self").param("party", party.getLabel()));
             } else {
-                member.sendMessage(msg("party.ownership.promote").param("player", player.getUsername()));
+                member.sendMessage(msg("server.gg.commands.party.ownership.promote").param("player", player.getUsername()).param("party", party.getLabel()));
             }
 
         }
