@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
@@ -20,10 +20,11 @@ import lombok.Setter;
 
 /**
  * Where a session's match is in its life cycle, the countdown for the current phase, and the
- * standings once it ends. Written on the hub thread through MatchUtils. HUDs read it from their
- * refresh timer, so every field is safe to read from any thread.
+ * standings once it ends. Kept in the session's game store on the hub world, since the session
+ * itself is locked while a game runs. Written on the hub thread through MatchUtils. HUDs read it
+ * from their refresh timer, so every field is safe to read from any thread.
  */
-public final class MatchComponent implements SessionComponent {
+public final class MatchComponent implements GameComponent {
 
     public static final String ID = "MatchComponent";
 
@@ -46,7 +47,7 @@ public final class MatchComponent implements SessionComponent {
             .build();
 
 
-    @Getter @Setter private static SessionComponentType<MatchComponent> sessionComponentType;
+    @Getter @Setter private static GameComponentType<MatchComponent> componentType;
 
     @Getter private volatile MatchState state = MatchState.IDLE;
 

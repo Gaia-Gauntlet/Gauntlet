@@ -6,8 +6,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,9 +17,10 @@ import lombok.Setter;
 /**
  * What the zone radial shows for a session: one entry per zone with its slot on the radial, its art,
  * and how far it has closed. The zone logic publishes a fresh snapshot whenever a zone changes state,
- * and the HUD only ever reads the latest one. Not saved, since the zone logic republishes on load.
+ * and the HUD only ever reads the latest one. Kept in the session's game store on the hub world, and
+ * not saved, since the zone logic republishes on load.
  */
-public final class ZoneHudComponent implements SessionComponent {
+public final class ZoneHudComponent implements GameComponent {
 
     public static final String ID = "EZZoneHudComponent";
 
@@ -37,19 +40,24 @@ public final class ZoneHudComponent implements SessionComponent {
     public record Zone(int slot, @Nonnull String image, @Nonnull ZoneState state) {
     }
 
-    @Getter @Setter private static SessionComponentType<ZoneHudComponent> sessionComponentType;
+    @Getter @Setter private static GameComponentType<ZoneHudComponent> componentType;
 
     @Getter private volatile List<Zone> zones = List.of();
 
     /** Replaces the session's snapshot. Safe from any thread. */
     public static void publish(@Nonnull GameSession session, @Nonnull List<Zone> zones) {
-        session.ensure(sessionComponentType, new ZoneHudComponent()).zones = List.copyOf(zones);
+        var snapshot = List.copyOf(zones);
+        GauntletUtils.run(GauntletUtils.withHubWorld(), () -> GameStore.ensureHubStore(session.getId())
+                .ensure(componentType, ZoneHudComponent::new).zones = snapshot);
     }
 
     /** The session's zones, or an empty list before the zone logic has published any. */
     @Nonnull
     public static List<Zone> of(@Nullable GameSession session) {
-        if (session == null || sessionComponentType == null) return List.of();
-        return session.get(sessionComponentType).map(ZoneHudComponent::getZones).orElse(List.of());
+        if (session == null || componentType == null) return List.of();
+        return GameStore.withHubStore(session.getId())
+                .flatMap(store -> store.get(componentType))
+                .map(ZoneHudComponent::getZones)
+                .orElse(List.of());
     }
 }

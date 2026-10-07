@@ -10,22 +10,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * A session's vote on its next game: the games on offer, one vote per player, and when it closes.
- * After it closes it keeps the winner so the end screen can show it. Not saved, since a vote only
- * lives for one end screen.
+ * After it closes it keeps the winner so the end screen can show it. Kept in the session's game
+ * store on the hub world, and not saved, since a vote only lives for one end screen.
  */
-public final class VoteComponent implements SessionComponent {
+public final class VoteComponent implements GameComponent {
 
     public static final String ID = "VoteComponent";
 
-    @Getter @Setter private static SessionComponentType<VoteComponent> sessionComponentType;
+    @Getter @Setter private static GameComponentType<VoteComponent> componentType;
 
     @Getter private final List<String> options;
     private final Map<UUID, String> votes = new ConcurrentHashMap<>();

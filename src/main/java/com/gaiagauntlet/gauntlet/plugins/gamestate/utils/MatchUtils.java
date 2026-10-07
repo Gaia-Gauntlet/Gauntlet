@@ -12,6 +12,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.Standing;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 
 /**
  * Reads and moves a session's match. Every change is applied on the hub thread, so callers on any
@@ -28,8 +29,9 @@ public final class MatchUtils {
 
     @Nullable
     public static MatchComponent get(@Nullable GameSession session) {
-        var type = MatchComponent.getSessionComponentType();
-        return session == null || type == null ? null : session.get(type).orElse(null);
+        var type = MatchComponent.getComponentType();
+        if (session == null || type == null) return null;
+        return GameStore.withHubStore(session.getId()).flatMap(store -> store.get(type)).orElse(null);
     }
 
     @Nonnull
@@ -138,7 +140,7 @@ public final class MatchUtils {
 
     @Nonnull
     private static MatchComponent ensure(@Nonnull GameSession session) {
-        return session.ensure(MatchComponent.getSessionComponentType(), new MatchComponent());
+        return GameStore.ensureHubStore(session.getId()).ensure(MatchComponent.getComponentType(), MatchComponent::new);
     }
 
     private static void onHub(@Nonnull Runnable task) {

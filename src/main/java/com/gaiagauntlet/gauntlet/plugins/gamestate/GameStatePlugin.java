@@ -3,7 +3,6 @@ package com.gaiagauntlet.gauntlet.plugins.gamestate;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
-import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
@@ -14,6 +13,8 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.VoteHud;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.ui.VotePage;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.VoteUtils;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -37,7 +38,7 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
 
     @Override
     public List<String> getDependencies() {
-        return List.of();
+        return List.of(GameStorePlugin.ID);
     }
 
     @Override
@@ -46,10 +47,9 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
     }
 
     public void init(JavaPlugin host) {
-        MatchComponent.setSessionComponentType(
-                SessionRegistry.register(MatchComponent.ID, MatchComponent.class, MatchComponent.CODEC));
-        VoteComponent.setSessionComponentType(
-                SessionRegistry.register(VoteComponent.ID, VoteComponent.class, null));
+        MatchComponent.setComponentType(
+                GameComponentRegistry.register(MatchComponent.ID, MatchComponent.class, MatchComponent.CODEC));
+        VoteComponent.setComponentType(GameComponentRegistry.register(VoteComponent.ID, VoteComponent.class));
         HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(GameStatePlugin::tick, 1, 1, TimeUnit.SECONDS);
     }
 

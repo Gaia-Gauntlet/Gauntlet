@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -68,6 +69,10 @@ public final class ConfigTab implements AdminTab {
     @Override
     public Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nullable GameSession session, @Nonnull AdminPage page) {
         if (session == null) return Widgets.fail("Pick a session first");
+        var state = session.getSessionState();
+        if (state == SessionState.SETTING_UP || state == SessionState.RUNNING) {
+            return Widgets.fail("The session is locked while a game runs, so change overrides between games");
+        }
         var game = event.pick();
         if (!GameRegistry.hasGame(game)) return Widgets.fail("Pick a game first");
         return switch (action) {

@@ -17,6 +17,7 @@ import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.VoteComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -37,8 +38,9 @@ public final class VoteUtils {
 
     @Nullable
     public static VoteComponent get(@Nullable GameSession session) {
-        var type = VoteComponent.getSessionComponentType();
-        return session == null || type == null ? null : session.get(type).orElse(null);
+        var type = VoteComponent.getComponentType();
+        if (session == null || type == null) return null;
+        return GameStore.withHubStore(session.getId()).flatMap(store -> store.get(type)).orElse(null);
     }
 
     public static boolean isOpen(@Nullable GameSession session) {
@@ -58,7 +60,7 @@ public final class VoteUtils {
     public static void open(@Nonnull GameSession session, @Nonnull List<String> options, int seconds) {
         onHub(() -> {
             var vote = new VoteComponent(options, System.currentTimeMillis() + seconds * 1000L);
-            session.put(VoteComponent.getSessionComponentType(), vote);
+            GameStore.ensureHubStore(session.getId()).put(VoteComponent.getComponentType(), vote);
             for (var player : GauntletUtils.playersFor(session)) {
                 showPage(player, session);
             }
