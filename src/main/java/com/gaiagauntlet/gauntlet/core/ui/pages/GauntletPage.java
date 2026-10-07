@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.ui.pages;
 
+import java.util.Arrays;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -12,6 +13,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUICommand;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
@@ -33,6 +35,9 @@ public abstract class GauntletPage extends InteractiveCustomUIPage<AdminPageEven
     private final long refreshMillis;
     private final AtomicReference<ScheduledFuture<?>> refresh = new AtomicReference<>();
     private final Object lock = new Object();
+
+    /** What the last timer refresh sent, so a refresh that would change nothing is skipped. */
+    @Nullable private CustomUICommand[] lastRefresh;
 
     protected GauntletPage(@Nonnull PlayerRef playerRef, long refreshMillis) {
         super(playerRef, CustomPageLifetime.CanDismiss, AdminPageEvent.CODEC);
@@ -106,6 +111,14 @@ public abstract class GauntletPage extends InteractiveCustomUIPage<AdminPageEven
                 LOGGER.atWarning().withCause(e).log("%s failed to render, so nothing was sent", getClass().getSimpleName());
                 return;
             }
+            // Clicks that arrive while an update awaits the client's acknowledgment are dropped, so
+            // refreshes that change nothing are not sent.
+            var commands = cmd.getCommands();
+            var quiet = status == null && evt.getEvents().length == 0;
+            if (quiet && Arrays.equals(commands, lastRefresh)) {
+                return;
+            }
+            lastRefresh = quiet ? commands : null;
             sendUpdate(cmd, evt, false);
         }
     }

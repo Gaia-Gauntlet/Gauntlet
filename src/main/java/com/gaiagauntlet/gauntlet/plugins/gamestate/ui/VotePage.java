@@ -13,7 +13,6 @@ import com.gaiagauntlet.gauntlet.core.ui.pages.GauntletPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.VoteComponent;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.VoteUtils;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -33,9 +32,11 @@ public final class VotePage extends GauntletPage {
 
     /** The vote the rows were built for, or null when they need building. */
     @Nullable private VoteComponent built;
+    /** Whether the header was last laid out for a closed vote, or null before it was laid out. */
+    @Nullable private Boolean builtClosed;
 
     public VotePage(@Nonnull PlayerRef playerRef, @Nullable GameSession session) {
-        super(playerRef, 1000);
+        super(playerRef, 2000);
         this.opened = session;
     }
 
@@ -50,20 +51,25 @@ public final class VotePage extends GauntletPage {
     protected void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt) {
         var session = session();
         var vote = VoteUtils.get(session);
-        if (vote != built) {
+        var closed = vote == null || vote.isClosed();
+        if (vote != built || !Boolean.valueOf(closed).equals(builtClosed)) {
             built = vote;
+            builtClosed = closed;
             buildRows(cmd, evt, vote);
+            cmd.set("#TimerText.Visible", !closed);
+            cmd.set("#TimerClock.Visible", !closed);
+            if (!closed) {
+                cmd.set("#TimerClock.Seconds", vote.remainingSeconds(System.currentTimeMillis()));
+            }
+            cmd.set("#Result.Text", vote == null ? "No vote right now"
+                    : !closed ? ""
+                    : vote.getWinner() == null ? "Vote closed" : "Up next: " + SessionText.game(vote.getWinner()));
         }
         if (vote == null) {
-            cmd.set("#Timer.Text", "No vote right now");
             cmd.set("#Summary.Text", "");
             return;
         }
 
-        var winner = vote.getWinner();
-        cmd.set("#Timer.Text", vote.isClosed()
-                ? (winner == null ? "Vote closed" : "Up next: " + SessionText.game(winner))
-                : "Closes in " + MatchUtils.clock(vote.remainingSeconds(System.currentTimeMillis())));
         var players = Math.max(GauntletUtils.playersFor(session).size(), vote.totalVotes());
         cmd.set("#Summary.Text", vote.totalVotes() + " of " + players + " players voted");
 

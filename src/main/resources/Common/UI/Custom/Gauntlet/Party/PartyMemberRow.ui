@@ -22,5 +22,5 @@ Group {
             Style: (FontSize: 11, TextColor: #878e9c, VerticalAlignment: Center);
         }
     }
-    $G.@GoQuiet #Promote { @Anchor = (Width: 120, Top: 3); Text: "Make leader"; Visible: false; }
+    $G.@GoQuiet #Promote { @Anchor = (Top: 3); Text: "Promote"; Visible: false; }
 }

@@ -25,9 +25,21 @@ $Common.@PageOverlay {
                 LayoutMode: Left;
                 Anchor: (Height: 40, Bottom: 8);
 
-                Label #Timer {
-                    FlexWeight: 1;
+                // While the vote is open the clock counts down on the client. Once it closes, the result
+                // takes its place.
+                Label #TimerText {
+                    Anchor: (Width: 112);
+                    Text: "Closes in";
                     Style: (FontSize: 24, RenderBold: true, TextColor: #E8A93B, VerticalAlignment: Center);
+                }
+                TimerLabel #TimerClock {
+                    Anchor: (Width: 90);
+                    Style: (FontSize: 24);
+                    Seconds: 0;
+                }
+                Label #Result {
+                    FlexWeight: 1;
+                    Style: (FontSize: 24, RenderBold: true, TextColor: #E8A93B, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
                 }
                 Label #Summary {
                     Anchor: (Width: 220);
