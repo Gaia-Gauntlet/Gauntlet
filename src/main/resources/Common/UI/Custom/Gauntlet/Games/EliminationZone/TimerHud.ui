@@ -1,0 +1,13 @@
+// The countdown banner at the top of the screen: the header art for the current phase over the
+// remaining time.
+Group {
+    Anchor: (Top: 0, Width: 600, Height: 164);
+
+    Group #TimerImage {
+        Anchor: (Top: -10, Width: 350, Height: 164);
+    }
+    Label #TimerLabel {
+        Anchor: (Top: 0, Width: 600, Height: 164);
+        Style: (HorizontalAlignment: Center, FontSize: 60, RenderBold: true);
+    }
+}

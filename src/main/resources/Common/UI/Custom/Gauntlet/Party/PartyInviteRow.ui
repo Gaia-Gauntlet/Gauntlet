@@ -1,0 +1,14 @@
+// One invite waiting for the viewer: who sent it and to which party, with accept and decline.
+$G = "../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Height: 32, Bottom: 4);
+
+    Label #Text {
+        FlexWeight: 1;
+        Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+    }
+    $G.@Go #Accept { @Anchor = (Right: 4); Text: "Accept"; }
+    $G.@GoQuiet #Decline { Text: "Decline"; }
+}

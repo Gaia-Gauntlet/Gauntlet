@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.plugins.gamestore.utils;
 
 import java.util.Optional;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.resource.WorldGameStore;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -26,6 +27,19 @@ public class GameStore {
     }
     public static Optional<GameEcs> withStore(World world, String sessionId) {
         return withResource(world).get(sessionId);
+    }
+
+    /**
+     * The session's game store on the hub world, which holds the game state that outlives any one of
+     * the game's worlds. Safe to read from any thread.
+     */
+    public static Optional<GameEcs> withHubStore(String sessionId) {
+        return withStore(GauntletUtils.withHubWorld(), sessionId);
+    }
+
+    /** Creates the session's game store on the hub world if it has none. Call it on the hub thread. */
+    public static GameEcs ensureHubStore(String sessionId) {
+        return ensureStore(GauntletUtils.withHubWorld(), sessionId);
     }
     
 }

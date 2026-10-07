@@ -1,7 +1,7 @@
 // Log tab: what happened lately in the selected game, newest first.
-$G = "../Common.ui";
+$G = "../../Admin/Common.ui";
 
-Group #PanelLog {
+Group {
     LayoutMode: Top;
     Visible: false;
 

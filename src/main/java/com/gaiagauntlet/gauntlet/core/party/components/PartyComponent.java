@@ -33,7 +33,7 @@ public class PartyComponent {
                     (c, v) -> c.label = v,
                     c -> c.label)
             .add()
-            .append(new KeyedCodec<>("Players", new SetCodec<>(Codec.UUID_STRING, HashSet::new, false)),
+            .append(new KeyedCodec<>("Players", new SetCodec<>(Codec.UUID_STRING, () -> ConcurrentHashMap.newKeySet(), false)),
                     (c, v) -> {
                         c.players.clear();
                         c.players.addAll(v);
@@ -50,7 +50,7 @@ public class PartyComponent {
     String id;
     @Getter
     String label;
-    Set<UUID> players = new HashSet<>();
+    Set<UUID> players = ConcurrentHashMap.newKeySet();
     @Getter
     UUID owner;
     // list of offline players with their cancellation token - change type of
@@ -82,6 +82,10 @@ public class PartyComponent {
         if (Objects.nonNull(playerRef)) {
             sendMessage(msg("server.gg.commands.party.joined")
                     .param("player", playerRef.getUsername()));
+        }
+        if (includesOfflinePlayer(playerRef)) {
+            setOnline(player);
+            return;
         }
         players.add(player);
     }
@@ -136,16 +140,16 @@ public class PartyComponent {
     }
 
     public boolean includesPlayer(PlayerRef player) {
-        if (!offlinePlayers.containsKey(player.getUuid()))
-            return includesPlayer(player.getUuid());
-
-        setOnline(player.getUuid());
-        return true;
+        return includesPlayer(player.getUuid());
     }
+    public boolean includesOfflinePlayer(PlayerRef player) {
+        return offlinePlayers.containsKey(player.getUuid());
+    }
+
     public boolean includesPlayer(UUID player) {
         if (players.contains(player))
             return true;
-        
+
         return false;
     }
 
@@ -189,7 +193,9 @@ public class PartyComponent {
         var cancelToken = offlinePlayers.get(playerId);
         if (cancelToken == null)
             return null;
+        
         offlinePlayers.remove(playerId); // remove from offline
+        players.add(playerId);
         if (cancelToken.isCancelled())
             return cancelToken;
         cancelToken.cancel(false);

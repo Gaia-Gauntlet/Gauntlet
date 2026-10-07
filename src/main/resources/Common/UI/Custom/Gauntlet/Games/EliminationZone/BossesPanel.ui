@@ -1,0 +1,39 @@
+// Bosses tab: bosses to spawn and weather to force.
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Bosses"; }
+            $G.@ListPanel #BossList {}
+            $G.@PickerRow {
+                $G.@Picker #BossPicker { @Anchor = (Right: 6); }
+                $G.@Go #BossSpawn { Text: "Spawn"; }
+            }
+            $G.@ButtonRow {
+                $G.@Action #BossRandom { Text: "Spawn a random boss"; }
+            }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Weather"; }
+            $G.@Field #WeatherField { @Key = "Now"; }
+            $G.@PickerRow {
+                $G.@Picker #WeatherPicker { @Anchor = (Right: 6); }
+                $G.@SmallInput #WeatherSeconds { @Anchor = (Right: 6); @Placeholder = "seconds"; }
+                $G.@Go #WeatherApply { Text: "Force"; }
+            }
+            $G.@ButtonRow {
+                $G.@Action #WeatherRandom { @Anchor = (Right: 3); Text: "Random weather"; }
+                $G.@Action #WeatherClear  { @Anchor = (Left: 3); Text: "Clear"; }
+            }
+        }
+    }
+}

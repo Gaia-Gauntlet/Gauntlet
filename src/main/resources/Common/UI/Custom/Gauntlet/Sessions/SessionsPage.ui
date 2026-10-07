@@ -1,0 +1,53 @@
+// The session browser: every session with what it is playing and what is queued, and a button to
+// join or leave it. SessionsPage fills one row per session.
+$Common = "../../Common.ui";
+$G = "../Admin/Common.ui";
+
+$Common.@PageOverlay {
+    Anchor: (Full: 0);
+    LayoutMode: Middle;
+
+    $Common.@DecoratedContainer {
+        @CloseButton = true;
+        Anchor: (Width: 820, Height: 600);
+
+        #Title {
+            $Common.@Title {
+                @Text = "Sessions";
+            }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 12);
+
+            // Who the viewer is playing with and where.
+            Group {
+                LayoutMode: Left;
+                Anchor: (Height: 26, Bottom: 8);
+                Background: (Color: #000000(0.22));
+                Padding: (Horizontal: 10);
+
+                Label #YouText {
+                    FlexWeight: 1;
+                    Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+            }
+
+            $G.@ScrollPanel #SessionList {}
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Height: 26, Top: 8);
+                Background: (Color: #000000(0.22));
+                Padding: (Horizontal: 10);
+
+                Label #Status {
+                    FlexWeight: 1;
+                    Text: "Only your party leader can move your party into a session.";
+                    Style: (FontSize: 12, TextColor: #7a9cc6, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+                }
+            }
+        }
+    }
+}

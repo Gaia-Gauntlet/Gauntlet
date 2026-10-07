@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
@@ -14,6 +15,7 @@ import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -24,9 +26,12 @@ import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredAr
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.arguments.types.SingleArgumentType;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractTargetPlayerCommand;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractWorldCommand;
 import com.hypixel.hytale.server.core.command.system.suggestion.SuggestionResult;
 import com.hypixel.hytale.server.core.command.system.suggestion.SuggestionUtil;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -95,6 +100,8 @@ public class SessionCommands extends AbstractCommandCollection {
         addSubCommand(new RemoveGameFromSession());
         addSubCommand(new SetupSession());
         addSubCommand(new CleanSession());
+        addSubCommand(new JoinSession());
+        addSubCommand(new LeaveSession());
     }
 
     private static class CreateSession extends AbstractWorldCommand {
@@ -189,7 +196,8 @@ public class SessionCommands extends AbstractCommandCollection {
                                         games != null && games.size() >= 1
                                                 ? String.join(", ", session.getGameSequence())
                                                 : "No games queued")
-                                .param("state", session.getSessionState().toString() + " " + session.getErrorReason() )));
+                                .param("state",
+                                        session.getSessionState().toString() + " " + session.getErrorReason())));
             }
         }
     }
@@ -278,6 +286,50 @@ public class SessionCommands extends AbstractCommandCollection {
                     .param("sessionId", targetSession));
 
             GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, targetSession)
+                    .onMessage(msg -> ctx.sendMessage(msg.toMessage())).onComplete(message -> {
+                        ctx.sendMessage(message.toMessage());
+                    }));
+        }
+    }
+
+    private static class JoinSession extends AbstractTargetPlayerCommand {
+        private final RequiredArg<String> sessionId;
+
+        public JoinSession() {
+            super("join", "Joins a session");
+            sessionId = withRequiredArg("sessionId", "The session", SESSION_ID);
+        }
+
+        @Override
+        protected void execute(CommandContext ctx, Ref<EntityStore> ref, Ref<EntityStore> otherRef, PlayerRef playerRef,
+                World world, Store<EntityStore> store) {
+            var targetSession = sessionId.get(ctx);
+            ctx.sendMessage(msg("server.gg.commands.session.cleanup.pending")
+                    .param("sessionId", targetSession));
+
+            GauntletEventRegistry.dispatch(PlayerGameEvent.Add(playerRef, targetSession)
+                    .onMessage(msg -> ctx.sendMessage(msg.toMessage())).onComplete(message -> {
+                        ctx.sendMessage(message.toMessage());
+                    }));
+        }
+    }
+
+    private static class LeaveSession extends AbstractTargetPlayerCommand {
+        private final RequiredArg<String> sessionId;
+
+        public LeaveSession() {
+            super("leave", "Leaves a session");
+            sessionId = withRequiredArg("sessionId", "The session", SESSION_ID);
+        }
+
+        @Override
+        protected void execute(CommandContext ctx, Ref<EntityStore> ref, Ref<EntityStore> otherRef, PlayerRef playerRef,
+                World world, Store<EntityStore> store) {
+            var targetSession = sessionId.get(ctx);
+            ctx.sendMessage(msg("server.gg.commands.session.cleanup.pending")
+                    .param("sessionId", targetSession));
+
+            GauntletEventRegistry.dispatch(PlayerGameEvent.Remove(playerRef, targetSession)
                     .onMessage(msg -> ctx.sendMessage(msg.toMessage())).onComplete(message -> {
                         ctx.sendMessage(message.toMessage());
                     }));

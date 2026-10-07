@@ -21,7 +21,7 @@ public final class Widgets {
     static final String ROW = "Gauntlet/Admin/Row.ui";
 
     /** One picker entry: what the admin reads and what the page receives. */
-    record Option(@Nonnull String label, @Nonnull String value) {
+    public record Option(@Nonnull String label, @Nonnull String value) {
     }
 
     private Widgets() {

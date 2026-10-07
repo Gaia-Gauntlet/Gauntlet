@@ -2,6 +2,8 @@ package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
+import java.util.List;
+
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
@@ -12,8 +14,11 @@ import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.HandlerUtils.Resolve;
+import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.World;
 
@@ -93,37 +98,56 @@ public class SessionHandlers extends HandlerUtils {
         session.startNext();
         var future = game.setupGame(hub.getEntityStore().getStore(), session);
         future.whenComplete((value, error) -> {
-            if (error != null) {
-                // errored
-                GaiaLog.atError().withSession(session).withCause(error)
-                        .log(MessageUtils.msg("server.gg.events.session.setup.error")
+            // run on the hub thread
+            GauntletUtils.run(hub, () -> {
+                if (error != null) {
+                    // errored
+                    GaiaLog.atError().withSession(session).withCause(error)
+                            .log(MessageUtils.msg("server.gg.events.session.setup.error")
+                                    .param("sessionId", session.getId())
+                                    .param("gameId", nextGameId)
+                                    .param("reason", error.getLocalizedMessage()));
+
+                    session.setErrored("Error thrown during setup");
+                    // cancel the game immediately - run on the hub thread
+                    cleanGame(hub, sessionEvt, session);
+                    return;
+                }
+
+                var check = session.setRunning(nextGameId);
+                if (!check) {
+                    // something has gone horribly wrong
+                    GaiaLog.atError().withSession(session)
+                            .log(MessageUtils.msg("server.gg.events.session.setup.invalid")
+                                    .param("sessionId", session.getId())
+                                    .param("gameId", nextGameId));
+
+                    session.setErrored("Game was in a weird state when starting (session state mismatch)");
+                    // cancel the game immediately - run on the hub thread
+                    cleanGame(hub, sessionEvt, session);
+                    return;
+                }
+
+                try {
+                    var players = GauntletUtils.playersFor(session);
+                    // run the player connection logic
+                    joinGame(hub, session, players).whenComplete((_, e) -> {
+                        if (e != null) {
+                            Resolve.error(sessionEvt, session,
+                                    MessageUtils.error("Error was thrown while joining the world"), e);
+                            return;
+                        }
+                    });
+                } catch (Exception e) {
+                    GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
+                            .param("playerName", "all session players")
+                            .param("reason", e.getLocalizedMessage()));
+                }
+                sessionEvt.complete(GaiaLog.atInfo().withSession(session)
+                        .log(MessageUtils.msg("server.gg.events.session.setup.success")
                                 .param("sessionId", session.getId())
-                                .param("gameId", nextGameId)
-                                .param("reason", error.getLocalizedMessage()));
-
-                session.setErrored("Error thrown during setup");
-                // cancel the game immediately - run on the hub thread
-                GauntletUtils.run(hub, () -> cleanGame(hub, sessionEvt, session));
-                return;
-            }
-
-            var check = session.setRunning(nextGameId);
-            if (!check) {
-                // something has gone horribly wrong
-                GaiaLog.atError().withSession(session)
-                        .log(MessageUtils.msg("server.gg.events.session.setup.invalid")
-                                .param("sessionId", session.getId())
-                                .param("gameId", nextGameId));
-
-                session.setErrored("Game was in a weird state when starting (session state mismatch)");
-                // cancel the game immediately - run on the hub thread
-                GauntletUtils.run(hub, () -> cleanGame(hub, sessionEvt, session));
-                return;
-            }
-            sessionEvt.complete(GaiaLog.atInfo().withSession(session)
-                    .log(MessageUtils.msg("server.gg.events.session.setup.success")
-                            .param("sessionId", session.getId())
-                            .param("gameId", nextGameId)));
+                                .param("gameId", nextGameId)));
+            });
         });
     }
 
@@ -226,11 +250,11 @@ public class SessionHandlers extends HandlerUtils {
                 var removed = 0;
                 for (var game : gameQueue) {
                     var success = session.removeGame(game);
-                    if (success) removed++;
+                    if (success)
+                        removed++;
                 }
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.removal.success")
-                        .param("games", removed)
-                    );
+                        .param("games", removed));
                 return;
             }
             case APPEND -> {

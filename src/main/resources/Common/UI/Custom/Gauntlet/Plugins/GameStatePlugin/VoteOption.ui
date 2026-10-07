@@ -1,0 +1,33 @@
+// One game on the vote: its name, its share of the votes as a bar and a count, and the vote button.
+$Common = "../../../Common.ui";
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Anchor: (Height: 58, Bottom: 6);
+    Background: (Color: #000000(0.25));
+    Padding: (Full: 8);
+
+    Group {
+        FlexWeight: 1;
+        LayoutMode: Top;
+
+        Label #Name {
+            Anchor: (Height: 22);
+            Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+        }
+        Group {
+            Anchor: (Height: 20);
+            LayoutMode: Left;
+
+            $Common.@ProgressBar #Bar { @Anchor = (Top: 7); Value: 0.0; }
+            Label #Count {
+                FlexWeight: 1;
+                Anchor: (Left: 10);
+                Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center);
+            }
+        }
+    }
+
+    $G.@Go #Pick { @Anchor = (Left: 12, Top: 6); Text: "Vote"; }
+}

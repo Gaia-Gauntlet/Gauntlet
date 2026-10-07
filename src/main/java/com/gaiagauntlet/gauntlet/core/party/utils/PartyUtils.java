@@ -52,8 +52,6 @@ public class PartyUtils {
     /**
      * Ensures that the player is always in a party, even if it's a singleton.
      * 
-     * Auto-reconnects disconnected players
-     * 
      * Creates a party for the player if it doesn't exist
      */
     @Nonnull
@@ -65,7 +63,6 @@ public class PartyUtils {
             resource.addParty(newParty);
             return newParty;
         });
-
     }
 
     /**
@@ -74,12 +71,7 @@ public class PartyUtils {
      */
     public static Optional<PartyComponent> getPartyNullable(PlayerRef player) {
         var resource = GauntletUtils.withResource();
-        for (PartyComponent party : resource.getParties().values()) {
-            if (!party.includesPlayer(player))
-                continue;
-            return Optional.of(party);
-        }
-        return Optional.empty();
+        return resource.getParty(player);
     }
 
     public static Optional<GameSession> sessionFor(PartyComponent party) {
@@ -95,6 +87,10 @@ public class PartyUtils {
     // Invites
 
     public static void sendPartyInvite(PlayerRef sender, PlayerRef recipient) {
+        onWorldOf(recipient, () -> sendPartyInviteNow(sender, recipient));
+    }
+
+    private static void sendPartyInviteNow(PlayerRef sender, PlayerRef recipient) {
         var party = getParty(sender);
         var invites = getInvitesComp(recipient);
         if (sender.getUuid().equals(recipient.getUuid())) {
@@ -129,6 +125,10 @@ public class PartyUtils {
     }
 
     public static void expireInvite(String partyId, PlayerRef sender, PlayerRef recipient) {
+        onWorldOf(recipient, () -> expireInviteNow(partyId, sender, recipient));
+    }
+
+    private static void expireInviteNow(String partyId, PlayerRef sender, PlayerRef recipient) {
         var invites = getInvitesComp(recipient);
         var invite = invites.removeInvite(partyId);
         if (Objects.isNull(invite))
@@ -164,10 +164,10 @@ public class PartyUtils {
             recipient.sendMessage(msg("You don't have an invite to that party to decline!").color(Color.RED));
             return;
         }
-        recipient.sendMessage(msg("party.invite.declined.you").param("party", party.getId()));
+        recipient.sendMessage(msg("server.gg.commands.party.invite.declined.you").param("party", party.getId()));
         PlayerRef sender = PlayerUtils.get(invite.getSender());
         if (Objects.nonNull(sender)) {
-            sender.sendMessage(msg("party.invite.declined")
+            sender.sendMessage(msg("server.gg.commands.party.invite.declined")
                     .param("recipient", recipient.getUsername())
                     .param("party", party.getId()));
         }
@@ -183,6 +183,14 @@ public class PartyUtils {
             return false;
         }
         return true;
+    }
+
+    /** Invites live on the recipient's entity, so they are only touched on the recipient's world thread. */
+    private static void onWorldOf(PlayerRef player, Runnable task) {
+        var ref = player.getReference();
+        if (ref == null || !ref.isValid())
+            return;
+        GauntletUtils.run(ref.getStore().getExternalData().getWorld(), task);
     }
 
     private static PartyInvitesComponent getInvitesComp(PlayerRef recipient) {
@@ -204,16 +212,16 @@ public class PartyUtils {
 
             // demoted message
             if (member.equals(existing)) {
-                player.sendMessage(msg("party.ownership.demote.self"));
+                player.sendMessage(msg("server.gg.commands.party.ownership.demote.self").param("party", party.getLabel()));
             } else if (existing != null) {
-                member.sendMessage(msg("party.ownership.demote").param("player", existing.getUsername()));
+                member.sendMessage(msg("server.gg.commands.party.ownership.demote").param("player", existing.getUsername()).param("party", party.getLabel()));
             }
 
             // promoted message
             if (member.equals(player)) {
-                player.sendMessage(msg("party.ownership.promote.self"));
+                player.sendMessage(msg("server.gg.commands.party.ownership.promote.self").param("party", party.getLabel()));
             } else {
-                member.sendMessage(msg("party.ownership.promote").param("player", player.getUsername()));
+                member.sendMessage(msg("server.gg.commands.party.ownership.promote").param("player", player.getUsername()).param("party", party.getLabel()));
             }
 
         }

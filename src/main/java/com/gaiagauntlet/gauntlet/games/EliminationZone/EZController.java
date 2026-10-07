@@ -1,14 +1,19 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.BossesTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ScoreboardHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.TimerHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
-import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
-import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -19,12 +24,10 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class EZController extends LobbyController {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -36,13 +39,8 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player) {
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player) {
-        return null;
+    public String getDisplayName() {
+        return "Elimination Zone";
     }
 
     private static final List<String> requiredPlugins = List.of(
@@ -80,9 +78,13 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public AdminTab getAdminTab() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAdminTab'");
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new ZonesTab(), new BossesTab(), new EventsTab());
+    }
+
+    @Override
+    public List<HudElement> getHudElements() {
+        return List.of(new ZonesHud(), new TimerHud(), new ScoreboardHud(), new WinnerHud());
     }
 
     @Override // temp, just messing around here

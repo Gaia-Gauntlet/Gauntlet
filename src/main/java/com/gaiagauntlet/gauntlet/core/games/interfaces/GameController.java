@@ -1,10 +1,12 @@
 package com.gaiagauntlet.gauntlet.core.games.interfaces;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -17,6 +19,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
  */
 public abstract class GameController {
     public abstract String getId();
+
+    /** The name players see for this game. */
+    public String getDisplayName() {
+        return getId();
+    }
 
     /**
      * Note: this sets up registries and worlds. This does NOT start the game. The
@@ -32,20 +39,31 @@ public abstract class GameController {
     /** Triggered when a player reconnects in the game */
     public abstract CompletableFuture<Void> playerConnect(World hubWorld, String sessionId, PlayerRef player);
 
-    /** Triggered when a player disconnects in the game - should purely be cleanup logic off the player */
-    public abstract CompletableFuture<Void> playerDisconnect(World hubWorld, PlayerRef player);
+    /** Triggered when a player disconnects in the game - should purely be cleanup logic off the player
+     * Runs on whatever thread the player disconnected from. Does NOT exist only on the hub world
+    */
+    public abstract CompletableFuture<Void> playerDisconnect(World hubWorld, GameSession session, PlayerRef player);
     
     /** Triggered when a player joins the game (either first time or tries to join back) */
-    public abstract CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, PlayerRef player);
+    public abstract CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> player);
 
     /** Triggered when a player leaves the game */
-    public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, PlayerRef player);
+    public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player);
 
     /** Get the ID of the GameConfigAsset to use by default for this game. */
     public String getDefaultConfigAssetId() {return null;}
 
-    /** Returns the admin tab for configuring / managing this game */
-    public abstract AdminTab getAdminTab();
+    /**
+     * Returns new admin tabs for configuring / managing this game, or an empty list if it has none.
+     * Called once per opened admin page.
+     */
+    public abstract List<AdminTab> getAdminTabs();
+
+    /**
+     * Returns new HUD elements for this game, or an empty list if it has none.
+     * Called once per shown HUD.
+     */
+    public abstract List<HudElement> getHudElements();
 
     public abstract List<String> getRequiredPlugins();
 }

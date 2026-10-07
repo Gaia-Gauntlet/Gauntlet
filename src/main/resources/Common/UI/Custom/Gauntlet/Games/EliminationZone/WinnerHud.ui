@@ -1,0 +1,144 @@
+// The end screen: the winner banner and winning team's name over a podium of the top three, second
+// place to the left of first and third to the right.
+Group {
+    Anchor: (Top: 170, Width: 969, Height: 593);
+
+    Group #WinnerBanner {
+        Anchor: (Top: 0, Width: 969, Height: 347);
+    }
+    Label #WinnerName {
+        Anchor: (Top: 50);
+        Style: (HorizontalAlignment: Center, FontSize: 55, RenderBold: true);
+    }
+    Group #WinnerIconLeft {
+        Anchor: (Left: 50, Top: 50, Width: 120, Height: 120);
+        Visible: false;
+    }
+    Group #WinnerIconRight {
+        Anchor: (Right: 50, Top: 50, Width: 120, Height: 120);
+        Visible: false;
+    }
+
+    Group #PodiumFirst {
+        Anchor: (Left: 384, Top: 363, Width: 200, Height: 230);
+        LayoutMode: Top;
+        Background: (Color: #0d1117(0.8));
+        Padding: (Full: 10);
+
+        Label #Place {
+            Anchor: (Height: 26);
+            Text: "1ST";
+            Style: (FontSize: 22, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: Center);
+        }
+        Group {
+            Anchor: (Top: 4, Height: 64);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Group #Icon {
+                Anchor: (Width: 64, Height: 64);
+                Background: (Color: #ffffff(0.08));
+
+                Label #Initial {
+                    Style: (FontSize: 32, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center);
+                }
+            }
+            Group { FlexWeight: 1; }
+        }
+        Label #Name {
+            Anchor: (Top: 6, Height: 36);
+            Style: (FontSize: 16, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, Wrap: true, WrapMaxLines: 2);
+        }
+        Group { FlexWeight: 1; }
+        Label #Points {
+            Anchor: (Height: 22);
+            Style: (FontSize: 18, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: Center);
+        }
+        Label #EventTotal {
+            Anchor: (Height: 16);
+            Style: (FontSize: 12, TextColor: #878e9c, HorizontalAlignment: Center);
+        }
+    }
+
+    Group #PodiumSecond {
+        Anchor: (Left: 172, Top: 393, Width: 200, Height: 200);
+        LayoutMode: Top;
+        Background: (Color: #0d1117(0.8));
+        Padding: (Full: 10);
+
+        Label #Place {
+            Anchor: (Height: 26);
+            Text: "2ND";
+            Style: (FontSize: 22, RenderBold: true, TextColor: #c9d1d9, HorizontalAlignment: Center);
+        }
+        Group {
+            Anchor: (Top: 4, Height: 64);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Group #Icon {
+                Anchor: (Width: 64, Height: 64);
+                Background: (Color: #ffffff(0.08));
+
+                Label #Initial {
+                    Style: (FontSize: 32, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center);
+                }
+            }
+            Group { FlexWeight: 1; }
+        }
+        Label #Name {
+            Anchor: (Top: 6, Height: 36);
+            Style: (FontSize: 16, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, Wrap: true, WrapMaxLines: 2);
+        }
+        Group { FlexWeight: 1; }
+        Label #Points {
+            Anchor: (Height: 22);
+            Style: (FontSize: 18, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: Center);
+        }
+        Label #EventTotal {
+            Anchor: (Height: 16);
+            Style: (FontSize: 12, TextColor: #878e9c, HorizontalAlignment: Center);
+        }
+    }
+
+    Group #PodiumThird {
+        Anchor: (Left: 596, Top: 393, Width: 200, Height: 200);
+        LayoutMode: Top;
+        Background: (Color: #0d1117(0.8));
+        Padding: (Full: 10);
+
+        Label #Place {
+            Anchor: (Height: 26);
+            Text: "3RD";
+            Style: (FontSize: 22, RenderBold: true, TextColor: #cd7f32, HorizontalAlignment: Center);
+        }
+        Group {
+            Anchor: (Top: 4, Height: 64);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Group #Icon {
+                Anchor: (Width: 64, Height: 64);
+                Background: (Color: #ffffff(0.08));
+
+                Label #Initial {
+                    Style: (FontSize: 32, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center);
+                }
+            }
+            Group { FlexWeight: 1; }
+        }
+        Label #Name {
+            Anchor: (Top: 6, Height: 36);
+            Style: (FontSize: 16, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: Center, Wrap: true, WrapMaxLines: 2);
+        }
+        Group { FlexWeight: 1; }
+        Label #Points {
+            Anchor: (Height: 22);
+            Style: (FontSize: 18, RenderBold: true, TextColor: #E8A93B, HorizontalAlignment: Center);
+        }
+        Label #EventTotal {
+            Anchor: (Height: 16);
+            Style: (FontSize: 12, TextColor: #878e9c, HorizontalAlignment: Center);
+        }
+    }
+}

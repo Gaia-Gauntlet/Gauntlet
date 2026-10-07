@@ -1,0 +1,18 @@
+// The radial zone map in the top left corner: six fixed slots over the background art, each showing
+// its zone as active, closing, or closed.
+Group {
+    Anchor: (Top: 0, Left: 0, Width: 350, Height: 350);
+
+    Group #ZoneRadialBackground {
+        Anchor: (Full: 0);
+    }
+    Group #Zone0 { Anchor: (Top: 11, Width: 155, Height: 147); }
+    Group #Zone1 { Anchor: (Top: 30, Right: 28, Width: 145, Height: 125); }
+    Group #Zone2 { Anchor: (Top: 155, Right: 27, Width: 145, Height: 125); }
+    Group #Zone3 { Anchor: (Top: 151, Width: 155, Height: 149); }
+    Group #Zone4 { Anchor: (Top: 155, Left: 26, Width: 145, Height: 125); }
+    Group #Zone5 { Anchor: (Top: 30, Left: 27, Width: 145, Height: 125); }
+    Group #ZoneRadialFrame {
+        Anchor: (Top: 5, Width: 300, Height: 330);
+    }
+}

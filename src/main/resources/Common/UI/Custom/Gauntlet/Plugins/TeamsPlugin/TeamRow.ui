@@ -1,0 +1,38 @@
+// One team on the Teams tab: a block with the name and headcount on the first line, the full
+// member list on the second, and the team's controls on the third.
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Top;
+    Anchor: (Bottom: 6);
+    Background: (Color: #ffffff(0.05));
+    Padding: (Full: 8);
+
+    Group {
+        LayoutMode: Left;
+        Anchor: (Height: 18);
+
+        Label #Name {
+            FlexWeight: 1;
+            Style: (FontSize: 13, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+        }
+        Label #Status {
+            Anchor: (Width: 220);
+            Style: (FontSize: 11, TextColor: #878e9c, VerticalAlignment: Center, HorizontalAlignment: End, Wrap: true, WrapMaxLines: 1);
+        }
+    }
+    Label #Members {
+        Anchor: (Top: 4);
+        Style: (FontSize: 12, TextColor: #c9d1d9, Wrap: true);
+    }
+    Group {
+        LayoutMode: Left;
+        Anchor: (Height: 30, Top: 8);
+
+        $G.@Picker #Member { @Anchor = (Width: 170); FlexWeight: 0; }
+        $G.@GoQuiet #Remove { @Anchor = (Left: 10, Width: 84); Text: "Remove"; }
+        Group { FlexWeight: 1; }
+        $G.@Go #Send { @Anchor = (Width: 90); Text: "Send in"; }
+        $G.@GoQuiet #Toggle { @Anchor = (Left: 10, Width: 90); Text: "Sit out"; }
+    }
+}
