@@ -7,6 +7,7 @@ import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
+import com.gaiagauntlet.gauntlet.core.party.commands.RejoinCommand;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
@@ -68,6 +69,7 @@ public class GauntletPlugin extends JavaPlugin {
     private void setupCommands() {
         getCommandRegistry().registerCommand(new GauntletCommand());
         getCommandRegistry().registerCommand(new PartyCommands());
+        getCommandRegistry().registerCommand(new RejoinCommand());
         getCommandRegistry()
                 .registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
         getCommandRegistry()

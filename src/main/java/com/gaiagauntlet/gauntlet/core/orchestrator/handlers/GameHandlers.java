@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import java.util.concurrent.TimeUnit;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
@@ -43,6 +44,15 @@ public class GameHandlers extends HandlerUtils {
 
             // clean the game
             GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, sessionId));
+
+            var players = GauntletUtils.playersFor(session);
+            for (var player : players) {
+                var playerComp = GauntletUtils.playerFor(player);
+                playerComp.ifPresent(comp -> {
+                    // null all of their games
+                    comp.setCurrentGame(null);
+                });
+            }
 
             Resolve.success(sessionEvt, session, "server.gg.events.game.deferral.success");
         });

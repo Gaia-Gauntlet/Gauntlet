@@ -2,3 +2,4 @@ editor.button=Convert Usernames
 session.transition.success=Transitioning {sessionId} to {newState} from {oldState}
 editor.usernamesResolved=Every username was converted
 editor.usernamesUnresolved=Could not find these players: {names}
+party.rejoin=Rejoin {party} within the next {duration} seconds with <color is="#ffd500">/rejoin</color>

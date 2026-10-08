@@ -35,7 +35,8 @@ public class GauntletUtils {
 
     @Nonnull
     public static Optional<GameSession> sessionFor(@Nonnull PlayerRef player) {
-        var party = PartyUtils.getParty(player);
+        var party = PartyUtils.getParty(player).orElse(null);
+        if (party == null) return Optional.empty();
         return PartyUtils.sessionFor(party.getId());
     }
 
