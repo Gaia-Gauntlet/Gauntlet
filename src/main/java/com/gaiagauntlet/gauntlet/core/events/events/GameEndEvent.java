@@ -30,6 +30,11 @@ public class GameEndEvent extends GauntletEvent {
         this.sessionId = sessionId;
     }
 
+    @Override
+    public String toString() {
+        return "GameEndEvent[" + sessionId + ": " + gameId + " in " + (gameWorld == null ? null : gameWorld.getName()) + "]";
+    }
+
     public void defer(CompletableFuture<?> future) {
         deferrals.add(future);
     }

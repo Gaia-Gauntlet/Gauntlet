@@ -13,4 +13,9 @@ public class NewSessionEvent extends GauntletEvent {
         this.newSession = newSession;
     }
 
+    @Override
+    public String toString() {
+        return "NewSessionEvent[" + (newSession == null ? null : newSession.getId()) + "]";
+    }
+
 }

@@ -36,7 +36,13 @@ public class EZLobbyManager implements LobbyManager {
                 .whenComplete((world, err) -> {
                     // TODO: More validation and proper setup of systems
 
-                    GaiaLog.atInfo().log("EZGameController Instance has been spawned!");
+                    if (err != null) {
+                        GaiaLog.atError(err).withSession(sessionId)
+                                .log("Failed to spawn instance " + cfg.getInstanceTemplateName());
+                        return;
+                    }
+                    GaiaLog.atInfo().withSession(sessionId)
+                            .log("Spawned instance " + world.getName() + " from " + cfg.getInstanceTemplateName());
                 });
     }
 

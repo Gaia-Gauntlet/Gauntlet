@@ -49,7 +49,7 @@ public abstract class LobbyController extends GameController {
         if (!existing.isPresent())
             return Optional.empty();
 
-        return Optional.of(existing.get().getWorld());
+        return Optional.of(existing.get().getWorld()).filter(world -> world.isAlive());
     }
 
     /**

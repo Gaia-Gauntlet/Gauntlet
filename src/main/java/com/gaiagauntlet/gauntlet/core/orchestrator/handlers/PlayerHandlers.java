@@ -149,10 +149,12 @@ public class PlayerHandlers extends HandlerUtils {
                 // run the player connection logic
                 joinGame(hubWorld, session, List.of(playerRef)).whenComplete((_, error) -> {
                     if (error != null) {
-                        Resolve.error(evt, session, error("Error was thrown while joining the world"), error);
+                        Resolve.error(evt, session, msg("server.gg.events.players.join.new.error")
+                                .param("playerName", playerRef.getUsername()), error);
                         return;
                     }
-                    Resolve.success(evt, "Successfully transferred player!");
+                    Resolve.success(evt, session, msg("server.gg.events.players.join.success")
+                            .param("playerName", playerRef.getUsername()));
                     return;
                 });
             } catch (Exception e) {
@@ -238,16 +240,18 @@ public class PlayerHandlers extends HandlerUtils {
                 // run the player disconnection logic
                 game.playerLeave(hubWorld, sessionId, List.of(playerRef)).whenComplete((_, error) -> {
                     if (error != null) {
-                        Resolve.error(evt, session, error("Error was thrown while joining the world"), error);
+                        Resolve.error(evt, session, msg("server.gg.events.players.leave.new.error")
+                                .param("playerName", playerRef.getUsername()), error);
                         return;
                     }
-                    Resolve.success(evt, "Successfully transferred player!");
+                    Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
+                            .param("playerName", playerRef.getUsername()));
                     return;
                 });
             } catch (Exception e) {
                 evt.complete(GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.leave.warn")
                         .param("playerName", playerRef.getUsername())
-                        .param("reason", "Exception when handling player connect")));
+                        .param("reason", "the game controller threw " + e.getClass().getSimpleName())));
             }
         });
     }
@@ -311,11 +315,15 @@ public class PlayerHandlers extends HandlerUtils {
         GauntletOrchestrator.forgetHud(playerRef);
         var party = PartyUtils.getParty(playerRef).orElse(null);
 
-        var reason = evt.getDisconnectReason();
-        GaiaLog.atInfo().log("Player " + playerRef.getUsername() + " disconnected because " + reason);
         var playerComponent = playerRef.getComponentConcurrent(PlayerComponent.getComponentType());
 
         var session = PartyUtils.sessionFor(party).orElse(null);
+
+        var reason = evt.getDisconnectReason();
+        var reasonText = reason == null ? "unknown"
+                : reason.getServerDisconnectReason() != null ? "server: " + reason.getServerDisconnectReason()
+                : "client: " + reason.getClientDisconnectType();
+        GaiaLog.atInfo().withSession(session).log("Player " + playerRef.getUsername() + " disconnected (" + reasonText + ")");
 
         if (party != null) {
             // leave the party
@@ -360,7 +368,7 @@ public class PlayerHandlers extends HandlerUtils {
         } catch (Exception e) {
             GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
                     .param("playerName", playerRef.getUsername())
-                    .param("reason", "Exception when handling player join"));
+                    .param("reason", "the game controller threw " + e.getClass().getSimpleName()));
         }
     }
 
@@ -375,7 +383,7 @@ public class PlayerHandlers extends HandlerUtils {
                 .orElseGet(() -> PartyUtils.getParty(playerRef).orElse(null));
         if (party == null) {
             // cannot join or leave a party that does not exist
-            Resolve.success(evt, "Not in a party and destination party is not valid!");
+            Resolve.success(evt, playerRef.getUsername() + " is not in a party and party " + evt.getPartyId() + " does not exist");
             return;
         }
 

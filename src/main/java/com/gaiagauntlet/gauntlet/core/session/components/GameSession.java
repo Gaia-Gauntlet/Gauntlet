@@ -63,10 +63,6 @@ public class GameSession {
                     (holder, v) -> holder.currentGame = v,
                     holder -> holder.currentGame)
             .add()
-            .append(new KeyedCodec<>("State", new EnumCodec<>(SessionState.class)),
-                    (holder, v) -> holder.sessionState = v,
-                    holder -> holder.sessionState)
-            .add()
             .append(new KeyedCodec<>("Parties", new SetCodec<>(Codec.STRING, HashSet::new, false)),
                     (holder, v) -> {
                         holder.parties.clear();
