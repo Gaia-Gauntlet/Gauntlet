@@ -18,9 +18,4 @@ public final class EZUi {
         ZoneHudComponent.setComponentType(GameComponentRegistry.register(ZoneHudComponent.ID, ZoneHudComponent.class));
         GauntletEventRegistry.on(MatchStateEvent.class, EZTitles::onMatchState);
     }
-
-    /** Every game's HUD elements are on every player's HUD, so each EZ element checks the session is playing EZ. */
-    public static boolean isEz(@Nullable GameSession session) {
-        return session != null && EZController.ID.equals(session.getCurrentGame());
-    }
 }

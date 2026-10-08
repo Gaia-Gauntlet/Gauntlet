@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
@@ -16,6 +17,7 @@ import com.hypixel.hytale.codec.validation.ValidationResults;
 import com.hypixel.hytale.codec.validation.Validator;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.codec.validation.validator.MapValueValidator;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import lombok.Getter;
@@ -163,7 +165,50 @@ public class EZGameConfigAsset extends GameConfigAsset {
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
     @Getter private boolean friendlyFireEnabled = false;
-    @Getter private ZoneDefinition[] zones = new ZoneDefinition[0];
+    @Getter private ZoneDefinition[] zones = new ZoneDefinition[]{
+        new ZoneDefinition("Lava Japanese",
+            -98.5, 30, -0.5,
+            50, 501,
+            0, 60,
+            500,
+            0, "",
+            DEFAULT_LOOT_FOUNTAIN_RULES),
+        new ZoneDefinition("Ice Kingdom",
+            -98.5, 30, -0.5,
+            50, 501,
+            60, 120,
+            500,
+            0, "",
+            DEFAULT_LOOT_FOUNTAIN_RULES),
+        new ZoneDefinition("Pirate Bay",
+            -98.5, 30, -0.5,
+            50, 501,
+            120, 180,
+            500,
+            0, "",
+            DEFAULT_LOOT_FOUNTAIN_RULES),
+        new ZoneDefinition("Giant Shroom Jungle",
+            -98.5, 30, -0.5,
+            50, 501,
+            180, 240,
+            500,
+            0, "",
+            DEFAULT_LOOT_FOUNTAIN_RULES),
+        new ZoneDefinition("Gaia City",
+            -98.5, 30, -0.5,
+            50, 501,
+            240, 300,
+            500,
+            0, "",
+            DEFAULT_LOOT_FOUNTAIN_RULES),
+        new ZoneDefinition("Post Apocalyptic",
+            -98.5, 30, -0.5,
+            50, 501,
+            300, 360,
+            500,
+            0, "",
+            DEFAULT_LOOT_FOUNTAIN_RULES)
+    };
 //    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
@@ -176,7 +221,19 @@ public class EZGameConfigAsset extends GameConfigAsset {
     @Getter private long teleportWaveIntervalSeconds = 1;
     @Getter private long cornucopiaDurationSeconds = 27;
 //    @Getter private GameEvents gameEvents;
-    @Getter private GGPoi[] arenaTimerPois;
+    @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
+        new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))
+    };
     @Getter private float zoneTickSeconds = 2;
     @Getter private int maxActiveBosses = 3;
+
+    private static final LootFountainRule[] DEFAULT_LOOT_FOUNTAIN_RULES = new LootFountainRule[]{
+        new LootFountainRule(1, true, 60, 60, new int[][]{}),
+        new LootFountainRule(2, true, 45, 45, new int[][]{}),
+        new LootFountainRule(3, true, 30, 30, new int[][]{}),
+        new LootFountainRule(4, true, 20, 20, new int[][]{}),
+        new LootFountainRule(5, true, 2, 2, new int[][]{})
+    };
+
+    public EZGameConfigAsset() {}
 }

@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
@@ -49,7 +50,7 @@ public final class ScoreboardHud implements HudElement {
 
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return EZUi.isEz(session) && MatchUtils.get(session) != null && MatchUtils.inLobby(session)
+        return EZController.isEz(session) && MatchUtils.get(session) != null && MatchUtils.inLobby(session)
                 && !ranked(session).isEmpty();
     }
 

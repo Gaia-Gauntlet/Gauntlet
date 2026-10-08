@@ -26,7 +26,10 @@ public class GameConfigComponent implements GameComponent {
         .build();
 
     private GameConfigComponent() {}
-    public GameConfigComponent(String gameConfigAsset) {}
+
+    public GameConfigComponent(String gameConfigAsset) {
+        this.gameConfigAsset = gameConfigAsset;
+    }
 
     public GameConfigAsset getConfig() {
         return GameConfigAsset.getAssetMap().get(gameConfigAsset);

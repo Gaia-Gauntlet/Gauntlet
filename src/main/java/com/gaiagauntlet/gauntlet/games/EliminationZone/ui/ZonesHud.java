@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -34,7 +35,7 @@ public final class ZonesHud implements HudElement {
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
         var phase = MatchUtils.phase(session);
-        return EZUi.isEz(session)
+        return EZController.isEz(session)
                 && (phase == MatchState.ACTIVE || phase == MatchState.SUDDEN_DEATH)
                 && !ZoneHudComponent.of(session).isEmpty();
     }

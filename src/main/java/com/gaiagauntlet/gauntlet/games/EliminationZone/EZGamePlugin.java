@@ -1,8 +1,10 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.EZBosses;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.EZLobby;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;
@@ -10,6 +12,8 @@ import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsse
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+
+import javax.annotation.Nullable;
 
 public class EZGamePlugin extends JavaPlugin {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -34,6 +38,7 @@ public class EZGamePlugin extends JavaPlugin {
         EZCombat.setup(this);
         EZWeather.setup(this);
         EZZones.setup(this);
+        EZLobby.setup();
         EZUi.setup();
 
         GameConfigAsset.CODEC.register(EZController.ID, EZGameConfigAsset.class, EZGameConfigAsset.CODEC);

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.Standing;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
@@ -42,7 +43,7 @@ public final class WinnerHud implements HudElement {
 
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return EZUi.isEz(session) && MatchUtils.phase(session) == MatchState.ENDED;
+        return EZController.isEz(session) && MatchUtils.phase(session) == MatchState.ENDED;
     }
 
     @Override

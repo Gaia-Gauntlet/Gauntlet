@@ -10,12 +10,9 @@ import lombok.Getter;
  * the new state. Games react here to open the portal, move players, and so on.
  */
 public class MatchStateEvent extends GauntletEvent {
-    @Getter
-    private final String sessionId;
-    @Getter
-    private final MatchState from;
-    @Getter
-    private final MatchState to;
+    @Getter private final String sessionId;
+    @Getter private final MatchState from;
+    @Getter private final MatchState to;
 
     public MatchStateEvent(String sessionId, MatchState from, MatchState to) {
         this.sessionId = sessionId;
