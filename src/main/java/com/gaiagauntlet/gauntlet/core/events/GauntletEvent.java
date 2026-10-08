@@ -1,16 +1,10 @@
 package com.gaiagauntlet.gauntlet.core.events;
 
-import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
-
 import java.util.function.Consumer;
 
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 import com.hypixel.hytale.event.IEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.Message;
-
 import lombok.Getter;
 import lombok.Setter;
 

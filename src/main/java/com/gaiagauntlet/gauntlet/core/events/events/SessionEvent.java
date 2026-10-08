@@ -15,6 +15,11 @@ public class SessionEvent extends GauntletEvent {
         this.sessionId = id;
     }
 
+    @Override
+    public String toString() {
+        return "SessionEvent[" + sessionId + ": " + op + "]";
+    }
+
     public enum SessionOperation {
         /** Starts the session */
         SETUP,

@@ -52,12 +52,13 @@ public class TransferUtils {
                         GaiaLog.atInfo().withSession(sessionId)
                                 .log(msg("server.gg.plugins.transfer.error.world")
                                         .param("player", playerRef.getUsername())
+                                        .param("world", destination.getName())
                                         .param("reason", "player no longer being online or valid"));
                         return;
                     }
 
                     // literally just logging right now
-                    warpComponent.setOnComplete(moveComplete(playerRef.getUsername(), sessionId));
+                    warpComponent.setOnComplete(moveComplete(playerRef.getUsername(), sessionId, destination.getName()));
                     
                     var ref = playerRef.getReference();
                     // ref.validate throws if in the wrong store :/
@@ -67,7 +68,8 @@ public class TransferUtils {
                         GaiaLog.atInfo().withSession(sessionId)
                                 .log(msg("server.gg.plugins.transfer.error.world")
                                         .param("player", playerRef.getUsername())
-                                        .param("reason", "player no longer being in hub"));
+                                        .param("world", destination.getName())
+                                        .param("reason", "player no longer being in " + origin.getName()));
                         return;
                     }
 
@@ -81,17 +83,19 @@ public class TransferUtils {
     }
 
     // all this does for now is logging for visibility
-    private static CompletableFuture<Void> moveComplete(String playerName, String sessionId) {
+    private static CompletableFuture<Void> moveComplete(String playerName, String sessionId, String worldName) {
         var future = new CompletableFuture<Void>();
         future.whenComplete((_, error) -> {
             if (error != null) {
                 GaiaLog.atError(error).withSession(sessionId).log(msg("server.gg.plugins.transfer.failed")
                         .param("player", playerName)
+                        .param("world", worldName)
                         .param("cause", error.getLocalizedMessage()));
                 return;
             }
             GaiaLog.atInfo().withSession(sessionId).log(msg("server.gg.plugins.transfer.success")
-                    .param("player", playerName));
+                    .param("player", playerName)
+                    .param("world", worldName));
         });
         return future;
     }

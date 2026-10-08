@@ -50,7 +50,7 @@ public class PlayerSystems {
             }
 
             // final check that the player is still in the party
-            var party = PartyUtils.getPartyNullable(player).orElse(null);
+            var party = PartyUtils.getParty(player).orElse(null);
             if (party == null) return;
             var partySession = GauntletUtils.withResource().sessionFor(party.getId()).orElse(null);
 

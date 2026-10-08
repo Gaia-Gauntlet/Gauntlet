@@ -1,0 +1,6 @@
+{
+  "Type": "GaiaGauntlet",
+  "HubId": "gaiagauntlethub",
+  "BatchSize": 1,
+  "BatchDelay": 10
+}

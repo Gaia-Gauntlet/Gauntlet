@@ -30,6 +30,11 @@ public final class BossEvents {
         public String zoneId() {
             return zoneId;
         }
+
+        @Override
+        public String toString() {
+            return "BossEvents.Spawned[" + zoneId + ": " + boss.roleId() + "]";
+        }
     }
 
     public static final class Defeated extends GauntletEvent {
@@ -43,6 +48,11 @@ public final class BossEvents {
         @Nonnull
         public String bossId() {
             return bossId;
+        }
+
+        @Override
+        public String toString() {
+            return "BossEvents.Defeated[" + bossId + "]";
         }
     }
 }

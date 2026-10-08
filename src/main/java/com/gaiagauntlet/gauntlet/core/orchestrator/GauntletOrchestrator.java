@@ -63,22 +63,12 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
-import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**

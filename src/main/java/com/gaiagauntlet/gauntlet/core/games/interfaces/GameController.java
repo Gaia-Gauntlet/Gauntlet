@@ -36,9 +36,6 @@ public abstract class GameController {
      */
     public abstract CompletableFuture<Void> cleanGame(World hubWorld, GameSession session);
 
-    /** Triggered when a player reconnects in the game */
-    public abstract CompletableFuture<Void> playerConnect(World hubWorld, String sessionId, PlayerRef player);
-
     /** Triggered when a player disconnects in the game - should purely be cleanup logic off the player
      * Runs on whatever thread the player disconnected from. Does NOT exist only on the hub world
     */

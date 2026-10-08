@@ -50,7 +50,7 @@ public final class SessionsPage extends GauntletPage {
     protected void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt) {
         var sessions = new ArrayList<>(GauntletUtils.withResource().getSessions().values());
         sessions.sort(Comparator.comparing(GameSession::getId, String.CASE_INSENSITIVE_ORDER));
-        var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
+        var party = PartyUtils.getParty(playerRef).orElse(null);
         var mine = party == null ? null : PartyUtils.sessionFor(party).orElse(null);
         var leader = party == null || party.getOwner().equals(playerRef.getUuid());
 

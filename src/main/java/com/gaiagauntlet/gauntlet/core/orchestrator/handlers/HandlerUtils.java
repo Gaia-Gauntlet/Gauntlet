@@ -10,7 +10,6 @@ import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
-import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;

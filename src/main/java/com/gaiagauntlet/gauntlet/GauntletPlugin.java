@@ -7,6 +7,7 @@ import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
+import com.gaiagauntlet.gauntlet.core.party.commands.RejoinCommand;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
@@ -61,33 +62,32 @@ public class GauntletPlugin extends JavaPlugin {
 
     private void setupResources() {
         UniverseGauntletResource.setResourceType(
-            Universe.registerResource(UniverseGauntletResource.class, UniverseGauntletResource.ID,
-                    UniverseGauntletResource.CODEC));
+                Universe.registerResource(UniverseGauntletResource.class, UniverseGauntletResource.ID,
+                        UniverseGauntletResource.CODEC));
     }
 
     private void setupCommands() {
         getCommandRegistry().registerCommand(new GauntletCommand());
         getCommandRegistry().registerCommand(new PartyCommands());
-        getCommandRegistry().registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
-        getCommandRegistry().registerCommand(new OpenPageCommand("vote", "Vote for your session's next game", VoteUtils.PAGE_ID));
+        getCommandRegistry().registerCommand(new RejoinCommand());
+        getCommandRegistry()
+                .registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
+        getCommandRegistry()
+                .registerCommand(new OpenPageCommand("vote", "Vote for your session's next game", VoteUtils.PAGE_ID));
     }
 
     private void setupComponents() {
         var entityRegistry = getEntityStoreRegistry();
         PlayerComponent.setComponentType(
-            entityRegistry.registerComponent(
-                PlayerComponent.class,
-                PlayerComponent.ID,
-                PlayerComponent.CODEC
-            )
-        );
+                entityRegistry.registerComponent(
+                        PlayerComponent.class,
+                        PlayerComponent.ID,
+                        PlayerComponent.CODEC));
         PartyInvitesComponent.setComponentType(
-            entityRegistry.registerComponent(
-                PartyInvitesComponent.class,
-                PartyInvitesComponent.ID,
-                PartyInvitesComponent.CODEC
-            )
-        );
+                entityRegistry.registerComponent(
+                        PartyInvitesComponent.class,
+                        PartyInvitesComponent.ID,
+                        PartyInvitesComponent.CODEC));
     }
 
     private void setupPlugins() {
@@ -101,7 +101,8 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(SpectatorPlugin.ID, this, SpectatorPlugin::new);
     }
 
-    private void setupEvents() {}
+    private void setupEvents() {
+    }
 
     @Override
     protected void shutdown() {

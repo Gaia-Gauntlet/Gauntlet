@@ -36,6 +36,11 @@ public final class ZoneEvents {
         public double durationSeconds() {
             return durationSeconds;
         }
+
+        @Override
+        public String toString() {
+            return "ZoneEvents.ClosingStarted[step " + step + ": " + zone + " over " + durationSeconds + "s]";
+        }
     }
 
     /** The closing zone seals in a few seconds. */
@@ -56,6 +61,11 @@ public final class ZoneEvents {
 
         public double secondsLeft() {
             return secondsLeft;
+        }
+
+        @Override
+        public String toString() {
+            return "ZoneEvents.Warning[" + zone + ": " + secondsLeft + "s left]";
         }
     }
 
@@ -83,6 +93,11 @@ public final class ZoneEvents {
 
         public boolean last() {
             return last;
+        }
+
+        @Override
+        public String toString() {
+            return "ZoneEvents.Closed[step " + step + ": " + zone + (last ? " (last)" : "") + "]";
         }
     }
 }
