@@ -11,9 +11,7 @@ import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
@@ -51,7 +49,7 @@ public abstract class LobbyController extends GameController {
         if (!existing.isPresent())
             return Optional.empty();
 
-        return Optional.of(existing.get().getWorld());
+        return Optional.of(existing.get().getWorld()).filter(world -> world.isAlive());
     }
 
     /**
@@ -126,12 +124,6 @@ public abstract class LobbyController extends GameController {
     }
 
     @Override
-    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'playerLeave'");
-    }
-
-    @Override
     public final CompletableFuture<Void> cleanGame(World hubAccessor, GameSession session) {
         var arenaWorld = withArenaWorld(hubAccessor, session.getId()).orElse(null);
         if (arenaWorld == null)
@@ -140,15 +132,26 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
-    public final CompletableFuture<Void> playerConnect(World hubAccessor, String sessionId,
-            PlayerRef player) {
-        // TODO logic stuff
-        return CompletableFuture.completedFuture(null);
-    };
+    public CompletableFuture<Void> playerDisconnect(World hubWorld, GameSession session, PlayerRef player) {
+        var arenaWorld = withArenaWorld(hubWorld, session.getId()).orElse(null);
+        if (arenaWorld == null)
+            throw new IllegalStateException("Arena world does not exist!");
+
+        return GauntletUtils.runAsync(arenaWorld, () -> {
+            getLobbyManager().onDisconnect(arenaWorld, session.getId(), player);
+            return null;
+        });
+    }
 
     @Override
-    public final CompletableFuture<Void> playerDisconnect(World hubAccessor, GameSession session, PlayerRef player) {
-        return CompletableFuture.completedFuture(null);
-        // remove a player from the game
-    };
+    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player) {
+        var arenaWorld = withArenaWorld(hubWorld, sessionId).orElse(null);
+        if (arenaWorld == null)
+            throw new IllegalStateException("Arena world does not exist!");
+
+        return GauntletUtils.runAsync(arenaWorld, () -> {
+            getLobbyManager().onLeave(arenaWorld, sessionId, player);
+            return null;
+        });
+    }
 }

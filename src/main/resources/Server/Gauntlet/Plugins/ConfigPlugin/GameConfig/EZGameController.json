@@ -1,11 +1,13 @@
 {
-  "Type": "EliminationZone",
+  "Type": "EZGameController",
   "Enabled": true,
   "InstanceTemplateName": "GGEliminationZone",
   "FriendlyFireEnabled": false,
   "TeamsSpawnTogether": false,
   "ClosingVoidBlock": "Build_Lightsource_Pink",
   "ZoneClosingPhaseSet": "Standard",
+  "ZoneTickSeconds": 2,
+  "MaxActiveBosses": 3,
   "GameEvents": {
     "IntervalSeconds": 45,
     "FirstDrawAtSeconds": 90,

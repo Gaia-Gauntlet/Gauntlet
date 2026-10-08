@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.party.commands;
 
 import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
 import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
@@ -29,7 +30,7 @@ import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg
 
 public class PartyCommands extends AbstractPlayerCommand {
     private static final SingleArgumentType<String> PARTY_ID = new SingleArgumentType<>(
-        "server.commands.parsing.argtype.string.name", "server.commands.parsing.argtype.string.usage") {
+            "server.commands.parsing.argtype.string.name", "server.commands.parsing.argtype.string.usage") {
         @Override
         public String parse(String input, ParseResult parseResult) {
             return input;
@@ -37,15 +38,16 @@ public class PartyCommands extends AbstractPlayerCommand {
 
         @Override
         public void suggest(@Nonnull CommandSender sender, @Nonnull String textAlreadyEntered,
-                            int numParametersTyped, @Nonnull SuggestionResult result) {
+                int numParametersTyped, @Nonnull SuggestionResult result) {
+            var playerRef = PlayerUtils.get(sender.getUuid());
+
+            if (playerRef == null)
+                return;
+
             SuggestionUtil.suggestFiltered(
-                GauntletUtils.withResource()
-                    .getParties().keySet()
-                    .stream().map(p -> '"' + p + '"')
-                    .toList(),
-                textAlreadyEntered,
-                result
-            );
+                    PartyUtils.getInvites(playerRef).stream().map(p -> p.getPartyId()).toList(),
+                    textAlreadyEntered,
+                    result);
         }
 
         @Override
@@ -66,22 +68,21 @@ public class PartyCommands extends AbstractPlayerCommand {
     }
 
     @Override
-    protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
-        var party = PartyUtils.getParty(playerRef);
+    protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store,
+            @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
+        var party = PartyUtils.ensureParty(playerRef);
         context.sendMessage(msg("server.gg.commands.party.header").param("name", party.getId()));
         var players = party.getAllOnlinePlayers();
         for (int i = 0; i < players.size(); i++) {
             var player = players.get(i);
             if (party.getOwner().equals(player.getUuid())) {
                 context.sendMessage(msg("server.gg.commands.party.owner")
-                    .param("i", (i+1))
-                    .param("name", player.getUsername())
-                );
+                        .param("i", (i + 1))
+                        .param("name", player.getUsername()));
             } else {
                 context.sendMessage(msg("server.gg.commands.party.member")
-                    .param("i", (i+1))
-                    .param("name", player.getUsername())
-                );
+                        .param("i", (i + 1))
+                        .param("name", player.getUsername()));
             }
         }
     }
@@ -89,8 +90,7 @@ public class PartyCommands extends AbstractPlayerCommand {
     public static class AddCommand extends AbstractPlayerCommand {
 
         private final RequiredArg<PlayerRef> recipientArg = withRequiredArg(
-            "player", "Player to invite to your party", ArgTypes.PLAYER_REF
-        );
+                "player", "Player to invite to your party", ArgTypes.PLAYER_REF);
 
         public AddCommand() {
             super("invite", "Invite a player to your party");
@@ -99,7 +99,8 @@ public class PartyCommands extends AbstractPlayerCommand {
         }
 
         @Override
-        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
+        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store,
+                @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             PlayerRef recipient = recipientArg.get(context);
             PartyUtils.sendPartyInvite(playerRef, recipient);
         }
@@ -108,17 +109,18 @@ public class PartyCommands extends AbstractPlayerCommand {
     public static class AcceptCommand extends AbstractPlayerCommand {
 
         private final RequiredArg<String> partyArg = withRequiredArg(
-            "party", "Party you'd like to join", PARTY_ID
-        );
+                "party", "Party you'd like to join", PARTY_ID);
 
         public AcceptCommand() {
             super("accept", "Accept an invite to join a party");
         }
 
         @Override
-        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
+        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store,
+                @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             var partyId = partyArg.get(context);
-            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-1)).orElse(null); // Remove speech marks
+            var party = PartyUtils.getParty(partyId).orElse(null); // Remove speech
+                                                                                                      // marks
             if (Objects.isNull(party)) {
                 context.sendMessage(msg("server.gg.commands.party.invalidname").param("party", partyId));
                 return;
@@ -130,17 +132,18 @@ public class PartyCommands extends AbstractPlayerCommand {
     public static class DeclineCommand extends AbstractPlayerCommand {
 
         private final RequiredArg<String> partyArg = withRequiredArg(
-            "party", "Party you'd like to join", PARTY_ID
-        );
+                "party", "Party you'd like to join", PARTY_ID);
 
         public DeclineCommand() {
             super("decline", "Decline an invite to join a party");
         }
 
         @Override
-        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
+        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store,
+                @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             var partyId = partyArg.get(context);
-            var party = PartyUtils.getParty(partyId.substring(1, partyId.length()-1)).orElse(null); // Remove speech marks
+            var party = PartyUtils.getParty(partyId).orElse(null); // Remove speech
+                                                                                                      // marks
             if (Objects.isNull(party)) {
                 context.sendMessage(msg("server.gg.commands.party.invalidname").param("party", partyId));
                 return;
@@ -155,7 +158,8 @@ public class PartyCommands extends AbstractPlayerCommand {
         }
 
         @Override
-        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store, @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
+        protected void execute(@NonNull CommandContext context, @NonNull Store<EntityStore> store,
+                @NonNull Ref<EntityStore> ref, @NonNull PlayerRef playerRef, @NonNull World world) {
             GauntletEventRegistry.dispatch(PlayerPartyEvent.Leave(playerRef));
         }
     }

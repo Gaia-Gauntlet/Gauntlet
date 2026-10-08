@@ -15,6 +15,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
@@ -76,7 +77,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
         var config = overrideConfig == null
             ? getId() // Game ID is the default config ID
             : overrideConfig;
-        gameStore.put(
+        GameStore.ensureStore(arenaAccessor, gameId).put(
             GameConfigComponent.getComponentType(),
             new GameConfigComponent(config)
         );

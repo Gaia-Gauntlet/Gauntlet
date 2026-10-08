@@ -21,6 +21,12 @@ public class PlayerPartyEvent extends GauntletEvent {
         this.operation = operation;
     }
 
+    @Override
+    public String toString() {
+        return "PlayerPartyEvent[" + (partyId == null ? "current party" : partyId) + ": " + operation + " "
+                + (player == null ? null : player.getUsername()) + "]";
+    }
+
     public static PlayerPartyEvent Leave(PlayerRef playerRef) {
         return new PlayerPartyEvent(playerRef, null, PlayerOp.REMOVE);
     }

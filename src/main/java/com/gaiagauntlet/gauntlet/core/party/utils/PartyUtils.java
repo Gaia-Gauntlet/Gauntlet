@@ -5,6 +5,7 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
+import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent.Invite;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.Message;
@@ -15,7 +16,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.awt.*;
+import java.util.List;
+import java.awt.Color;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -55,11 +57,11 @@ public class PartyUtils {
      * Creates a party for the player if it doesn't exist
      */
     @Nonnull
-    public static PartyComponent getParty(PlayerRef player) {
-        return getPartyNullable(player).orElseGet(() -> {
+    public static PartyComponent ensureParty(PlayerRef player) {
+        return getParty(player).orElseGet(() -> {
             var resource = GauntletUtils.withResource();
             // No pre-existing party exists, create a new one with this player as captain.
-            var newParty = createParty(PlayerUtils.normalize(player.getUsername()) + "'s Party", player.getUuid());
+            var newParty = createParty(PlayerUtils.normalize(player.getUsername()), player.getUuid());
             resource.addParty(newParty);
             return newParty;
         });
@@ -69,12 +71,13 @@ public class PartyUtils {
      * Gets the party for the player without making a new one if they aren't in one
      * already.
      */
-    public static Optional<PartyComponent> getPartyNullable(PlayerRef player) {
+    public static Optional<PartyComponent> getParty(PlayerRef player) {
         var resource = GauntletUtils.withResource();
         return resource.getParty(player);
     }
 
     public static Optional<GameSession> sessionFor(PartyComponent party) {
+        if (party == null) return Optional.empty();
         return sessionFor(party.getId());
     }
 
@@ -91,7 +94,7 @@ public class PartyUtils {
     }
 
     private static void sendPartyInviteNow(PlayerRef sender, PlayerRef recipient) {
-        var party = getParty(sender);
+        var party = ensureParty(sender);
         var invites = getInvitesComp(recipient);
         if (sender.getUuid().equals(recipient.getUuid())) {
             sender.sendMessage(msg("You can't invite yourself to a party!").color(Color.RED));
@@ -173,6 +176,13 @@ public class PartyUtils {
         }
     }
 
+    public static List<Invite>  getInvites(PlayerRef player) {
+        var invitesComp = player.getComponentConcurrent(PartyInvitesComponent.getComponentType());
+        if (invitesComp == null) return List.of();
+        var invites = invitesComp.getInvites();
+        return invites;
+    }
+
     static boolean hasActiveInvite(String partyId, PlayerRef recipient) {
         var invites = getInvitesComp(recipient);
         var invite = invites.getInvite(partyId);
@@ -201,7 +211,7 @@ public class PartyUtils {
     }
 
     public static void promote(PlayerRef player) {
-        var party = getParty(player);
+        var party = ensureParty(player);
         if (party == null)
             return;
         var existingId = party.getOwner();

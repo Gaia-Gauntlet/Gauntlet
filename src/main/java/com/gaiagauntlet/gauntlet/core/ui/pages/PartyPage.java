@@ -58,7 +58,7 @@ public final class PartyPage extends GauntletPage {
 
     @Override
     protected void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt) {
-        var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
+        var party = PartyUtils.getParty(playerRef).orElse(null);
         var leader = party == null || party.getOwner().equals(playerRef.getUuid());
         var members = members(party);
 
@@ -147,7 +147,7 @@ public final class PartyPage extends GauntletPage {
                 yield Widgets.ok("Declined the invite to " + party.getLabel());
             }
             case "party.promote" -> {
-                var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
+                var party = PartyUtils.getParty(playerRef).orElse(null);
                 if (party == null || !party.getOwner().equals(playerRef.getUuid())) yield Widgets.fail("Only the party leader can hand over the lead");
                 var target = Universe.get().getPlayer(UUID.fromString(event.arg()));
                 if (target == null || !party.includesPlayer(target)) yield Widgets.fail("That player is no longer here");
@@ -169,7 +169,7 @@ public final class PartyPage extends GauntletPage {
         var target = Universe.get().getPlayerByUsername(name, NameMatching.EXACT_IGNORE_CASE);
         if (target == null) return Widgets.fail("Nobody named " + name + " is online");
         if (target.getUuid().equals(playerRef.getUuid())) return Widgets.fail("You can't invite yourself");
-        var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
+        var party = PartyUtils.getParty(playerRef).orElse(null);
         if (party != null && !party.getOwner().equals(playerRef.getUuid())) return Widgets.fail("Only the party leader can invite players");
         if (party != null && party.includesPlayer(target)) return Widgets.fail(target.getUsername() + " is already in your party");
         PartyUtils.sendPartyInvite(playerRef, target);

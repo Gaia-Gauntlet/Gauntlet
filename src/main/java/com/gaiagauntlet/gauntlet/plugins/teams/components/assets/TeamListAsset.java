@@ -48,7 +48,7 @@ public class TeamListAsset implements JsonAssetWithMap<String, DefaultAssetMap<S
 
     private AssetExtraInfo.Data data;
     @Getter private String id;
-    @Nonnull @Getter private Map<String, TeamComponent> teamList;
+    @Nonnull @Getter private Map<String, TeamComponent> teamList = new HashMap<>();
 
     public TeamListAsset() {
     }

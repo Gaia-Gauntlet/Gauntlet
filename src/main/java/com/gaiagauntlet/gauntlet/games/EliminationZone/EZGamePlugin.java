@@ -20,7 +20,7 @@ public class EZGamePlugin extends JavaPlugin {
 
     @Override
     protected void start() {
-        LOGGER.atInfo().log("Setting up EZGame!");
+        LOGGER.atInfo().log("Starting EZGame!");
     }
 
     @Override
@@ -29,14 +29,14 @@ public class EZGamePlugin extends JavaPlugin {
         // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
 
-        GameConfigAsset.CODEC.register(EZGameConfigAsset.ID, EZGameConfigAsset.class, EZGameConfigAsset.CODEC);
-
         // Setup each section - keeps the top-level plugin cleaner this way
         EZBosses.setup(this);
         EZCombat.setup(this);
         EZWeather.setup(this);
         EZZones.setup(this);
         EZUi.setup();
+
+        GameConfigAsset.CODEC.register(EZController.ID, EZGameConfigAsset.class, EZGameConfigAsset.CODEC);
     }
 
     @Override

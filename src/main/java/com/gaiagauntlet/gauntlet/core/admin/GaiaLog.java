@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -11,6 +12,7 @@ import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.util.MessageUtil;
 
 import lombok.Getter;
 
@@ -30,6 +32,7 @@ public final class GaiaLog {
     public static final String GLOBAL = "Global";
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm:ss")
             .withZone(ZoneId.systemDefault());
+    private static final Pattern MARKUP = Pattern.compile("</?(?:color|b|i|u)(?:\\s[^>]*)?>");
 
     @Getter Level level;
     @Getter long millis;
@@ -39,7 +42,7 @@ public final class GaiaLog {
     @Getter Throwable e;
 
     public static GaiaLog log(GaiaLog line) {
-        LOGGER.at(line.level).withCause(line.e).log(line.toString());
+        LOGGER.at(line.level).withCause(line.e).log("[%s] %s", line.scope(), line.plainText());
         AdminLog.add(line);
         return line;
     }
@@ -123,7 +126,22 @@ public final class GaiaLog {
     @Override 
     public String toString() {
         return "[" + level.getName() + "] " + TIME.format(Instant.ofEpochMilli(millis))
-                + " [" + gameId + "] " + text.getAnsiMessage();
+                + " [" + scope() + "] " + plainText();
+    }
+
+    private String scope() {
+        var session = sessionId == null ? GLOBAL : sessionId;
+        var game = gameId == null ? GLOBAL : gameId;
+        if (game.equals(GLOBAL))
+            return session;
+        if (session.equals(GLOBAL))
+            return game;
+        return session + "/" + game;
+    }
+
+    private String plainText() {
+        var plain = MessageUtil.formatMessageToPlainString(text.getFormattedMessage());
+        return plain == null ? "" : MARKUP.matcher(plain).replaceAll("");
     }
 
     public Message toMessage() {

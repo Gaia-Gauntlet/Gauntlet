@@ -19,6 +19,11 @@ public class PlayerGameEvent extends GauntletEvent {
         this.operation = operation;
     }
 
+    @Override
+    public String toString() {
+        return "PlayerGameEvent[" + sessionId + ": " + operation + " " + (player == null ? null : player.getUsername()) + "]";
+    }
+
     public static PlayerGameEvent Add(PlayerRef player, String sessionId) {
         return new PlayerGameEvent(player, sessionId, PlayerOp.ADD);
     }

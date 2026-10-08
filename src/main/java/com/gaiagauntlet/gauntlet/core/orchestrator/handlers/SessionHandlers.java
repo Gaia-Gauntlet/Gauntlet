@@ -134,7 +134,7 @@ public class SessionHandlers extends HandlerUtils {
                     joinGame(hub, session, players).whenComplete((_, e) -> {
                         if (e != null) {
                             Resolve.error(sessionEvt, session,
-                                    MessageUtils.error("Error was thrown while joining the world"), e);
+                                    msg("server.gg.events.session.join.error").param("players", players.size()), e);
                             return;
                         }
                     });
@@ -193,6 +193,7 @@ public class SessionHandlers extends HandlerUtils {
                     return;
                 }
             }
+
             Resolve.success(sessionEvt, session, "server.gg.events.session.clean.success");
         });
     }

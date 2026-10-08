@@ -1,0 +1,10 @@
+{
+  "Interactions": [
+    {
+      "Type": "TeamSpectateControl",
+      "Action": "Freefly"
+    }
+  ],
+  "RequireNewClick": true,
+  "HudInputBindingEntry": "server.hud.inputBinding.spectateFreeCamera"
+}

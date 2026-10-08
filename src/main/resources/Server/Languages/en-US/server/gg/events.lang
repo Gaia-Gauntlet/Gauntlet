@@ -17,6 +17,7 @@ session.error.unavailable=Session {sessionId} is in state {sessionState} and is 
 session.error.notpending=Session {sessionId} has no pending game
 session.setup.error=Starting game {gameId} for session {sessionId} failed with reason {reason}
 session.setup.invalid=Session {sessionId} in a weird start during starting {gameId}! Incorrect game registered! Cleaning game {gameId}
+session.join.error=Moving {players} player(s) into {gameId} for {sessionId} failed. {cause}
 session.setup.success=<color is="#00FF00">Successfully setup {gameId} for {sessionId}</color>
 
 session.clean.success=<color is="#00FF00">Successfully cleaned {gameId} for {sessionId}</color>
@@ -35,6 +36,7 @@ players.disconnect.warn=Player {playerName} disconnecting. Controller not notifi
 players.error=Player {playerName} unable to {operation} {sessionId} because {reason}
 players.join.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
 players.join.warn={playerName} was not sent into the game because {reason}
+players.join.success={playerName} was sent into {sessionId}
 players.join.new.error=Failed adding {playerName} to {sessionId}. {cause}
 players.join.existed=Removed {playerName} from {oldSessionId}, joining {sessionId}
 players.join.existing.error=Failed removing {playerName} from {oldSessionId}. {cause}
@@ -42,6 +44,7 @@ players.join.perms.error={playerName} is not an owner of party {partyName} - whi
 
 players.leave.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...
 players.leave.warn={playerName} was not taken out of the game because {reason}
+players.leave.success={playerName} was taken out of {sessionId}
 players.leave.new.error=Failed removing {playerName} from {sessionId}. {cause}
 players.leave.existing.error={playerName} does not own party {partyName}, so they cannot take it out of {sessionId}
 

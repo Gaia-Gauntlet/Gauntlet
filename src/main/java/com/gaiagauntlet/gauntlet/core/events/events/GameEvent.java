@@ -8,6 +8,11 @@ public class GameEvent extends GauntletEvent {
     @Getter
     private GameOperation op;
 
+    @Override
+    public String toString() {
+        return "GameEvent[" + op + "]";
+    }
+
     public enum GameOperation {
         START,
         STOP

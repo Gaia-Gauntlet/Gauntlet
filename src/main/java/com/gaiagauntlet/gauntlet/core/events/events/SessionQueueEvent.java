@@ -21,6 +21,11 @@ public class SessionQueueEvent extends GauntletEvent {
         this.op = op;
     }
 
+    @Override
+    public String toString() {
+        return "SessionQueueEvent[" + sessionId + ": " + op + " " + newQueue + "]";
+    }
+
     public enum SessionQueueOp {
         SET,
         REMOVE,

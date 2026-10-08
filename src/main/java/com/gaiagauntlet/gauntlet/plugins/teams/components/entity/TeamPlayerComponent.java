@@ -24,7 +24,7 @@ public class TeamPlayerComponent implements Component<EntityStore> {
                     new KeyedCodec<>("Team", Codec.STRING),
                     TeamPlayerComponent::setTeam,
                     TeamPlayerComponent::getTeam)
-            .documentation("The time that this entity was eliminated.")
+            .documentation("The team that this entity is on.")
             .add()
             .append(
                     new KeyedCodec<>("Kills", Codec.INTEGER),
