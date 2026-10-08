@@ -44,7 +44,6 @@ import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.LogTab;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.PluginsTab;
 import com.gaiagauntlet.gauntlet.core.ui.tabs.SessionTab;
-import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.event.EventPriority;

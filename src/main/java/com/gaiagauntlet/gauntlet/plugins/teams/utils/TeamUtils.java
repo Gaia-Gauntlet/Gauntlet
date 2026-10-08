@@ -51,6 +51,12 @@ public class TeamUtils {
         return withTeamList(accessor, sessionId).get(teamId);
     }
 
+    @Nullable
+    public static TeamComponent withTeamFor(World world, String session, UUID player) {
+        var teams = withTeamList(world, session);
+        return teams.get(player);
+    }
+
     /**
      * Checks if a team has any alive players. Truthy if and only if a player on
      * this team is online and is not eliminated.
@@ -145,7 +151,7 @@ public class TeamUtils {
         // First pass - Clean offline players, fill from parties if enabled.
         for (var team : teams.getTeams().values()) {
             for (UUID uuid : team.getPlayers()) {
-                // Remove offline/uncalled for players from team
+                // Remove offline/uncalled-for players from team
                 PlayerRef player = PlayerUtils.get(uuid);
                 if (Objects.isNull(player) || !players.contains(player)) {
                     team.remove(uuid);

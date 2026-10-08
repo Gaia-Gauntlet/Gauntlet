@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
@@ -24,8 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class EZGameConfigAsset extends GameConfigAsset {
-
-    public static final String ID = "EliminationZone";
 
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
         @Override
@@ -53,11 +52,11 @@ public class EZGameConfigAsset extends GameConfigAsset {
             EZGameConfigAsset::isFriendlyFireEnabled)
         .documentation("When enabled, teammates can damage each other during team matches.")
         .add()
-//        .append(new KeyedCodec<>("Zones", new ArrayCodec<>(SectorZone.CODEC, SectorZone[]::new)),
-//            (t, v) -> t.zones = v,
-//            EZGameManager::getZones)
-//        .documentation("Circle segment arena zones")
-//        .add()
+        .append(new KeyedCodec<>("Zones", new ArrayCodec<>(ZoneDefinition.CODEC, ZoneDefinition[]::new)),
+            (t, v) -> t.zones = v,
+            EZGameConfigAsset::getZones)
+        .documentation("Circle segment arena zones")
+        .add()
 //        .append(new KeyedCodec<>("WeatherPool",
 //                new ArrayCodec<>(WeatherPoolOptionComponent.CODEC,
 //                    WeatherPoolOptionComponent[]::new)),
@@ -147,11 +146,24 @@ public class EZGameConfigAsset extends GameConfigAsset {
             + "here is ignored, because the arena display is always rendered into the live match "
             + "world, which is a fresh instance every match.")
         .add()
+        .append(new KeyedCodec<>("ZoneTickSeconds", Codec.FLOAT),
+            (p, v) -> p.zoneTickSeconds = v,
+            p -> p.zoneTickSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("How often the zone should update, in seconds. This only affects the rate at "
+            + "which it updates, it does not affect the speed.")
+        .add()
+        .append(new KeyedCodec<>("MaxActiveBosses", Codec.INTEGER),
+            (p, v) -> p.maxActiveBosses = v,
+            p -> p.maxActiveBosses)
+        .addValidator(Validators.greaterThanOrEqual(0))
+        .documentation("How many bosses can be active in the map at any given time.")
+        .add()
         .build();
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
     @Getter private boolean friendlyFireEnabled = false;
-//    @Getter private SectorZone[] zones = new SectorZone[0];
+    @Getter private ZoneDefinition[] zones = new ZoneDefinition[0];
 //    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
@@ -165,4 +177,6 @@ public class EZGameConfigAsset extends GameConfigAsset {
     @Getter private long cornucopiaDurationSeconds = 27;
 //    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois;
+    @Getter private float zoneTickSeconds = 2;
+    @Getter private int maxActiveBosses = 3;
 }

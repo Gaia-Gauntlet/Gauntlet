@@ -1,0 +1,10 @@
+{
+  "Interactions": [
+    {
+      "Type": "TeamSpectateControl",
+      "Action": "Previous"
+    }
+  ],
+  "RequireNewClick": true,
+  "HudInputBindingEntry": "server.hud.inputBinding.spectatePreviousPlayer"
+}
