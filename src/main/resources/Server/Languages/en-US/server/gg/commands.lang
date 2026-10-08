@@ -28,6 +28,7 @@ session.stop.success=<color is="#4af700">Stopped {gameId} in {sessionId}</color>
 session.cleanup.pending=<color is="#f7d600">Cleaning up game in {sessionId}...</color>
 
 # ==================== Party ====================
+party.notoffline = <b><color is="#ed7f77">No session available to rejoin</color></b>
 party.invalidname = <b><color is="#ed7f77">{party}</color></b> is not a valid party name!
 
 party.header = \n<color is="#ebcb94">======</color> <b>{name}</b> <color is="#ebcb94">======</color>

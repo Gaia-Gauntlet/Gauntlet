@@ -53,9 +53,6 @@ public class PartyComponent {
     Set<UUID> players = ConcurrentHashMap.newKeySet();
     @Getter
     UUID owner;
-    // list of offline players with their cancellation token - change type of
-    // 'string' once that cancellation token type is known
-    Map<UUID, ScheduledFuture<?>> offlinePlayers = new ConcurrentHashMap<>();
 
     private PartyComponent() {
     }
@@ -83,17 +80,11 @@ public class PartyComponent {
             sendMessage(msg("server.gg.commands.party.joined")
                     .param("player", playerRef.getUsername()));
         }
-        if (includesOfflinePlayer(playerRef)) {
-            setOnline(player);
-            return;
-        }
         players.add(player);
     }
 
     public boolean removePlayer(UUID player) {
         var playerRef = PlayerUtils.get(player);
-
-        clearOffline(player);
 
         boolean isOwner = owner.equals(player);
         if (isOwner && players.size() <= 1) {
@@ -142,9 +133,6 @@ public class PartyComponent {
     public boolean includesPlayer(PlayerRef player) {
         return includesPlayer(player.getUuid());
     }
-    public boolean includesOfflinePlayer(PlayerRef player) {
-        return offlinePlayers.containsKey(player.getUuid());
-    }
 
     public boolean includesPlayer(UUID player) {
         if (players.contains(player))
@@ -161,48 +149,5 @@ public class PartyComponent {
         for (PlayerRef partyMember : getAllOnlinePlayers()) {
             partyMember.sendMessage(message);
         }
-    }
-
-    // moves a player back to being connected
-    public void setOffline(UUID playerId, ScheduledFuture<?> disconnectFuture) {
-        if (!players.remove(playerId))
-            return;
-        offlinePlayers.put(playerId, disconnectFuture);
-    }
-
-    // clears all offline players
-    public void clearOffline() {
-        for (var offlinePlayer : offlinePlayers.entrySet()) {
-            clearOffline(offlinePlayer.getKey());
-        }
-    }
-
-    // clears an offline player
-    public void clearOffline(UUID playerId) {
-        if (offlinePlayers.remove(playerId) == null)
-            return;
-        players.remove(playerId);
-    }
-
-    /**
-     * sets a player as online again - removing their offine token
-     * 
-     * @returns the cancel token
-     */
-    public ScheduledFuture<?> setOnline(UUID playerId) {
-        var cancelToken = offlinePlayers.get(playerId);
-        if (cancelToken == null)
-            return null;
-        
-        offlinePlayers.remove(playerId); // remove from offline
-        players.add(playerId);
-        if (cancelToken.isCancelled())
-            return cancelToken;
-        cancelToken.cancel(false);
-        return cancelToken;
-    }
-
-    public Set<UUID> getOffline() {
-        return this.offlinePlayers.keySet();
     }
 }

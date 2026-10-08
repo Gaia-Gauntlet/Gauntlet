@@ -75,7 +75,7 @@ public class EZGameConfigAsset extends GameConfigAsset {
             + "as Water_Source. Exact source IDs take priority. A value may name a Fluid asset "
             + "instead of a BlockType, which swaps the fluid in place and leaves the volume "
             + "liquid; anything else drains the fluid and writes the block.")
-        .addValidator(new MapValueValidator<>(VOID_TARGET_VALIDATOR))
+        .addValidatorLate(() -> new MapValueValidator<>(VOID_TARGET_VALIDATOR).late())
         .add()
         .append(new KeyedCodec<>("ClosingVoidBlock", Codec.STRING),
             (p, v) -> p.closingVoidBlock = v,

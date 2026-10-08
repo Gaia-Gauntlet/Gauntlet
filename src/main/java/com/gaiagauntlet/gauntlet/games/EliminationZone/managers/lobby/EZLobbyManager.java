@@ -2,11 +2,7 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
-import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.builtin.instances.InstancesPlugin;

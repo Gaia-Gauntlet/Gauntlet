@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.resources;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import org.jetbrains.annotations.NotNull;
@@ -13,10 +14,12 @@ import com.hypixel.hytale.codec.codecs.map.MapCodec;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.resources.UniverseResourceType;
 
+import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Universe-scoped resource for game management. Mutations should only happen
@@ -41,6 +44,8 @@ public class UniverseGauntletResource {
     @Setter @Getter private static UniverseResourceType<UniverseGauntletResource> resourceType;
     @Nonnull @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
     @Nonnull @Getter private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
+
+    private Map<UUID, Pair<ScheduledFuture<?>, String>> offlinePlayers = new ConcurrentHashMap<>();
 
     // faster lookup maps for hotpath efficiency. Should not be considered the
     // source of truth
@@ -227,5 +232,27 @@ public class UniverseGauntletResource {
         if (session == null)
             return;
         session.getParties().remove(partyId);
+    }
+
+    @Nullable 
+    public Pair<ScheduledFuture<?>, String> getOffline(UUID playerId) {
+        if (playerId == null) return null;
+        return offlinePlayers.get(playerId);
+    }
+
+    public void removeOffline(UUID player) {
+        if (player == null) return;
+        var pair = offlinePlayers.remove(player);
+        if (pair == null) return;
+        if (pair.first().isCancelled()) return;
+        pair.first().cancel(false); // clean up the future
+    }
+
+    public void markOffline(UUID player, String partyId, ScheduledFuture<?> future) {
+        // remove any existing
+        removeOffline(player);
+
+        // re-mark as offline
+        offlinePlayers.put(player, Pair.of(future, partyId));
     }
 }
