@@ -6,8 +6,6 @@ import java.util.concurrent.TimeUnit;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
-import java.util.concurrent.TimeUnit;
-
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
@@ -274,7 +272,8 @@ public class PlayerHandlers extends HandlerUtils {
             return;
         }
         var holder = evt.getHolder();
-        // just ensure the player has the playerComponent for now - there may be more setup to do later
+        // just ensure the player has the playerComponent for now - there may be more
+        // setup to do later
         holder.ensureAndGetComponent(PlayerComponent.getComponentType());
     }
 
@@ -299,15 +298,15 @@ public class PlayerHandlers extends HandlerUtils {
         var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
         if (party != null) {
 
-            var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
-                party.clearOffline(playerRef.getUuid());
-                // TODO: fix mark offline logic
-                // ISSUE: Event currently expects a playerRef for the event. Unfortunately, we only have the player's UUID at this point
+            var playerId = playerRef.getUuid();
 
-                // this means we can't actually emit the playerLeave event :/
+            var resource = GauntletUtils.withResource();
+            var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+                resource.removeOffline(playerId);
             }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
 
-            party.setOffline(playerRef.getUuid(), future);
+            party.removePlayer(playerId);
+            resource.markOffline(playerId, party.getId(), future);
         }
 
         var reason = evt.getDisconnectReason();
@@ -320,6 +319,7 @@ public class PlayerHandlers extends HandlerUtils {
             GaiaLog.atWarning().log(msg("server.gg.events.players.disconnect.warn")
                     .param("playerName", playerRef.getUsername())
                     .param("reason", "Session not present"));
+            return;
         }
 
         var gameId = playerComponent == null ? null : playerComponent.getCurrentGame();
@@ -339,7 +339,9 @@ public class PlayerHandlers extends HandlerUtils {
 
         var hubWorld = GauntletUtils.withHubWorld();
         try {
+            // fuck it just send both the player is gone
             game.playerDisconnect(hubWorld, session, playerRef);
+            game.playerLeave(hubWorld, session.getId(), List.of(playerRef));
         } catch (Exception e) {
             GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
                     .param("playerName", playerRef.getUsername())
@@ -349,6 +351,11 @@ public class PlayerHandlers extends HandlerUtils {
 
     public static void handlePartyPlayer(World hub, PlayerPartyEvent evt) {
         var playerRef = evt.getPlayer();
+
+        if (playerRef == null) {
+            Resolve.error(evt, error("Cannot perform action, PlayerRef is null"));
+            return;
+        }
         var party = PartyUtils.getParty(evt.getPartyId())
                 .orElseGet(() -> PartyUtils.getPartyNullable(playerRef).orElse(null));
         if (party == null) {
@@ -363,10 +370,10 @@ public class PlayerHandlers extends HandlerUtils {
         try {
             switch (evt.getOperation()) {
                 case ADD -> {
-                    playerJoinParty(evt, party, session);
+                    playerJoinParty(evt, playerRef, party, session);
                 }
                 case REMOVE -> {
-                    playerLeaveParty(evt, party, session);
+                    playerLeaveParty(evt, playerRef, party, session);
                 }
             }
         } catch (Exception e) {
@@ -378,12 +385,13 @@ public class PlayerHandlers extends HandlerUtils {
         }
     }
 
-    public static void playerJoinParty(PlayerPartyEvent evt, PartyComponent newParty, GameSession partySession) {
-        var playerRef = evt.getPlayer();
+    public static void playerJoinParty(PlayerPartyEvent evt, PlayerRef playerRef, PartyComponent newParty,
+            GameSession partySession) {
 
         // leave old party
         PartyUtils.getPartyNullable(playerRef).ifPresent(party -> {
-            if (newParty.getId().equals(party.getId())) return; // joining party they are already in
+            if (newParty.getId().equals(party.getId()))
+                return; // joining party they are already in
             try {
                 GauntletEventRegistry.dispatch(PlayerPartyEvent.Leave(playerRef, party.getId()));
             } catch (Exception e) {
@@ -406,12 +414,13 @@ public class PlayerHandlers extends HandlerUtils {
                 .param("party", newParty.getLabel()));
     }
 
-    private static void playerLeaveParty(PlayerPartyEvent evt, PartyComponent oldParty, GameSession partySession) {
-        var playerRef = evt.getPlayer();
+    private static void playerLeaveParty(PlayerPartyEvent evt, PlayerRef playerRef, PartyComponent oldParty,
+            GameSession partySession) {
         if (oldParty == null) {
             Resolve.error(evt, error("Unable to leave party. Old party not found!"));
             return;
         }
+
         var isAlone = oldParty.getAllPlayers().size() == 1;
 
         // if not alone, leave the party

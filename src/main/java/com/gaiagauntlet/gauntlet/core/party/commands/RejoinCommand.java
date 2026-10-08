@@ -1,9 +1,12 @@
 package com.gaiagauntlet.gauntlet.core.party.commands;
 
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
+
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
@@ -36,19 +39,25 @@ public class RejoinCommand extends AbstractTargetPlayerCommand {
     }
 
     @Override
-    protected void execute(@Nonnull CommandContext context, @Nullable final Ref<EntityStore> sourceRef,
+    protected void execute(@Nonnull CommandContext ctx, @Nullable final Ref<EntityStore> sourceRef,
             @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef, @Nonnull World world,
             @Nonnull Store<EntityStore> store) {
 
-        // rejoins a party the player is in
-        var party = PartyUtils.getPartyNullable(playerRef).orElse(null);
-        if (party == null) return; // not in party
-
-        if (!party.includesOfflinePlayer(playerRef)) {
-            return; // player is not considered offline
+        var resource = GauntletUtils.withResource();
+        var playerId = playerRef.getUuid();
+        var pairing = resource.getOffline(playerId);
+        if (pairing == null) {
+            playerRef.sendMessage(msg("server.gg.commands.party.notoffline"));
+            return;
         }
 
-        // dispatch add to party - marks as online again and joins the session if the session is active
-        GauntletEventRegistry.dispatch(PlayerPartyEvent.Join(playerRef, party.getId()));
+        resource.removeOffline(playerId);
+
+        // dispatch add to party - marks as online again and joins the session if the
+        // session is active
+        GauntletEventRegistry.dispatch(
+                PlayerPartyEvent.Join(playerRef, pairing.second())
+                        .onMessage(msg -> ctx.sendMessage(msg.toMessage()))
+                        .onComplete(message -> ctx.sendMessage(message.toMessage())));
     }
 }
