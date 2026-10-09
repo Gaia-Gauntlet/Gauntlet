@@ -126,12 +126,6 @@ public class EZGameConfig extends GameConfigAsset {
             p -> p.cornucopiaDurationSeconds)
         .documentation("How long the cornucopia cutscene is.")
         .add()
-        .append(new KeyedCodec<>("StartBufferSeconds", Codec.LONG),
-            (p, v) -> p.startBufferSeconds = v,
-            p -> p.startBufferSeconds)
-        .documentation(
-            "Time to wait before starting the arena intro sequence. Used to ensure all players have fully loaded into the game.")
-        .add()
         .append(new KeyedCodec<>("TeleportWaveSize", Codec.INTEGER),
             (p, v) -> p.teleportWaveSize = v,
             p -> p.teleportWaveSize)
@@ -233,12 +227,11 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private String closingVoidBlock = "Build_Black_Cube";
     @Getter private String zoneClosingPhaseSet = "";
     @Getter private int suddenDeathAt = 6;
-    @Getter private double spawnProtectionSeconds = 30;
-    @Getter private double cameraSequenceSeconds = 29;
-    @Getter private long startBufferSeconds = 20;
     @Getter private int teleportWaveSize = 5;
     @Getter private long teleportWaveIntervalSeconds = 1;
     @Getter private long cornucopiaDurationSeconds = 27;
+    @Getter private double spawnProtectionSeconds = 30;
+    @Getter private double cameraSequenceSeconds = 29;
 //    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
         new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))

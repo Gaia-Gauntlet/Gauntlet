@@ -36,6 +36,9 @@ public final class LobbyEventListeners {
 
         var gameEcs = GameStore.withStore(world, session.getId()).orElse(null);
         if (gameEcs == null) return;
-        gameEcs.put(GameTimerComponent.getComponentType(), new GameTimerComponent());
+        var gameTimerComp = new GameTimerComponent();
+        var config = EZGameConfig.get(gameEcs);
+        gameTimerComp.startTimer(config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds());
+        gameEcs.put(GameTimerComponent.getComponentType(), gameTimerComp);
     }
 }

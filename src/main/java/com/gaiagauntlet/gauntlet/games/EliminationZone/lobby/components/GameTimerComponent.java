@@ -17,7 +17,7 @@ public class GameTimerComponent implements GameComponent {
     @Getter @Setter Runnable onComplete;
     public GameTimerComponent() {}
 
-    public void startTimer(int time) {
+    public void startTimer(double time) {
         startTimer(time, null);
     }
     public void startTimer(double time, Runnable onComplete) {
