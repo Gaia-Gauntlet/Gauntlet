@@ -16,6 +16,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlug
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
@@ -43,7 +44,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
             .setCodec(GameConfigAsset.CODEC)
             .setKeyFunction(GameConfigAsset::getId)
             .setReplaceOnRemove(_ -> new EmptyGameConfigAsset())
-            .loadsAfter(GameplayConfig.class)
+            .loadsAfter(TeamListAsset.class,GameplayConfig.class)
             .build());
 
         SessionGameConfigComponent.setSessionComponentType(SessionRegistry.register(
