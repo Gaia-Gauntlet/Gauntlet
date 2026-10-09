@@ -77,7 +77,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
         var config = overrideConfig == null
             ? getId() // Game ID is the default config ID
             : overrideConfig;
-        GameStore.ensureStore(arenaAccessor, gameId).put(
+        gameStore.put(
             GameConfigComponent.getComponentType(),
             new GameConfigComponent(config)
         );
