@@ -1,7 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnProtectionComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.GameTimerSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.SpawnDamagePreventionSystem;
@@ -15,6 +15,10 @@ public class EZSpawn {
 
     public static void setup(JavaPlugin plugin) {
         MatchEventRegistry.register(MatchStateEvent.class, EZController.ID, LobbyEventListeners::onMatchState);
+
+        RisingBlockComponent
+                .setComponentType(plugin.getEntityStoreRegistry().registerComponent(RisingBlockComponent.class,
+                        RisingBlockComponent::new));
 
         plugin.getEntityStoreRegistry().registerSystem(new GameTimerSystem());
         plugin.getEntityStoreRegistry().registerSystem(new SpawnDamagePreventionSystem());

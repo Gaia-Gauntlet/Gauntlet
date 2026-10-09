@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneVisualisationComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services.ZoneTickSystem;
 import com.hypixel.hytale.logger.HytaleLogger;

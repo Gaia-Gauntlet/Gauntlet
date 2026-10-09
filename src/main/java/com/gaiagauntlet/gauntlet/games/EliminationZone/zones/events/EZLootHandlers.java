@@ -7,7 +7,6 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.events.ArenaLoadedEvent
 
 /** Every fresh arena gets its loot fountains thinned before anyone arrives. */
 public final class EZLootHandlers {
-
     private EZLootHandlers() {
     }
 

@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.GameTime
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
@@ -28,20 +29,17 @@ public final class LobbyEventListeners {
         if (session == null) return;
         if (!EZController.isEz(session)) return;
 
-        var gameId = session.getCurrentGame();
-        var gameController = GameRegistry.getGame(gameId).orElse(null);
-        if (gameController == null) return;
+        var gameEcs = event.getGame();
+        var ctx = gameEcs.get(ContextComponent.getComponentType()).orElse(null);
+        if (ctx == null) return; // kys now
+        var world = ctx.getWorld();
 
-        var lobbyComp = GameStore.ensureHubStore(session.getId()).get(LobbyComponent.getComponentType());
-        if (lobbyComp.isEmpty()) return;
-        var world = lobbyComp.get().getWorld();
-
-        var gameEcs = GameStore.withStore(world, session.getId()).orElse(null);
         if (gameEcs == null) return;
         var gameTimerComp = new GameTimerComponent();
         var config = EZGameConfig.get(gameEcs);
         gameTimerComp.startTimer(config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds());
         gameEcs.put(GameTimerComponent.getComponentType(), gameTimerComp);
+        event.getGame().put(GameTimerComponent.getComponentType(), new GameTimerComponent());
 
         MusicUtils.forcePlayMusicToAllPlayers(GAME_MUSIC_CONTAINER, session);
         world.scheduleAfter(
