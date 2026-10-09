@@ -78,6 +78,7 @@ public class EZLobbyManager implements LobbyManager {
         }
 
         var team = TeamUtils.withTeamFor(world, sessionId, player.getUuid());
+        if (team == null) return;
         var onlinePlayers = TeamUtils.getOnlinePlayers(team);
         for (var teamPlayer : onlinePlayers) {
             var comp = teamPlayer.getComponentConcurrent(EZPlayerComponent.getComponentType());
