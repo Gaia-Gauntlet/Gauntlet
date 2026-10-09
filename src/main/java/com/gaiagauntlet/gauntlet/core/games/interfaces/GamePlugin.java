@@ -12,6 +12,11 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 public interface GamePlugin {
     public String getId();
 
+    /** The name admins see for this plugin. */
+    public default String getDisplayName() {
+        return getId();
+    }
+
     /** Gets a list of required plugin IDs */
     public List<String> getDependencies();
 

@@ -43,6 +43,11 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Teams";
+    }
+
+    @Override
     public void init(JavaPlugin host) {
         host.getAssetRegistry().register(HytaleAssetStore.builder(TeamListAsset.class, new DefaultAssetMap<>())
                 .setPath("Gauntlet/Plugins/" + ID + "/Teams")

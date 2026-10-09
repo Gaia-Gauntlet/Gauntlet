@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
+import com.gaiagauntlet.gauntlet.utils.BlockUtils;
+
 import com.hypixel.hytale.component.AddReason;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
@@ -67,15 +69,22 @@ public final class ArenaBlocks {
      * Replaces the block with an entity carrying the extra components. Null when
      * there is no block or no matching item.
      */
-    // @Nullable
-    // public static <T extends Component<EntityStore>> Ref<EntityStore> blockToEntity(@Nonnull World world,
-            // @Nonnull Vector3i position, @Nonnull Store<EntityStore> store,
-            // @Nonnull Map<ComponentType<EntityStore, T>, T> extra) {
-        // var blockType = world.getBlockType(position);
-        // BlockType.getAssetMap().getAsset(blockSection.get(targetBlock.x, targetBlock.y, targetBlock.z));
-        // if (blockType == null) {
-            // return null;
-        // }
+    @Nullable
+    public static <T extends Component<EntityStore>> Ref<EntityStore> blockToEntity(@Nonnull World world,
+            @Nonnull Vector3i position, @Nonnull Store<EntityStore> store,
+            @Nonnull Map<ComponentType<EntityStore, T>, T> extra) {
+        var blockId = BlockUtils.getBlockId(world, position);
+        if (blockId == BlockType.EMPTY_ID) {
+            return null;
+        }
+        var blockType = BlockType.getAssetMap().getAsset(blockId);
+        if (blockType == null) {
+            return null;
+        }
+        var itemId = blockType.getId();
+        BlockUtils.setBlock(world, position.x, position.y, position.z, "Empty");
+        return spawnBlockEntity(itemId, position, store, new HashMap<>(extra));
+    }
         // var itemId = blockType.getId();
         // world.setBlock(position.x, position.y, position.z, "Empty");
         // return spawnBlockEntity(itemId, position, store, new HashMap<>(extra));

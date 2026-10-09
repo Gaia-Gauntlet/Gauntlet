@@ -27,6 +27,11 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
     }
 
     @Override
+    public String getDisplayName() {
+        return "Auto";
+    }
+
+    @Override
     public List<String> getDependencies() {
         return List.of(GameStorePlugin.ID);
     }

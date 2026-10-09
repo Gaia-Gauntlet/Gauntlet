@@ -2,10 +2,14 @@ package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
@@ -29,6 +33,7 @@ public class SessionHandlers extends HandlerUtils {
                 }
                 gameSession.addGame(game);
             }
+            installDefaults(gameSession, gameSession.getGameSequence());
         }
 
         var success = withResource().addSession(gameSession);
@@ -82,6 +87,18 @@ public class SessionHandlers extends HandlerUtils {
             sessionEvt.complete(GaiaLog.atError().withSession(session)
                     .log(MessageUtils.msg("server.gg.events.session.error.unavailable")
                             .param("sessionId", session.getId())));
+            return;
+        }
+
+        var missing = GameRegistry.withDependencies(game.getRequiredPlugins()).stream()
+                .filter(id -> !session.getPlugins().contains(id))
+                .toList();
+        if (!missing.isEmpty()) {
+            sessionEvt.complete(GaiaLog.atError().withSession(session)
+                    .log(MessageUtils.msg("server.gg.events.session.plugin.required")
+                            .param("sessionId", session.getId())
+                            .param("gameId", nextGameId)
+                            .param("plugins", String.join(", ", missing))));
             return;
         }
 
@@ -235,6 +252,7 @@ public class SessionHandlers extends HandlerUtils {
         switch (op) {
             case SET -> {
                 session.setGames(gameQueue);
+                installDefaults(session, gameQueue);
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.success")
                         .param("action", "set the games list"));
                 return;
@@ -252,9 +270,79 @@ public class SessionHandlers extends HandlerUtils {
             }
             case APPEND -> {
                 session.addGames(gameQueue);
+                installDefaults(session, gameQueue);
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.success")
                         .param("action", "appended " + gameQueue.size() + " game(s)"));
             }
+        }
+    }
+
+    public static void handleSessionPlugin(World hub, SessionPluginEvent pluginEvt) {
+        if (!(sessionFor(pluginEvt.getSessionId()).orElse(null) instanceof GameSession session)) {
+            Resolve.error(pluginEvt, MessageUtils.msg("server.gg.events.session.missing").param("sessionId",
+                    pluginEvt.getSessionId()));
+            return;
+        }
+
+        var pluginId = pluginEvt.getPluginId();
+        if (!GameRegistry.hasPlugin(pluginId)) {
+            Resolve.error(pluginEvt, session,
+                    MessageUtils.msg("server.gg.events.session.plugin.missing").param("pluginId", pluginId));
+            return;
+        }
+
+        if (!session.available()) {
+            Resolve.error(pluginEvt, session, MessageUtils.msg("server.gg.events.session.error.unavailable")
+                    .param("sessionState", session.getSessionState().toString())
+                    .param("action", "changing plugins"));
+            return;
+        }
+
+        var installed = session.getPlugins();
+        switch (pluginEvt.getOp()) {
+            case INSTALL -> {
+                var plugins = GameRegistry.withDependencies(List.of(pluginId));
+                for (var id : plugins) {
+                    if (!GameRegistry.hasPlugin(id)) {
+                        Resolve.error(pluginEvt, session,
+                                MessageUtils.msg("server.gg.events.session.plugin.missing").param("pluginId", id));
+                        return;
+                    }
+                }
+                var added = plugins.stream().filter(installed::add).toList();
+                Resolve.success(pluginEvt, session, MessageUtils.msg("server.gg.events.session.plugin.install.success")
+                        .param("plugins", added.isEmpty() ? "nothing new" : String.join(", ", added)));
+            }
+            case UNINSTALL -> {
+                if (!installed.contains(pluginId)) {
+                    Resolve.error(pluginEvt, session,
+                            MessageUtils.msg("server.gg.events.session.plugin.absent").param("pluginId", pluginId));
+                    return;
+                }
+                var dependents = installed.stream()
+                        .filter(id -> !id.equals(pluginId))
+                        .filter(id -> GameRegistry.withDependencies(List.of(id)).contains(pluginId))
+                        .toList();
+                if (!dependents.isEmpty()) {
+                    Resolve.error(pluginEvt, session, MessageUtils.msg("server.gg.events.session.plugin.needed")
+                            .param("pluginId", pluginId)
+                            .param("plugins", String.join(", ", dependents)));
+                    return;
+                }
+                installed.remove(pluginId);
+                Resolve.success(pluginEvt, session, MessageUtils.msg("server.gg.events.session.plugin.uninstall.success")
+                        .param("pluginId", pluginId));
+            }
+        }
+    }
+
+    /** Installs the default plugins of the games, and what they depend on, that the session is missing */
+    private static void installDefaults(GameSession session, Collection<String> games) {
+        for (var gameId : games) {
+            GameRegistry.getGame(gameId).ifPresent(game -> GameRegistry.withDependencies(game.getDefaultPlugins())
+                    .stream()
+                    .filter(GameRegistry::hasPlugin)
+                    .forEach(session.getPlugins()::add));
         }
     }
 }

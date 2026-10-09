@@ -6,9 +6,13 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.RotationTuple;
+import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,5 +62,22 @@ public class BlockUtils {
 
     public static BlockSection getBlockSection(World world, Vector3i pos) {
         return getBlockSection(world, pos.x, pos.y, pos.z);
+    }
+
+    /** Places the block at the position. False when the section is not loaded or the block id is unknown. */
+    public static boolean setBlock(World world, int x, int y, int z, String blockTypeKey) {
+        final var assetMap = BlockType.getAssetMap();
+        final var blockId = assetMap.getIndex(blockTypeKey);
+        final var blockType = assetMap.getAsset(blockId);
+        if (blockType == null)
+            return false;
+
+        final var chunkStore = world.getChunkStore();
+        final var sectionReference = chunkStore.getChunkSectionReferenceAtBlock(x, y, z);
+        if (sectionReference == null || !sectionReference.isValid())
+            return false;
+
+        return BlockOperations.setBlock(chunkStore, sectionReference, x, y, z, blockId, blockType,
+                RotationTuple.NONE_INDEX, FillerBlockUtil.NO_FILLER, SetBlockSettings.NONE);
     }
 }

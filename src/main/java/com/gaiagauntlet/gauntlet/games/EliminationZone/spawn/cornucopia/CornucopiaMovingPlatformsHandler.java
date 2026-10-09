@@ -108,7 +108,7 @@ public class CornucopiaMovingPlatformsHandler {
         }
         goal.getPosition().add(0, HEIGHT + 1, 0);
         var under = ArenaBlocks.blockAt(goal.getPosition());
-        world.setBlock(under.x, under.y - 3, under.z, FALLBACK_BLOCK_ID);
+        BlockUtils.setBlock(world, under.x, under.y - 3, under.z, FALLBACK_BLOCK_ID);
         store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(world, goal));
     }
 }
