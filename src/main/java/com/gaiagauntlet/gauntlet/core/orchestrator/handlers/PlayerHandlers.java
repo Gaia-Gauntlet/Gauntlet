@@ -1,7 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;

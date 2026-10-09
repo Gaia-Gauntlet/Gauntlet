@@ -1,7 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services;
 
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneVisualisationComponent;
@@ -57,7 +57,7 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
         var configComp = gameEcs.get(GameConfigComponent.getComponentType()).orElse(null);
         if (configComp == null) return;
         var config = configComp.getConfig();
-        if (!(config instanceof EZGameConfigAsset gameConfig)) return;
+        if (!(config instanceof EZGameConfig gameConfig)) return;
         List<ZoneDefinition> zones = Arrays.asList(gameConfig.getZones());
 
         if (zones.isEmpty()) {return;}

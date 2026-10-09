@@ -73,7 +73,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
             SessionGameConfigComponent.getSessionComponentType(),
             new SessionGameConfigComponent()
         );
-        var overrideConfig = sessionGameConfigComponent.getConfig(gameId);
+        var overrideConfig = sessionGameConfigComponent.getConfigId(gameId);
         var config = overrideConfig == null
             ? getId() // Game ID is the default config ID
             : overrideConfig;

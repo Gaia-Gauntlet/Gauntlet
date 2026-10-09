@@ -1,8 +1,11 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
+import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
@@ -18,13 +21,15 @@ import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.codec.validation.validator.MapValueValidator;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
+import com.hypixel.hytale.server.core.universe.world.World;
+
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class EZGameConfigAsset extends GameConfigAsset {
+public class EZGameConfig extends GameConfigAsset {
 
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
         @Override
@@ -39,22 +44,22 @@ public class EZGameConfigAsset extends GameConfigAsset {
         }
     };
 
-    public static final BuilderCodec<@NotNull EZGameConfigAsset> CODEC = BuilderCodec
-        .builder(EZGameConfigAsset.class, EZGameConfigAsset::new, GameConfigAsset.ABSTRACT_CODEC)
+    public static final BuilderCodec<@NotNull EZGameConfig> CODEC = BuilderCodec
+        .builder(EZGameConfig.class, EZGameConfig::new, GameConfigAsset.ABSTRACT_CODEC)
         .append(new KeyedCodec<>("InstanceTemplateName", Codec.STRING),
             (t, v) -> t.instanceTemplateName = v,
-            EZGameConfigAsset::getInstanceTemplateName)
+            EZGameConfig::getInstanceTemplateName)
         .addValidator(InstanceValidator.INSTANCE)
         .documentation("The name of the instance to use for this game.")
         .add()
         .append(new KeyedCodec<>("FriendlyFireEnabled", Codec.BOOLEAN),
             (t, v) -> t.friendlyFireEnabled = v,
-            EZGameConfigAsset::isFriendlyFireEnabled)
+            EZGameConfig::isFriendlyFireEnabled)
         .documentation("When enabled, teammates can damage each other during team matches.")
         .add()
         .append(new KeyedCodec<>("Zones", new ArrayCodec<>(ZoneDefinition.CODEC, ZoneDefinition[]::new)),
             (t, v) -> t.zones = v,
-            EZGameConfigAsset::getZones)
+            EZGameConfig::getZones)
         .documentation("Circle segment arena zones")
         .add()
 //        .append(new KeyedCodec<>("WeatherPool",
@@ -179,4 +184,19 @@ public class EZGameConfigAsset extends GameConfigAsset {
     @Getter private GGPoi[] arenaTimerPois;
     @Getter private float zoneTickSeconds = 2;
     @Getter private int maxActiveBosses = 3;
+
+
+    public static EZGameConfig get(World world, String sessionId) {
+        var conf = ConfigUtils.getGameConfig(world, sessionId);
+        if (conf == null) {
+            // never configured
+            GaiaLog.atWarning().withSession(sessionId).withGameId(EZController.ID).log("Config component has a null config object!");
+            return new EZGameConfig();
+        }
+        if (conf instanceof EZGameConfig ezConf) return ezConf;
+        
+        GaiaLog.atWarning().withSession(sessionId).withGameId(EZController.ID).log("Config component has the wrong configuration set!");
+
+        return new EZGameConfig();
+    }
 }

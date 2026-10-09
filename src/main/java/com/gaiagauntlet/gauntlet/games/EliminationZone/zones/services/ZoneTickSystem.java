@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -28,7 +28,7 @@ public final class ZoneTickSystem extends TickingSystem<EntityStore> {
         Collection<GameEcs> games = GameStore.withResource(world).getAll();
         GameEcs game = games.stream().filter((g) -> {
             var gameConfigComponent = g.get(GameConfigComponent.getComponentType()).orElse(null);
-            return (gameConfigComponent != null) && (gameConfigComponent.getConfig() instanceof EZGameConfigAsset);
+            return (gameConfigComponent != null) && (gameConfigComponent.getConfig() instanceof EZGameConfig);
         }).findFirst().orElse(null);
         String gameId = GameStore.withResource(world).getId(game);
 
@@ -37,7 +37,7 @@ public final class ZoneTickSystem extends TickingSystem<EntityStore> {
         var configComp = game.get(GameConfigComponent.getComponentType()).orElse(null);
         if (configComp == null) return;
         var config = configComp.getConfig();
-        if (!(config instanceof EZGameConfigAsset gameConfig)) return;
+        if (!(config instanceof EZGameConfig gameConfig)) return;
 
         float interval = gameConfig.getZoneTickSeconds();
         if (accumulated < interval) return;

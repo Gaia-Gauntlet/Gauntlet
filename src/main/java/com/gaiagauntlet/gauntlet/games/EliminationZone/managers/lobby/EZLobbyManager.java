@@ -5,12 +5,14 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -21,16 +23,7 @@ public class EZLobbyManager implements LobbyManager {
     public CompletableFuture<World> setupWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
         var hubWorld = hubAccessor.getExternalData().getWorld();
 
-        // this has gotta be fixed once lordi finalizes the config branch. Fully on me
-        // for merging early tbh
-        var cfg = new EZGameConfigAsset(); // = GauntletUtils.sessionFor(sessionId)
-        // .flatMap(session ->
-        // session.get(SessionGameConfigComponent.getComponentType()))
-        // .filter(config -> config != null && config.getConfig(EZController.ID) !=
-        // null)
-        // .map(config -> (EZGameConfigAsset)
-        // GameConfigAsset.getAssetMap().get(config.getConfig(EZController.ID))).orElse(new
-        // EZGameConfigAsset());
+        var cfg = EZGameConfig.get(hubWorld, sessionId);
 
         return WorldUtils.spawnInstance(cfg.getInstanceTemplateName(), hubWorld, WorldUtils.spawnOf(hubWorld))
                 .whenComplete((world, err) -> {
@@ -73,5 +66,15 @@ public class EZLobbyManager implements LobbyManager {
     public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> player) {
         GaiaLog.atError().log("onLeave is not implemented for EZGameController!");
         return CompletableFuture.completedFuture(null);
+    }
+
+    public CompletableFuture<Transform> locationFor(PlayerRef player, World world, String sessionId) {
+        return GauntletUtils.runAsync(world, () -> {
+
+            var ecs = GameStore.ensureStore(world, sessionId);
+            var spawnComp = ecs.ensure(EZSpawnComponent.getComponentType(), () -> new EZSpawnComponent(world));
+
+            return spawnComp.getNext(player);
+        });
     }
 }

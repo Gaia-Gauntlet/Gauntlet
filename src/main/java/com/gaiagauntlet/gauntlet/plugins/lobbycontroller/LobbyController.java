@@ -26,6 +26,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import it.unimi.dsi.fastutil.Pair;
+
 /** Should enforce the implementation of a Lobby-Arena system */
 public abstract class LobbyController extends GameController {
     public static HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -119,7 +121,9 @@ public abstract class LobbyController extends GameController {
         if (arena == null)
             return CompletableFuture.failedFuture(new IllegalStateException("No live arena for session " + sessionId));
 
-        TransferUtils.queue(store, arena, sessionId, new HashSet<>(players), new Transform());
+        var playerSets = players.stream().map(player -> Pair.of(player, getLobbyManager().locationFor(player, arena, sessionId))).toList();
+
+        TransferUtils.queue(store, arena, sessionId, playerSets);
         return CompletableFuture.completedFuture(null);
     }
 

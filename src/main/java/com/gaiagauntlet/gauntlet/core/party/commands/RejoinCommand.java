@@ -8,9 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
-import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
-import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.hypixel.hytale.builtin.adventure.reputation.command.ReputationAddCommand;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;

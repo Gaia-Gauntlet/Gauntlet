@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -29,4 +30,5 @@ public interface LobbyManager {
 
     public CompletableFuture<Void> onDisconnect(World arenaWorld, String session, PlayerRef player);
     public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> player);
+    public CompletableFuture<Transform> locationFor(PlayerRef player, World world, String sessionId);
 }
