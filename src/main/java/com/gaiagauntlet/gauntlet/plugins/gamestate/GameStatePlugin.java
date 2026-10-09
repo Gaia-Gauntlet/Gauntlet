@@ -48,7 +48,7 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        return List.of(new MatchTab());
+        return List.of();
     }
 
     @Override
