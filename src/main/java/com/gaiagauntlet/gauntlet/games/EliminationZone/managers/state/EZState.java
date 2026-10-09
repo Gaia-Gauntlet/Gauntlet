@@ -1,7 +1,9 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 
 public class EZState {
@@ -33,6 +35,10 @@ public class EZState {
         if (match.to(desired)) {
             var state = mc(game);
             state.setState(desired.name());
+            MatchEventRegistry.dispatch(
+                new MatchStateEvent(game.getSessionId(), match.name(), desired.name()),
+                game.getSessionId()
+            );
             return true;
         }
         GaiaLog.atWarning()

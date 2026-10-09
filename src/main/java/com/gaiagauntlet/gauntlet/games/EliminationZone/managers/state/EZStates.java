@@ -5,9 +5,9 @@ import java.util.Set;
 public enum EZStates {
     LOBBY(Set.of()),
     RUNNING(Set.of(LOBBY)),
-    ELIMINATION(Set.of(RUNNING)),
-    STOPPED(Set.of(RUNNING, ELIMINATION)),
-    ERROR(Set.of(LOBBY, RUNNING, ELIMINATION, STOPPED));
+    SUDDEN_DEATH(Set.of(RUNNING)),
+    STOPPED(Set.of(RUNNING, SUDDEN_DEATH)),
+    ERROR(Set.of(LOBBY, RUNNING, SUDDEN_DEATH, STOPPED));
 
     private Set<EZStates> validSources;
 

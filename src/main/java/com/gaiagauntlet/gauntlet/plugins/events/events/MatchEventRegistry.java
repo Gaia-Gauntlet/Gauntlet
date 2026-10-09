@@ -21,12 +21,10 @@ public class MatchEventRegistry {
         eventRegistry.register(evtClass, GameId, consumer);
     }
 
-    public static <T extends MatchEvent> void dispatch(@NotNull T event, String gameId) {
-        var dispatch = HytaleServer.get().getEventBus().dispatchFor(MatchEvent.class, gameId);
-        if (dispatch.hasListener()) {
-            GaiaLog.atInfo().withGameId(gameId).log("Dispatching event " + event.toString() + " for " + gameId);
-            dispatch.dispatch(event);
-        }
+    public static <T extends MatchEvent> void dispatch(@NotNull T event, String sessionId) {
+        var dispatch = HytaleServer.get().getEventBus().dispatchFor(MatchEvent.class, sessionId);
+        GaiaLog.atInfo().withGameId(sessionId).log("Dispatching event " + event.toString() + " for " + sessionId);
+        dispatch.dispatch(event);
     }
 
 }
