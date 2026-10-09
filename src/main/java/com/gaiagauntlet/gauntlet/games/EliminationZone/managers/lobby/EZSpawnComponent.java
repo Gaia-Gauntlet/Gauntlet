@@ -1,8 +1,10 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,6 +51,10 @@ public class EZSpawnComponent implements GameComponent {
                 collect();
             return spawnPoints.pop();
         });
+    }
+
+    public List<Transform> getAllFilled() {
+        return new ArrayList<>(assignedLocation.values());
     }
 
     @Nonnull

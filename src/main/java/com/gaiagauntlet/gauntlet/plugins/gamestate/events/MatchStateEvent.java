@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestate.events;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEvent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 
 import lombok.Getter;
 
@@ -10,11 +11,13 @@ import lombok.Getter;
 public class MatchStateEvent extends MatchEvent {
     @Getter private final String from;
     @Getter private final String to;
+    @Getter private final GameEcs game;
 
-    public MatchStateEvent(String sessionId, String from, String to) {
+    public MatchStateEvent(String sessionId, GameEcs game, String from, String to) {
         super(sessionId);
         this.from = from;
         this.to = to;
+        this.game = game;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.lobby;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn;
 
 import com.gaiagauntlet.gauntlet.utils.PrefabUtils;
 import com.hypixel.hytale.math.Axis;

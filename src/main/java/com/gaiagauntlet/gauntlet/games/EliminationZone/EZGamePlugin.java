@@ -6,7 +6,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnComponent;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.EZLobby;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.EZLobby;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;

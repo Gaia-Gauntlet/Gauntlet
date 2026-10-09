@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.lobby;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import lombok.Getter;

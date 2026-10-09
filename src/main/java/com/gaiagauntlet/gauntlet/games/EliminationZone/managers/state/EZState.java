@@ -37,7 +37,7 @@ public class EZState {
             var state = mc(game);
             state.setState(desired.name());
             MatchEventRegistry.dispatch(
-                new MatchStateEvent(game.getSessionId(), match.name(), desired.name()),
+                new MatchStateEvent(game.getSessionId(), game, match.name(), desired.name()),
                 EZController.ID
             );
             return true;
