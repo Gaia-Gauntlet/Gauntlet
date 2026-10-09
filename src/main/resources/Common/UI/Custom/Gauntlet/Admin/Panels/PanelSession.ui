@@ -1,5 +1,5 @@
 // Session tab: the selected session's status, creating and destroying sessions, its game life cycle
-// and queue, and the parties in it.
+// and queue, its installed plugins, and the parties in it.
 $G = "../../Admin/Common.ui";
 
 Group {
@@ -62,6 +62,19 @@ Group {
     $G.@Gutter {}
 
     $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Plugins"; }
+            $G.@ListPanel #PluginList {}
+            $G.@PickerRow {
+                $G.@Picker #PluginPicker { @Anchor = (Right: 6); }
+                $G.@Go #AddPlugin { Text: "Install"; }
+            }
+            $G.@ButtonRow {
+                $G.@Danger #RemovePlugin { Text: "Uninstall it"; }
+            }
+            $G.@Note { @Text = "Only installed plugins run. Queuing a game installs the plugins it uses."; }
+        }
+
         $G.@Card {
             FlexWeight: 1;
             $G.@Header { @Text = "Parties"; }

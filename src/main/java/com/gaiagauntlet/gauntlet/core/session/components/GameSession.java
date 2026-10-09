@@ -61,11 +61,20 @@ public class GameSession {
                     },
                     holder -> holder.parties)
             .add()
+            .append(new KeyedCodec<>("Plugins", new SetCodec<>(Codec.STRING, HashSet::new, false)),
+                    (holder, v) -> {
+                        holder.plugins.clear();
+                        holder.plugins.addAll(v);
+                    },
+                    holder -> holder.plugins)
+            .add()
             .build();
 
     @Getter private Map<String, SessionComponent> sessionComponents;
     @Getter private String id;
     @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
+    /** Ids of the plugins installed in this session. Only these are set up for its games */
+    @Getter private Set<String> plugins = ConcurrentHashMap.newKeySet();
 
     private volatile boolean locked = false;
 

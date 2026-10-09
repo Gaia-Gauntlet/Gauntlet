@@ -58,4 +58,9 @@ public abstract class GameController {
     public abstract List<HudElement> getHudElements();
 
     public abstract List<String> getRequiredPlugins();
+
+    /** Plugins installed in a session when this game is queued. Admins can add to or remove from them after */
+    public List<String> getDefaultPlugins() {
+        return getRequiredPlugins();
+    }
 }

@@ -1,9 +1,9 @@
-// Gaia Gauntlet admin dashboard: the shell only. The game picker, the tab strip, the status line,
-// and one resident panel per tab. AdminPage toggles which panel is visible and renders it.
+// Gaia Gauntlet admin dashboard: the shell only. The section strip, the status line, the session
+// picker and tab strip of the open section, and one resident panel per tab. AdminPage toggles which
+// panel is visible and renders it.
 $Common = "../../Common.ui";
 $G = "Common.ui";
 
-$TabNoTab = "Panels/PanelNoTab.ui";
 //$TabMatch = "TabMatch.ui";
 //$TabGames = "TabGames.ui";
 //$TabZones = "TabZones.ui";
@@ -31,22 +31,10 @@ $Common.@PageOverlay #MainPage {
             LayoutMode: Top;
             Padding: (Full: 12);
 
-            // Game picker and tab strip.
-            Group #TopStrip {
+            // Session, Controller, then one button per plugin section get dynamically added here
+            Group #SectionStrip {
                 LayoutMode: Left;
                 Anchor: (Height: 30, Bottom: 8);
-
-                Label {
-                    Text: "Session";
-                    Anchor: (Width: 66);
-                    Style: (FontSize: 12, RenderUppercase: true, TextColor: #878e9c, VerticalAlignment: Center, LetterSpacing: 1);
-                }
-                $G.@Picker #SessionPicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
-
-                // Tab buttons get dynamically added here
-                Group #TabStrip { LayoutMode: Left; }
-
-                Group { FlexWeight: 1; }
             }
 
             // Feedback line, set on every action so each click answers.
@@ -63,12 +51,65 @@ $Common.@PageOverlay #MainPage {
                 }
             }
 
-            Group #TabBody {
+            Group #SubRow {
+                LayoutMode: Left;
+                Anchor: (Height: 30, Bottom: 8);
+
+                Group #SessionRow {
+                    LayoutMode: Left;
+                    Anchor: (Width: 230);
+
+                    Label {
+                        Text: "Session";
+                        Anchor: (Width: 66);
+                        Style: (FontSize: 12, RenderUppercase: true, TextColor: #878e9c, VerticalAlignment: Center, LetterSpacing: 1);
+                    }
+                    $G.@Picker #SessionPicker { FlexWeight: 0; Anchor: (Width: 150, Right: 14); }
+                }
+
+                // Tab buttons of every section get dynamically added here
+                Group #SubStrip { LayoutMode: Left; }
+
+                Group { FlexWeight: 1; }
+            }
+
+            Group #PluginBar {
+                LayoutMode: Left;
+                Anchor: (Height: 30, Bottom: 8);
+                Visible: false;
+
+                $G.@Danger #UninstallPlugin { FlexWeight: 0; @Anchor = (Width: 150); Text: "Uninstall Plugin"; }
+            }
+
+            Group {
                 FlexWeight: 1;
                 LayoutMode: Full;
 
-                // Panels get dynamically added here
+                Group #TabBody {
+                    LayoutMode: Full;
 
+                    // Panels get dynamically added here
+
+                }
+
+                // Shown when the open section has nothing to show, offering to install its plugin.
+                Group #Notice {
+                    LayoutMode: Middle;
+                    Visible: false;
+
+                    Group {
+                        LayoutMode: Top;
+                        Anchor: (Width: 360);
+
+                        Label #NoticeText {
+                            Anchor: (Bottom: 12);
+                            Style: (FontSize: 14, TextColor: #d6e4ee, Wrap: true, HorizontalAlignment: Center);
+                        }
+                        $G.@ButtonRow #InstallPlugin {
+                            $G.@Confirm #InstallPluginButton { Text: "Install Plugin"; }
+                        }
+                    }
+                }
             }
         }
     }

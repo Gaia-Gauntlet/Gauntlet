@@ -1,11 +1,11 @@
 package com.gaiagauntlet.gauntlet.plugins.gamestore.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
@@ -19,20 +19,16 @@ public class GameEventHandler {
 
     public static void GameEndHandler(GameEndEvent evt) {
         var gameId = evt.getGameId();
-        if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController gameController)) {
-            return;
-        }
-        var requiredPlugins = gameController.getRequiredPlugins();
-        var requred = requiredPlugins.contains(GameStorePlugin.ID);
-        if (!requred)
-            return; // not required for this game, do nothing
-
         var sessionId = evt.getSessionId();
 
         if (!(GauntletUtils.sessionFor(sessionId).orElse(null) instanceof GameSession session))
             return; // session does not exist - will be handled later
 
-        var persistentPlugins = GameRegistry.getPlugins(requiredPlugins, PersistentGamePlugin.class);
+        var installedPlugins = List.copyOf(session.getPlugins());
+        if (!installedPlugins.contains(GameStorePlugin.ID))
+            return; // not installed for this session, do nothing
+
+        var persistentPlugins = GameRegistry.getPlugins(installedPlugins, PersistentGamePlugin.class);
 
         var gameWorld = evt.getGameWorld();
 

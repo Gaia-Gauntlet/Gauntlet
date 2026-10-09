@@ -37,6 +37,11 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
     }
 
     @Override
+    public String getDisplayName() {
+        return "Config";
+    }
+
+    @Override
     public void init(JavaPlugin plugin) {
         plugin.getAssetRegistry().register(HytaleAssetStore.builder(GameConfigAsset.class,
                 new IndexedLookupTableAssetMap<>(GameConfigAsset[]::new))
