@@ -78,7 +78,7 @@ $Common.@PageOverlay #MainPage {
                 Anchor: (Height: 30, Bottom: 8);
                 Visible: false;
 
-                $G.@Danger #UninstallPlugin { FlexWeight: 0; @Anchor = (Width: 150); Text: "Uninstall Plugin"; }
+                $G.@Danger #UninstallPlugin { @Anchor = (Width: 150); FlexWeight: 0; Text: "Uninstall Plugin"; }
             }
 
             Group {
