@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.components;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components;
 
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;

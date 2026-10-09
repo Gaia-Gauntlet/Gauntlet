@@ -1,16 +1,12 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.listeners;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.TimerDisplay;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.components.GameTimerComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
-import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
-import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;

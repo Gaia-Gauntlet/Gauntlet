@@ -1,8 +1,8 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.systems;
+package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.TimerDisplay;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.components.GameTimerComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.TimerDisplay;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.GameTickingSystem;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameQuery;
