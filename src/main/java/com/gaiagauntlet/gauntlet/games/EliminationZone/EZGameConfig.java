@@ -4,6 +4,7 @@ import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
+import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -35,6 +36,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class EZGameConfig extends GameConfigAsset {
+
+    private static final EZGameConfig DEFAULT = new EZGameConfig();
 
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
         @Override
@@ -249,14 +252,13 @@ public class EZGameConfig extends GameConfigAsset {
         var conf = ConfigUtils.getGameConfig(game);
         if (conf == null) {
             // never configured
-            GaiaLog.atWarning().withSession(game.getSessionId()).withGameId(EZController.ID).log("Config component has a null config object!");
-            return new EZGameConfig();
+            return DEFAULT;
         }
         if (conf instanceof EZGameConfig ezConf) return ezConf;
         
         GaiaLog.atWarning().withSession(game.getSessionId()).withGameId(EZController.ID).log("Config component has the wrong configuration set!");
 
-        return new EZGameConfig();
+        return DEFAULT;
     }
     private static final LootFountainRule[] DEFAULT_LOOT_FOUNTAIN_RULES = new LootFountainRule[]{
         new LootFountainRule(1, true, 60, 60, new int[][]{}),
