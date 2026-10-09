@@ -138,14 +138,16 @@ public abstract class LobbyController extends GameController {
         var arenaWorld = withArenaWorld(hubAccessor, session.getId()).orElse(null);
         if (arenaWorld == null)
             return CompletableFuture.completedFuture(null);
-        return getLobbyManager().cleanWorld(arenaWorld);
+        return getLobbyManager().cleanWorld(arenaWorld).thenRun(() -> GauntletUtils.run(hubAccessor,
+                () -> GameStore.withStore(hubAccessor, session.getId())
+                        .ifPresent(hubStore -> hubStore.remove(LobbyComponent.getComponentType()))));
     };
 
     @Override
     public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player) {
         var arenaWorld = withArenaWorld(hubWorld, sessionId).orElse(null);
         if (arenaWorld == null)
-            throw new IllegalStateException("Arena world does not exist!");
+            return CompletableFuture.completedFuture(null);
 
         return GauntletUtils.runAsync(arenaWorld, () -> {
             getLobbyManager().onLeave(arenaWorld, sessionId, player);

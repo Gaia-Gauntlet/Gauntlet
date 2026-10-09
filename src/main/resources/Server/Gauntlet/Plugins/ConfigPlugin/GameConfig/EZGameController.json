@@ -477,5 +477,7 @@
   "StartBufferSeconds": 20,
   "TeleportWaveSize": 5,
   "TeleportWaveIntervalSeconds": 1,
-  "CornucopiaDurationSeconds": 27
+  "CornucopiaDurationSeconds": 27,
+  "MinPlayers": 1,
+  "TeamsPreset": "EZDefault"
 }

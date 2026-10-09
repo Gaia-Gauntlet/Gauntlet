@@ -50,8 +50,8 @@ public class GameStorePlugin implements SimpleGamePlugin {
 
     @Override
     public void setup(ComponentAccessor<EntityStore> accessor, String sessionId, String gameId) {
-        var store = GameStore.ensureStore(accessor, gameId);
+        var store = GameStore.ensureStore(accessor, sessionId);
         var world = accessor.getExternalData().getWorld();
-        store.ensure(ContextComponent.getComponentType(), () -> new ContextComponent(world, sessionId, gameId));
+        store.ensure(ContextComponent.getComponentType(), () -> new ContextComponent(world, gameId, sessionId));
     }
 }
