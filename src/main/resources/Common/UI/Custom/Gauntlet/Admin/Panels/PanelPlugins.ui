@@ -15,7 +15,7 @@ Group {
         $G.@Card {
             $G.@Header { @Text = "Problems"; }
             $G.@ListPanel #PluginProblems {}
-            $G.@Note { @Text = "Games and plugins are registered when the server starts and cannot be switched on or off while it runs."; }
+            $G.@Note { @Text = "Games and plugins are registered when the server starts. Each session installs the plugins it runs."; }
         }
     }
 

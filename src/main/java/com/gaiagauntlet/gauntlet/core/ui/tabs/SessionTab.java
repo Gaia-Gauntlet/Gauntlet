@@ -4,9 +4,12 @@ import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent.SessionPluginOp;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -28,6 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
@@ -57,6 +61,9 @@ public final class SessionTab implements AdminTab {
         Widgets.bindValues(evt, "#AddGame", "session.queue.add", "", Map.of("@Pick", "#GamePicker.Value"));
         Widgets.bindValues(evt, "#PlayNext", "session.queue.next", "", Map.of("@Pick", "#GamePicker.Value"));
         Widgets.bindValues(evt, "#RemoveGame", "session.queue.remove", "", Map.of("@Pick", "#GamePicker.Value"));
+
+        Widgets.bindValues(evt, "#AddPlugin", "session.plugin.install", "", Map.of("@Pick", "#PluginPicker.Value"));
+        Widgets.bindValues(evt, "#RemovePlugin", "session.plugin.uninstall", "", Map.of("@Pick", "#PluginPicker.Value"));
     }
 
     @Override
@@ -65,6 +72,11 @@ public final class SessionTab implements AdminTab {
         games.sort(Comparator.comparing(SessionText::game, String.CASE_INSENSITIVE_ORDER));
         Widgets.fillPicker(cmd, "#GamePicker",
                 games.stream().map(id -> new Widgets.Option(SessionText.game(id), id)).toList());
+
+        var plugins = new ArrayList<>(GameRegistry.getPlugins(GamePlugin.class));
+        plugins.sort(Comparator.comparing(GamePlugin::getDisplayName, String.CASE_INSENSITIVE_ORDER));
+        Widgets.fillPicker(cmd, "#PluginPicker",
+                plugins.stream().map(plugin -> new Widgets.Option(plugin.getDisplayName(), plugin.getId())).toList());
     }
 
     @Override
@@ -78,6 +90,9 @@ public final class SessionTab implements AdminTab {
         Widgets.fillList(cmd, "GameList",
                 Objects.isNull(session) ? List.of() : queue(session),
                 "No games added yet...");
+        Widgets.fillList(cmd, "PluginList",
+                Objects.isNull(session) ? List.of() : plugins(session),
+                "No plugins installed");
         Widgets.fillList(cmd, "PartyList",
                 Objects.isNull(session) ? List.of() : parties(session),
                 "No parties in this session");
@@ -98,6 +113,8 @@ public final class SessionTab implements AdminTab {
             case "session.game.stop" -> gameStop(session, page);
             case "session.queue.add" -> queue(session, SessionQueueOp.APPEND, List.of(event.pick()), page);
             case "session.queue.remove" -> queue(session, SessionQueueOp.REMOVE, List.of(event.pick()), page);
+            case "session.plugin.install" -> plugin(session, SessionPluginOp.INSTALL, event.pick(), page);
+            case "session.plugin.uninstall" -> plugin(session, SessionPluginOp.UNINSTALL, event.pick(), page);
             case "session.queue.next" -> {
                 var sequence = new ArrayList<>(session.getGameSequence());
                 sequence.remove(event.pick());
@@ -171,12 +188,38 @@ public final class SessionTab implements AdminTab {
         return Widgets.ok("Updating the queue...");
     }
 
+    /** Installs or uninstalls a plugin in the session through the orchestrator. */
+    public static Message plugin(@NonNull GameSession session, SessionPluginOp op, String pluginId, AdminPage page) {
+        if (pluginId.isEmpty()) {
+            return error("Pick a plugin first!");
+        }
+        GauntletEventRegistry.dispatch(
+                new SessionPluginEvent(op, session.getId(), pluginId)
+                        .onMessage(msg -> page.pushStatus(msg.toMessage()))
+                        .onComplete(message -> page.pushStatus(message.toMessage())));
+        return Widgets.ok("Updating the plugins...");
+    }
+
     /** The queued games in order, numbered. */
     private static List<String> queue(@NonNull GameSession session) {
         var rows = new ArrayList<String>();
         for (var game : session.getGameSequence()) {
             rows.add((rows.size() + 1) + ". " + SessionText.game(game));
         }
+        return rows;
+    }
+
+    /** The installed plugins by name, marking the ones the session's game needs. */
+    private static List<String> plugins(@NonNull GameSession session) {
+        var game = session.getCurrentGame() != null ? session.getCurrentGame() : session.getNext();
+        var required = GameRegistry.getGame(game)
+                .map(controller -> GameRegistry.withDependencies(controller.getRequiredPlugins()))
+                .orElse(Set.of());
+        var rows = new ArrayList<String>();
+        for (var pluginId : session.getPlugins()) {
+            rows.add(SessionText.plugin(pluginId) + (required.contains(pluginId) ? " (needed by " + SessionText.game(game) + ")" : ""));
+        }
+        rows.sort(String.CASE_INSENSITIVE_ORDER);
         return rows;
     }
 

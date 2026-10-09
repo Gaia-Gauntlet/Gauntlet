@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
@@ -49,9 +48,6 @@ public final class TeamsHud implements HudElement {
 
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        if (MatchUtils.get(session) != null && MatchUtils.inLobby(session)) {
-            return false;
-        }
         return !otherTeams(player, session).isEmpty();
     }
 

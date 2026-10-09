@@ -73,7 +73,7 @@ public class PlayerSystems {
                 if (!ref.isValid())
                     return; // ref became invalid during setup
                 try {
-                    lobbyController.getLobbyManager().onJoin(ref, store, session.getId());
+                    lobbyController.getLobbyManager().onJoin(ref, player, store, session.getId());
                 } catch (Exception error) {
                     GaiaLog.atError(error).withSession(session)
                             .log("Failed to dispatch controller connection logic!");

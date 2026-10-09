@@ -1,16 +1,12 @@
 package com.gaiagauntlet.gauntlet.core.session.components;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
@@ -18,8 +14,6 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
-import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
@@ -28,13 +22,10 @@ import com.gaiagauntlet.gauntlet.utils.codec.StringRegistryCodec;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
-import com.hypixel.hytale.codec.codecs.EnumCodec;
-import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.codecs.set.SetCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Holds the relevant information regarding an active session.
@@ -70,11 +61,20 @@ public class GameSession {
                     },
                     holder -> holder.parties)
             .add()
+            .append(new KeyedCodec<>("Plugins", new SetCodec<>(Codec.STRING, HashSet::new, false)),
+                    (holder, v) -> {
+                        holder.plugins.clear();
+                        holder.plugins.addAll(v);
+                    },
+                    holder -> holder.plugins)
+            .add()
             .build();
 
     @Getter private Map<String, SessionComponent> sessionComponents;
     @Getter private String id;
     @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
+    /** Ids of the plugins installed in this session. Only these are set up for its games */
+    @Getter private Set<String> plugins = ConcurrentHashMap.newKeySet();
 
     private volatile boolean locked = false;
 

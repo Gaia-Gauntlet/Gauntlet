@@ -53,6 +53,21 @@ public class GameRegistry {
             .toList();
     }
 
+    /** The plugins and everything they depend on, directly or not. Unregistered ids are kept so callers can report them */
+    public static Set<String> withDependencies(Collection<String> ids) {
+        var resolved = new LinkedHashSet<String>();
+        var pending = new ArrayDeque<String>(ids);
+        while (!pending.isEmpty()) {
+            var id = pending.poll();
+            if (!resolved.add(id))
+                continue;
+            var plugin = pluginRegistry.get(id);
+            if (plugin != null)
+                pending.addAll(plugin.getDependencies());
+        }
+        return resolved;
+    }
+
     public static List<GamePlugin> getPlugins(List<String> ids) {
         return ids.stream()
                 .map(pluginRegistry::get)

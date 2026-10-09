@@ -15,7 +15,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
@@ -36,6 +36,11 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
     }
 
     @Override
+    public String getDisplayName() {
+        return "Config";
+    }
+
+    @Override
     public void init(JavaPlugin plugin) {
         plugin.getAssetRegistry().register(HytaleAssetStore.builder(GameConfigAsset.class,
                 new IndexedLookupTableAssetMap<>(GameConfigAsset[]::new))
@@ -43,7 +48,7 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
             .setCodec(GameConfigAsset.CODEC)
             .setKeyFunction(GameConfigAsset::getId)
             .setReplaceOnRemove(_ -> new EmptyGameConfigAsset())
-            .loadsAfter(GameplayConfig.class)
+            .loadsAfter(TeamListAsset.class,GameplayConfig.class)
             .build());
 
         SessionGameConfigComponent.setSessionComponentType(SessionRegistry.register(
@@ -69,18 +74,10 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
 
     @Override
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession session, GameEcs gameStore, String gameId) {
-        var sessionGameConfigComponent = session.ensure(
-            SessionGameConfigComponent.getSessionComponentType(),
-            new SessionGameConfigComponent()
-        );
-        var overrideConfig = sessionGameConfigComponent.getConfig(gameId);
-        var config = overrideConfig == null
-            ? getId() // Game ID is the default config ID
-            : overrideConfig;
-        GameStore.ensureStore(arenaAccessor, gameId).put(
-            GameConfigComponent.getComponentType(),
-            new GameConfigComponent(config)
-        );
+        var configId = session.get(SessionGameConfigComponent.getSessionComponentType())
+            .map(configs -> configs.getConfigId(gameId))
+            .orElse(gameId);
+        gameStore.put(GameConfigComponent.getComponentType(), new GameConfigComponent(configId));
     }
 
     @Override

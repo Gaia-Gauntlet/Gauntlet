@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
@@ -28,11 +30,11 @@ public final class EZTitles {
 
     public static void onMatchState(@Nonnull MatchStateEvent event) {
         var session = GauntletUtils.sessionFor(event.getSessionId()).orElse(null);
-        if (!EZUi.isEz(session)) return;
+        if (!EZController.isEz(session)) return;
         switch (event.getTo()) {
-            case PORTAL_OPEN -> show(session, "THE PORTAL IS OPEN", "Get to the portal!", INFO, null);
-            case ACTIVE -> show(session, "MATCH STARTED", "Last team standing wins", SUCCESS, null);
-            case SUDDEN_DEATH -> show(session, "SUDDEN DEATH!", "Zones close twice as fast!", DANGER, SOUND_ALARM);
+            // case PORTAL_OPEN -> show(session, "THE PORTAL IS OPEN", "Get to the portal!", INFO, null);
+            // case ACTIVE -> show(session, "MATCH STARTED", "Last team standing wins", SUCCESS, null);
+            // case SUDDEN_DEATH -> show(session, "SUDDEN DEATH!", "Zones close twice as fast!", DANGER, SOUND_ALARM);
             default -> {
             }
         }

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 
@@ -20,6 +21,12 @@ public final class SessionText {
     public static String game(@Nullable String gameId) {
         if (gameId == null || gameId.isEmpty()) return "Nothing";
         return GameRegistry.getGame(gameId).map(GameController::getDisplayName).orElse(gameId);
+    }
+
+    /** The plugin's display name, or its id when it is not registered. */
+    @Nonnull
+    public static String plugin(@Nonnull String pluginId) {
+        return GameRegistry.getPlugin(pluginId).map(GamePlugin::getDisplayName).orElse(pluginId);
     }
 
     @Nonnull

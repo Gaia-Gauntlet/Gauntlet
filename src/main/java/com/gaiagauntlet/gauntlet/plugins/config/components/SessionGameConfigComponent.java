@@ -14,10 +14,12 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 public class SessionGameConfigComponent implements SessionComponent, GameComponent {
     public static final String ID = "SessionGameConfigComponent";
 
-    public static BuilderCodec<SessionGameConfigComponent> CODEC = BuilderCodec
+    public static BuilderCodec<@NotNull SessionGameConfigComponent> CODEC = BuilderCodec
         .builder(SessionGameConfigComponent.class, SessionGameConfigComponent::new)
         .append(new KeyedCodec<>("GameConfig", new MapCodec<>(Codec.STRING, HashMap::new, false)),
             (c, v) -> c.gameToConfigMap = v,
@@ -26,12 +28,12 @@ public class SessionGameConfigComponent implements SessionComponent, GameCompone
         .build();
 
     @Getter @Setter private static SessionComponentType<SessionGameConfigComponent> sessionComponentType;
-    @Getter @Setter private static GameComponentType<SessionGameConfigComponent> gameComponentType;
+    @Getter @Setter private static GameComponentType<@NotNull SessionGameConfigComponent> gameComponentType;
 
     /** Map from gameId to gameConfig */
     @Getter private Map<String, String> gameToConfigMap = new HashMap<>();
 
-    public String getConfig(String game) {
+    public String getConfigId(String game) {
         return gameToConfigMap.get(game);
     }
 }

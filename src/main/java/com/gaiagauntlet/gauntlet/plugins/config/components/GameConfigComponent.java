@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.config.components;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
@@ -13,10 +15,10 @@ import lombok.Setter;
 public class GameConfigComponent implements GameComponent {
     public static final String ID = "GameConfigComponent";
 
-    @Getter @Setter private static GameComponentType<GameConfigComponent> componentType;
+    @Getter @Setter private static GameComponentType<@NotNull GameConfigComponent> componentType;
     @Setter private String gameConfigAsset;
 
-    public static BuilderCodec<GameConfigComponent> CODEC = BuilderCodec
+    public static BuilderCodec<@NotNull GameConfigComponent> CODEC = BuilderCodec
         .builder(GameConfigComponent.class, GameConfigComponent::new)
         .append(new KeyedCodec<>("GameConfig", Codec.STRING),
             GameConfigComponent::setGameConfigAsset,
@@ -26,7 +28,10 @@ public class GameConfigComponent implements GameComponent {
         .build();
 
     private GameConfigComponent() {}
-    public GameConfigComponent(String gameConfigAsset) {}
+
+    public GameConfigComponent(String gameConfigAsset) {
+        this.gameConfigAsset = gameConfigAsset;
+    }
 
     public GameConfigAsset getConfig() {
         return GameConfigAsset.getAssetMap().get(gameConfigAsset);

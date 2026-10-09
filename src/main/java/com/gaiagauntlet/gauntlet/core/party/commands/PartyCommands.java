@@ -3,7 +3,6 @@ package com.gaiagauntlet.gauntlet.core.party.commands;
 import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
 import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;

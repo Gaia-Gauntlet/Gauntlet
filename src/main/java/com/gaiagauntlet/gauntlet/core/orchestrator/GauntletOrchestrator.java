@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -15,7 +14,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
@@ -25,14 +23,15 @@ import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
-import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GameHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.core.ui.AdminSection;
 import com.gaiagauntlet.gauntlet.core.ui.huds.GauntletHud;
 import com.gaiagauntlet.gauntlet.core.ui.huds.SessionHud;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -83,6 +82,8 @@ public class GauntletOrchestrator {
         GauntletEventRegistry.on(EventPriority.LAST, SessionQueueEvent.class,
                 wrap(SessionHandlers::handleSessionQueue));
         GauntletEventRegistry.on(EventPriority.LAST, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
+        GauntletEventRegistry.on(EventPriority.LAST, SessionPluginEvent.class,
+                wrap(SessionHandlers::handleSessionPlugin));
 
         // game event handling
         GauntletEventRegistry.on(EventPriority.LAST, GameEvent.class, wrap(GameHandlers::handleGame));
@@ -108,17 +109,33 @@ public class GauntletOrchestrator {
         };
     }
 
-    /** Collects new admin tabs from the orchestrator, every UI plugin and every game, for one admin page, in tab order */
-    public static List<AdminTab> getAdminTabs() {
-        var tabs = new ArrayList<AdminTab>(List.of(new SessionTab(), new LogTab(), new PluginsTab()));
-        for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
-            tabs.addAll(plugin.getAdminTabs());
-        }
+    /**
+     * Collects new admin sections for one admin page: the orchestrator's session tabs, then each game's
+     * tabs, then the tabs of each UI plugin that has any
+     */
+    public static List<AdminSection> getAdminSections() {
+        var sections = new ArrayList<AdminSection>();
+        sections.add(new AdminSection("Session", null, null,
+                sorted(List.of(new SessionTab(), new LogTab(), new PluginsTab()))));
         for (var gameId : GameRegistry.getGameIds()) {
-            GameRegistry.getGame(gameId).ifPresent(game -> tabs.addAll(game.getAdminTabs()));
+            GameRegistry.getGame(gameId).ifPresent(
+                    game -> sections.add(new AdminSection(game.getDisplayName(), null, gameId, sorted(game.getAdminTabs()))));
         }
-        tabs.sort(Comparator.comparingInt(AdminTab::getOrder).thenComparing(AdminTab::getId));
-        return tabs;
+        var plugins = new ArrayList<>(GameRegistry.getPlugins(UiGamePlugin.class));
+        plugins.sort(Comparator.comparing(UiGamePlugin::getDisplayName, String.CASE_INSENSITIVE_ORDER));
+        for (var plugin : plugins) {
+            var tabs = plugin.getAdminTabs();
+            if (!tabs.isEmpty()) {
+                sections.add(new AdminSection(plugin.getDisplayName(), plugin.getId(), null, sorted(tabs)));
+            }
+        }
+        return sections;
+    }
+
+    private static List<AdminTab> sorted(List<AdminTab> tabs) {
+        var sorted = new ArrayList<>(tabs);
+        sorted.sort(Comparator.comparingInt(AdminTab::getOrder).thenComparing(AdminTab::getId));
+        return sorted;
     }
 
     /** Finds a page by id among the core pages and the pages UI plugins provide */

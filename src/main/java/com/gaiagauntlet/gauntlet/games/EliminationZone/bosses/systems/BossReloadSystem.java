@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.systems;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
@@ -38,7 +38,7 @@ public final class BossReloadSystem extends RefSystem<EntityStore> {
         Collection<GameEcs> games = GameStore.withResource(world).getAll();
         GameEcs game = games.stream().filter((g) -> {
             var gameConfigComponent = g.get(GameConfigComponent.getComponentType()).orElse(null);
-            return (gameConfigComponent != null) && (gameConfigComponent.getConfig() instanceof EZGameConfigAsset);
+            return (gameConfigComponent != null) && (gameConfigComponent.getConfig() instanceof EZGameConfig);
         }).findFirst().orElse(null);
         String gameId = GameStore.withResource(world).getId(game);
 

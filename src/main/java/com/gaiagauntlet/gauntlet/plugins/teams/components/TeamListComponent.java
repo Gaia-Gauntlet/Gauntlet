@@ -26,7 +26,7 @@ import lombok.Setter;
 public final class TeamListComponent implements SessionComponent, GameComponent {
     @Nonnull public static final String ID = "TeamListComponent";
 
-    @Getter @Setter private static GameComponentType<TeamListComponent> gameComponentType;
+    @Getter @Setter private static GameComponentType<@NotNull TeamListComponent> gameComponentType;
     @Getter @Setter private static SessionComponentType<TeamListComponent> sessionComponentType;
 
     public static final BuilderCodec<@NotNull TeamListComponent> CODEC = AssetBuilderCodec

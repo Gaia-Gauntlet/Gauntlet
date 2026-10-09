@@ -1,7 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
@@ -362,8 +361,6 @@ public class PlayerHandlers extends HandlerUtils {
 
         var hubWorld = GauntletUtils.withHubWorld();
         try {
-            // fuck it just send both the player is gone
-            game.playerDisconnect(hubWorld, session, playerRef);
             game.playerLeave(hubWorld, session.getId(), List.of(playerRef));
         } catch (Exception e) {
             GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
