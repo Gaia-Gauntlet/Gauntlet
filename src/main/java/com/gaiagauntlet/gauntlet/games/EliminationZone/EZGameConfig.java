@@ -168,6 +168,11 @@ public class EZGameConfig extends GameConfigAsset {
         .addValidator(Validators.greaterThanOrEqual(0))
         .documentation("How many bosses can be active in the map at any given time.")
         .add()
+        .append(new KeyedCodec<>("MinPlayers", Codec.INTEGER),
+            (p, v) -> p.minPlayers = v,
+            p -> p.minPlayers)
+        .documentation("The minimum number of players required to start the game.")
+        .add()
         .build();
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
@@ -233,6 +238,7 @@ public class EZGameConfig extends GameConfigAsset {
     };
     @Getter private float zoneTickSeconds = 2;
     @Getter private int maxActiveBosses = 3;
+    @Getter private int minPlayers = 2; // TODO: Increase this, just low for testing
 
 
     public static EZGameConfig get(World world, String sessionId) {

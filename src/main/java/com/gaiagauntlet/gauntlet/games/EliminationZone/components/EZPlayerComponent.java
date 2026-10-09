@@ -9,13 +9,9 @@ import lombok.Setter;
 
 /** Logic and holds for the current game */
 public class EZPlayerComponent implements Component<EntityStore> {
-    @Getter
-    @Setter
-    private static ComponentType<EntityStore, EZPlayerComponent> componentType;
-    @Getter
-    private String sessionId;
-    @Getter 
-    private boolean alive = false;
+    @Getter @Setter private static ComponentType<EntityStore, EZPlayerComponent> componentType;
+    @Getter private String sessionId;
+    @Getter private boolean alive = false;
 
     public EZPlayerComponent() {
     }

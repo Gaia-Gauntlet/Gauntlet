@@ -6,7 +6,9 @@ import java.util.concurrent.CompletableFuture;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
@@ -64,8 +66,15 @@ public class EZLobbyManager implements LobbyManager {
         var gameStore = GameStore.withStore(world, sessionId).orElse(null);
         if (gameStore == null) return;
 
+        // Increment participant counter
+        var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
+        gameComp.incrementParticipants();
+
         if (EZState.currentState(gameStore).equals(EZStates.RUNNING)) {
-            // if the game is running
+            if (gameComp.getParticipants() > EZGameConfig.get(world, sessionId).getMinPlayers()) {
+                EZController.get().getArenaManager().start(world, gameStore, sessionId);
+                return;
+            }
         }
 
         var team = TeamUtils.withTeamFor(world, sessionId, player.getUuid());
@@ -84,8 +93,13 @@ public class EZLobbyManager implements LobbyManager {
 
     @Override
     public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> players) {
-        GaiaLog.atError().log("onLeave is not implemented for EZGameController!");
+        // Increment participant counter
+        var gameStore = GameStore.withStore(arenaWorld, session).orElse(null);
+        if (gameStore == null) return CompletableFuture.completedFuture(null);
+        var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
+
         for (var player : players) {
+            gameComp.decrementParticipants();
             var ref = player.getReference();
             if (!ref.isValid()) {
                 GaiaLog.atWarning().withSession(session).log("Player " + player.getUsername() + " has an invalid ref, unable to clean");
