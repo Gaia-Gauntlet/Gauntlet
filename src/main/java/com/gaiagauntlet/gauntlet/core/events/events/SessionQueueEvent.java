@@ -8,12 +8,9 @@ import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQue
 import lombok.Getter;
 
 public class SessionQueueEvent extends GauntletEvent {
-    @Getter
-    private final String sessionId;
-    @Getter
-    private final Collection<String> newQueue;
-    @Getter
-    private final SessionQueueOp op;
+    @Getter private final String sessionId;
+    @Getter private final Collection<String> newQueue;
+    @Getter private final SessionQueueOp op;
 
     public SessionQueueEvent(SessionQueueOp op, String sessionId, Collection<String> games) {
         newQueue = games;

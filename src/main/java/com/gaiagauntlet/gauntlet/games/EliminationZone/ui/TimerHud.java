@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -35,7 +36,7 @@ public final class TimerHud implements HudElement {
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
         var match = MatchUtils.get(session);
-        return EZUi.isEz(session) && match != null && match.hasCountdown() && header(match.getState()) != null;
+        return EZController.isEz(session) && match != null && match.hasCountdown() && header(match.getState()) != null;
     }
 
     @Override
