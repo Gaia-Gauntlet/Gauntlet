@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.events;
 import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 /**
@@ -23,7 +24,7 @@ public class MatchEventsPlugin implements GamePlugin {
 
     @Override
     public void init(JavaPlugin plugin) {
-        
+        MatchEventRegistry.setup(plugin);
     }
 
 }
