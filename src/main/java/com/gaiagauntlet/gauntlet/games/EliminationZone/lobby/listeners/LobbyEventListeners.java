@@ -13,11 +13,13 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
 
+import java.util.Objects;
+
 public final class LobbyEventListeners {
     private LobbyEventListeners() {}
 
     public static void onMatchState(MatchStateEvent event) {
-        if (event.getTo() != EZStates.LOBBY.name() && event.getTo() != EZStates.LOBBY.name()) return;
+        if (!Objects.equals(event.getTo(), EZStates.LOBBY.name())) return;
         var session = GauntletUtils.sessionFor(event.getSessionId()).orElse(null);
         if (session == null) return;
         if (!EZController.isEz(session)) return;
@@ -32,7 +34,7 @@ public final class LobbyEventListeners {
 
         var config = EZGameConfig.get(world, session.getId());
 
-        if (event.getTo() == EZStates.LOBBY.name()) {
+        if (Objects.equals(event.getTo(), EZStates.LOBBY.name())) {
             for (GGPoi arenaTimerPoi : config.getArenaTimerPois()) {
                 TimerDisplay.showBase(world, arenaTimerPoi.getTransform());
             }

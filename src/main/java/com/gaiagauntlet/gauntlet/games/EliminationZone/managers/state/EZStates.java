@@ -7,7 +7,7 @@ public enum EZStates {
     RUNNING(Set.of(LOBBY)),
     ELIMINATION(Set.of(RUNNING)),
     STOPPED(Set.of(RUNNING, ELIMINATION)),
-    ERROR(Set.of(LOBBY, LOBBY, RUNNING, ELIMINATION, STOPPED));
+    ERROR(Set.of(LOBBY, RUNNING, ELIMINATION, STOPPED));
 
     private Set<EZStates> validSources;
 

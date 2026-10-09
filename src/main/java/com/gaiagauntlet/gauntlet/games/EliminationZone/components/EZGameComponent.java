@@ -19,4 +19,11 @@ public class EZGameComponent implements GameComponent {
 
     }
 
+    public void incrementParticipants() {
+        participants++;
+    }
+
+    public void decrementParticipants() {
+        participants--;
+    }
 }
