@@ -4,12 +4,13 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.GameTimerSystem;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.SpawnDamagePreventionSystem;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
-public class EZLobby {
-    private EZLobby() {
+public class EZSpawn {
+    private EZSpawn() {
     }
 
     public static void setup(JavaPlugin plugin) {
@@ -20,5 +21,6 @@ public class EZLobby {
                         RisingBlockComponent::new));
 
         plugin.getEntityStoreRegistry().registerSystem(new GameTimerSystem());
+        plugin.getEntityStoreRegistry().registerSystem(new SpawnDamagePreventionSystem());
     }
 }
