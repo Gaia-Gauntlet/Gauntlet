@@ -87,7 +87,7 @@ public abstract class LobbyController extends GameController {
                 var gameStore = GameStore.ensureStore(world, sessionId);
 
                 // register the plugins that have persistence
-                var persistentPlugins = GameRegistry.getPlugins(List.copyOf(session.getPlugins()), PersistentGamePlugin.class);
+                var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
                 for (var plugin : persistentPlugins) {
                     try {
                         plugin.setup(lobbyStore, session, gameStore, getId());
@@ -97,7 +97,7 @@ public abstract class LobbyController extends GameController {
                     }
                 }
 
-                var simplePlugins = GameRegistry.getPlugins(List.copyOf(session.getPlugins()), SimpleGamePlugin.class);
+                var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
                 for (var plugin : simplePlugins) {
                     try {
                         plugin.setup(lobbyStore, sessionId, getId());
