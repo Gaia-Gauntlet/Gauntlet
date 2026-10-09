@@ -1,6 +1,5 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
-import com.gaiagauntlet.gauntlet.core.admin.AdminLog;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
@@ -9,6 +8,8 @@ import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsse
 import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
+import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
@@ -173,6 +174,12 @@ public class EZGameConfig extends GameConfigAsset {
             p -> p.minPlayers)
         .documentation("The minimum number of players required to start the game.")
         .add()
+        .append(new KeyedCodec<>("TeamsPreset", Codec.STRING),
+            (p, v) -> p.teamsPresetAssetId = v,
+            p -> p.teamsPresetAssetId)
+        .addValidator(new AssetKeyValidator<>(TeamListAsset::getAssetStore))
+        .documentation("The teams to populate for this game, including any preset players.")
+        .add()
         .build();
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
@@ -239,6 +246,7 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private float zoneTickSeconds = 2;
     @Getter private int maxActiveBosses = 3;
     @Getter private int minPlayers = 2; // TODO: Increase this, just low for testing
+    @Getter private String teamsPresetAssetId = "EZDefault";
 
 
     public static EZGameConfig get(World world, String sessionId) {
@@ -266,4 +274,8 @@ public class EZGameConfig extends GameConfigAsset {
     };
 
     public EZGameConfig() {}
+
+    public TeamListAsset getTeamsPreset() {
+        return TeamListAsset.getAssetMap().get(teamsPresetAssetId);
+    }
 }
