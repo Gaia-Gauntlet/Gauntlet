@@ -2,9 +2,6 @@ package com.gaiagauntlet.gauntlet.plugins.auto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -14,14 +11,10 @@ import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.MatchTab;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.VoteHud;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.VotePage;
-import com.gaiagauntlet.gauntlet.plugins.auto.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.hypixel.hytale.component.ComponentAccessor;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 

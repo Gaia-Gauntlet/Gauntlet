@@ -19,10 +19,9 @@ import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
 import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
-import com.gaiagauntlet.gauntlet.plugins.auto.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
@@ -74,18 +73,21 @@ public final class MatchTab implements AdminTab {
 
     @Override
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nullable GameSession session) {
+        /*
         Widgets.field(cmd, "MatchGameField", Objects.isNull(session) ? "N/A" : session.getCurrentGame());
         Widgets.field(cmd, "MatchStateField", Objects.isNull(session) ? "N/A"
-                : MatchUtils.phase(session).name() + " (session " + session.getSessionState().name() + ")");
+        : MatchUtils.phase(session).name() + " (session " + session.getSessionState().name() + ")");
         Widgets.field(cmd, "TimerField", timer(MatchUtils.get(session)));
         Widgets.field(cmd, "AliveField", alive(session));
         Widgets.fillList(cmd, "PreflightList", preflight(session), "Nothing to check");
         Widgets.field(cmd, "VoteField", vote(session));
+        */
     }
 
     @Nullable
     @Override
     public Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nullable GameSession session, @Nonnull AdminPage page) {
+    /**
         if (session == null) {
             return Widgets.fail("Pick a session first");
         }
@@ -156,23 +158,31 @@ public final class MatchTab implements AdminTab {
             }
             default -> null;
         };
+        */
+       return null;
     }
 
     @Nonnull
     private static String vote(@Nullable GameSession session) {
+        /*
         var vote = VoteUtils.get(session);
         if (vote == null) return "none yet";
         if (vote.isClosed()) {
             return vote.getWinner() == null ? "closed with no votes" : "won by " + SessionText.game(vote.getWinner());
         }
         return vote.totalVotes() + " votes, " + MatchUtils.clock(vote.remainingSeconds()) + " left";
+        */
+       return null;
     }
 
     @Nonnull
     private static String timer(@Nullable MatchComponent match) {
+        /*
         if (match == null || !match.hasCountdown()) return "none";
         var clock = MatchUtils.clock(match.remainingSeconds());
         return match.isPaused() ? clock + " (paused)" : clock;
+        */
+       return null;
     }
 
     @Nonnull

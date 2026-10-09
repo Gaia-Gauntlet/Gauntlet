@@ -11,7 +11,7 @@ import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.pages.GauntletPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
-import com.gaiagauntlet.gauntlet.plugins.auto.GameStatePlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.hypixel.hytale.server.core.Message;
@@ -25,8 +25,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  */
 public final class VotePage extends GauntletPage {
 
-    private static final String PAGE = "Gauntlet/Plugins/" + GameStatePlugin.ID + "/VotePage.ui";
-    private static final String OPTION = "Gauntlet/Plugins/" + GameStatePlugin.ID + "/VoteOption.ui";
+    private static final String PAGE = "Gauntlet/Plugins/" + AutoPlugin.ID + "/VotePage.ui";
+    private static final String OPTION = "Gauntlet/Plugins/" + AutoPlugin.ID + "/VoteOption.ui";
 
     @Nullable private final GameSession opened;
 
@@ -59,7 +59,7 @@ public final class VotePage extends GauntletPage {
             cmd.set("#TimerText.Visible", !closed);
             cmd.set("#TimerClock.Visible", !closed);
             if (!closed) {
-                cmd.set("#TimerClock.Seconds", vote.remainingSeconds(System.currentTimeMillis()));
+                cmd.set("#TimerClock.Seconds", vote.remainingSeconds());
             }
             cmd.set("#Result.Text", vote == null ? "No vote right now"
                     : !closed ? ""

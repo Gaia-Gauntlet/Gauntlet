@@ -7,8 +7,7 @@ import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
-import com.gaiagauntlet.gauntlet.plugins.auto.GameStatePlugin;
-import com.gaiagauntlet.gauntlet.plugins.auto.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -23,7 +22,7 @@ public final class VoteHud implements HudElement {
     }
 
     @Nonnull @Override public String getMarkup() {
-        return "Gauntlet/Plugins/" + GameStatePlugin.ID + "/VoteHud.ui";
+        return "Gauntlet/Plugins/" + AutoPlugin.ID + "/VoteHud.ui";
     }
 
     @Override public int getOrder() {
@@ -44,7 +43,7 @@ public final class VoteHud implements HudElement {
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
         var vote = VoteUtils.get(session);
         if (vote == null) return;
-        sent.text(cmd, "#VoteTimer", MatchUtils.clock(vote.remainingSeconds(System.currentTimeMillis())));
+        // sent.text(cmd, "#VoteTimer", MatchUtils.clock(vote.remainingSeconds(System.currentTimeMillis())));
 
         var tally = vote.tally();
         String leading = null;
