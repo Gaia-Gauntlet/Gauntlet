@@ -11,7 +11,6 @@ import com.gaiagauntlet.gauntlet.core.party.commands.RejoinCommand;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
 import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;

@@ -177,7 +177,7 @@ public class EZGameConfig extends GameConfigAsset {
         .append(new KeyedCodec<>("TeamsPreset", Codec.STRING),
             (p, v) -> p.teamsPresetAssetId = v,
             p -> p.teamsPresetAssetId)
-        .addValidator(new AssetKeyValidator<>(TeamListAsset::getAssetStore))
+        .addValidatorLate(() -> new AssetKeyValidator<>(TeamListAsset::getAssetStore).late())
         .documentation("The teams to populate for this game, including any preset players.")
         .add()
         .build();
