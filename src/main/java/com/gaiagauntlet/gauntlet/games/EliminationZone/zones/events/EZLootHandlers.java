@@ -11,8 +11,7 @@ public final class EZLootHandlers {
     private EZLootHandlers() {
     }
 
-    public static void register() {
-        // TODO: Trigger loot fountain randomisation on arena loaded.
+    public static void setup() {
         MatchEventRegistry.register(ArenaLoadedEvent.class, EZController.ID,
                 e -> LootFountains.randomize(e.getWorld(), e.getSessionId()));
     }

@@ -1,12 +1,12 @@
 package com.gaiagauntlet.gauntlet.plugins.teams;
 
-import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
@@ -20,11 +20,11 @@ import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsTab;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.asseteditor.AssetEditorPlugin;
 import com.hypixel.hytale.builtin.asseteditor.event.AssetEditorActivateButtonEvent;
 import com.hypixel.hytale.component.ComponentAccessor;
-import com.hypixel.hytale.event.EventRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -85,6 +85,10 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     @Override
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
         // sets up the game with the team stuff
+        var teamList = new TeamListComponent();
+        gameStore.put(TeamListComponent.getGameComponentType(), teamList);
+        TeamUtils.initialiseTeams(teamList, EZGameConfig.get(gameStore).getTeamsPreset());
+        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), teamList);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class EZGamePlugin extends JavaPlugin {
         EZZones.setup(this);
         EZLobby.setup(this);
         EZUi.setup();
-        EZLootHandlers.register();
+        EZLootHandlers.setup();
     }
 
     private void registerComponents() {
