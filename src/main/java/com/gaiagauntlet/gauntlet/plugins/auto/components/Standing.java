@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.components;
+package com.gaiagauntlet.gauntlet.plugins.auto.components;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.utils;
+package com.gaiagauntlet.gauntlet.plugins.auto.utils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,7 +16,7 @@ import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.SessionText;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.components.VoteComponent;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -72,19 +72,12 @@ public final class VoteUtils {
         onHub(() -> close(session));
     }
 
-    /** Closes every open vote whose time is up. Runs on the hub thread. */
-    public static void tick() {
-        var now = System.currentTimeMillis();
-        for (var session : GauntletUtils.withResource().getSessions().values()) {
-            var vote = get(session);
-            if (vote != null && !vote.isClosed() && now >= vote.getEndsAt()) {
-                close(session);
-            }
+    public static void close(GameSession sessionId) {} // TODO: Fix - though all of this may have to go. I'm just making it compile again
+    public static void close(VoteComponent vote, String sessionId) {
+        var session = GauntletUtils.sessionFor(sessionId).orElse(null);
+        if (session == null) {
+            return;
         }
-    }
-
-    private static void close(@Nonnull GameSession session) {
-        var vote = get(session);
         if (vote == null || vote.isClosed()) return;
         var winner = vote.leader(RANDOM);
         vote.close(winner);

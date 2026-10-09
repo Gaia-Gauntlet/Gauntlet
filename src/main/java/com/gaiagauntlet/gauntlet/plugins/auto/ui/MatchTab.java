@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
+package com.gaiagauntlet.gauntlet.plugins.auto.ui;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,12 +17,12 @@ import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.components.Standing;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
@@ -40,7 +40,7 @@ public final class MatchTab implements AdminTab {
     }
 
     @Nonnull @Override public String getPanel() {
-        return "Gauntlet/Plugins/" + GameStatePlugin.ID + "/MatchPanel.ui";
+        return "Gauntlet/Plugins/" + AutoPlugin.ID + "/MatchPanel.ui";
     }
 
     @Override public int getOrder() {
@@ -165,13 +165,13 @@ public final class MatchTab implements AdminTab {
         if (vote.isClosed()) {
             return vote.getWinner() == null ? "closed with no votes" : "won by " + SessionText.game(vote.getWinner());
         }
-        return vote.totalVotes() + " votes, " + MatchUtils.clock(vote.remainingSeconds(System.currentTimeMillis())) + " left";
+        return vote.totalVotes() + " votes, " + MatchUtils.clock(vote.remainingSeconds()) + " left";
     }
 
     @Nonnull
     private static String timer(@Nullable MatchComponent match) {
         if (match == null || !match.hasCountdown()) return "none";
-        var clock = MatchUtils.clock(match.remainingSeconds(System.currentTimeMillis()));
+        var clock = MatchUtils.clock(match.remainingSeconds());
         return match.isPaused() ? clock + " (paused)" : clock;
     }
 

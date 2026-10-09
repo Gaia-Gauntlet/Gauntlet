@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
+import com.gaiagauntlet.gauntlet.plugins.auto.events.MatchStateEvent;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;

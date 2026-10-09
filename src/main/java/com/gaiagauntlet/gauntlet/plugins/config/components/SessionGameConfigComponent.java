@@ -28,7 +28,7 @@ public class SessionGameConfigComponent implements SessionComponent, GameCompone
         .build();
 
     @Getter @Setter private static SessionComponentType<SessionGameConfigComponent> sessionComponentType;
-    @Getter @Setter private static GameComponentType<SessionGameConfigComponent> gameComponentType;
+    @Getter @Setter private static GameComponentType<@NotNull SessionGameConfigComponent> gameComponentType;
 
     /** Map from gameId to gameConfig */
     @Getter private Map<String, String> gameToConfigMap = new HashMap<>();

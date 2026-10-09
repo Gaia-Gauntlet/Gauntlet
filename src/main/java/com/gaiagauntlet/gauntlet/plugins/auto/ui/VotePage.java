@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.ui;
+package com.gaiagauntlet.gauntlet.plugins.auto.ui;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.pages.GauntletPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.components.VoteComponent;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.VoteUtils;
+import com.gaiagauntlet.gauntlet.plugins.auto.GameStatePlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;

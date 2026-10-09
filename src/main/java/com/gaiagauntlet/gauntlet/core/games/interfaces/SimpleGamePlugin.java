@@ -11,5 +11,5 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 public interface SimpleGamePlugin extends GamePlugin {
 
     /** Sets up the game after the world is created */
-    public void setup(ComponentAccessor<EntityStore> accessor, String gameId);
+    public void setup(ComponentAccessor<EntityStore> accessor, String sessionId, String gameId);
 }

@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
@@ -25,7 +26,7 @@ public class EZSpawnComponent implements GameComponent {
     public static final String PARTICIPANT_TAG = "gg.spawn";
     @Getter
     @Setter
-    private static GameComponentType<EZSpawnComponent> componentType;
+    private static GameComponentType<@NotNull EZSpawnComponent> componentType;
 
     private World world;
 

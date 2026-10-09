@@ -5,9 +5,15 @@ import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -51,20 +57,52 @@ public class EZLobbyManager implements LobbyManager {
     };
 
     @Override
-    public void onJoin(Ref<EntityStore> ref, ComponentAccessor<EntityStore> accessor, String sessionId) {
-        // stuffs
-        GaiaLog.atError().log("onJoin is not implemented for EZGameController!");
+    public void onJoin(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor, String sessionId) {
+        // add components
+        accessor.putComponent(ref, EZPlayerComponent.getComponentType(), new EZPlayerComponent(sessionId));
+        var world = accessor.getExternalData().getWorld();
+        var gameStore = GameStore.withStore(world, sessionId).orElse(null);
+        if (gameStore == null) return;
+
+        if (EZState.currentState(gameStore).equals(EZStates.RUNNING)) {
+            // if the game is running
+        }
+
+        var team = TeamUtils.withTeamFor(world, sessionId, player.getUuid());
+        var onlinePlayers = TeamUtils.getOnlinePlayers(team);
+        for (var teamPlayer : onlinePlayers) {
+            var comp = teamPlayer.getComponentConcurrent(EZPlayerComponent.getComponentType());
+            if (comp != null && comp.isAlive()) {
+                // warp to player
+                
+            }
+        }
+        // if party is alive
     }
 
-    @Override
-    public CompletableFuture<Void> onDisconnect(World arenaWorld, String session, PlayerRef player) {
-        GaiaLog.atError().log("onDisconnect is not implemented for EZGameController!");
-        return CompletableFuture.completedFuture(null);
-    }
+
 
     @Override
-    public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> player) {
+    public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> players) {
         GaiaLog.atError().log("onLeave is not implemented for EZGameController!");
+        for (var player : players) {
+            var ref = player.getReference();
+            if (!ref.isValid()) {
+                GaiaLog.atWarning().withSession(session).log("Player " + player.getUsername() + " has an invalid ref, unable to clean");
+                continue;
+            }
+            var store = ref.getStore();
+            var playerWorld = store.getExternalData().getWorld();
+            GauntletUtils.run(playerWorld, () -> {
+                // remove the component off the player
+                try {
+                    store.tryRemoveComponent(ref, EZPlayerComponent.getComponentType());
+                } catch (Exception e) {
+                    GaiaLog.atError(e).withSession(session).log("Failed to clean " + player.getUsername() + " from EZGame with cause " + e.getLocalizedMessage());
+                }
+            });
+        }
+
         return CompletableFuture.completedFuture(null);
     }
 

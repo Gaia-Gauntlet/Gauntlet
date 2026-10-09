@@ -11,10 +11,12 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.TimerHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
+import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -48,13 +50,14 @@ public class EZController extends LobbyController {
 
     private static final List<String> requiredPlugins = List.of(
         AnnouncerPlugin.ID,
+        ConfigPlugin.ID,
+        MatchEventsPlugin.ID,
         GameStatePlugin.ID,
         GameStorePlugin.ID,
         LobbyControllerPlugin.ID,
         ProxyChatPlugin.ID,
-        TeamsPlugin.ID,
-        ConfigPlugin.ID,
-        SpectatorPlugin.ID
+        SpectatorPlugin.ID,
+        TeamsPlugin.ID
     );
 
     private final EZArenaManager arena = new EZArenaManager();
@@ -97,7 +100,10 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public void setupGame(World world, GameEcs gameStore, String sessionId) {}
+    public void setupGame(World world, GameEcs gameStore, String sessionId) {
+        // ensures it is present
+        gameStore.put(ZoneComponent.TYPE, new ZoneComponent(sessionId));
+    }
 
     public static boolean isEz(@Nullable GameSession session) {
         return session != null && EZController.ID.equals(session.getCurrentGame());

@@ -361,8 +361,6 @@ public class PlayerHandlers extends HandlerUtils {
 
         var hubWorld = GauntletUtils.withHubWorld();
         try {
-            // fuck it just send both the player is gone
-            game.playerDisconnect(hubWorld, session, playerRef);
             game.playerLeave(hubWorld, session.getId(), List.of(playerRef));
         } catch (Exception e) {
             GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")

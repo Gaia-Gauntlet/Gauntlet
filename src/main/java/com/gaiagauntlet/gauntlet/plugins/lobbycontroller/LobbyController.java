@@ -12,16 +12,17 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.events.ArenaLoadedEvent;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.transfer.TransferUtils;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -82,7 +83,7 @@ public abstract class LobbyController extends GameController {
             // world thread
             return GauntletUtils.runAsync(world, () -> {
                 var lobbyStore = world.getEntityStore().getStore();
-                var gameStore = GameStore.withResource(world).create(sessionId);
+                var gameStore = GameStore.ensureStore(world, sessionId);
 
                 // register the plugins that have persistence
                 var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
@@ -98,13 +99,16 @@ public abstract class LobbyController extends GameController {
                 var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
                 for (var plugin : simplePlugins) {
                     try {
-                        plugin.setup(lobbyStore, getId());
+                        plugin.setup(lobbyStore, sessionId, getId());
                     } catch (Exception e) {
                         GaiaLog.atWarning().withCause(e).withSession(session)
                                 .log("Simple Plugin " + plugin.getId() + " failed while loading for " + getId());
 
                     }
                 }
+
+                // dispatch event
+                MatchEventRegistry.dispatch(new ArenaLoadedEvent(sessionId, world), getId());
 
                 setupGame(world, gameStore, sessionId);
             });
@@ -121,7 +125,8 @@ public abstract class LobbyController extends GameController {
         if (arena == null)
             return CompletableFuture.failedFuture(new IllegalStateException("No live arena for session " + sessionId));
 
-        var playerSets = players.stream().map(player -> Pair.of(player, getLobbyManager().locationFor(player, arena, sessionId))).toList();
+        var playerSets = players.stream()
+                .map(player -> Pair.of(player, getLobbyManager().locationFor(player, arena, sessionId))).toList();
 
         TransferUtils.queue(store, arena, sessionId, playerSets);
         return CompletableFuture.completedFuture(null);
@@ -134,18 +139,6 @@ public abstract class LobbyController extends GameController {
             return CompletableFuture.completedFuture(null);
         return getLobbyManager().cleanWorld(arenaWorld);
     };
-
-    @Override
-    public CompletableFuture<Void> playerDisconnect(World hubWorld, GameSession session, PlayerRef player) {
-        var arenaWorld = withArenaWorld(hubWorld, session.getId()).orElse(null);
-        if (arenaWorld == null)
-            throw new IllegalStateException("Arena world does not exist!");
-
-        return GauntletUtils.runAsync(arenaWorld, () -> {
-            getLobbyManager().onDisconnect(arenaWorld, session.getId(), player);
-            return null;
-        });
-    }
 
     @Override
     public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player) {

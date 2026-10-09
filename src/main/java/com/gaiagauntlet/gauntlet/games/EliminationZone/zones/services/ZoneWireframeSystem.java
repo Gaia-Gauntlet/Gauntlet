@@ -1,7 +1,11 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneVisualisationComponent;
@@ -46,23 +50,22 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
     @Override
     public void tick(float dt, int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store,
             @Nonnull CommandBuffer<EntityStore> commandBuffer) {
-        var playerComp = chunk.getComponent(index, PlayerComponent.getComponentType());
         var playerRef = chunk.getComponent(index, PlayerRef.getComponentType());
-        assert playerComp != null;
-        assert playerRef != null;
+        var ezPlayer = chunk.getComponent(index, EZPlayerComponent.getComponentType());
         var world = store.getExternalData().getWorld();
-        String game = playerComp.getCurrentGame();
-        var gameEcs = GameStore.withStore(world, game).orElse(null);
-        if (gameEcs == null) return;
-        var configComp = gameEcs.get(GameConfigComponent.getComponentType()).orElse(null);
-        if (configComp == null) return;
-        var config = configComp.getConfig();
-        if (!(config instanceof EZGameConfig gameConfig)) return;
-        List<ZoneDefinition> zones = Arrays.asList(gameConfig.getZones());
+        var sessionId = ezPlayer.getSessionId();
+        if (sessionId == null) return;
+        var gameStore = GameStore.ensureStore(world, sessionId);
+
+        if (gameStore == null) return;
+
+        var config = EZGameConfig.get(gameStore);
+        if (config == null) return;
+        List<ZoneDefinition> zones = Arrays.asList(config.getZones());
 
         if (zones.isEmpty()) {return;}
 
-        var component = GameStore.ensureStore(world, game).ensure(ZoneComponent.TYPE, ZoneComponent::new);
+        var component = gameStore.ensure(ZoneComponent.TYPE, () -> new ZoneComponent(sessionId));
         for (var zone : zones) {
             var sealed = component != null && component.closedZones().stream().anyMatch(z -> z.id().equals(zone.id()));
             for (var segment : segments(zone)) {
@@ -78,7 +81,8 @@ public final class ZoneWireframeSystem extends DelayedEntitySystem<EntityStore> 
     public Query<EntityStore> getQuery() {
         return Query.and(
             ZoneVisualisationComponent.getComponentType(),
-            PlayerComponent.getComponentType()
+            PlayerComponent.getComponentType(),
+            EZPlayerComponent.getComponentType()
         );
     }
 

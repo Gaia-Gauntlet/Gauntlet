@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.gamestate.components;
+package com.gaiagauntlet.gauntlet.plugins.auto.components;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
@@ -25,23 +27,27 @@ public final class VoteComponent implements GameComponent {
 
     public static final String ID = "VoteComponent";
 
-    @Getter @Setter private static GameComponentType<VoteComponent> componentType;
+    @Getter @Setter private static GameComponentType<@NotNull VoteComponent> componentType;
 
     @Getter private final List<String> options;
     private final Map<UUID, String> votes = new ConcurrentHashMap<>();
-    @Getter private final long endsAt;
+    @Getter private float endsIn;
 
     /** The game that won, or null while the vote is open or when nobody voted. */
     @Getter @Nullable private volatile String winner;
     @Getter private volatile boolean closed;
 
-    public VoteComponent(@Nonnull List<String> options, long endsAt) {
+    public VoteComponent(@Nonnull List<String> options, float duration) {
         this.options = List.copyOf(options);
-        this.endsAt = endsAt;
+        this.endsIn = duration;
     }
 
-    public int remainingSeconds(long now) {
-        return closed ? 0 : (int) Math.max(0, (endsAt - now + 999) / 1000);
+    public int remainingSeconds() {
+        return Math.round(endsIn);
+    }
+
+    public float decrementTimer(float dt) {
+        return endsIn -= dt;
     }
 
     /** Records or changes a player's vote. Returns false when the vote is closed or the game is not on offer. */

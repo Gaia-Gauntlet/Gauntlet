@@ -10,7 +10,7 @@ import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;

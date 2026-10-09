@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.MatchUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 

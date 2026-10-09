@@ -7,6 +7,8 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFoun
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
@@ -234,15 +236,18 @@ public class EZGameConfig extends GameConfigAsset {
 
 
     public static EZGameConfig get(World world, String sessionId) {
-        var conf = ConfigUtils.getGameConfig(world, sessionId);
+        return get(GameStore.ensureStore(world, sessionId));
+    }
+    public static EZGameConfig get(GameEcs game) {
+        var conf = ConfigUtils.getGameConfig(game);
         if (conf == null) {
             // never configured
-            GaiaLog.atWarning().withSession(sessionId).withGameId(EZController.ID).log("Config component has a null config object!");
+            GaiaLog.atWarning().withSession(game.getSessionId()).withGameId(EZController.ID).log("Config component has a null config object!");
             return new EZGameConfig();
         }
         if (conf instanceof EZGameConfig ezConf) return ezConf;
         
-        GaiaLog.atWarning().withSession(sessionId).withGameId(EZController.ID).log("Config component has the wrong configuration set!");
+        GaiaLog.atWarning().withSession(game.getSessionId()).withGameId(EZController.ID).log("Config component has the wrong configuration set!");
 
         return new EZGameConfig();
     }

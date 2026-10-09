@@ -1,7 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.events;
 
-import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEvent;
 
 import javax.annotation.Nonnull;
 
@@ -12,13 +12,13 @@ public final class ZoneEvents {
     }
 
     /** A zone started closing: its edge begins sweeping inward. */
-    public static final class ClosingStarted extends GauntletEvent {
+    public static final class ClosingStarted extends MatchEvent {
         private final int step;
         private final ZoneDefinition zone;
         private final double durationSeconds;
 
-        public ClosingStarted(int step, @Nonnull ZoneDefinition zone, double durationSeconds) {
-            super();
+        public ClosingStarted(String sessionId, int step, @Nonnull ZoneDefinition zone, double durationSeconds) {
+            super(sessionId);
             this.step = step;
             this.zone = zone;
             this.durationSeconds = durationSeconds;
@@ -44,12 +44,12 @@ public final class ZoneEvents {
     }
 
     /** The closing zone seals in a few seconds. */
-    public static final class Warning extends GauntletEvent {
+    public static final class Warning extends MatchEvent {
         private final ZoneDefinition zone;
         private final double secondsLeft;
 
-        public Warning(@Nonnull ZoneDefinition zone, double secondsLeft) {
-            super();
+        public Warning(String sessionId, @Nonnull ZoneDefinition zone, double secondsLeft) {
+            super(sessionId);
             this.zone = zone;
             this.secondsLeft = secondsLeft;
         }
@@ -70,13 +70,13 @@ public final class ZoneEvents {
     }
 
     /** A zone sealed: its whole band is void now. */
-    public static final class Closed extends GauntletEvent {
+    public static final class Closed extends MatchEvent {
         private final int step;
         private final ZoneDefinition zone;
         private final boolean last;
 
-        public Closed(int step, @Nonnull ZoneDefinition zone, boolean last) {
-            super();
+        public Closed(String sessionId, int step, @Nonnull ZoneDefinition zone, boolean last) {
+            super(sessionId);
             this.step = step;
             this.zone = zone;
             this.last = last;

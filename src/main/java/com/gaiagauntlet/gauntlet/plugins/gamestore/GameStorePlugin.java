@@ -6,8 +6,12 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.events.GameEventHandler;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.GameTickingSystem;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.resource.WorldGameStore;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -29,7 +33,9 @@ public class GameStorePlugin implements SimpleGamePlugin {
         // intercepts any session plugins and persists their state
         GauntletEventRegistry.on(GameEndEvent.class, GameEventHandler::GameEndHandler);
         var registry = host.getEntityStoreRegistry();
-        WorldGameStore.setResourceType(registry.registerResource(WorldGameStore.class, WorldGameStore.ID, WorldGameStore.CODEC));
+        WorldGameStore.setResourceType(
+                registry.registerResource(WorldGameStore.class, WorldGameStore.ID, WorldGameStore.CODEC));
+        ContextComponent.setComponentType(GameComponentRegistry.register(ContextComponent.ID, ContextComponent.class));
     }
 
     @Override
@@ -43,7 +49,9 @@ public class GameStorePlugin implements SimpleGamePlugin {
     }
 
     @Override
-    public void setup(ComponentAccessor<EntityStore> accessor, String gameId) {
-        // setup the gameStore
+    public void setup(ComponentAccessor<EntityStore> accessor, String sessionId, String gameId) {
+        var store = GameStore.ensureStore(accessor, gameId);
+        var world = accessor.getExternalData().getWorld();
+        store.ensure(ContextComponent.getComponentType(), () -> new ContextComponent(world, sessionId, gameId));
     }
 }
