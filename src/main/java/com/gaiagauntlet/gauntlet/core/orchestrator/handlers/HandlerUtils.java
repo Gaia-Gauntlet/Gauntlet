@@ -53,11 +53,8 @@ public class HandlerUtils {
      * @return
      */
     public static CompletableFuture<Void> joinGame(World hub, GameSession session, Collection<PlayerRef> players) {
-        if (session.getSessionState() != SessionState.RUNNING) {
+        if (players.isEmpty() || session.getSessionState() != SessionState.RUNNING) {
             throw new IllegalArgumentException("Game state is " + session.getSessionState().toString());
-        }
-        if (players.isEmpty()) {
-            return CompletableFuture.completedFuture(null);
         }
 
         var gameId = session.getCurrentGame();

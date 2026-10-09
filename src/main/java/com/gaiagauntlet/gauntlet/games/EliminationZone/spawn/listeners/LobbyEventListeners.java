@@ -2,7 +2,6 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.GameTimerComponent;
@@ -32,16 +31,15 @@ public final class LobbyEventListeners {
 
         var gameEcs = event.getGame();
         var ctx = gameEcs.get(ContextComponent.getComponentType()).orElse(null);
-        if (ctx == null) {
-            EZLog.warn().withSession(session).log("Match started without a game context; skipping lobby start");
-            return;
-        }
+        if (ctx == null) return; // kys now
         var world = ctx.getWorld();
 
+        if (gameEcs == null) return;
         var gameTimerComp = new GameTimerComponent();
         var config = EZGameConfig.get(gameEcs);
         gameTimerComp.startTimer(config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds());
         gameEcs.put(GameTimerComponent.getComponentType(), gameTimerComp);
+        event.getGame().put(GameTimerComponent.getComponentType(), new GameTimerComponent());
 
         MusicUtils.forcePlayMusicToAllPlayers(GAME_MUSIC_CONTAINER, session);
         world.scheduleAfter(

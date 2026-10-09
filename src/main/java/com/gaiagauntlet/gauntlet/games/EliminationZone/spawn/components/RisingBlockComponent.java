@@ -2,6 +2,8 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components;
 
 import javax.annotation.Nonnull;
 
+import org.joml.Vector3d;
+
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -13,24 +15,22 @@ public class RisingBlockComponent implements Component<EntityStore> {
     @Setter
     public static ComponentType<EntityStore, RisingBlockComponent> componentType;
 
-    @Getter
-    private final double speed;
-    @Getter
-    private final double targetY;
+        @Getter
+    private final Vector3d velocity;
 
     public RisingBlockComponent() {
-        this(0, 0);
+        this(new Vector3d());
     }
 
-    public RisingBlockComponent(double speed, double targetY) {
-        this.speed = speed;
-        this.targetY = targetY;
+    public RisingBlockComponent(Vector3d velocity) {
+        this.velocity = velocity;
     }
 
     @Nonnull
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public RisingBlockComponent clone() {
-        return new RisingBlockComponent(speed, targetY);
+        final var risingBlockComponent = new RisingBlockComponent(velocity);
+        return risingBlockComponent;
     }
 }
