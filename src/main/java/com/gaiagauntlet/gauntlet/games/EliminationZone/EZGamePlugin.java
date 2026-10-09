@@ -56,7 +56,7 @@ public class EZGamePlugin extends JavaPlugin {
         // hytale components
         var entityStore = getEntityStoreRegistry();
         EZPlayerComponent.setComponentType(
-            entityStore.registerComponent(EZPlayerComponent.class, EZPlayerComponent::new);
+            entityStore.registerComponent(EZPlayerComponent.class, EZPlayerComponent::new)
         );
         // game components
         EZSpawnComponent.setComponentType(GameComponentRegistry.register(EZSpawnComponent.ID, EZSpawnComponent.class));
