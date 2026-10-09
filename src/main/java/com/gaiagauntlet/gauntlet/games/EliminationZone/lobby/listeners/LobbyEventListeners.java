@@ -8,15 +8,21 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.TimerDisplay;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.lobby.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
+import com.gaiagauntlet.gauntlet.utils.MusicUtils;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public final class LobbyEventListeners {
+
+    public static final String GAME_MUSIC_CONTAINER = "Elimination_Zone_Start";
+    public static final String INTRO_CAMERA_SEQUENCE = "ZoneShowcase";
     private LobbyEventListeners() {}
 
     public static void onMatchState(MatchStateEvent event) {
@@ -40,5 +46,11 @@ public final class LobbyEventListeners {
         var config = EZGameConfig.get(gameEcs);
         gameTimerComp.startTimer(config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds());
         gameEcs.put(GameTimerComponent.getComponentType(), gameTimerComp);
+
+        MusicUtils.forcePlayMusicToAllPlayers(GAME_MUSIC_CONTAINER, session);
+        world.scheduleAfter(
+            () -> Announcer.cinematic(session.getId(), INTRO_CAMERA_SEQUENCE),
+            config.getCornucopiaDurationSeconds(), TimeUnit.SECONDS
+        );
     }
 }

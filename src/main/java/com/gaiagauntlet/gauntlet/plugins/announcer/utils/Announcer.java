@@ -1,6 +1,8 @@
 package com.gaiagauntlet.gauntlet.plugins.announcer.utils;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
@@ -77,6 +79,12 @@ public final class Announcer {
     /** Plays a camera sequence for everyone in the world. */
     public static void cinematic(@Nonnull World world, @Nonnull String sequence) {
         for (var player : new ArrayList<>(world.getPlayerRefs())) {
+            cinematic(player, sequence);
+        }
+    }
+
+    public static void cinematic(@Nonnull String session, @Nonnull String sequence) {
+        for (var player : GauntletUtils.playersFor(session)) {
             cinematic(player, sequence);
         }
     }
