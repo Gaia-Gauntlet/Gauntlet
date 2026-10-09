@@ -70,7 +70,8 @@ public class EZLobbyManager implements LobbyManager {
         var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
         gameComp.incrementParticipants();
 
-        if (gameComp.getParticipants() >= EZGameConfig.get(world, sessionId).getMinPlayers()) {
+        if (EZState.currentState(gameStore) == EZStates.LOBBY
+                && gameComp.getParticipants() >= EZGameConfig.get(gameStore).getMinPlayers()) {
             EZController.get().getArenaManager().start(world, gameStore, sessionId);
             return;
         }

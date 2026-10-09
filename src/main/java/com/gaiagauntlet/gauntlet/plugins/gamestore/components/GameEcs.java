@@ -75,6 +75,10 @@ public class GameEcs {
         return Optional.of(type.getTypeClass().cast(sesComp));
     }
 
+    public <T extends GameComponent> void remove(GameComponentType<T> type) {
+        sessionComponents.remove(type.getIndex());
+    }
+
     public void clear() {
         sessionComponents.clear();
     }

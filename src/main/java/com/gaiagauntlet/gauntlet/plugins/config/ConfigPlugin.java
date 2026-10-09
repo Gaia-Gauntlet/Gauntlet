@@ -15,7 +15,6 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.SessionWriter;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -69,17 +68,11 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
     }
 
     @Override
-    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession session, GameEcs gameStore, String sessionId) {
-        var sessionGameConfigComponent = session.get(SessionGameConfigComponent.getSessionComponentType()).orElse(null);
-        if (sessionGameConfigComponent == null) return;
-        var overrideConfig = sessionGameConfigComponent.getConfigId(session.getCurrentGame());
-        if (overrideConfig != null) {
-            sessionGameConfigComponent.getGameToConfigMap().put(session.getCurrentGame(), overrideConfig);
-        }
-        GameStore.ensureStore(arenaAccessor, sessionId).put(
-            GameConfigComponent.getComponentType(),
-            new GameConfigComponent(overrideConfig)
-        );
+    public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession session, GameEcs gameStore, String gameId) {
+        var configId = session.get(SessionGameConfigComponent.getSessionComponentType())
+            .map(configs -> configs.getConfigId(gameId))
+            .orElse(gameId);
+        gameStore.put(GameConfigComponent.getComponentType(), new GameConfigComponent(configId));
     }
 
     @Override
