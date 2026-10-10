@@ -90,18 +90,6 @@ public class SessionHandlers extends HandlerUtils {
             return;
         }
 
-        var missing = GameRegistry.withDependencies(game.getRequiredPlugins()).stream()
-                .filter(id -> !session.getPlugins().contains(id))
-                .toList();
-        if (!missing.isEmpty()) {
-            sessionEvt.complete(GaiaLog.atError().withSession(session)
-                    .log(MessageUtils.msg("server.gg.events.session.plugin.required")
-                            .param("sessionId", session.getId())
-                            .param("gameId", nextGameId)
-                            .param("plugins", String.join(", ", missing))));
-            return;
-        }
-
         // pass stuff to the game
         // mark the next game as running
         session.startNext();

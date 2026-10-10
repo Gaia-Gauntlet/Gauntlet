@@ -5,7 +5,9 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
@@ -16,8 +18,10 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 /**
- * The viewer's own team: icon, name and team score over a card per member with dead and disconnected
- * overlays. The cards are rebuilt whenever the viewer's team or its members change.
+ * The viewer's own team: icon, name and team score over a card per member with
+ * dead and disconnected
+ * overlays. The cards are rebuilt whenever the viewer's team or its members
+ * change.
  */
 public final class PartyHud implements HudElement {
 
@@ -30,25 +34,41 @@ public final class PartyHud implements HudElement {
 
     private final HudWidgets.Sent sent = new HudWidgets.Sent();
 
-    /** The team and members the cards were built for, or null when they need building. */
-    @Nullable private String builtTeam;
+    /**
+     * The team and members the cards were built for, or null when they need
+     * building.
+     */
+    @Nullable
+    private String builtTeam;
     private List<UUID> builtMembers = List.of();
 
-    @Nonnull @Override public String getId() {
+    @Nonnull
+    @Override
+    public String getId() {
         return "Party";
     }
 
-    @Nonnull @Override public String getMarkup() {
+    @Nonnull
+    @Override
+    public String getMarkup() {
         return "Gauntlet/Plugins/" + TeamsPlugin.ID + "/PartyHud.ui";
     }
 
-    @Override public int getOrder() {
+    @Override
+    public int getOrder() {
         return 30;
     }
 
+    private record PartyDataHud(
+            TeamComponent team) implements HudDataSnapshot {
+    }
+
     @Override
-    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return TeamUtils.teamOf(session, player.getUuid()) != null;
+    public PartyDataHud gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        var team = TeamUtils.teamOf(session, player.getUuid()).orElse(null);
+        if (team == null)
+            return null;
+        return new PartyDataHud(team);
     }
 
     @Override
@@ -57,8 +77,14 @@ public final class PartyHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        var team = TeamUtils.teamOf(session, player.getUuid()).orElse(null);
+    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            HudDataSnapshot data) {
+        if (!(data instanceof PartyDataHud partyHud)) {
+            GaiaLog.atWarning().withSession(session)
+                    .log("Attempted to update the Party Hud with the incorrect snapshot!");
+            return;
+        }
+        var team = partyHud.team;
         if (team == null) {
             return;
         }

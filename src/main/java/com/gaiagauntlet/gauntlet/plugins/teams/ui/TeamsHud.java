@@ -6,7 +6,9 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
@@ -17,9 +19,12 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 /**
- * Every other participating team in the viewer's session, below the party panel: one row per team
- * with its members' portraits and scores. A row hides once nobody on it is online and standing.
- * Games that track their match hand this spot to their lobby scoreboard until the match reaches the arena.
+ * Every other participating team in the viewer's session, below the party
+ * panel: one row per team
+ * with its members' portraits and scores. A row hides once nobody on it is
+ * online and standing.
+ * Games that track their match hand this spot to their lobby scoreboard until
+ * the match reaches the arena.
  */
 public final class TeamsHud implements HudElement {
 
@@ -30,26 +35,41 @@ public final class TeamsHud implements HudElement {
 
     private final HudWidgets.Sent sent = new HudWidgets.Sent();
 
-    /** Each row's team and members as they were built, or null when the rows need building. */
-    @Nullable private List<List<UUID>> builtRows;
+    /**
+     * Each row's team and members as they were built, or null when the rows need
+     * building.
+     */
+    @Nullable
+    private List<List<UUID>> builtRows;
     private List<String> builtTeams = List.of();
     private int builtTop = -1;
 
-    @Nonnull @Override public String getId() {
+    @Nonnull
+    @Override
+    public String getId() {
         return "Teams";
     }
 
-    @Nonnull @Override public String getMarkup() {
+    @Nonnull
+    @Override
+    public String getMarkup() {
         return "Gauntlet/Plugins/" + TeamsPlugin.ID + "/TeamsHud.ui";
     }
 
-    @Override public int getOrder() {
+    @Override
+    public int getOrder() {
         return 40;
     }
 
+    private record TeamsHudSnapshot(
+        List<TeamComponent> otherTeams
+    ) implements HudDataSnapshot {}
+
     @Override
-    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return !otherTeams(player, session).isEmpty();
+    public TeamsHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        var otherTeams = otherTeams(player, session);
+        if (otherTeams.isEmpty()) return null;
+        return new TeamsHudSnapshot(otherTeams);
     }
 
     @Override
@@ -58,8 +78,13 @@ public final class TeamsHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        var teams = otherTeams(player, session);
+    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
+        if (!(data instanceof TeamsHudSnapshot teamData)) {
+            GaiaLog.atWarning().withSession(session)
+                    .log("Attempted to update the Party Hud with the incorrect snapshot!");
+            return;
+        }
+        var teams = teamData.otherTeams;
         var rows = new ArrayList<List<UUID>>();
         for (var team : teams) {
             rows.add(TeamUtils.membersOf(team));
@@ -89,7 +114,8 @@ public final class TeamsHud implements HudElement {
         }
     }
 
-    private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams, @Nonnull List<List<UUID>> rows, int top) {
+    private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams,
+            @Nonnull List<List<UUID>> rows, int top) {
         sent.clear();
         builtRows = List.copyOf(rows);
         builtTeams = teams.stream().map(TeamComponent::getId).toList();
@@ -112,7 +138,9 @@ public final class TeamsHud implements HudElement {
         }
     }
 
-    /** Participating teams other than the viewer's that have members, ordered by id. */
+    /**
+     * Participating teams other than the viewer's that have members, ordered by id.
+     */
     @Nonnull
     private static List<TeamComponent> otherTeams(@Nonnull PlayerRef player, @Nullable GameSession session) {
         var teamList = TeamUtils.teamsOf(session).orElse(null);

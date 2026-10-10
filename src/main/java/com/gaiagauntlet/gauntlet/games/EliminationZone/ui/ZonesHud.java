@@ -3,12 +3,19 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -39,19 +46,40 @@ public final class ZonesHud implements HudElement {
         return 10;
     }
 
-    @Override
-    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        if (session == null || session.available())
-            return false; // not in a game at all
-        var playerComp = player.getComponentConcurrent(PlayerComponent.getComponentType());
-        if (playerComp == null || playerComp.getCurrentGame() != EZController.ID)
-            return false; // not in the ezgame
+    private record ZonesHudSnapshot(
+            GameEcs gameStore,
+            ZoneHudComponent zoneHud) implements HudDataSnapshot {
+    }
 
+    @Override
+    public ZonesHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        if (session == null || session.available())
+            return null; // not in a game at all
+        var playerComp = player.getComponentConcurrent(PlayerComponent.getComponentType());
+        if (!EZController.isEz(session))
+            return null; // session is not in the game
+        if (playerComp == null || playerComp.getCurrentGame() != EZController.ID)
+            return null; // not in the ezgame
+
+        // get the store
+        var store = GameStore.withStore(player, session.getId()).orElse(null);
+
+        if (store == null)
+            return null;
+
+        var zoneHudComp = store.get(ZoneHudComponent.getComponentType());
+
+        if (zoneHudComp.isEmpty())
+            return null;
+
+        var state = EZState.currentState(store);
+        if (!state.equals(EZStates.RUNNING) && !state.equals(EZStates.SUDDEN_DEATH))
+            return null;
         // var phase = MatchUtils.phase(session);
         // return EZController.isEz(session)
         // && (phase == MatchState.ACTIVE || phase == MatchState.SUDDEN_DEATH)
         // && !ZoneHudComponent.of(session).isEmpty();
-        return false;
+        return new ZonesHudSnapshot(store, zoneHudComp.get());
     }
 
     @Override
@@ -62,15 +90,23 @@ public final class ZonesHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
+    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            HudDataSnapshot data) {
+        if (!(data instanceof ZonesHudSnapshot zonesData)) {
+            GaiaLog.atWarning().withSession(session)
+                    .log("Attempted to update the Party Hud with the incorrect snapshot!");
+            return;
+        }
+
         if (session == null)
             return;
-        var store = GameStore.withStore(player, session.getId()).orElse(null);
+        var store = zonesData.gameStore;
         if (store == null)
             return; // no store found - probably not in the game
 
-        var zoneComp = store.get(ZoneHudComponent.getComponentType()).orElse(null);
-        if (zoneComp == null) return;
+        var zoneComp = zonesData.zoneHud;
+        if (zoneComp == null)
+            return;
 
         var filled = new boolean[ZoneHudComponent.SLOTS];
         for (var zone : zoneComp.getZones()) {

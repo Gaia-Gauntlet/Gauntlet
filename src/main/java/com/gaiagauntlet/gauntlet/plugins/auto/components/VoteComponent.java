@@ -12,30 +12,40 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
+import com.gaiagauntlet.gauntlet.core.session.components.SessionComponent;
+import com.gaiagauntlet.gauntlet.core.session.components.SessionComponentType;
+import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
- * A session's vote on its next game: the games on offer, one vote per player, and when it closes.
- * After it closes it keeps the winner so the end screen can show it. Kept in the session's game
- * store on the hub world, and not saved, since a vote only lives for one end screen.
+ * A session's vote on its next game: the games on offer, one vote per player,
+ * and when it closes.
+ * After it closes it keeps the winner so the end screen can show it. Kept in
+ * the session's game
+ * store on the hub world, and not saved, since a vote only lives for one end
+ * screen.
  */
-public final class VoteComponent implements GameComponent {
+public final class VoteComponent implements SessionComponent {
 
     public static final String ID = "VoteComponent";
 
-    @Getter @Setter private static GameComponentType<@NotNull VoteComponent> componentType;
+    @Getter
+    private static SessionComponentType<@NotNull VoteComponent> componentType = SessionRegistry
+            .register(VoteComponent.ID, VoteComponent.class);
 
-    @Getter private final List<String> options;
+    @Getter
+    private final List<String> options;
     private final Map<UUID, String> votes = new ConcurrentHashMap<>();
-    @Getter private float endsIn;
+    @Getter
+    private float endsIn;
 
     /** The game that won, or null while the vote is open or when nobody voted. */
-    @Getter @Nullable private volatile String winner;
-    @Getter private volatile boolean closed;
+    @Getter
+    @Nullable
+    private volatile String winner;
+    @Getter
+    private volatile boolean closed;
 
     public VoteComponent(@Nonnull List<String> options, float duration) {
         this.options = List.copyOf(options);
@@ -50,9 +60,13 @@ public final class VoteComponent implements GameComponent {
         return endsIn -= dt;
     }
 
-    /** Records or changes a player's vote. Returns false when the vote is closed or the game is not on offer. */
+    /**
+     * Records or changes a player's vote. Returns false when the vote is closed or
+     * the game is not on offer.
+     */
     public boolean cast(@Nonnull UUID player, @Nonnull String gameId) {
-        if (closed || !options.contains(gameId)) return false;
+        if (closed || !options.contains(gameId))
+            return false;
         votes.put(player, gameId);
         return true;
     }
@@ -71,12 +85,16 @@ public final class VoteComponent implements GameComponent {
         return tally;
     }
 
-    /** The option with the most votes, a random one of them on a tie, or null when nobody voted. */
+    /**
+     * The option with the most votes, a random one of them on a tie, or null when
+     * nobody voted.
+     */
     @Nullable
     public String leader(@Nonnull Random random) {
         var tally = tally();
         int best = tally.values().stream().mapToInt(Integer::intValue).max().orElse(0);
-        if (best == 0) return null;
+        if (best == 0)
+            return null;
         var tied = options.stream().filter(option -> tally.get(option) == best).toList();
         return tied.get(random.nextInt(tied.size()));
     }

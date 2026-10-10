@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
@@ -206,6 +207,11 @@ public class TeamUtils {
         var teams = teamsOf(session);
         return teams.map(team -> team.get(player));
     }
+    @Nullable
+    public static Optional<TeamComponent> teamOf(@Nullable TeamListComponent teamList, @Nonnull String teamId) {
+        var team = teamList.get(teamId);
+        return Optional.ofNullable(team);
+    }
 
     @Nonnull
     public static List<TeamComponent> sortedTeams(@Nonnull TeamListComponent teamList) {
@@ -266,5 +272,23 @@ public class TeamUtils {
             return PartyHud.TOP;
         }
         return PartyHud.TOP + (own.isParticipant() ? PartyHud.HEIGHT : PartyHud.SPECTATING_HEIGHT) + 10;
+    }
+
+    /**
+     * Participating teams with players, most kills first, each with its kills as
+     * points.
+     */
+    @Nonnull
+    public static List<Standing> standingsByKills(@Nonnull GameSession session) {
+        var teams = teamsOf(session).orElse(null);
+        if (teams == null)
+            return List.of();
+        return teams.getTeams().values().stream()
+                .filter(t -> t.isParticipant() && t.getSize() > 0)
+                .sorted(Comparator.comparingDouble((TeamComponent t) -> TeamUtils.getScore(t)).reversed()
+                        .thenComparing(TeamComponent::getId))
+                .map(t -> new Standing(t.getId(), (int) Math.round(TeamUtils.getScore(t)),
+                        (int) Math.round(t.getScore())))
+                .toList();
     }
 }

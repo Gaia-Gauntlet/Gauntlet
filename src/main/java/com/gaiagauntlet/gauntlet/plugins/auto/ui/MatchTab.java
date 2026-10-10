@@ -141,7 +141,7 @@ public final class MatchTab implements AdminTab {
                 yield Widgets.ok("Match stopped. The game returns everyone to the lobby");
             }
             case "match.resetscores" -> {
-                var teams = teamsOf(session);
+                var teams = TeamUtils.teamsOf(session);
                 if (teams == null) yield Widgets.fail("This session has no teams");
                 teams.getTeams().values().forEach(TeamComponent::clearScore);
                 yield Widgets.ok("Event scores reset");
@@ -187,7 +187,7 @@ public final class MatchTab implements AdminTab {
 
     @Nonnull
     private static String alive(@Nullable GameSession session) {
-        var teams = teamsOf(session);
+        var teams = TeamUtils.teamsOf(session).orElse(null);
         if (teams == null) return "no teams";
         int standing = 0;
         int total = 0;
@@ -209,7 +209,7 @@ public final class MatchTab implements AdminTab {
         if (session == null) return List.of("No session selected");
         if (session.getCurrentGame() == null || session.getCurrentGame().isEmpty()) problems.add("No game is set up, so set one up in the Session tab");
         if (session.getSessionState() != SessionState.RUNNING) problems.add("Session is " + session.getSessionState().name() + ", not RUNNING");
-        var teams = teamsOf(session);
+        var teams = TeamUtils.teamsOf(session).orElse(null);
         if (teams == null) {
             problems.add("No teams in this session");
         } else if (teams.getTeams().values().stream().noneMatch(t -> t.isParticipant() && t.getSize() > 0)) {
@@ -219,21 +219,5 @@ public final class MatchTab implements AdminTab {
         return problems.isEmpty() ? List.of("Ready") : problems;
     }
 
-    /** Participating teams with players, most kills first, each with its kills as points. */
-    @Nonnull
-    private static List<Standing> standingsByKills(@Nonnull GameSession session) {
-        var teams = teamsOf(session);
-        if (teams == null) return List.of();
-        return teams.getTeams().values().stream()
-                .filter(t -> t.isParticipant() && t.getSize() > 0)
-                .sorted(Comparator.comparingDouble((TeamComponent t) -> TeamUtils.getScore(t)).reversed().thenComparing(TeamComponent::getId))
-                .map(t -> new Standing(t.getId(), (int) Math.round(TeamUtils.getScore(t)), (int) Math.round(t.getScore())))
-                .toList();
-    }
 
-    @Nullable
-    private static TeamListComponent teamsOf(@Nullable GameSession session) {
-        var type = TeamListComponent.getSessionComponentType();
-        return session == null || type == null ? null : session.get(type).orElse(null);
-    }
 }
