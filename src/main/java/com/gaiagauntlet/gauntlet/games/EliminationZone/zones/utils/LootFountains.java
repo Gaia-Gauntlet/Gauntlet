@@ -13,12 +13,22 @@ import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Thins the loot fountains the map authored so each fresh arena keeps a random subset per zone and
- * tier, as the zone's rules say. Runs once per arena: the chunks under every zone are loaded first,
+ * Thins the loot fountains the map authored so each fresh arena keeps a random
+ * subset per zone and
+ * tier, as the zone's rules say. Runs once per arena: the chunks under every
+ * zone are loaded first,
  * then the scan and the removals happen on the arena thread.
  */
 public final class LootFountains {
@@ -31,10 +41,14 @@ public final class LootFountains {
     private LootFountains() {
     }
 
-    /** Loads every chunk the zones cover, then thins the fountains once they are all in. */
-    public static void randomize(@Nonnull World arena, String game) {
+    /**
+     * Loads every chunk the zones cover, then thins the fountains once they are all
+     * in.
+     */
+    public static void randomize(@Nonnull World arena, String sessionId) {
         var indexes = new java.util.LinkedHashSet<Long>();
-        for (var zone : GameStore.ensureStore(arena, game).ensure(ZoneComponent.TYPE, ZoneComponent::new).order()) {
+        for (var zone : GameStore.ensureStore(arena, sessionId)
+                .ensure(ZoneComponent.TYPE, () -> new ZoneComponent(sessionId)).order()) {
             if (zone.lootFountains().isEmpty()) {
                 continue;
             }
@@ -48,16 +62,17 @@ public final class LootFountains {
                 }
             }
         }
-        if (indexes.isEmpty()) return;
+        if (indexes.isEmpty())
+            return;
 
-        var loads = new ArrayList<java.util.concurrent.CompletableFuture<?>>();
+        var loads = new ArrayList<CompletableFuture<?>>();
         for (long index : indexes) {
             // TODO: Load chunks
-//            loads.add(arena.getChunkAsync(index).exceptionally(e -> null));
+            // loads.add(arena.getChunkAsync(index).exceptionally(e -> null));
         }
         LOGGER.atInfo().log("Loading %d chunks of %s before thinning loot fountains", loads.size(), arena.getName());
-        java.util.concurrent.CompletableFuture.allOf(loads.toArray(java.util.concurrent.CompletableFuture[]::new))
-                .whenComplete((ignored, error) -> arena.execute(() -> thin(arena, game)));
+        CompletableFuture.allOf(loads.toArray(CompletableFuture[]::new))
+                .whenComplete((ignored, error) -> arena.execute(() -> thin(arena, sessionId)));
     }
 
     private static void thin(@Nonnull World arena, String game) {
@@ -74,7 +89,10 @@ public final class LootFountains {
             return;
         }
         int removedTotal = 0;
-        for (var zone : GameStore.ensureStore(arena, game).ensure(ZoneComponent.TYPE, ZoneComponent::new).order()) {
+        var zoneComp = GameStore.ensureStore(arena, game).get(ZoneComponent.TYPE).orElse(null);
+        if (zoneComp == null)
+            return;
+        for (var zone : zoneComp.order()) {
             var rules = new HashMap<Integer, LootFountainRule>();
             for (var rule : zone.lootFountains()) {
                 if (rule.enabled() && rule.tier() >= MIN_TIER && rule.tier() <= MAX_TIER) {
@@ -91,7 +109,8 @@ public final class LootFountains {
                 var candidates = found.getOrDefault(tier, List.of());
                 int min = Math.max(0, rule.min());
                 int max = Math.max(min, rule.max());
-                int keep = Math.min(candidates.size(), min == max ? min : ThreadLocalRandom.current().nextInt(min, max + 1));
+                int keep = Math.min(candidates.size(),
+                        min == max ? min : ThreadLocalRandom.current().nextInt(min, max + 1));
                 Collections.shuffle(candidates, ThreadLocalRandom.current());
                 int removed = 0;
                 for (var position : candidates.subList(keep, candidates.size())) {
@@ -103,16 +122,20 @@ public final class LootFountains {
                     }
                 }
                 removedTotal += removed;
-                LOGGER.atInfo().log("Zone '%s' tier %d: kept %d of %d loot fountains", zone.id(), tier, candidates.size() - removed, candidates.size());
+                LOGGER.atInfo().log("Zone '%s' tier %d: kept %d of %d loot fountains", zone.id(), tier,
+                        candidates.size() - removed, candidates.size());
             }
         }
         LOGGER.atInfo().log("Loot fountain randomization removed %d blocks from %s", removedTotal, arena.getName());
     }
 
-    /** Every fountain block of a ruled tier inside the zone, except the protected positions. */
+    /**
+     * Every fountain block of a ruled tier inside the zone, except the protected
+     * positions.
+     */
     @Nonnull
     private static Map<Integer, List<Vector3i>> discover(@Nonnull World arena, @Nonnull ZoneDefinition zone,
-                                                         @Nonnull Map<Integer, LootFountainRule> rules, @Nonnull Map<Integer, Integer> tierByBlockId) {
+            @Nonnull Map<Integer, LootFountainRule> rules, @Nonnull Map<Integer, Integer> tierByBlockId) {
         var result = new HashMap<Integer, List<Vector3i>>();
         var protectedByTier = new HashMap<Integer, Set<Vector3i>>();
         rules.forEach((tier, rule) -> {
@@ -131,7 +154,8 @@ public final class LootFountains {
             }
         });
 
-        // This is likely wildly inefficient, but it takes place while the game is preparing so there's
+        // This is likely wildly inefficient, but it takes place while the game is
+        // preparing so there's
         // plenty of time. Still... it could do with optimising for sure.
         int minY = Math.max(ChunkUtil.MIN_Y, (int) Math.floor(zone.minY()));
         int maxY = Math.min(ChunkUtil.HEIGHT - 1, (int) Math.floor(zone.maxY()));
@@ -145,12 +169,13 @@ public final class LootFountains {
                 for (int z = minZ; z <= maxZ; z++) {
                     var pos = new Vector3i(x, y, z);
                     int block = BlockUtils.getBlockId(arena, pos);
-                    if (!wanted.contains(block)) continue;
+                    if (!wanted.contains(block))
+                        continue;
                     var tier = tierByBlockId.get(block);
                     if (tier == null
-                        || y < minY || y > maxY
-                        || !contains(zone, x + 0.5, z + 0.5)
-                    ) continue;
+                            || y < minY || y > maxY
+                            || !contains(zone, x + 0.5, z + 0.5))
+                        continue;
                     if (!protectedByTier.get(tier).contains(pos)) {
                         result.computeIfAbsent(tier, ignored -> new ArrayList<>()).add(pos);
                     }

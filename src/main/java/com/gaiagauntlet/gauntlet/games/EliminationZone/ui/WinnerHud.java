@@ -8,9 +8,8 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.components.Standing;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.constants.MatchState;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
@@ -42,7 +41,8 @@ public final class WinnerHud implements HudElement {
 
     @Override
     public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return EZUi.isEz(session) && MatchUtils.phase(session) == MatchState.ENDED;
+        // return EZController.isEz(session) && MatchUtils.phase(session) == MatchState.ENDED;
+        return false;
     }
 
     @Override
@@ -53,38 +53,39 @@ public final class WinnerHud implements HudElement {
 
     @Override
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        var match = MatchUtils.get(session);
-        if (match == null || match.getStandings() == built) return;
-        built = match.getStandings();
+        // var match = MatchUtils.get(session);
+        // if (match == null || match.getStandings() == built) return;
+        // built = match.getStandings();
 
-        var teams = TeamUi.teamsOf(session);
-        var winner = built.isEmpty() ? null : teamOf(teams, built.getFirst());
-        cmd.set("#WinnerName.Text", winner == null ? "NO WINNER" : TeamUi.displayName(winner).toUpperCase(Locale.ROOT));
-        var icon = winner == null ? "" : winner.getUiIcon();
-        cmd.set("#WinnerIconLeft.Visible", !icon.isBlank());
-        cmd.set("#WinnerIconRight.Visible", !icon.isBlank());
-        if (!icon.isBlank()) {
-            cmd.set("#WinnerIconLeft.Background", icon);
-            cmd.set("#WinnerIconRight.Background", icon);
-        }
+        // var teams = TeamUi.teamsOf(session);
+        // var winner = built.isEmpty() ? null : teamOf(teams, built.getFirst());
+        // cmd.set("#WinnerName.Text", winner == null ? "NO WINNER" : TeamUi.displayName(winner).toUpperCase(Locale.ROOT));
+        // var icon = winner == null ? "" : winner.getUiIcon();
+        // cmd.set("#WinnerIconLeft.Visible", !icon.isBlank());
+        // cmd.set("#WinnerIconRight.Visible", !icon.isBlank());
+        // if (!icon.isBlank()) {
+        //     cmd.set("#WinnerIconLeft.Background", icon);
+        //     cmd.set("#WinnerIconRight.Background", icon);
+        // }
 
-        for (int i = 0; i < PODIUM.length; i++) {
-            var column = PODIUM[i];
-            var standing = i < built.size() ? built.get(i) : null;
-            var team = standing == null ? null : teamOf(teams, standing);
-            cmd.set(column + ".Visible", standing != null);
-            if (standing == null) continue;
+        // for (int i = 0; i < PODIUM.length; i++) {
+        //     var column = PODIUM[i];
+        //     var standing = i < built.size() ? built.get(i) : null;
+        //     var team = standing == null ? null : teamOf(teams, standing);
+        //     cmd.set(column + ".Visible", standing != null);
+        //     if (standing == null) continue;
 
-            cmd.set(column + " #Name.Text", team == null ? standing.getTeamId() : TeamUi.displayName(team));
-            cmd.set(column + " #Points.Text", "+" + standing.getPoints() + " pts");
-            cmd.set(column + " #EventTotal.Text", standing.getEventTotal() + " event total");
-            cmd.set(column + " #Initial.Visible", true);
-            if (team != null) {
-                TeamUi.icon(cmd, column + " #Icon", column + " #Initial", team);
-            } else {
-                cmd.set(column + " #Initial.Text", "?");
-            }
-        }
+        //     cmd.set(column + " #Name.Text", team == null ? standing.getTeamId() : TeamUi.displayName(team));
+        //     cmd.set(column + " #Points.Text", "+" + standing.getPoints() + " pts");
+        //     cmd.set(column + " #EventTotal.Text", standing.getEventTotal() + " event total");
+        //     cmd.set(column + " #Initial.Visible", true);
+        //     if (team != null) {
+        //         TeamUi.icon(cmd, column + " #Icon", column + " #Initial", team);
+        //     } else {
+        //         cmd.set(column + " #Initial.Text", "?");
+        //     }
+        // }
+        return;
     }
 
     @Nullable

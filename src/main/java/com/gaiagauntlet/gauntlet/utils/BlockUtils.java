@@ -1,9 +1,26 @@
 package com.gaiagauntlet.gauntlet.utils;
 
-
+import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.RotationTuple;
+import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.FillerBlockUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 public class BlockUtils {
@@ -16,10 +33,12 @@ public class BlockUtils {
     public static int getBlockId(World world, int x, int y, int z) {
         final var chunkStore = world.getChunkStore();
         final var sectionReference = chunkStore.getChunkSectionReferenceAtBlock(x, y, z);
-        if (sectionReference == null || !sectionReference.isValid()) return BlockType.EMPTY_ID;
+        if (sectionReference == null || !sectionReference.isValid())
+            return BlockType.EMPTY_ID;
 
         final var section = chunkStore.getStore().getComponent(sectionReference, BlockSection.getComponentType());
-        if (section == null) return BlockType.EMPTY_ID;
+        if (section == null)
+            return BlockType.EMPTY_ID;
 
         return section.get(x, y, z);
     }
@@ -33,13 +52,32 @@ public class BlockUtils {
 
         var chunkStore = world.getChunkStore();
         var sectionRef = chunkStore.getChunkSectionReferenceAtBlock(x, y, z);
-        if (sectionRef == null || !sectionRef.isValid()) return null; // Continues if section is not loaded.
+        if (sectionRef == null || !sectionRef.isValid())
+            return null; // Continues if section is not loaded.
         var blockSection = chunkStore.getStore().getComponent(sectionRef, BlockSection.getComponentType());
-        if (blockSection == null) return null;
+        if (blockSection == null)
+            return null;
         return blockSection;
     }
 
     public static BlockSection getBlockSection(World world, Vector3i pos) {
         return getBlockSection(world, pos.x, pos.y, pos.z);
+    }
+
+    /** Places the block at the position. False when the section is not loaded or the block id is unknown. */
+    public static boolean setBlock(World world, int x, int y, int z, String blockTypeKey) {
+        final var assetMap = BlockType.getAssetMap();
+        final var blockId = assetMap.getIndex(blockTypeKey);
+        final var blockType = assetMap.getAsset(blockId);
+        if (blockType == null)
+            return false;
+
+        final var chunkStore = world.getChunkStore();
+        final var sectionReference = chunkStore.getChunkSectionReferenceAtBlock(x, y, z);
+        if (sectionReference == null || !sectionReference.isValid())
+            return false;
+
+        return BlockOperations.setBlock(chunkStore, sectionReference, x, y, z, blockId, blockType,
+                RotationTuple.NONE_INDEX, FillerBlockUtil.NO_FILLER, SetBlockSettings.NONE);
     }
 }

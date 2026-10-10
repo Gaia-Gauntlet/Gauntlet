@@ -6,12 +6,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import lombok.Getter;
 
 public class PlayerGameEvent extends GauntletEvent {
-    @Getter
-    private PlayerRef player;
-    @Getter
-    private String sessionId;
-    @Getter 
-    private PlayerOp operation;
+    @Getter private PlayerRef player;
+    @Getter private String sessionId;
+    @Getter private PlayerOp operation;
 
     public PlayerGameEvent(PlayerRef player, String sessionId, PlayerOp operation) {
         this.player = player;

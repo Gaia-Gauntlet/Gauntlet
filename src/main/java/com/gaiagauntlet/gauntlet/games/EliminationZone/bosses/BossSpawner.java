@@ -2,7 +2,7 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossMarkerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossScalingComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
@@ -69,7 +69,7 @@ public final class BossSpawner {
         }
 
         var gameConfig = ConfigUtils.getGameConfig(arena, session);
-        if (!(gameConfig instanceof EZGameConfigAsset ezGameConfig)) return;
+        if (!(gameConfig instanceof EZGameConfig ezGameConfig)) return;
         int limit = ezGameConfig.getMaxActiveBosses();
 
         if (bosses.count() >= limit) {
@@ -200,7 +200,7 @@ public final class BossSpawner {
     @Nonnull
     public static List<SpawnPoint> spawnPoints(@Nonnull World arena, String session) {
         var gameConfig = ConfigUtils.getGameConfig(arena, session);
-        if (!(gameConfig instanceof EZGameConfigAsset ezGameConfig)) return List.of();
+        if (!(gameConfig instanceof EZGameConfig ezGameConfig)) return List.of();
 
         var manager = arena.getEntityStore().getStore().getResource(TriggerVolumesPlugin.get().getManagerResourceType());
         var points = new ArrayList<SpawnPoint>();
@@ -220,7 +220,7 @@ public final class BossSpawner {
     }
 
     @Nonnull
-    private static String zoneAt(EZGameConfigAsset gameConfig, @Nonnull Vector3d position) {
+    private static String zoneAt(EZGameConfig gameConfig, @Nonnull Vector3d position) {
         for (ZoneDefinition zone : gameConfig.getZones()) {
             double dx = position.x() - zone.centerX();
             double dz = position.z() - zone.centerZ();

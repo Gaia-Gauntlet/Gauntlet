@@ -28,6 +28,13 @@ session.destroy.success=<color is="#06f906">Deleted session {sessionId}</color>
 session.game.success=<color is="#06f906">Successfully {action} in {sessionId}</color>
 session.game.removal.success=<color is="#06f906">Successfully removed {games} game(s) from {sessionId}</color>
 
+session.plugin.missing=Plugin {pluginId} is not registered
+session.plugin.absent=Plugin {pluginId} is not installed in {sessionId}
+session.plugin.needed=Plugin {pluginId} is needed by {plugins} in {sessionId}
+session.plugin.required=Cannot set up {gameId} in {sessionId} until {plugins} are installed
+session.plugin.install.success=<color is="#06f906">Installed {plugins} in {sessionId}</color>
+session.plugin.uninstall.success=<color is="#06f906">Uninstalled {pluginId} from {sessionId}</color>
+
 # Player Events
 players.connect.warn=Player {playerName} not routed because {reason}
 players.connect.wrongsession=Player {playerName} in a different session from party! Leaving old session

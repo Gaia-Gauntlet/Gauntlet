@@ -2,10 +2,12 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.VoidTerrain;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.events.ZoneEvents;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.services.ZoneTickSystem;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -16,8 +18,13 @@ import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.World;
 
+import lombok.Getter;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,29 +32,30 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * The zone closing sequence of one match: the shuffled order zones close in, where the current
- * zone's edge is, the hold between zones, and the void terrain that follows the edge. Every method
- * runs on the arena thread. The sequence is driven by {@link ZoneTickSystem} and reports each
+ * The zone closing sequence of one match: the shuffled order zones close in,
+ * where the current
+ * zone's edge is, the hold between zones, and the void terrain that follows the
+ * edge. Every method
+ * runs on the arena thread. The sequence is driven by {@link ZoneTickSystem}
+ * and reports each
  * milestone as a {@link ZoneEvents} event.
  */
 public final class ZoneComponent implements GameComponent {
 
-    public static final GameComponentType<ZoneComponent> TYPE = GameComponentRegistry.register(
-            "Zones", ZoneComponent.class, ZoneComponent.CODEC);
-
-    // TODO: Populate if necessary? This doesn't need to be preserved if the server shuts down so I
-    //  don't know if we need a codec?
-    public static final BuilderCodec<ZoneComponent> CODEC = BuilderCodec.builder(
-        ZoneComponent.class, ZoneComponent::new
-    ).build();
+    public static final GameComponentType<@NotNull ZoneComponent> TYPE = GameComponentRegistry.register(
+            "Zones", ZoneComponent.class);
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String SOUND_ZONE_CLOSING = "SFX_Discovery_Z4_Short";
 
-    private String gameId = "";
-    @Nullable private World arena;
+    private String sessionId = "";
+    @Nullable
+    private World arena;
     private List<ZoneDefinition> order = new ArrayList<>();
-    /** The last match's closing order by zone id. Kept across matches so the next order can differ from it. */
+    /**
+     * The last match's closing order by zone id. Kept across matches so the next
+     * order can differ from it.
+     */
     private List<String> previousOrder = List.of();
     /** How many shuffles are tried to find an order unlike the last match's. */
     private static final int SHUFFLE_TRIES = 12;
@@ -64,12 +72,19 @@ public final class ZoneComponent implements GameComponent {
     private boolean holding;
     private boolean warningFired;
     private double closeRadius;
+    @Getter
+    private float accumulated;
 
-    public ZoneComponent() {}
+    public ZoneComponent(String sessionId) {
+        this.sessionId = sessionId;
+    }
 
     // Sequence control
 
-    /** Of a few shuffles, the one with the fewest zones in the same position as the last match's order. */
+    /**
+     * Of a few shuffles, the one with the fewest zones in the same position as the
+     * last match's order.
+     */
     @Nonnull
     private List<ZoneDefinition> leastLikePrevious(@Nonnull List<ZoneDefinition> zones) {
         List<ZoneDefinition> best = null;
@@ -91,18 +106,30 @@ public final class ZoneComponent implements GameComponent {
         return best;
     }
 
+    public boolean increment(float dt, float tickSeconds) {
+        accumulated += dt;
+        if (accumulated < tickSeconds)
+            return false;
+        tick(accumulated);
+        accumulated = 0;
+        return true;
+    }
+
     /**
-     * Starts the sequence in the arena with the zones in a random order, picked to share as few
-     * positions as it can with the last match's order. Closing begins after the delay; zero starts the
+     * Starts the sequence in the arena with the zones in a random order, picked to
+     * share as few
+     * positions as it can with the last match's order. Closing begins after the
+     * delay; zero starts the
      * first zone immediately.
      */
     public void begin(@Nonnull String gameId, @Nonnull World arena, @Nonnull List<ZoneDefinition> zones,
             @Nonnull List<ZonePhase> phases, double delaySeconds) {
         if (zones.isEmpty() || phases.isEmpty()) {
-            LOGGER.atWarning().log("[%s] Zone closing not started: %d zones, %d phases", gameId, zones.size(), phases.size());
+            LOGGER.atWarning().log("[%s] Zone closing not started: %d zones, %d phases", gameId, zones.size(),
+                    phases.size());
             return;
         }
-        this.gameId = gameId;
+        this.sessionId = gameId;
         this.arena = arena;
         this.order = leastLikePrevious(zones);
         previousOrder = this.order.stream().map(ZoneDefinition::id).toList();
@@ -123,17 +150,17 @@ public final class ZoneComponent implements GameComponent {
 
     public void stop() {
         if (active) {
-            LOGGER.atInfo().log("[%s] Zone closing stopped", gameId);
+            LOGGER.atInfo().log("[%s] Zone closing stopped", sessionId);
         }
         active = false;
     }
 
     /** Advances the sequence by the elapsed seconds. */
-    public void tick(double seconds) {
+    public void tick(float seconds) {
         if (!active || paused || seconds <= 0.0 || isFinished()) {
             return;
         }
-        double step = seconds;
+        var step = seconds;
         if (pendingDelaySeconds > 0.0) {
             if (pendingDelaySeconds >= step) {
                 pendingDelaySeconds -= step;
@@ -153,8 +180,11 @@ public final class ZoneComponent implements GameComponent {
         maybeWarn();
     }
 
-    /** Repaints the newly voided ground behind the edge. Chunk loads are asynchronous, so this catches up over ticks. */
-    public void paintVoid(String game) {
+    /**
+     * Repaints the newly voided ground behind the edge. Chunk loads are
+     * asynchronous, so this catches up over ticks.
+     */
+    public void paintVoid(String sessionId) {
         if (!active || arena == null || stepIndex < 0) {
             return;
         }
@@ -166,7 +196,7 @@ public final class ZoneComponent implements GameComponent {
         if (current != null && !closed.contains(current)) {
             bands.add(new VoidTerrain.Band(current, closeRadius));
         }
-        voidTerrain.advance(game, arena, bands, this::isInVoid);
+        voidTerrain.advance(sessionId, arena, bands, this::isInVoid);
     }
 
     private void advanceClose(double step) {
@@ -206,7 +236,10 @@ public final class ZoneComponent implements GameComponent {
         }
     }
 
-    /** The edge position after {@code elapsed} of a close: the sector's area shrinks linearly, so the radius follows a square. */
+    /**
+     * The edge position after {@code elapsed} of a close: the sector's area shrinks
+     * linearly, so the radius follows a square.
+     */
     private static double closeRadiusAt(@Nonnull ZoneDefinition zone, double elapsed, double duration) {
         if (duration <= 0.0 || elapsed >= duration) {
             return zone.innerRadius();
@@ -224,21 +257,22 @@ public final class ZoneComponent implements GameComponent {
         holdElapsed = 0.0;
         warningFired = false;
         if (index >= order.size()) {
-            LOGGER.atInfo().log("[%s] Every zone is closed; the center is the final safe area", gameId);
+            LOGGER.atInfo().log("[%s] Every zone is closed; the center is the final safe area", sessionId);
             return;
         }
         var zone = order.get(index);
         closeRadius = zone.outerRadius();
         var phase = phaseFor(index);
-        LOGGER.atInfo().log("[%s] Zone %d '%s' closing over %.0fs (%.0f to %.0f)", gameId, index, zone.id(),
+        LOGGER.atInfo().log("[%s] Zone %d '%s' closing over %.0fs (%.0f to %.0f)", sessionId, index, zone.id(),
                 phase.durationSeconds(), zone.outerRadius(), zone.innerRadius());
-        GaiaLog.atInfo().log("Zone " + zone.id() + " closing over " + Math.round(phase.durationSeconds()) + "s").withGameId(gameId);
+        GaiaLog.atInfo().log("Zone " + zone.id() + " closing over " + Math.round(phase.durationSeconds()) + "s")
+                .withGameId(sessionId);
         if (arena != null) {
-            Announcer.title(arena, Message.raw(zone.id()), Message.raw("ZONE CLOSING"), EventTitleStyle.VoidEviction, SOUND_ZONE_CLOSING);
+            Announcer.title(arena, Message.raw(zone.id()), Message.raw("ZONE CLOSING"), EventTitleStyle.VoidEviction,
+                    SOUND_ZONE_CLOSING);
             Announcer.chat(arena, Message.raw(zone.id() + " is closing in!").color(Color.RED));
-            GauntletEventRegistry.dispatch(
-                new ZoneEvents.ClosingStarted(index, zone, phase.durationSeconds())
-            );
+            MatchEventRegistry.dispatch(
+                    new ZoneEvents.ClosingStarted(sessionId, index, zone, phase.durationSeconds()), EZController.ID);
         }
     }
 
@@ -256,11 +290,13 @@ public final class ZoneComponent implements GameComponent {
             holding = true;
             holdElapsed = 0.0;
         }
-        LOGGER.atInfo().log("[%s] Zone '%s' sealed%s", gameId, zone.id(), last ? " (final zone)" : "");
-        GaiaLog.atInfo().log("Zone " + zone.id() + " sealed" + (last ? ", every zone is closed" : "")).withGameId(gameId);
+        LOGGER.atInfo().log("[%s] Zone '%s' sealed%s", sessionId, zone.id(), last ? " (final zone)" : "");
+        GaiaLog.atInfo().log("Zone " + zone.id() + " sealed" + (last ? ", every zone is closed" : ""))
+                .withGameId(sessionId);
         if (arena != null) {
             Announcer.chat(arena, Message.raw(zone.id() + " is sealed!").color(Color.RED));
-            GauntletEventRegistry.dispatch(new ZoneEvents.Closed(last ? order.size() - 1 : stepIndex, zone, last));
+            MatchEventRegistry.dispatch(
+                    new ZoneEvents.Closed(sessionId, last ? order.size() - 1 : stepIndex, zone, last), EZController.ID);
         }
     }
 
@@ -283,7 +319,7 @@ public final class ZoneComponent implements GameComponent {
                 ? zone.id() + " seals in " + Math.round(remaining) + "s, the last zone!"
                 : zone.id() + " seals in " + Math.round(remaining) + "s, " + next.id() + " is next!";
         Announcer.chat(arena, Message.raw(text).color(Color.RED));
-        GauntletEventRegistry.dispatch(new ZoneEvents.Warning(zone, remaining));
+        MatchEventRegistry.dispatch(new ZoneEvents.Warning(sessionId, zone, remaining), EZController.ID);
     }
 
     // Admin controls
@@ -426,7 +462,10 @@ public final class ZoneComponent implements GameComponent {
         return Math.max(0.0, phaseFor(stepIndex).durationSeconds() - closeElapsed);
     }
 
-    /** Seconds until the next milestone: the first zone, the seal, or the end of the hold. */
+    /**
+     * Seconds until the next milestone: the first zone, the seal, or the end of the
+     * hold.
+     */
     public double timerSeconds() {
         if (isFinished()) {
             return 0.0;
@@ -441,7 +480,10 @@ public final class ZoneComponent implements GameComponent {
         return pendingDelaySeconds + sealSeconds();
     }
 
-    /** True when the point is in a sealed zone's band or behind the active zone's edge. */
+    /**
+     * True when the point is in a sealed zone's band or behind the active zone's
+     * edge.
+     */
     public boolean isInVoid(double x, double y, double z) {
         if (!active) {
             return false;
@@ -475,5 +517,6 @@ public final class ZoneComponent implements GameComponent {
         holding = false;
         voidTerrain.reset();
         arena = null;
+        accumulated = 0;
     }
 }

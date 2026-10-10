@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.lobbycontroller;
 import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
@@ -34,6 +35,6 @@ public class LobbyControllerPlugin implements GamePlugin {
 
     @Override
     public List<String> getDependencies() {
-        return List.of(GameStorePlugin.ID);
+        return List.of(GameStorePlugin.ID, MatchEventsPlugin.ID);
     }
 }

@@ -4,11 +4,13 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
+import lombok.AllArgsConstructor;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /** How many authored loot fountains of one tier a zone keeps in a fresh arena. */
+@AllArgsConstructor
 public final class LootFountainRule {
 
     public static final BuilderCodec<LootFountainRule> CODEC = BuilderCodec.builder(LootFountainRule.class, LootFountainRule::new)

@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller.transfer;
 
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -17,12 +17,14 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import it.unimi.dsi.fastutil.Pair;
+
 public class TransferUtils {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     /** Queues a player to join, will be added on the next batch */
     public static void queue(ComponentAccessor<EntityStore> originAccessor, World destination, String sessionId,
-            Set<PlayerRef> players, Transform location) {
+            List<Pair<PlayerRef, CompletableFuture<Transform>>> playersSets) {
 
         var origin = originAccessor.getExternalData().getWorld();
 
@@ -36,46 +38,63 @@ public class TransferUtils {
 
         // process batch
         int index = 0;
-        for (var playerRef : players) {
+        for (var playerPair : playersSets) {
+            var playerRef = playerPair.first();
+            var transformFuture = playerPair.second();
             // move the players one at a time
             long delay = (index / cfg.getBatchSize()) * cfg.getBatchDelay();
             // run the delay on the destination thread so, if it slows down or dies, we
             // don't dos it
             destination.scheduleAfter(() -> {
-                // immediately hop back to the origin thread to add the component (rip lol)
-                GauntletUtils.run(origin, () -> {
+                transformFuture.whenComplete((transform, err) -> {
 
-                    var warpComponent = Teleport.createForPlayer(destination, location);
-
-                    if (!playerRef.isValid()) {
-                        // player is no longer valid :/
-                        GaiaLog.atInfo().withSession(sessionId)
+                    if (err != null) {
+                        GaiaLog.atError(err).withSession(sessionId)
                                 .log(msg("server.gg.plugins.transfer.error.world")
                                         .param("player", playerRef.getUsername())
                                         .param("world", destination.getName())
-                                        .param("reason", "player no longer being online or valid"));
+                                        .param("reason", err.getLocalizedMessage()));
                         return;
                     }
 
-                    // literally just logging right now
-                    warpComponent.setOnComplete(moveComplete(playerRef.getUsername(), sessionId, destination.getName()));
-                    
-                    var ref = playerRef.getReference();
-                    // ref.validate throws if in the wrong store :/
-                    if (ref == null || !ref.isValid()
-                            || !playerRef.getWorldUuid().equals(origin.getWorldConfig().getUuid())) {
-                        // ref is no longer in the origin world or is not valid - invalid state, end.
-                        GaiaLog.atInfo().withSession(sessionId)
-                                .log(msg("server.gg.plugins.transfer.error.world")
-                                        .param("player", playerRef.getUsername())
-                                        .param("world", destination.getName())
-                                        .param("reason", "player no longer being in " + origin.getName()));
-                        return;
-                    }
+                    // immediately hop back to the origin thread to add the component (rip lol)
+                    GauntletUtils.run(origin, () -> {
 
-                    // put the teleport component
-                    originAccessor.putComponent(ref, PlayerMarker.getComponentType(), new PlayerMarker(sessionId, destination.getWorldConfig().getUuid()));
-                    originAccessor.putComponent(ref, Teleport.getComponentType(), warpComponent);
+                        var warpComponent = Teleport.createForPlayer(destination, transform);
+
+                        if (!playerRef.isValid()) {
+                            // player is no longer valid :/
+                            GaiaLog.atInfo().withSession(sessionId)
+                                    .log(msg("server.gg.plugins.transfer.error.world")
+                                            .param("player", playerRef.getUsername())
+                                            .param("world", destination.getName())
+                                            .param("reason", "player no longer being online or valid"));
+                            return;
+                        }
+
+                        // literally just logging right now
+                        warpComponent
+                                .setOnComplete(moveComplete(playerRef.getUsername(), sessionId, destination.getName()));
+
+                        var ref = playerRef.getReference();
+                        // ref.validate throws if in the wrong store :/
+                        if (ref == null || !ref.isValid()
+                                || !playerRef.getWorldUuid().equals(origin.getWorldConfig().getUuid())) {
+                            // ref is no longer in the origin world or is not valid - invalid state, end.
+                            GaiaLog.atInfo().withSession(sessionId)
+                                    .log(msg("server.gg.plugins.transfer.error.world")
+                                            .param("player", playerRef.getUsername())
+                                            .param("world", destination.getName())
+                                            .param("reason", "player no longer being in " + origin.getName()));
+                            return;
+                        }
+
+                        // put the teleport component
+                        originAccessor.putComponent(ref, PlayerMarker.getComponentType(),
+                                new PlayerMarker(sessionId, destination.getWorldConfig().getUuid()));
+                        originAccessor.putComponent(ref, Teleport.getComponentType(),
+                                warpComponent);
+                    });
                 });
             }, delay, TimeUnit.SECONDS);
             index++;

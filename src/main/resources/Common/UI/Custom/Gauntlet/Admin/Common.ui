@@ -149,11 +149,22 @@ $Common = "../../Common.ui";
     Text: @Text;
 };
 
-// One entry in the tab strip. The active tab's button is disabled.
+// Tab button styles AdminPage switches between: a closed tab, the open tab, and a plugin the
+// selected session does not have installed.
+@TabStyle = $Common.@SmallTertiaryTextButtonStyle;
+@TabActiveStyle = $Common.@SmallSecondaryTextButtonStyle;
+@TabOffStyle = TextButtonStyle(
+    Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary.png", Border: 12),         LabelStyle: $Common.@SmallButtonDisabledLabelStyle),
+    Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary_Hovered.png", Border: 12), LabelStyle: $Common.@SmallButtonDisabledLabelStyle),
+    Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Tertiary_Pressed.png", Border: 12), LabelStyle: $Common.@SmallButtonDisabledLabelStyle),
+    Sounds: $Common.@ButtonSounds
+);
+
+// One entry in a tab strip.
 @Tab = TextButton {
     @Anchor = ();
     @Text = "";
-    Style: $Common.@SmallTertiaryTextButtonStyle;
+    Style: @TabStyle;
     Anchor: (...@Anchor, Width: 104, Height: 30);
     Padding: (Horizontal: 6);
     Text: @Text;

@@ -15,9 +15,8 @@ import lombok.Setter;
 public class LobbyComponent implements GameComponent {
     public static final String ID = "LobbyComponent";
     @Getter @Setter private static GameComponentType<@NotNull LobbyComponent> componentType;
-    // the game world
-    @Getter
-    private World world;
+    /** The game world */
+    @Getter private final World world;
 
     public LobbyComponent(World world) {
         this.world = world;

@@ -3,7 +3,7 @@ package com.gaiagauntlet.gauntlet.plugins.gamestore.components;
 import com.gaiagauntlet.gauntlet.utils.codec.SerializableComponent;
 
 /**
- * simple DTO for the session. Not as much churn as an ECS since this is just a
+ * simple MTO for the session. Not as much churn as an ECS since this is just a
  * mini-ecs without any form of ref system
  */
 public interface GameComponent extends SerializableComponent {

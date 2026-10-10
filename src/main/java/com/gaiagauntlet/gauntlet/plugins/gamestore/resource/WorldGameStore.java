@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameQuery;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
@@ -55,7 +57,7 @@ public class WorldGameStore implements Resource<EntityStore> {
     public GameEcs create(String sessionId) {
         var existing = get(sessionId);
         if (existing.isPresent()) return existing.orElseThrow();
-        var game = new GameEcs();
+        var game = new GameEcs(sessionId);
         games.put(sessionId, game);
         return game;
     }
@@ -68,6 +70,13 @@ public class WorldGameStore implements Resource<EntityStore> {
     @Override
     public WorldGameStore clone() {
         return new WorldGameStore();
+    }
+
+    /** Executes a runnable for each gameEcs that has the necessary components */
+    public void forEachMatch(GameQuery query, BiConsumer<String, GameEcs> action) {
+        games.forEach((sesionId, game) -> {
+            if (query.test(game)) action.accept(sesionId, game);
+        });
     }
 
 }

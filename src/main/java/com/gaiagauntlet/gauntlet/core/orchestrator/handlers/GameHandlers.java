@@ -3,7 +3,6 @@ package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 import java.util.concurrent.TimeUnit;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
@@ -12,8 +11,6 @@ import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperatio
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
-import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class GameHandlers extends HandlerUtils {

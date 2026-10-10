@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
@@ -40,7 +42,7 @@ public final class ZoneHudComponent implements GameComponent {
     public record Zone(int slot, @Nonnull String image, @Nonnull ZoneState state) {
     }
 
-    @Getter @Setter private static GameComponentType<ZoneHudComponent> componentType;
+    @Getter @Setter private static GameComponentType<@NotNull ZoneHudComponent> componentType;
 
     @Getter private volatile List<Zone> zones = List.of();
 

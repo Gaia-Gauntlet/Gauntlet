@@ -1,9 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.commands;
 
-import com.gaiagauntlet.gauntlet.core.games.interfaces.CommandGamePlugin;
-import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractWorldCommand;

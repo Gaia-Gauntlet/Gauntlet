@@ -31,6 +31,7 @@ public final class GaiaBossRoleBuilder extends BuilderRoleVariant {
 
     @Override
     public @NonNull Builder<Role> readConfig(@Nonnull JsonElement config) {
+        if (config == null) return this;
         if (config.isJsonObject() && config.getAsJsonObject().has(BossScalingComponent.ID)) {
             var json = config.getAsJsonObject().get(BossScalingComponent.ID).toString();
             try (var reader = RawJsonReader.fromBuffer(json.toCharArray())) {

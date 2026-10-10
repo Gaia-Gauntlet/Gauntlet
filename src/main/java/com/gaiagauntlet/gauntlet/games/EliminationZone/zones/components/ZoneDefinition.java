@@ -5,6 +5,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.Validators;
+import lombok.AllArgsConstructor;
 
 import javax.annotation.Nonnull;
 
@@ -13,6 +14,7 @@ import javax.annotation.Nonnull;
  * center. Angles are degrees where 0 points along +X and 90 along +Z. A zone closes by sweeping its
  * edge from the outer radius to the inner radius; the band behind the edge is the void.
  */
+@AllArgsConstructor
 public final class ZoneDefinition {
 
     public static final BuilderCodec<ZoneDefinition> CODEC = BuilderCodec.builder(ZoneDefinition.class, ZoneDefinition::new)

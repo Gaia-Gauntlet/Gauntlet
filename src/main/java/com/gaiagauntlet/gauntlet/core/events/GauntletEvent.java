@@ -19,9 +19,7 @@ public abstract class GauntletEvent implements IEvent<Void> {
 
     private Consumer<GaiaLog> consumer = null;
     private Consumer<GaiaLog> onComplete = null;
-    @Getter
-    @Setter
-    private boolean inProgress = true;
+    @Getter @Setter private boolean inProgress = true;
 
     // part of the event builder to add a callback
     public GauntletEvent onMessage(Consumer<GaiaLog> consumer) {

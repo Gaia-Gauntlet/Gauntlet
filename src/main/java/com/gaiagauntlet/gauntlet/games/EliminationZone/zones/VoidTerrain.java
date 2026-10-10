@@ -1,7 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfigAsset;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
@@ -108,7 +108,7 @@ public final class VoidTerrain {
     /** Queues the columns that became void since the last advance and paints what can be painted now. */
     public void advance(String session, @Nonnull World world, @Nonnull List<Band> bands, @Nonnull VoidTest test) {
         var gameConfig = ConfigUtils.getGameConfig(world, session);
-        if (!(gameConfig instanceof EZGameConfigAsset ezGameConfig)) return;
+        if (!(gameConfig instanceof EZGameConfig ezGameConfig)) return;
 
         var voidType = resolveVoidBlock(ezGameConfig.getClosingVoidBlock());
         if (voidType == null) return;
