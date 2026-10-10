@@ -1,16 +1,12 @@
-package com.gaiagauntlet.gauntlet.plugins.events.components;
+package com.gaiagauntlet.gauntlet.plugins.events.assets;
 
-import com.gaiagauntlet.gauntlet.plugins.events.events.ConfiguredGameEvent;
-import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.lookup.CodecMapCodec;
-import com.hypixel.hytale.server.core.HytaleServer;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 
 @Getter
 public abstract class GameEventConfig {

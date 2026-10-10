@@ -201,7 +201,7 @@ public final class PartyPage extends GauntletPage {
 
     @Nonnull
     private String nameOf(@Nonnull UUID player) {
-        var online = PlayerUtils.resolveOnline(player);
+        var online = PlayerUtils.nameFor(player);
         if (online != null) return online;
         return Objects.requireNonNullElse(PlayerUtils.idsToPlayer.get(player), "Unknown player");
     }

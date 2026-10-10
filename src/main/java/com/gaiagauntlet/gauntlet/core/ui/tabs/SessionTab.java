@@ -232,7 +232,7 @@ public final class SessionTab implements AdminTab {
                 rows.add(partyId + " (missing)");
                 continue;
             }
-            var leader = PlayerUtils.resolveOnline(party.getOwner());
+            var leader = PlayerUtils.nameFor(party.getOwner());
             rows.add(party.getLabel() + ": " + party.getAllOnlinePlayers().size() + " of " + party.size()
                     + " online, led by " + (leader == null ? "an offline player" : leader));
         }

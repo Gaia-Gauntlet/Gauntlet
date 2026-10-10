@@ -2,10 +2,10 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;

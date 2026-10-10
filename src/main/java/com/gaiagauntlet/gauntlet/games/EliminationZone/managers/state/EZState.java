@@ -6,8 +6,13 @@ import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 public class EZState {
+
+    public static void setup(JavaPlugin plugin) {
+        MatchEventRegistry.register(MatchStateEvent.class, EZController.ID, EZStateTitles::onMatchState);
+    }
 
     /** Very tiny helper to get the MatchComponent */
     private static MatchComponent mc(GameEcs game) {
@@ -46,4 +51,5 @@ public class EZState {
                 .log("Unable to transition from " + match.name() + " to " + desired.name() + " as requested");
         return false;
     }
+
 }

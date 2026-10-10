@@ -6,11 +6,12 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -47,7 +48,7 @@ public final class TeamsHud implements HudElement {
     }
 
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
+    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
         return !otherTeams(player, session).isEmpty();
     }
 
@@ -61,10 +62,10 @@ public final class TeamsHud implements HudElement {
         var teams = otherTeams(player, session);
         var rows = new ArrayList<List<UUID>>();
         for (var team : teams) {
-            rows.add(TeamUi.membersOf(team));
+            rows.add(TeamUtils.membersOf(team));
         }
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = TeamUi.belowParty(session, player.getUuid());
+        var top = TeamUtils.belowParty(session, player.getUuid());
         if (!rows.equals(builtRows) || !ids.equals(builtTeams) || top != builtTop) {
             build(cmd, teams, rows, top);
         }
@@ -77,14 +78,14 @@ public final class TeamsHud implements HudElement {
                 var member = members.get(m);
                 var card = row + " #Members[" + m + "]";
                 var online = PlayerUtils.isOnline(member);
-                var alive = !TeamUi.isEliminated(member);
+                var alive = !TeamUtils.isEliminated(member);
                 standing |= online && alive;
                 sent.visible(cmd, card + " #Dead", online && !alive);
                 sent.visible(cmd, card + " #Off", !online);
-                sent.text(cmd, card + " #Score", Integer.toString(TeamUi.score(member)));
+                sent.text(cmd, card + " #Score", Integer.toString(TeamUtils.score(member)));
             }
             sent.visible(cmd, row, standing);
-            sent.text(cmd, row + " #TeamScore", Integer.toString(TeamUi.score(teams.get(t))));
+            sent.text(cmd, row + " #TeamScore", Integer.toString(TeamUtils.score(teams.get(t))));
         }
     }
 
@@ -99,14 +100,14 @@ public final class TeamsHud implements HudElement {
         for (int t = 0; t < teams.size(); t++) {
             var row = "#TeamsSidebar[" + t + "]";
             cmd.append("#TeamsSidebar", ROW);
-            TeamUi.icon(cmd, row + " #Icon", row + " #Initial", teams.get(t));
+            TeamUtils.icon(cmd, row + " #Icon", row + " #Initial", teams.get(t));
             var members = rows.get(t);
             for (int m = 0; m < members.size(); m++) {
                 var card = row + " #Members[" + m + "]";
                 cmd.append(row + " #Members", MEMBER);
                 cmd.set(card + " #Portrait.PlayerUuid", members.get(m).toString());
-                cmd.set(card + " #DeadIcon.Background", TeamUi.DEAD_ICON);
-                cmd.set(card + " #OffIcon.Background", TeamUi.DISCONNECTED_ICON);
+                cmd.set(card + " #DeadIcon.Background", TeamUtils.DEAD_ICON);
+                cmd.set(card + " #OffIcon.Background", TeamUtils.DISCONNECTED_ICON);
             }
         }
     }
@@ -114,13 +115,13 @@ public final class TeamsHud implements HudElement {
     /** Participating teams other than the viewer's that have members, ordered by id. */
     @Nonnull
     private static List<TeamComponent> otherTeams(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        var teamList = TeamUi.teamsOf(session);
+        var teamList = TeamUtils.teamsOf(session).orElse(null);
         if (teamList == null) {
             return List.of();
         }
         var own = teamList.get(player.getUuid());
         var teams = new ArrayList<TeamComponent>();
-        for (var team : TeamUi.sortedTeams(teamList)) {
+        for (var team : TeamUtils.sortedTeams(teamList)) {
             if (team.isParticipant() && team != own && team.getSize() > 0) {
                 teams.add(team);
             }

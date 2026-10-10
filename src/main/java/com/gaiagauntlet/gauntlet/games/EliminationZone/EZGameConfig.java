@@ -108,7 +108,7 @@ public class EZGameConfig extends GameConfigAsset {
 //            p -> p.gameEvents)
 //        .documentation("Controls each zone's close, hold, warning, damage, and audio sequence.")
 //        .add()
-        .append(new KeyedCodec<>("SpawnProtectionSeconds", Codec.DOUBLE),
+        .append(new KeyedCodec<>("SpawnProtectionSeconds", Codec.FLOAT),
             (p, v) -> p.spawnProtectionSeconds = v,
             p -> p.spawnProtectionSeconds)
         .documentation("Controls each zone's close, hold, warning, damage, and audio sequence.")
@@ -119,12 +119,12 @@ public class EZGameConfig extends GameConfigAsset {
         .addValidator(Validators.greaterThanOrEqual(0))
         .documentation("The number of players remaining where sudden death is activated")
         .add()
-        .append(new KeyedCodec<>("CameraSequenceSeconds", Codec.DOUBLE),
+        .append(new KeyedCodec<>("CameraSequenceSeconds", Codec.FLOAT),
             (p, v) -> p.cameraSequenceSeconds = v,
             p -> p.cameraSequenceSeconds)
         .documentation("Controls how long the intro sequence is.")
         .add()
-        .append(new KeyedCodec<>("CornucopiaDurationSeconds", Codec.LONG),
+        .append(new KeyedCodec<>("CornucopiaDurationSeconds", Codec.FLOAT),
             (p, v) -> p.cornucopiaDurationSeconds = v,
             p -> p.cornucopiaDurationSeconds)
         .documentation("How long the cornucopia cutscene is.")
@@ -136,10 +136,10 @@ public class EZGameConfig extends GameConfigAsset {
         .documentation(
             "How many players are teleported into the game world together in each wave.")
         .add()
-        .append(new KeyedCodec<>("TeleportWaveIntervalSeconds", Codec.LONG),
+        .append(new KeyedCodec<>("TeleportWaveIntervalSeconds", Codec.FLOAT),
             (p, v) -> p.teleportWaveIntervalSeconds = v,
             p -> p.teleportWaveIntervalSeconds)
-        .addValidator(Validators.greaterThanOrEqual(0L))
+        .addValidator(Validators.greaterThanOrEqual(0F))
         .documentation(
             "Delay between each teleport wave, so the world is not loading chunks for every player at once.")
         .add()
@@ -231,10 +231,10 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private String zoneClosingPhaseSet = "";
     @Getter private int suddenDeathAt = 6;
     @Getter private int teleportWaveSize = 5;
-    @Getter private long teleportWaveIntervalSeconds = 1;
-    @Getter private long cornucopiaDurationSeconds = 27;
-    @Getter private double spawnProtectionSeconds = 30;
-    @Getter private double cameraSequenceSeconds = 29;
+    @Getter private float teleportWaveIntervalSeconds = 1;
+    @Getter private float cornucopiaDurationSeconds = 27;
+    @Getter private float spawnProtectionSeconds = 30;
+    @Getter private float cameraSequenceSeconds = 29;
 //    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
         new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))

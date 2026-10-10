@@ -1,16 +1,11 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamType;
-import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;

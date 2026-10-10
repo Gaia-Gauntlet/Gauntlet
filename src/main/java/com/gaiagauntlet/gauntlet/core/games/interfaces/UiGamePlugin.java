@@ -3,8 +3,8 @@ package com.gaiagauntlet.gauntlet.core.games.interfaces;
 import java.util.List;
 import java.util.Map;
 
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 
 /**

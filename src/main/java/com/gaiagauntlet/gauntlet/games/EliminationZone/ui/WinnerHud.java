@@ -6,13 +6,18 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -39,10 +44,22 @@ public final class WinnerHud implements HudElement {
         return 100;
     }
 
+    private record WinnerHudSnapshot(
+
+    ) implements HudDataSnapshot {}
+
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
+    public WinnerHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
         // return EZController.isEz(session) && MatchUtils.phase(session) == MatchState.ENDED;
-        return false;
+        if (session == null || !EZController.isEz(session)) return null;
+        var game = GameStore.withStore(player, session.getId()).orElse(null);
+        if (game == null) return null;
+
+        var state = EZState.currentState(game);
+
+        if (state != EZStates.ENDED) return null;
+
+        return new WinnerHudSnapshot();
     }
 
     @Override
@@ -52,39 +69,39 @@ public final class WinnerHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        // var match = MatchUtils.get(session);
-        // if (match == null || match.getStandings() == built) return;
-        // built = match.getStandings();
+    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
+        var match = MatchUtils.get(session);
+        if (match == null || match.getStandings() == built) return;
+        built = match.getStandings();
 
-        // var teams = TeamUi.teamsOf(session);
-        // var winner = built.isEmpty() ? null : teamOf(teams, built.getFirst());
-        // cmd.set("#WinnerName.Text", winner == null ? "NO WINNER" : TeamUi.displayName(winner).toUpperCase(Locale.ROOT));
-        // var icon = winner == null ? "" : winner.getUiIcon();
-        // cmd.set("#WinnerIconLeft.Visible", !icon.isBlank());
-        // cmd.set("#WinnerIconRight.Visible", !icon.isBlank());
-        // if (!icon.isBlank()) {
-        //     cmd.set("#WinnerIconLeft.Background", icon);
-        //     cmd.set("#WinnerIconRight.Background", icon);
-        // }
+        var teams = TeamUtils.teamsOf(session);
+        var winner = built.isEmpty() ? null : TeamUtils.teamOf(teams, built.getFirst());
+        cmd.set("#WinnerName.Text", winner == null ? "NO WINNER" : TeamUtils.displayName(winner).toUpperCase(Locale.ROOT));
+        var icon = winner == null ? "" : winner.getUiIcon();
+        cmd.set("#WinnerIconLeft.Visible", !icon.isBlank());
+        cmd.set("#WinnerIconRight.Visible", !icon.isBlank());
+        if (!icon.isBlank()) {
+            cmd.set("#WinnerIconLeft.Background", icon);
+            cmd.set("#WinnerIconRight.Background", icon);
+        }
 
-        // for (int i = 0; i < PODIUM.length; i++) {
-        //     var column = PODIUM[i];
-        //     var standing = i < built.size() ? built.get(i) : null;
-        //     var team = standing == null ? null : teamOf(teams, standing);
-        //     cmd.set(column + ".Visible", standing != null);
-        //     if (standing == null) continue;
+        for (int i = 0; i < PODIUM.length; i++) {
+            var column = PODIUM[i];
+            var standing = i < built.size() ? built.get(i) : null;
+            var team = standing == null ? null : teamOf(teams, standing);
+            cmd.set(column + ".Visible", standing != null);
+            if (standing == null) continue;
 
-        //     cmd.set(column + " #Name.Text", team == null ? standing.getTeamId() : TeamUi.displayName(team));
-        //     cmd.set(column + " #Points.Text", "+" + standing.getPoints() + " pts");
-        //     cmd.set(column + " #EventTotal.Text", standing.getEventTotal() + " event total");
-        //     cmd.set(column + " #Initial.Visible", true);
-        //     if (team != null) {
-        //         TeamUi.icon(cmd, column + " #Icon", column + " #Initial", team);
-        //     } else {
-        //         cmd.set(column + " #Initial.Text", "?");
-        //     }
-        // }
+            cmd.set(column + " #Name.Text", team == null ? standing.getTeamId() : TeamUi.displayName(team));
+            cmd.set(column + " #Points.Text", "+" + standing.getPoints() + " pts");
+            cmd.set(column + " #EventTotal.Text", standing.getEventTotal() + " event total");
+            cmd.set(column + " #Initial.Visible", true);
+            if (team != null) {
+                TeamUi.icon(cmd, column + " #Icon", column + " #Initial", team);
+            } else {
+                cmd.set(column + " #Initial.Text", "?");
+            }
+        }
         return;
     }
 

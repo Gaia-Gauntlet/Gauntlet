@@ -6,8 +6,8 @@ public enum EZStates {
     LOBBY(Set.of()),
     RUNNING(Set.of(LOBBY)),
     SUDDEN_DEATH(Set.of(RUNNING)),
-    STOPPED(Set.of(RUNNING, SUDDEN_DEATH)),
-    ERROR(Set.of(LOBBY, RUNNING, SUDDEN_DEATH, STOPPED));
+    ENDED(Set.of(RUNNING, SUDDEN_DEATH)),
+    ERROR(Set.of(LOBBY, RUNNING, SUDDEN_DEATH, ENDED));
 
     private Set<EZStates> validSources;
 

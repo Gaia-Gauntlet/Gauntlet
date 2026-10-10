@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;

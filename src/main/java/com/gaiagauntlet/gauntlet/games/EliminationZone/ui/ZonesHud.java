@@ -3,10 +3,12 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -38,7 +40,13 @@ public final class ZonesHud implements HudElement {
     }
 
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
+    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        if (session == null || session.available())
+            return false; // not in a game at all
+        var playerComp = player.getComponentConcurrent(PlayerComponent.getComponentType());
+        if (playerComp == null || playerComp.getCurrentGame() != EZController.ID)
+            return false; // not in the ezgame
+
         // var phase = MatchUtils.phase(session);
         // return EZController.isEz(session)
         // && (phase == MatchState.ACTIVE || phase == MatchState.SUDDEN_DEATH)
@@ -55,8 +63,17 @@ public final class ZonesHud implements HudElement {
 
     @Override
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
+        if (session == null)
+            return;
+        var store = GameStore.withStore(player, session.getId()).orElse(null);
+        if (store == null)
+            return; // no store found - probably not in the game
+
+        var zoneComp = store.get(ZoneHudComponent.getComponentType()).orElse(null);
+        if (zoneComp == null) return;
+
         var filled = new boolean[ZoneHudComponent.SLOTS];
-        for (var zone : ZoneHudComponent.of(session)) {
+        for (var zone : zoneComp.getZones()) {
             if (zone.slot() < 0 || zone.slot() >= ZoneHudComponent.SLOTS || zone.image().isBlank())
                 continue;
             filled[zone.slot()] = true;

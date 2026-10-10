@@ -6,12 +6,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
@@ -47,11 +49,20 @@ public final class ScoreboardHud implements HudElement {
         return 40;
     }
 
+    private record ScoreboardSnapshot(
+        List<TeamComponent> teams,
+        TeamComponent own
+    ) implements HudDataSnapshot {};
+
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        // return EZController.isEz(session) && MatchUtils.get(session) != null && MatchUtils.inLobby(session)
+    public HudDataSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+         // return EZController.isEz(session) && MatchUtils.get(session) != null && MatchUtils.inLobby(session)
         //         && !ranked(session).isEmpty();
-        return false;
+        if (session == null || !session.available() || !EZController.isEz(session)) return null; // hide if in an active game session
+
+        var teams = ranked(session);
+        var own = TeamUtils.teamOf(session, player.getUuid()).orElse(null);
+        return new ScoreboardSnapshot(teams, own);
     }
 
     @Override
@@ -60,15 +71,20 @@ public final class ScoreboardHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        var teams = ranked(session);
+    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
+        if (!(data instanceof ScoreboardSnapshot scoreboard)) {
+            GaiaLog.atWarning().withSession(session).log("Attempted to update the scoreboard with the incorrect snapshot!");
+            return;
+        }
+
+        var teams = scoreboard.teams;
+        var own = scoreboard.own;
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = TeamUi.belowParty(session, player.getUuid());
+        var top = TeamUtils.belowParty(session, player.getUuid());
         if (!ids.equals(builtTeams) || top != builtTop) {
             build(cmd, teams, top);
         }
 
-        var own = TeamUi.teamOf(session, player.getUuid());
         for (int i = 0; i < teams.size(); i++) {
             var team = teams.get(i);
             var row = "#ScoreRows[" + i + "]";
@@ -88,20 +104,20 @@ public final class ScoreboardHud implements HudElement {
         for (int i = 0; i < teams.size(); i++) {
             var row = "#ScoreRows[" + i + "]";
             cmd.append("#ScoreRows", ROW);
-            cmd.set(row + " #Name.Text", TeamUi.displayName(teams.get(i)));
-            TeamUi.icon(cmd, row + " #Icon", row + " #Initial", teams.get(i));
+            cmd.set(row + " #Name.Text", TeamUtils.displayName(teams.get(i)));
+            TeamUtils.icon(cmd, row + " #Icon", row + " #Initial", teams.get(i));
         }
     }
 
     /** Participating teams with players, highest event score first, then by name. */
     @Nonnull
     private static List<TeamComponent> ranked(@Nullable GameSession session) {
-        var teamList = TeamUi.teamsOf(session);
+        var teamList = TeamUtils.teamsOf(session).orElse(null);
         if (teamList == null) return List.of();
         return teamList.getTeams().values().stream()
                 .filter(team -> team.isParticipant() && team.getSize() > 0)
                 .sorted(Comparator.comparingDouble(TeamComponent::getScore).reversed()
-                        .thenComparing(TeamUi::displayName, String.CASE_INSENSITIVE_ORDER))
+                        .thenComparing(TeamUtils::displayName, String.CASE_INSENSITIVE_ORDER))
                 .toList();
     }
 }

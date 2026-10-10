@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
@@ -111,8 +112,10 @@ public class GauntletUtils {
     }
 
     /** Runs on the thread with no try-catching surrounding the task */
-    public static void run(World world, Runnable task) {
-        if (world.isInThread()) {
+    public static void run(@Nullable World world, Runnable task) {
+        if (world == null) {
+            task.run();
+        } else if (world.isInThread()) {
             task.run();
         } else {
             world.execute(task);

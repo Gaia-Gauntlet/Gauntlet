@@ -3,16 +3,10 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.jetbrains.annotations.NotNull;
 
-import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,21 +39,4 @@ public final class ZoneHudComponent implements GameComponent {
     @Getter @Setter private static GameComponentType<@NotNull ZoneHudComponent> componentType;
 
     @Getter private volatile List<Zone> zones = List.of();
-
-    /** Replaces the session's snapshot. Safe from any thread. */
-    public static void publish(@Nonnull GameSession session, @Nonnull List<Zone> zones) {
-        var snapshot = List.copyOf(zones);
-        GauntletUtils.run(GauntletUtils.withHubWorld(), () -> GameStore.ensureHubStore(session.getId())
-                .ensure(componentType, ZoneHudComponent::new).zones = snapshot);
-    }
-
-    /** The session's zones, or an empty list before the zone logic has published any. */
-    @Nonnull
-    public static List<Zone> of(@Nullable GameSession session) {
-        if (session == null || componentType == null) return List.of();
-        return GameStore.withHubStore(session.getId())
-                .flatMap(store -> store.get(componentType))
-                .map(ZoneHudComponent::getZones)
-                .orElse(List.of());
-    }
 }

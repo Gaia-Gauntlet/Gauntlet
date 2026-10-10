@@ -3,10 +3,10 @@ package com.gaiagauntlet.gauntlet.plugins.auto.ui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.SessionText;
-import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -30,7 +30,7 @@ public final class VoteHud implements HudElement {
     }
 
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
+    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
         return VoteUtils.isOpen(session);
     }
 

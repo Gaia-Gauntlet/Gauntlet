@@ -20,6 +20,7 @@ import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamType;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -67,12 +68,12 @@ public final class TeamsTab implements AdminTab {
         rowTeams = null;
         pickerMembers.clear();
         pickerUnassigned = List.of();
-        fillTeamPickers(cmd, TeamUi.teamsOf(session));
+        fillTeamPickers(cmd, TeamUtils.teamsOf(session).orElse(null));
     }
 
     @Override
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nullable GameSession session) {
-        var teamList = TeamUi.teamsOf(session);
+        var teamList = TeamUtils.teamsOf(session).orElse(null);
 
         var unassigned = new ArrayList<UUID>();
         for (var player : Universe.get().getPlayers()) {
@@ -80,14 +81,14 @@ public final class TeamsTab implements AdminTab {
                 unassigned.add(player.getUuid());
             }
         }
-        unassigned.sort((a, b) -> String.CASE_INSENSITIVE_ORDER.compare(TeamUi.nameOf(a), TeamUi.nameOf(b)));
+        unassigned.sort((a, b) -> String.CASE_INSENSITIVE_ORDER.compare(PlayerUtils.nameFor(a), PlayerUtils.nameFor(b)));
         if (!unassigned.equals(pickerUnassigned)) {
             pickerUnassigned = List.copyOf(unassigned);
             Widgets.fillPicker(cmd, "#AssignPlayer", memberOptions(pickerUnassigned));
         }
         Widgets.field(cmd, "UnassignedField", unassigned.isEmpty() ? "everyone online is on a team" : unassigned.size() + " online without a team");
 
-        var teams = teamList == null ? List.<TeamComponent>of() : TeamUi.sortedTeams(teamList);
+        var teams = teamList == null ? List.<TeamComponent>of() : TeamUtils.sortedTeams(teamList);
         var ids = teams.stream().map(TeamComponent::getId).toList();
         if (!ids.equals(rowTeams)) {
             pickerMembers.clear();
@@ -108,18 +109,18 @@ public final class TeamsTab implements AdminTab {
         for (int i = 0; i < teams.size(); i++) {
             var team = teams.get(i);
             var row = "#TeamList[" + i + "]";
-            var members = TeamUi.membersOf(team);
+            var members = TeamUtils.membersOf(team);
 
             int onlineCount = 0;
             Message memberText = null;
             for (var member : members) {
                 boolean here = PlayerUtils.isOnline(member);
                 onlineCount += here ? 1 : 0;
-                var part = Message.raw((memberText == null ? "" : ", ") + TeamUi.nameOf(member)).color(here ? "#c9d1d9" : "#5a6a7a");
+                var part = Message.raw((memberText == null ? "" : ", ") + PlayerUtils.nameFor(member)).color(here ? "#c9d1d9" : "#5a6a7a");
                 memberText = memberText == null ? part : memberText.insert(part);
             }
 
-            Widgets.text(cmd, row + " #Name", TeamUi.displayName(team));
+            Widgets.text(cmd, row + " #Name", TeamUtils.displayName(team));
             var status = Message.raw(team.getSize() + " players  ·  " + onlineCount + " online").color("#878e9c");
             if (team.getTeamType() != TeamType.Participant) {
                 status = status.insert(Message.raw("  ·  " + team.getTeamType().name().toLowerCase()).color("#878e9c"));
@@ -154,7 +155,7 @@ public final class TeamsTab implements AdminTab {
 
     @Nullable
     private Message assign(@Nonnull AdminPageEvent event, @Nullable GameSession session, @Nonnull AdminPage page) {
-        var teams = TeamUi.teamsOf(session);
+        var teams = TeamUtils.teamsOf(session).orElse(null);
         if (teams == null) {
             return error("This session has no teams yet!");
         }
@@ -179,22 +180,22 @@ public final class TeamsTab implements AdminTab {
     @Nonnull
     private static Message put(@Nonnull TeamListComponent teams, @Nonnull UUID player, @Nonnull TeamComponent team) {
         teams.put(player, team.getId());
-        return Widgets.ok(TeamUi.nameOf(player) + " is now on " + TeamUi.displayName(team));
+        return Widgets.ok(PlayerUtils.nameFor(player) + " is now on " + TeamUtils.displayName(team));
     }
 
     @Nonnull
     private static Message remove(@Nonnull AdminPageEvent event, @Nullable GameSession session) {
-        var teams = TeamUi.teamsOf(session);
+        var teams = TeamUtils.teamsOf(session).orElse(null);
         var uuid = event.pick().isEmpty() ? null : TeamComponent.parseUuid(event.pick());
         if (teams == null || uuid == null) {
             return error("Pick a member");
         }
         var team = teams.get(event.arg());
         if (team == null || !team.contains(uuid)) {
-            return Widgets.warn(TeamUi.nameOf(uuid) + " was not on " + event.arg());
+            return Widgets.warn(PlayerUtils.nameFor(uuid) + " was not on " + event.arg());
         }
         teams.remove(uuid, team.getId());
-        return Widgets.ok(TeamUi.nameOf(uuid) + " removed from " + TeamUi.displayName(team));
+        return Widgets.ok(PlayerUtils.nameFor(uuid) + " removed from " + TeamUtils.displayName(team));
     }
 
     @Nonnull
@@ -224,8 +225,8 @@ public final class TeamsTab implements AdminTab {
     private void fillTeamPickers(@Nonnull UICommandBuilder cmd, @Nullable TeamListComponent teamList) {
         var options = new ArrayList<Widgets.Option>();
         if (teamList != null) {
-            for (var team : TeamUi.sortedTeams(teamList)) {
-                options.add(new Widgets.Option(TeamUi.displayName(team), team.getId()));
+            for (var team : TeamUtils.sortedTeams(teamList)) {
+                options.add(new Widgets.Option(TeamUtils.displayName(team), team.getId()));
             }
         }
         Widgets.fillPicker(cmd, "#AssignTeam", options);
@@ -236,7 +237,7 @@ public final class TeamsTab implements AdminTab {
     private static List<Widgets.Option> memberOptions(@Nonnull List<UUID> players) {
         var options = new ArrayList<Widgets.Option>(players.size());
         for (var player : players) {
-            options.add(new Widgets.Option(TeamUi.nameOf(player), player.toString()));
+            options.add(new Widgets.Option(PlayerUtils.nameFor(player), player.toString()));
         }
         return options;
     }

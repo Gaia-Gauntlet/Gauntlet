@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.auth.ProfileServiceClient;
 import com.hypixel.hytale.server.core.auth.ServerAuthManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,6 +58,11 @@ public final class PlayerUtils {
         return Universe.get().getPlayer(playerUuid);
     }
 
+    public static World worldOf(PlayerRef player) {
+        var world = player.getWorldUuid();
+        return Universe.get().getWorld(world);
+    }
+
     /**
      * Returning null means the player is offline
      * @param playerName Name of the player to fetch the UUID of
@@ -105,7 +111,7 @@ public final class PlayerUtils {
     }
     
     @Nullable
-    public static String resolveOnline(UUID playerUuid) {
+    public static String nameFor(UUID playerUuid) {
         var cachedNormalized = idsToPlayer.get(playerUuid);
         if (cachedNormalized != null) {
             return resolveOnline(cachedNormalized);

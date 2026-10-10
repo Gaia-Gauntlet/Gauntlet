@@ -5,11 +5,12 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -20,9 +21,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  */
 public final class PartyHud implements HudElement {
 
-    static final int TOP = 52;
-    static final int HEIGHT = 178;
-    static final int SPECTATING_HEIGHT = 64;
+    public static final int TOP = 52;
+    public static final int HEIGHT = 178;
+    public static final int SPECTATING_HEIGHT = 64;
     private static final int RIGHT = 12;
     private static final int WIDTH = 300;
     private static final String MEMBER = "Gauntlet/Plugins/" + TeamsPlugin.ID + "/PartyMember.ui";
@@ -46,8 +47,8 @@ public final class PartyHud implements HudElement {
     }
 
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return TeamUi.teamOf(session, player.getUuid()) != null;
+    public boolean gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        return TeamUtils.teamOf(session, player.getUuid()) != null;
     }
 
     @Override
@@ -57,25 +58,25 @@ public final class PartyHud implements HudElement {
 
     @Override
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        var team = TeamUi.teamOf(session, player.getUuid());
+        var team = TeamUtils.teamOf(session, player.getUuid()).orElse(null);
         if (team == null) {
             return;
         }
-        var members = team.isParticipant() ? TeamUi.membersOf(team) : List.<UUID>of();
+        var members = team.isParticipant() ? TeamUtils.membersOf(team) : List.<UUID>of();
         if (!team.getId().equals(builtTeam) || !members.equals(builtMembers)) {
             build(cmd, team, members);
         }
         if (!team.isParticipant()) {
             return;
         }
-        sent.text(cmd, "#PartyScore", Integer.toString(TeamUi.score(team)));
+        sent.text(cmd, "#PartyScore", Integer.toString(TeamUtils.score(team)));
         for (int i = 0; i < members.size(); i++) {
             var member = members.get(i);
             var card = "#PartyMembers[" + i + "]";
             var online = PlayerUtils.isOnline(member);
-            sent.visible(cmd, card + " #Dead", online && TeamUi.isEliminated(member));
+            sent.visible(cmd, card + " #Dead", online && TeamUtils.isEliminated(member));
             sent.visible(cmd, card + " #Off", !online);
-            sent.text(cmd, card + " #Score", TeamUi.score(member) + " pts");
+            sent.text(cmd, card + " #Score", TeamUtils.score(member) + " pts");
         }
     }
 
@@ -86,8 +87,8 @@ public final class PartyHud implements HudElement {
 
         var participant = team.isParticipant();
         HudWidgets.anchor(cmd, "#Party", TOP, RIGHT, WIDTH, participant ? HEIGHT : SPECTATING_HEIGHT);
-        cmd.set("#PartyName.Text", TeamUi.displayName(team));
-        TeamUi.icon(cmd, "#PartyIcon", "#PartyInitial", team);
+        cmd.set("#PartyName.Text", TeamUtils.displayName(team));
+        TeamUtils.icon(cmd, "#PartyIcon", "#PartyInitial", team);
         cmd.set("#PartySpectating.Visible", !participant);
         cmd.set("#PartyStat.Visible", participant);
         cmd.set("#PartyDivider.Visible", participant);
@@ -98,9 +99,9 @@ public final class PartyHud implements HudElement {
             var card = "#PartyMembers[" + i + "]";
             cmd.append("#PartyMembers", MEMBER);
             cmd.set(card + " #Portrait.PlayerUuid", members.get(i).toString());
-            cmd.set(card + " #Name.Text", TeamUi.nameOf(members.get(i)));
-            cmd.set(card + " #DeadIcon.Background", TeamUi.DEAD_ICON);
-            cmd.set(card + " #OffIcon.Background", TeamUi.DISCONNECTED_ICON);
+            cmd.set(card + " #Name.Text", PlayerUtils.nameFor(members.get(i)));
+            cmd.set(card + " #DeadIcon.Background", TeamUtils.DEAD_ICON);
+            cmd.set(card + " #OffIcon.Background", TeamUtils.DISCONNECTED_ICON);
         }
     }
 }
