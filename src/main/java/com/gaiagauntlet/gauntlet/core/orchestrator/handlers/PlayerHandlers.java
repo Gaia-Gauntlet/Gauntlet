@@ -98,8 +98,8 @@ public class PlayerHandlers extends HandlerUtils {
 
             // otherwise, set them to be the same (as the owner)
             var resource = withResource();
-            // auto-removes from old session map
-            resource.addPartyToSession(party.getId(), sessionId);
+            // auto-removes from old session map - removes the party from a session
+            resource.addPartyToSession(party.getId(), null);
         }
 
         // - leave old session (pulls all party members out of session if party leader)
@@ -118,9 +118,10 @@ public class PlayerHandlers extends HandlerUtils {
                         .param("oldSessionId", partySessionId), e);
                 return;
             }
-            Resolve.log(evt, session, msg("server.gg.events.players.join.existed")
+            Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
                     .param("playerName", playerRef.getUsername())
-                    .param("oldSessionId", partySessionId));
+                );
+            return;
         }
 
         if (isOwner) {
@@ -250,7 +251,7 @@ public class PlayerHandlers extends HandlerUtils {
                                 .param("playerName", playerRef.getUsername()), error);
                         return;
                     }
-                    
+
                     Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
                             .param("playerName", playerRef.getUsername()));
 
