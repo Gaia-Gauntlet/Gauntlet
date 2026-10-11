@@ -107,7 +107,7 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
 
         // Check for game end
         Collection<TeamComponent> aliveTeams = TeamUtils.withAliveTeams(world, session.getId());
-        if (aliveTeams.size() == 1) {
+        if (aliveTeams.size() >= 1) {
             EZState.setState(gameStore, EZStates.ENDED);
         }
     }

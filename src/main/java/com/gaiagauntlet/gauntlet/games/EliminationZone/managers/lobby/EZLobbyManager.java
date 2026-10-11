@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.List;
@@ -11,6 +12,7 @@ import com.hypixel.hytale.server.core.modules.entity.component.TransformComponen
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent.EliminationReason;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -33,6 +35,7 @@ import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.SpawnUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -84,10 +87,9 @@ public class EZLobbyManager implements LobbyManager {
             return;
 
         arrive(ref, player, accessor, sessionId, gameStore);
-        // every arrival changes who is online, standing, or on a team for the players already here
+        // every arrival changes who is online, standing, or on a team for the players
+        // already here
         TeamUtils.updateHuds(gameStore, Set.of());
-
-        PlayerUtils.reset(player);
     }
 
     private static void arrive(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
@@ -97,14 +99,19 @@ public class EZLobbyManager implements LobbyManager {
         gameComp.incrementParticipants();
 
         var state = EZState.currentState(gameStore);
-        if (state == EZStates.LOBBY) {
+        // allow late joins during intro sequence
+        if (state == EZStates.LOBBY || TimerUtils.isRunning(gameStore, LobbyEventListeners.INTRO_TIMER)) {
             joinLobby(ref, player, accessor, gameStore);
+            PlayerUtils.reset(player);
             countDown(gameStore, gameComp.getParticipants(), GauntletUtils.playersFor(sessionId).size());
             return;
         }
         if (accessor.getComponent(ref, TeamPlayerComponent.getComponentType()) == null) {
             var teamId = TeamUtils.teamOf(gameStore, player.getUuid()).map(TeamComponent::getId).orElse(null);
-            accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(teamId));
+            if (teamId != null) {
+                // only add the teamPlayerComp if the player is on an existing team
+                accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(teamId));
+            }
         }
         if ((state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH)
                 || TimerUtils.isRunning(gameStore, LobbyEventListeners.INTRO_TIMER))
@@ -113,12 +120,17 @@ public class EZLobbyManager implements LobbyManager {
         var team = TeamUtils.teamOf(gameStore, player.getUuid()).orElse(null);
         if (team == null || !team.isParticipant()
                 || accessor.getComponent(ref, EliminatedComponent.getComponentType()) != null) {
-            spectate(ref, accessor);
-            return;
+            var ezComp = accessor.getComponent(ref, EliminatedComponent.getComponentType());
+            if (ezComp != null && ezComp.getReason() == EliminationReason.KILLED) { // if previously killed, spectator
+                                                                                    // for thou
+                spectate(ref, accessor);
+                return;
+            }
         }
         var teammate = livingTeammate(team, player, accessor.getExternalData().getWorld());
         if (teammate == null) {
-            accessor.addComponent(ref, EliminatedComponent.getComponentType(), new EliminatedComponent());
+            accessor.addComponent(ref, EliminatedComponent.getComponentType(),
+                    new EliminatedComponent(EliminationReason.KILLED));
             spectate(ref, accessor);
             return;
         }
@@ -145,7 +157,8 @@ public class EZLobbyManager implements LobbyManager {
                 gameTimerComp);
     }
 
-    // a match that has not started gives every arrival a clean slate and a team, since state from an earlier match is saved with the player
+    // a match that has not started gives every arrival a clean slate and a team,
+    // since state from an earlier match is saved with the player
     private static void joinLobby(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
             GameEcs gameStore) {
         accessor.tryRemoveComponent(ref, EliminatedComponent.getComponentType());
@@ -180,12 +193,14 @@ public class EZLobbyManager implements LobbyManager {
     }
 
     @Override
-    public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> players) {
+    public CompletableFuture<Void> onLeave(World hubWorld, World arenaWorld, String session,
+            Collection<PlayerRef> players) {
         // Increment participant counter
         var gameStore = GameStore.withStore(arenaWorld, session).orElse(null);
         if (gameStore == null)
             return CompletableFuture.completedFuture(null);
         var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
+        var cleanupFutures = new ArrayList<CompletableFuture<Void>>();
 
         for (var player : players) {
             gameComp.decrementParticipants();
@@ -198,15 +213,19 @@ public class EZLobbyManager implements LobbyManager {
             }
             var store = ref.getStore();
             var playerWorld = store.getExternalData().getWorld();
-            GauntletUtils.run(playerWorld, () -> {
+            var cleanupFuture = GauntletUtils.runAsync(playerWorld, () -> {
                 // remove the component off the player
                 try {
+                    store.addComponent(ref, EliminatedComponent.getComponentType(),
+                            new EliminatedComponent(EliminationReason.KILLED));
                     store.tryRemoveComponent(ref, EZPlayerComponent.getComponentType());
                 } catch (Exception e) {
                     GaiaLog.atError(e).withSession(session).log("Failed to clean " + player.getUsername()
                             + " from EZGame with cause " + e.getLocalizedMessage());
                 }
             });
+            cleanupFutures.add(cleanupFuture);
+
         }
 
         if (EZState.currentState(gameStore) == EZStates.LOBBY
@@ -215,8 +234,7 @@ public class EZLobbyManager implements LobbyManager {
             TimerUtils.cancel(gameStore);
         }
 
-
-        return CompletableFuture.completedFuture(null);
+        return CompletableFuture.allOf(cleanupFutures.toArray(new CompletableFuture[0]));
     }
 
     public CompletableFuture<Transform> locationFor(PlayerRef player, World world, String sessionId) {

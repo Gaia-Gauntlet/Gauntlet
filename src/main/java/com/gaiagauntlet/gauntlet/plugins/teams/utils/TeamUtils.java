@@ -86,7 +86,7 @@ public class TeamUtils {
      */
     public static boolean hasAlive(TeamComponent team) {
         for (UUID uuid : team.getPlayers()) {
-            var playerRef = Universe.get().getPlayer(uuid);
+            var playerRef = PlayerUtils.get(uuid);
             if (Objects.isNull(playerRef))
                 continue;
             if (playerRef.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)

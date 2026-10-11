@@ -250,6 +250,7 @@ public class PlayerHandlers extends HandlerUtils {
                     }
                     Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
                             .param("playerName", playerRef.getUsername()));
+                    
                     return;
                 });
             } catch (Exception e) {

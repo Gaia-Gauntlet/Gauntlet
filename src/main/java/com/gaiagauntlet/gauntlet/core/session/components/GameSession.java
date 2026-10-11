@@ -112,6 +112,11 @@ public class GameSession {
         }
     }
 
+    public <T extends SessionComponent> Optional<T> remove(SessionComponentType<T> type) {
+        var existing = sessionComponents.remove(type.getIndex());
+        return Optional.ofNullable(type.getTypeClass().cast(existing));
+    }
+
     @Getter
     private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
 
