@@ -6,17 +6,17 @@ import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
-import com.gaiagauntlet.gauntlet.core.party.commands.PartyCommands;
 import com.gaiagauntlet.gauntlet.core.party.commands.RejoinCommand;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
+import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
-import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
-import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
@@ -71,7 +71,7 @@ public class GauntletPlugin extends JavaPlugin {
 
     private void setupCommands() {
         getCommandRegistry().registerCommand(new GauntletCommand());
-        getCommandRegistry().registerCommand(new PartyCommands());
+        getCommandRegistry().registerCommand(new OpenPageCommand("party", "Open the party menu", PartyPage.ID));
         getCommandRegistry().registerCommand(new RejoinCommand());
         getCommandRegistry()
                 .registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
