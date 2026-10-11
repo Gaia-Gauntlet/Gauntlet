@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,13 +27,15 @@ public class SessionHandlers extends HandlerUtils {
 
         if (gameSession.getGameSequence() != null) {
 
+            var games = new ArrayList<String>();
             for (var game : gameSession.getGameSequence()) {
                 if (!GameRegistry.hasGame(game)) {
                     Resolve.error(sessionEvt, gameSession, "session.generic.missing.game");
                     continue;
                 }
-                gameSession.addGame(game);
+                games.add(game);
             }
+            gameSession.setGames(games);
             installDefaults(gameSession, gameSession.getGameSequence());
         }
 
@@ -176,27 +179,30 @@ public class SessionHandlers extends HandlerUtils {
         // pass stuff to the game
         var future = game.cleanGame(hub, session);
         future.whenComplete((value, error) -> {
-            if (error != null) {
-                GaiaLog.atError().withSession(session).withCause(error)
-                        .log(MessageUtils.msg("server.gg.events.session.setup.error")
-                                .param("sessionId", session.getId())
-                                .param("gameId", currentGame)
-                                .param("reason", error.getLocalizedMessage()));
-                session.setErrored("Error thrown when cancelling");
-            } else {
-                var success = session.setComplete(currentGame);
-                if (!success) {
-                    sessionEvt.complete(GaiaLog.atError().withSession(session)
-                            .log(MessageUtils.msg("server.gg.events.session.error.unavailable")
-                                    .param("sessionState", session.getSessionState().toString())
+            // run on the hub thread
+            GauntletUtils.run(hub, () -> {
+                if (error != null) {
+                    GaiaLog.atError().withSession(session).withCause(error)
+                            .log(MessageUtils.msg("server.gg.events.session.setup.error")
                                     .param("sessionId", session.getId())
-                                    .param("action", "completing")));
-                    return;
+                                    .param("gameId", currentGame)
+                                    .param("reason", error.getLocalizedMessage()));
+                    session.setErrored("Error thrown when cancelling");
+                } else {
+                    var success = session.setComplete(currentGame);
+                    if (!success) {
+                        sessionEvt.complete(GaiaLog.atError().withSession(session)
+                                .log(MessageUtils.msg("server.gg.events.session.error.unavailable")
+                                        .param("sessionState", session.getSessionState().toString())
+                                        .param("sessionId", session.getId())
+                                        .param("action", "completing")));
+                        return;
+                    }
                 }
-            }
 
-            refreshHud(session);
-            Resolve.success(sessionEvt, session, "server.gg.events.session.clean.success");
+                refreshHud(session);
+                Resolve.success(sessionEvt, session, "server.gg.events.session.clean.success");
+            });
         });
     }
 

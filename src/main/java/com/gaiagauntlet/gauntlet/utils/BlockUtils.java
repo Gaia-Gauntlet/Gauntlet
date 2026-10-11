@@ -66,6 +66,10 @@ public class BlockUtils {
 
     /** Places the block at the position. False when the section is not loaded or the block id is unknown. */
     public static boolean setBlock(World world, int x, int y, int z, String blockTypeKey) {
+        return setBlock(world, x, y, z, blockTypeKey, SetBlockSettings.NONE);
+    }
+
+    public static boolean setBlock(World world, int x, int y, int z, String blockTypeKey, int settings) {
         final var assetMap = BlockType.getAssetMap();
         final var blockId = assetMap.getIndex(blockTypeKey);
         final var blockType = assetMap.getAsset(blockId);
@@ -78,6 +82,6 @@ public class BlockUtils {
             return false;
 
         return BlockOperations.setBlock(chunkStore, sectionReference, x, y, z, blockId, blockType,
-                RotationTuple.NONE_INDEX, FillerBlockUtil.NO_FILLER, SetBlockSettings.NONE);
+                RotationTuple.NONE_INDEX, FillerBlockUtil.NO_FILLER, settings);
     }
 }

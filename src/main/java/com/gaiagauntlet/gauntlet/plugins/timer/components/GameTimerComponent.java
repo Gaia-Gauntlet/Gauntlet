@@ -3,7 +3,6 @@ package com.gaiagauntlet.gauntlet.plugins.timer.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;

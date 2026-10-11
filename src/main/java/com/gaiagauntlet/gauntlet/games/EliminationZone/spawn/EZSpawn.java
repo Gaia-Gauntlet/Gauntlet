@@ -4,8 +4,8 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia.CornucopiaMovingPlatformsHandler;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.DiscoveryTitleSuppressor;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.RisingBlockTickingSystem;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.SpawnDamagePreventionSystem;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
@@ -24,9 +24,9 @@ public class EZSpawn {
                 .setComponentType(plugin.getEntityStoreRegistry().registerComponent(RisingBlockComponent.class,
                         RisingBlockComponent::new));
 
-        TimerUtils.registerOnComplete("SpawnProtection", EZController.ID, SpawnDamagePreventionSystem::onEnd);
+        TimerUtils.registerOnComplete(EZController.ID, LobbyEventListeners::onTimerComplete);
 
         plugin.getEntityStoreRegistry().registerSystem(new RisingBlockTickingSystem());
-        plugin.getEntityStoreRegistry().registerSystem(new SpawnDamagePreventionSystem());
+        plugin.getEntityStoreRegistry().registerSystem(new DiscoveryTitleSuppressor());
     }
 }

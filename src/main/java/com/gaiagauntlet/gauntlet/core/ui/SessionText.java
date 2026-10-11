@@ -35,6 +35,7 @@ public final class SessionText {
             case IDLE -> "Waiting";
             case SETTING_UP -> "Setting up";
             case RUNNING -> "Playing";
+            case ENDING -> "Ending";
             case CLEANING -> "Wrapping up";
             case FINISHED -> "Finished";
             case ERROR -> "Something went wrong";

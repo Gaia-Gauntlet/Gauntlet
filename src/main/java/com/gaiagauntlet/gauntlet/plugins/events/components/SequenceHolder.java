@@ -5,32 +5,24 @@ import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEventConfig;
 import lombok.Getter;
 
 public class SequenceHolder {
-    
-    @Getter private double scheduledTime = 0f;
-    @Getter private String ID = "";
-    @Getter private GameEventConfig gameConfig;
 
-    public void hydrateFrom(GameEventConfig gameEvent) {
-        scheduledTime = gameEvent.getAtMatchSeconds();
-        ID = gameEvent.getId();
-        gameConfig = gameEvent;
-    }
+    @Getter private double scheduledTime;
+    @Getter private final GameEventConfig gameConfig;
 
-    public void hydrateFrom(GameEventConfig gameEvent, double scheduledTime) {
-        hydrateFrom(gameEvent);
-        this.scheduledTime = scheduledTime;
-    }
-
-    public SequenceHolder() {}
     public SequenceHolder(GameEventConfig gameEvent) {
-        hydrateFrom(gameEvent);
+        this(gameEvent, gameEvent.getAtMatchSeconds());
     }
 
     public SequenceHolder(GameEventConfig gameEvent, double scheduledTime) {
-        hydrateFrom(gameEvent, scheduledTime);
+        this.gameConfig = gameEvent;
+        this.scheduledTime = scheduledTime;
     }
 
-    public SequenceHolder clone() {
-        return new SequenceHolder();
+    public String getID() {
+        return gameConfig.getId();
+    }
+
+    public void delay(double seconds) {
+        scheduledTime += seconds;
     }
 }

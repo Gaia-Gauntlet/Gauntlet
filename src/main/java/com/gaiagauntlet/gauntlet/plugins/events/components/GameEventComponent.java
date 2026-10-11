@@ -1,10 +1,16 @@
 package com.gaiagauntlet.gauntlet.plugins.events.components;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEventConfig;
 import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEvents;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameComponentType;
@@ -19,84 +25,104 @@ public class GameEventComponent implements GameComponent {
             ID,
             GameEventComponent.class);
 
-    private ArrayDeque<SequenceHolder> scheduledEvents;
-    private SequenceHolder[] randomEvents;
+    private final List<SequenceHolder> scheduledEvents = new ArrayList<>();
+    private SequenceHolder[] randomEvents = new SequenceHolder[0];
     @Getter
-    private double nextEventTime = Double.MAX_VALUE;
+    private double nextRandomEventTime = Double.MAX_VALUE;
+    private double randomEventInterval;
     @Getter
-    private double nextRandomEventTime = 0f;
+    private float accumulatedGameTimeSeconds;
+    @Getter
+    private boolean paused;
 
-    private double randomEventInterval = 200f;
-
-    public void hydrateFrom(GameEvents gameEvents) {
-        // add the scheduledEvents
-        if (gameEvents == null)
+    public void hydrateFrom(@Nullable GameEvents gameEvents) {
+        scheduledEvents.clear();
+        randomEvents = new SequenceHolder[0];
+        accumulatedGameTimeSeconds = 0;
+        paused = false;
+        nextRandomEventTime = Double.MAX_VALUE;
+        if (gameEvents == null) {
             return;
-
-        var scheduled = gameEvents.getScheduled();
-        var sortedKeys = gameEvents.getSortedKeys();
-        nextEventTime = sortedKeys[0];
-        for (var key : sortedKeys) {
-            var evt = scheduled.get(key);
-            scheduledEvents.addLast(new SequenceHolder(evt, key));
         }
 
-        randomEventInterval = gameEvents.getIntervalSeconds();
-        nextRandomEventTime = randomEventInterval + gameEvents.getFirstDrawAtSeconds();
+        var scheduled = gameEvents.getScheduled();
+        if (scheduled != null) {
+            for (var key : gameEvents.getSortedKeys()) {
+                scheduledEvents.add(new SequenceHolder(scheduled.get(key), key));
+            }
+        }
 
         var entries = gameEvents.getEntries();
-        randomEvents = new SequenceHolder[entries.length];
-
-        for (int i = 0; i < entries.length; i++) {
-            randomEvents[i] = new SequenceHolder(entries[i]);
+        if (entries != null && entries.length > 0) {
+            randomEvents = new SequenceHolder[entries.length];
+            for (int i = 0; i < entries.length; i++) {
+                randomEvents[i] = new SequenceHolder(entries[i]);
+            }
+            randomEventInterval = gameEvents.getIntervalSeconds();
+            nextRandomEventTime = randomEventInterval + gameEvents.getFirstDrawAtSeconds();
         }
     }
 
-    @Getter
-    public float accumulatedGameTimeSeconds;
-
     public float incrementTimer(float deltaTime) {
-        accumulatedGameTimeSeconds += deltaTime;
+        if (!paused) {
+            accumulatedGameTimeSeconds += deltaTime;
+        }
         return accumulatedGameTimeSeconds;
     }
 
-    public float nextEvent() {
-        return nextEvent();
+    public void pause() {
+        paused = true;
     }
 
-    public SequenceHolder nextRandomEvent() {
-        nextRandomEventTime = accumulatedGameTimeSeconds + randomEventInterval;
-        if (randomEvents.length == 0)
-            return null;
+    public void resume() {
+        paused = false;
+    }
 
+    @Nullable
+    public SequenceHolder popDue() {
+        if (scheduledEvents.isEmpty() || scheduledEvents.getFirst().getScheduledTime() > accumulatedGameTimeSeconds) {
+            return null;
+        }
+        return scheduledEvents.removeFirst();
+    }
+
+    @Nullable
+    public SequenceHolder popNext() {
+        return scheduledEvents.isEmpty() ? null : scheduledEvents.removeFirst();
+    }
+
+    @Nullable
+    public SequenceHolder drawRandomIfDue() {
+        if (accumulatedGameTimeSeconds < nextRandomEventTime || randomEvents.length == 0) {
+            return null;
+        }
+        nextRandomEventTime = accumulatedGameTimeSeconds + randomEventInterval;
         return randomEvents[ThreadLocalRandom.current().nextInt(randomEvents.length)];
     }
 
-    public SequenceHolder popEvent() {
-        if (scheduledEvents.isEmpty()) {
-            nextEventTime = Double.MAX_VALUE;
-            return null;
+    public void queue(@Nonnull GameEventConfig config, double inSeconds) {
+        scheduledEvents.add(new SequenceHolder(config, accumulatedGameTimeSeconds + Math.max(0.0, inSeconds)));
+        scheduledEvents.sort(Comparator.comparingDouble(SequenceHolder::getScheduledTime));
+    }
+
+    public void delay(double seconds) {
+        scheduledEvents.forEach(event -> event.delay(seconds));
+        if (nextRandomEventTime != Double.MAX_VALUE) {
+            nextRandomEventTime += seconds;
         }
-        var event = scheduledEvents.pop();
-        nextEventTime = !scheduledEvents.isEmpty()
-                ? scheduledEvents.getFirst().getScheduledTime()
-                : Double.MAX_VALUE;
-
-        return event;
     }
 
-    public GameEventComponent() {
-        this(0);
+    public boolean cancel(int index, double scheduledTime) {
+        if (index < 0 || index >= scheduledEvents.size()
+                || Double.compare(scheduledEvents.get(index).getScheduledTime(), scheduledTime) != 0) {
+            return false;
+        }
+        scheduledEvents.remove(index);
+        return true;
     }
 
-    public GameEventComponent(float initial) {
-        this(initial, new ArrayDeque<SequenceHolder>(), new SequenceHolder[0]);
+    @Nonnull
+    public List<SequenceHolder> scheduled() {
+        return List.copyOf(scheduledEvents);
     }
-
-    public GameEventComponent(float initial, ArrayDeque<SequenceHolder> scheduledEvents, SequenceHolder[] randomEvents) {
-        this.accumulatedGameTimeSeconds = initial;
-        this.scheduledEvents = scheduledEvents;
-        this.randomEvents = randomEvents;
-    }
-
 }

@@ -35,9 +35,9 @@ public class GameTimerSystem extends GameTickingSystem {
 
             var ctx = GameStore.getContext(gameStore);
 
-            MatchEventRegistry.dispatch(TimerCompleteEvent.of(gameStore, gameTimerComponent.getTimerId()), ctx.getGameId());
-            // remove the timer
+            // removed before dispatch so a listener can start the next timer
             gameStore.remove(GameTimerComponent.getComponentType());
+            MatchEventRegistry.dispatch(TimerCompleteEvent.of(gameStore, gameTimerComponent.getTimerId()), ctx.getGameId());
             TimerHud.update(gameStore);
             return;
         }

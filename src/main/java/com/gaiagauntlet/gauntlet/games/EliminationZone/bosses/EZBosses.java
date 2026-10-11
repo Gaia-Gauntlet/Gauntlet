@@ -9,7 +9,6 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.systems.BossReload
 import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEventConfig;
 import com.gaiagauntlet.gauntlet.plugins.events.events.SequenceEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 public class EZBosses {
@@ -29,7 +28,7 @@ public class EZBosses {
                 BossSpawnEventConfig.CODEC);
 
         // register the event handler
-        HytaleServer.get().getEventBus().register(SequenceEvent.class, BossSpawnEventConfig.Id,
+        plugin.getEventRegistry().register(SequenceEvent.class, BossSpawnEventConfig.Id,
                 BossSpawnEventConfig::execute);
 
         registry.registerSystem(new BossDeathSystem());

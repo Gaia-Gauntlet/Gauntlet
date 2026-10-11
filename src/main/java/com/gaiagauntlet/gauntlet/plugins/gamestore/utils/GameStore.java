@@ -74,7 +74,7 @@ public class GameStore {
                     .orElseThrow(() -> new IllegalStateException(
                             "Attempted to access the world for " + sessionId + " but it has no players"));
 
-            var ctx = new ContextComponent(world, sessionId, session.getCurrentGame());
+            var ctx = new ContextComponent(world, session.getCurrentGame(), sessionId);
             store.put(ContextComponent.getComponentType(), ctx);
             return ctx;
         });

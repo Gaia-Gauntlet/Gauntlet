@@ -1,4 +1,4 @@
-// Events tab: the live queue, ad hoc events, and the preset.
+// Events tab: the live queue, ad hoc events, and the configured events.
 $G = "../../Admin/Common.ui";
 
 Group {
@@ -40,14 +40,9 @@ Group {
         }
 
         $G.@Card {
-            $G.@Header { @Text = "Preset"; }
-            $G.@Field #EventPresetField { @Key = "Running"; }
-            $G.@PickerRow {
-                $G.@Picker #EventPresetPicker { @Anchor = (Right: 6); }
-                $G.@Go #EventPresetGame { @Anchor = (Right: 4); Text: "This game"; }
-                $G.@GoQuiet #EventPresetGlobal { Text: "Every game"; }
-            }
-            $G.@ListPanel #PresetList {}
+            $G.@Header { @Text = "Configured"; }
+            $G.@Field #EventDrawField { @Key = "Draws"; }
+            $G.@ListPanel #EventConfigList {}
         }
     }
 }

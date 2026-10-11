@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -20,6 +21,7 @@ import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamType;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.Message;
@@ -61,6 +63,7 @@ public final class TeamsTab implements AdminTab {
         Widgets.bindValues(evt, "#NewTeamGo", "teams.create", "",
                 Map.of("@Text", "#NewTeamId.Value", "@Pick", "#NewTeamName.Value", "@Num", "#NewTeamSize.Value"));
         Widgets.bindValues(evt, "#DeleteTeamGo", "teams.delete", "", Map.of("@Pick", "#DeleteTeamPicker.Value"));
+        Widgets.bindValues(evt, "#PresetGo", "teams.preset", "", Map.of("@Pick", "#PresetPicker.Value"));
     }
 
     @Override
@@ -69,6 +72,11 @@ public final class TeamsTab implements AdminTab {
         pickerMembers.clear();
         pickerUnassigned = List.of();
         fillTeamPickers(cmd, TeamUtils.teamsOf(session).orElse(null));
+        var presets = new ArrayList<Widgets.Option>();
+        for (var id : new TreeSet<>(TeamListAsset.getAssetMap().keySet())) {
+            presets.add(new Widgets.Option(id, id));
+        }
+        Widgets.fillPicker(cmd, "#PresetPicker", presets);
     }
 
     @Override
@@ -146,6 +154,7 @@ public final class TeamsTab implements AdminTab {
             case "teams.assign" -> assign(event, session, page);
             case "teams.remove" -> remove(event, session);
             case "teams.create" -> create(event, session);
+            case "teams.preset" -> preset(event, session);
             case "teams.delete" -> error("Deleting teams is not yet supported!");
             case "teams.send" -> error("Sending a team into the game is not yet supported!");
             case "teams.toggle" -> error("Sitting a team out is not yet supported!");
@@ -196,6 +205,22 @@ public final class TeamsTab implements AdminTab {
         }
         teams.remove(uuid, team.getId());
         return Widgets.ok(PlayerUtils.nameFor(uuid) + " removed from " + TeamUtils.displayName(team));
+    }
+
+    @Nonnull
+    private static Message preset(@Nonnull AdminPageEvent event, @Nullable GameSession session) {
+        if (session == null) {
+            return error("Pick a session first");
+        }
+        if (!session.available()) {
+            return error("Presets can only be loaded between games");
+        }
+        var asset = TeamListAsset.getAssetMap().get(event.pick());
+        if (asset == null) {
+            return error("Pick a preset");
+        }
+        session.put(TeamListComponent.getSessionComponentType(), TeamUtils.from(asset));
+        return Widgets.ok("Loaded the " + asset.getId() + " teams");
     }
 
     @Nonnull

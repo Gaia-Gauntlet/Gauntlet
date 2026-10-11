@@ -17,7 +17,7 @@ import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedCompo
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
 import com.gaiagauntlet.gauntlet.plugins.teams.listeners.TeamHudListeners;
-import com.gaiagauntlet.gauntlet.plugins.teams.systems.TeamHudDeathSystem;
+import com.gaiagauntlet.gauntlet.plugins.teams.systems.TeamHudEliminatedSystem;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsTab;
@@ -62,7 +62,8 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
 
         EliminatedComponent.setComponentType(entityStore.registerComponent(
                 EliminatedComponent.class,
-                EliminatedComponent::new));
+                "Eliminated",
+                EliminatedComponent.CODEC));
         TeamPlayerComponent.setComponentType(entityStore.registerComponent(
                 TeamPlayerComponent.class,
                 "TeamPlayer",
@@ -73,7 +74,7 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
         TeamListComponent.setGameComponentType(
                 GameComponentRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
 
-        entityStore.registerSystem(new TeamHudDeathSystem());
+        entityStore.registerSystem(new TeamHudEliminatedSystem());
         host.getEventRegistry().register(EventPriority.EARLY, PlayerDisconnectEvent.class,
                 TeamHudListeners::onPlayerDisconnect);
 
@@ -96,14 +97,12 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
 
     @Override
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
-        // sets up the game with the team stuff
-        var teamList = new TeamListComponent();
-        var sessionTeamsList = sessionObject.ensure(TeamListComponent.getSessionComponentType(), teamList);
-
-        // put it on the store
-        gameStore.put(TeamListComponent.getGameComponentType(), sessionTeamsList);
-        // init the teams
-        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), sessionTeamsList);
+        var sessionTeams = sessionObject.get(TeamListComponent.getSessionComponentType())
+                .filter(teams -> !teams.getTeams().isEmpty())
+                .orElseGet(TeamUtils::defaultTeams);
+        var gameTeams = new TeamListComponent(sessionTeams);
+        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), gameTeams);
+        gameStore.put(TeamListComponent.getGameComponentType(), gameTeams);
     }
 
     @Override

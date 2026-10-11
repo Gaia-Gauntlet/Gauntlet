@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
+import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.plugins.config.ui.ConfigTab;
 import com.gaiagauntlet.gauntlet.plugins.config.components.SessionGameConfigComponent;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.EmptyGameConfigAsset;
@@ -74,10 +75,8 @@ public class ConfigPlugin implements GamePlugin, PersistentGamePlugin, UiGamePlu
 
     @Override
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession session, GameEcs gameStore, String gameId) {
-        var configId = session.get(SessionGameConfigComponent.getSessionComponentType())
-            .map(configs -> configs.getConfigId(gameId))
-            .orElse(gameId);
-        gameStore.put(GameConfigComponent.getComponentType(), new GameConfigComponent(configId));
+        gameStore.put(GameConfigComponent.getComponentType(),
+            new GameConfigComponent(ConfigUtils.configIdFor(session, gameId)));
     }
 
     @Override

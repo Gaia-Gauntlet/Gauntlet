@@ -48,6 +48,11 @@ public class GameEcs {
         this.sessionId = sessionId;
     }
 
+    public void bindSession(String sessionId) {
+        if (this.sessionId == null)
+            this.sessionId = sessionId;
+    }
+
     public <T extends GameComponent> void put(GameComponentType<T> type, T component) {
         sessionComponents.put(type.getIndex(), component);
     }

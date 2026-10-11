@@ -1,19 +1,27 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import javax.annotation.Nullable;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import javax.annotation.Nonnull;
+import java.util.List;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZonePhase;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.assets.ZonePhaseSet;
+import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.components.WeatherPoolOptionComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
+import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEvents;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
-import com.hypixel.hytale.assetstore.AssetKeyValidator;
+import com.gaiagauntlet.gauntlet.plugins.timer.components.GGPoi;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
@@ -34,9 +42,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class EZGameConfig extends GameConfigAsset {
 
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final EZGameConfig DEFAULT = new EZGameConfig();
 
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
@@ -70,13 +80,13 @@ public class EZGameConfig extends GameConfigAsset {
             EZGameConfig::getZones)
         .documentation("Circle segment arena zones")
         .add()
-//        .append(new KeyedCodec<>("WeatherPool",
-//                new ArrayCodec<>(WeatherPoolOptionComponent.CODEC,
-//                    WeatherPoolOptionComponent[]::new)),
-//            (t, v) -> t.weatherPoolOptions = v,
-//            EZGameManager::getWeatherPoolOptions)
-//        .documentation("Pool of weather options to use during the game.")
-//        .add()
+       .append(new KeyedCodec<>("WeatherPool",
+               new ArrayCodec<>(WeatherPoolOptionComponent.CODEC,
+                   WeatherPoolOptionComponent[]::new)),
+           (t, v) -> t.weatherPoolOptions = v,
+           (t) -> t.getWeatherPoolOptions())
+       .documentation("Pool of weather options to use during the game.")
+       .add()
         .append(new KeyedCodec<>("ClosingVoidBlockMap",
                 new MapCodec<>(Codec.STRING, LinkedHashMap::new)),
             (p, v) -> p.closingVoidBlockMap = v == null ? Map.of() : Map.copyOf(v),
@@ -101,13 +111,14 @@ public class EZGameConfig extends GameConfigAsset {
         .append(new KeyedCodec<>("ZoneClosingPhaseSet", Codec.STRING),
             (p, v) -> p.zoneClosingPhaseSet = v,
             p -> p.zoneClosingPhaseSet)
+        .addValidatorLate(() -> new AssetKeyValidator<>(ZonePhaseSet::getAssetStore).late())
         .documentation("Controls each zone's close, hold, warning, damage, and audio sequence.")
         .add()
-//        .append(new KeyedCodec<>("GameEvents", GameEvents.CODEC),
-//            (p, v) -> p.gameEvents = v,
-//            p -> p.gameEvents)
-//        .documentation("Controls each zone's close, hold, warning, damage, and audio sequence.")
-//        .add()
+        .append(new KeyedCodec<>("GameEvents", GameEvents.CODEC),
+            (p, v) -> p.gameEvents = v,
+            p -> p.gameEvents)
+        .documentation("Scheduled and randomly drawn events that run during the match.")
+        .add()
         .append(new KeyedCodec<>("SpawnProtectionSeconds", Codec.FLOAT),
             (p, v) -> p.spawnProtectionSeconds = v,
             p -> p.spawnProtectionSeconds)
@@ -128,20 +139,6 @@ public class EZGameConfig extends GameConfigAsset {
             (p, v) -> p.cornucopiaDurationSeconds = v,
             p -> p.cornucopiaDurationSeconds)
         .documentation("How long the cornucopia cutscene is.")
-        .add()
-        .append(new KeyedCodec<>("TeleportWaveSize", Codec.INTEGER),
-            (p, v) -> p.teleportWaveSize = v,
-            p -> p.teleportWaveSize)
-        .addValidator(Validators.greaterThanOrEqual(1))
-        .documentation(
-            "How many players are teleported into the game world together in each wave.")
-        .add()
-        .append(new KeyedCodec<>("TeleportWaveIntervalSeconds", Codec.FLOAT),
-            (p, v) -> p.teleportWaveIntervalSeconds = v,
-            p -> p.teleportWaveIntervalSeconds)
-        .addValidator(Validators.greaterThanOrEqual(0F))
-        .documentation(
-            "Delay between each teleport wave, so the world is not loading chunks for every player at once.")
         .add()
         // apologies - there's a better key-val map way of doing this but i'm feeling
         // lazy today and am just copy-pasting this from the legacy code. There's really
@@ -171,11 +168,28 @@ public class EZGameConfig extends GameConfigAsset {
             p -> p.minPlayers)
         .documentation("The minimum number of players required to start the game.")
         .add()
-        .append(new KeyedCodec<>("TeamsPreset", Codec.STRING),
-            (p, v) -> p.teamsPresetAssetId = v,
-            p -> p.teamsPresetAssetId)
-        .addValidatorLate(() -> new AssetKeyValidator<>(TeamListAsset::getAssetStore).late())
-        .documentation("The teams to populate for this game, including any preset players.")
+        .append(new KeyedCodec<>("KillCreditSeconds", Codec.FLOAT),
+            (p, v) -> p.killCreditSeconds = v,
+            p -> p.killCreditSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("Seconds after a player's last hit on someone during which a death credits them with the kill.")
+        .add()
+        .append(new KeyedCodec<>("ScoreTable", Codec.INT_ARRAY),
+            (p, v) -> p.scoreTable = v,
+            p -> p.scoreTable)
+        .documentation("Points by placement, first place first. Teams past the end get the last value.")
+        .add()
+        .append(new KeyedCodec<>("StartBufferSeconds", Codec.FLOAT),
+            (p, v) -> p.startBufferSeconds = v,
+            p -> p.startBufferSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("Seconds the lobby counts down once every player in the session has arrived.")
+        .add()
+        .append(new KeyedCodec<>("ArrivalTimeoutSeconds", Codec.FLOAT),
+            (p, v) -> p.arrivalTimeoutSeconds = v,
+            p -> p.arrivalTimeoutSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("Seconds the lobby waits for the rest of the session once the minimum player count has arrived.")
         .add()
         .build();
 
@@ -225,25 +239,32 @@ public class EZGameConfig extends GameConfigAsset {
             0, "",
             DEFAULT_LOOT_FOUNTAIN_RULES)
     };
-//    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
+    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
     @Getter private String zoneClosingPhaseSet = "";
     @Getter private int suddenDeathAt = 6;
-    @Getter private int teleportWaveSize = 5;
-    @Getter private float teleportWaveIntervalSeconds = 1;
     @Getter private float cornucopiaDurationSeconds = 27;
     @Getter private float spawnProtectionSeconds = 30;
     @Getter private float cameraSequenceSeconds = 29;
-//    @Getter private GameEvents gameEvents;
+    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
         new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))
     };
     @Getter private float zoneTickSeconds = 2;
     @Getter private int maxActiveBosses = 3;
+    @Getter private float killCreditSeconds = 10;
+    @Getter private int[] scoreTable = {5, 4, 3, 2, 1, 0};
+    @Getter private float startBufferSeconds = 10;
+    @Getter private float arrivalTimeoutSeconds = 60;
     @Getter private int minPlayers = 2; // TODO: Increase this, just low for testing
-    @Getter private String teamsPresetAssetId = "EZDefault";
 
+
+    @Nonnull
+    public static EZGameConfig get(@Nullable GameSession session) {
+        var conf = session == null ? null : ConfigUtils.getGameConfig(session, EZController.ID);
+        return conf instanceof EZGameConfig ezConf ? ezConf : DEFAULT;
+    }
 
     public static EZGameConfig get(World world, String sessionId) {
         return get(GameStore.ensureStore(world, sessionId));
@@ -251,7 +272,11 @@ public class EZGameConfig extends GameConfigAsset {
     public static EZGameConfig get(GameEcs game) {
         var conf = ConfigUtils.getGameConfig(game);
         if (conf == null) {
-            // never configured
+            var reason = game.get(GameConfigComponent.getComponentType())
+                .map(component -> "config asset '" + component.getGameConfigAsset() + "' is not loaded")
+                .orElse("no GameConfigComponent is attached to its game store");
+            LOGGER.atWarning().atMostEvery(30, TimeUnit.SECONDS)
+                .log("[%s] Using the default EZ config: %s", game.getSessionId(), reason);
             return DEFAULT;
         }
         if (conf instanceof EZGameConfig ezConf) return ezConf;
@@ -270,7 +295,9 @@ public class EZGameConfig extends GameConfigAsset {
 
     public EZGameConfig() {}
 
-    public TeamListAsset getTeamsPreset() {
-        return TeamListAsset.getAssetMap().get(teamsPresetAssetId);
+    @Nonnull
+    public List<ZonePhase> getZonePhases() {
+        var set = ZonePhaseSet.getAssetMap().get(zoneClosingPhaseSet);
+        return set == null ? List.of() : set.getPhases();
     }
 }

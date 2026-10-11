@@ -8,6 +8,7 @@ import lombok.Setter;
 
 public class SpawnProtectionComponent implements GameComponent {
     public static final String ID = "SpawnProtectionComponent";
+    public static final String TIMER_ID = "SpawnProtection";
     @Getter @Setter private static GameComponentType<SpawnProtectionComponent> componentType =
         GameComponentRegistry.register(ID, SpawnProtectionComponent.class);
 

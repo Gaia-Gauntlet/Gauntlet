@@ -1,0 +1,40 @@
+{
+  "Phases": [
+    {
+      "Name": "Zone 1",
+      "DurationSeconds": 220,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 2",
+      "DurationSeconds": 210,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 3",
+      "DurationSeconds": 170,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 4",
+      "DurationSeconds": 170,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 5",
+      "DurationSeconds": 160,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    },
+    {
+      "Name": "Zone 6",
+      "DurationSeconds": 150,
+      "HoldSeconds": 10,
+      "WarningSeconds": 10
+    }
+  ]
+}

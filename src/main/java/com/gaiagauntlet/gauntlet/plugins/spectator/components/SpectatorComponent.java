@@ -6,8 +6,8 @@ import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.server.core.modules.entity.component.PersistentGameModeType;
 import com.hypixel.hytale.server.core.modules.entity.component.Spectating;
+import com.hypixel.hytale.server.core.modules.entity.gamemode.GameModeTypes;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,13 +49,21 @@ public final class SpectatorComponent implements Component<EntityStore> {
             accessor.tryRemoveComponent(ref, componentType);
             return true;
         }
-        var mode = accessor.getComponent(ref, PersistentGameModeType.getComponentType());
-        if ((mode != null && GAME_MODE.equals(mode.getGameModeTypeId())) || Spectating.isSpectating(ref, accessor)) {
+        var inMode = exitGameMode(ref, accessor);
+        if (inMode || Spectating.isSpectating(ref, accessor)) {
             SpectatorCamera.stop(ref, null, accessor);
             SpectatingSystems.unbindControls(ref, accessor);
             return true;
         }
         return false;
+    }
+
+    public static boolean exitGameMode(@Nonnull Ref<EntityStore> ref, @Nonnull ComponentAccessor<EntityStore> accessor) {
+        if (!GAME_MODE.equals(GameModeTypes.getCurrentTypeId(ref, accessor))) {
+            return false;
+        }
+        GameModeTypes.exit(ref, accessor);
+        return true;
     }
 
     @Override

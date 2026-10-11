@@ -46,7 +46,7 @@ public class TeamComponent {
         .documentation("The display name shown to players. Defaults to the asset id when blank.")
         .add()
         .append(new KeyedCodec<>("TeamType", new EnumCodec<>(TeamType.class)),
-            (team, v) -> team.teamType = v,
+            (team, v) -> team.teamType = v == null ? TeamType.Participant : v,
             team -> team.teamType)
         .documentation("The display name shown to players. Defaults to the asset id when blank.")
         .add()

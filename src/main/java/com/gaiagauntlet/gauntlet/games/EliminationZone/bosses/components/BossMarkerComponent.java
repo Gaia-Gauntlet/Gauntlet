@@ -19,7 +19,7 @@ public final class BossMarkerComponent implements Component<EntityStore> {
     public static final String ID = "BossMarker";
 
     public static final BuilderCodec<BossMarkerComponent> CODEC = BuilderCodec.builder(BossMarkerComponent.class, BossMarkerComponent::new)
-            .append(new KeyedCodec<>("GameId", Codec.STRING), (m, v) -> m.gameId = v == null ? "" : v, m -> m.gameId)
+            .append(new KeyedCodec<>("GameSession", Codec.STRING), (m, v) -> m.sessionId = v == null ? "" : v, m -> m.sessionId)
             .add()
             .append(new KeyedCodec<>("BossId", Codec.STRING), (m, v) -> m.bossId = v == null ? "" : v, m -> m.bossId)
             .add()
@@ -28,19 +28,19 @@ public final class BossMarkerComponent implements Component<EntityStore> {
     @Getter @Setter
     private static ComponentType<EntityStore, BossMarkerComponent> componentType;
 
-    @Getter private String gameId = "";
+    @Getter private String sessionId = "";
     @Getter private String bossId = "";
 
     private BossMarkerComponent() {
     }
 
-    public BossMarkerComponent(@Nonnull String gameId, @Nonnull String bossId) {
-        this.gameId = gameId;
+    public BossMarkerComponent(@Nonnull String sessionId, @Nonnull String bossId) {
+        this.sessionId = sessionId;
         this.bossId = bossId;
     }
 
     @Override
     public BossMarkerComponent clone() {
-        return new BossMarkerComponent(gameId, bossId);
+        return new BossMarkerComponent(sessionId, bossId);
     }
 }

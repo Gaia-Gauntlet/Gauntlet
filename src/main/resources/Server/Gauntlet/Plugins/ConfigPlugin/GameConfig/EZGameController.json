@@ -22,16 +22,10 @@
       }
     ],
     "Scheduled": {
-      "90": {
-        "Type": "ZoneBlockEvent"
-      },
       "59": {
         "Type": "WeatherEvent",
         "IsRandom": true,
         "DurationSeconds": 45
-      },
-      "60": {
-        "Type": "DisableSpawnProtectionEvent"
       }
     }
   },
@@ -151,19 +145,17 @@
   "Zones": [
     {
       "Id": "Lava Japanese",
-      "Center": {
-        "X": -98.4839859008789,
-        "Y": 51.0,
-        "Z": -0.5322037935256958
-      },
-      "Shape": {
-        "InnerRadius": 50.0,
-        "OuterRadius": 501.0,
-        "StartAngle": 0.0,
-        "EndAngle": 60.0,
-        "Height": 500.0
-      },
-      "LootFountainRandomizers": [
+      "CenterX": -98.4839859008789,
+      "CenterY": 51.0,
+      "CenterZ": -0.5322037935256958,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 0.0,
+      "EndAngle": 60.0,
+      "Height": 500.0,
+      "HudSlot": 2,
+      "HudImage": "Lava_Japanese",
+      "LootFountains": [
         {
           "Tier": 1,
           "Enabled": true,
@@ -203,19 +195,17 @@
     },
     {
       "Id": "Ice Kingdom",
-      "Center": {
-        "X": -98.47794342041016,
-        "Y": 51.0,
-        "Z": -0.5190650820732117
-      },
-      "Shape": {
-        "InnerRadius": 50.0,
-        "OuterRadius": 501.0,
-        "StartAngle": 60.0,
-        "EndAngle": 120.0,
-        "Height": 500.0
-      },
-      "LootFountainRandomizers": [
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 60.0,
+      "EndAngle": 120.0,
+      "Height": 500.0,
+      "HudSlot": 3,
+      "HudImage": "Ice_Kingdom",
+      "LootFountains": [
         {
           "Tier": 1,
           "Enabled": true,
@@ -255,19 +245,17 @@
     },
     {
       "Id": "Pirate Bay",
-      "Center": {
-        "X": -98.47794342041016,
-        "Y": 30.0,
-        "Z": -0.5190650820732117
-      },
-      "Shape": {
-        "InnerRadius": 50.0,
-        "OuterRadius": 501.0,
-        "StartAngle": 120.0,
-        "EndAngle": 180.0,
-        "Height": 500.0
-      },
-      "LootFountainRandomizers": [
+      "CenterX": -98.47794342041016,
+      "CenterY": 30.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 120.0,
+      "EndAngle": 180.0,
+      "Height": 500.0,
+      "HudSlot": 4,
+      "HudImage": "Pirate_Bay",
+      "LootFountains": [
         {
           "Tier": 1,
           "Enabled": true,
@@ -307,19 +295,17 @@
     },
     {
       "Id": "Giant Shroom Jungle",
-      "Center": {
-        "X": -98.47794342041016,
-        "Y": 51.0,
-        "Z": -0.5190650820732117
-      },
-      "Shape": {
-        "InnerRadius": 50.0,
-        "OuterRadius": 501.0,
-        "StartAngle": 180.0,
-        "EndAngle": 240.0,
-        "Height": 500.0
-      },
-      "LootFountainRandomizers": [
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 180.0,
+      "EndAngle": 240.0,
+      "Height": 500.0,
+      "HudSlot": 5,
+      "HudImage": "Giant_Shroom_Jungle",
+      "LootFountains": [
         {
           "Tier": 1,
           "Enabled": true,
@@ -359,19 +345,17 @@
     },
     {
       "Id": "Gaia City",
-      "Center": {
-        "X": -98.47794342041016,
-        "Y": 51.0,
-        "Z": -0.5190650820732117
-      },
-      "Shape": {
-        "InnerRadius": 50.0,
-        "OuterRadius": 501.0,
-        "StartAngle": 240.0,
-        "EndAngle": 300.0,
-        "Height": 500.0
-      },
-      "LootFountainRandomizers": [
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 240.0,
+      "EndAngle": 300.0,
+      "Height": 500.0,
+      "HudSlot": 0,
+      "HudImage": "Gaia_City",
+      "LootFountains": [
         {
           "Tier": 1,
           "Enabled": true,
@@ -411,19 +395,17 @@
     },
     {
       "Id": "Post Apocalyptic",
-      "Center": {
-        "X": -98.47794342041016,
-        "Y": 51.0,
-        "Z": -0.5190650820732117
-      },
-      "Shape": {
-        "InnerRadius": 50.0,
-        "OuterRadius": 501.0,
-        "StartAngle": 300.0,
-        "EndAngle": 360.0,
-        "Height": 500.0
-      },
-      "LootFountainRandomizers": [
+      "CenterX": -98.47794342041016,
+      "CenterY": 51.0,
+      "CenterZ": -0.5190650820732117,
+      "InnerRadius": 50.0,
+      "OuterRadius": 501.0,
+      "StartAngle": 300.0,
+      "EndAngle": 360.0,
+      "Height": 500.0,
+      "HudSlot": 1,
+      "HudImage": "Post_Apoc",
+      "LootFountains": [
         {
           "Tier": 1,
           "Enabled": true,
@@ -475,9 +457,6 @@
     }
   ],
   "StartBufferSeconds": 20,
-  "TeleportWaveSize": 5,
-  "TeleportWaveIntervalSeconds": 1,
   "CornucopiaDurationSeconds": 27,
-  "MinPlayers": 2,
-  "TeamsPreset": "EZDefault"
+  "MinPlayers": 2
 }

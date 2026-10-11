@@ -1,9 +1,11 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.utils;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
@@ -79,10 +81,7 @@ public class TeamUtils {
             var playerRef = Universe.get().getPlayer(uuid);
             if (Objects.isNull(playerRef))
                 continue;
-            var ref = playerRef.getReference();
-            assert ref != null;
-            var eliminated = ref.getStore().getComponent(ref, EliminatedComponent.getComponentType());
-            if (Objects.isNull(eliminated))
+            if (playerRef.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
                 return true;
         }
         return false;
@@ -111,6 +110,7 @@ public class TeamUtils {
     public static TeamListComponent from(TeamListAsset asset) {
         var teamSession = new TeamListComponent();
 
+        teamSession.setTeamSize(asset.getTeamSize());
         for (var team : asset.getTeamList().entrySet()) {
             teamSession.addTeam(team.getKey(), team.getValue().clone());
         }
@@ -151,39 +151,75 @@ public class TeamUtils {
     }
 
     /**
-     * Distribute players across existing team components. Any players already in a
-     * team remain
-     * there, and new players are fit in appropriately
+     * Places every player who is not on a team yet. Party members still to be placed go together to the
+     * smallest team with room for all of them, joining a teammate's team when one of them is already
+     * placed; a party no team can hold is split across the smallest teams with room. Players stay
+     * unplaced only when every team is full.
      */
-    public static void distributePlayers(Collection<PlayerRef> players, TeamListComponent teams) {
-        var unassigned = new LinkedHashSet<>(players);
-        // First pass - Clean offline players, fill from parties if enabled.
-        for (var team : teams.getTeams().values()) {
-            for (UUID uuid : team.getPlayers()) {
-                // Remove offline/uncalled-for players from team
-                PlayerRef player = PlayerUtils.get(uuid);
-                if (Objects.isNull(player) || !players.contains(player)) {
-                    team.remove(uuid);
+    public static void distributePlayers(@Nonnull Collection<PlayerRef> players, @Nonnull TeamListComponent teams) {
+        var groups = new LinkedHashMap<String, List<UUID>>();
+        for (var player : players) {
+            var uuid = player.getUuid();
+            if (teams.get(uuid) != null)
+                continue;
+            var key = PartyUtils.getParty(player).map(PartyComponent::getId).orElse(uuid.toString());
+            groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(uuid);
+        }
+        var ordered = new ArrayList<>(groups.entrySet());
+        ordered.sort((a, b) -> Integer.compare(b.getValue().size(), a.getValue().size()));
+        for (var group : ordered) {
+            var members = group.getValue();
+            var target = partyTeam(group.getKey(), teams, members.size());
+            if (target == null)
+                target = smallestWithRoom(teams, members.size());
+            for (var member : members) {
+                var team = target != null ? target : smallestWithRoom(teams, 1);
+                if (team == null) {
+                    GaiaLog.atWarning().log("Every team is full, " + PlayerUtils.nameFor(member) + " was not placed");
                     continue;
                 }
-                // Remove players already assigned to team from unassigned
-                unassigned.remove(player);
-            }
-
-            // Check if any parties will fit in this team.
-            for (PartyComponent party : PartyUtils.getParties()) {
-                if (team.getSize() + party.getAllOnlinePlayers().size() <= teams.getTeamSize()) {
-                    // Party fits, add all players to the team
-                    for (PlayerRef player : party.getAllOnlinePlayers()) {
-                        // Don't include players not requested to be distributed
-                        if (!unassigned.contains(player))
-                            continue;
-                        party.addPlayer(player.getUuid());
-                        unassigned.remove(player);
-                    }
-                }
+                teams.put(member, team.getId());
             }
         }
+    }
+
+    @Nullable
+    private static TeamComponent partyTeam(@Nonnull String partyId, @Nonnull TeamListComponent teams, int needed) {
+        var party = PartyUtils.getParty(partyId).orElse(null);
+        if (party == null)
+            return null;
+        for (var member : party.getAllPlayers()) {
+            var team = teams.get(member);
+            if (team != null && team.isParticipant() && hasRoom(teams, team, needed))
+                return team;
+        }
+        return null;
+    }
+
+    @Nullable
+    private static TeamComponent smallestWithRoom(@Nonnull TeamListComponent teams, int needed) {
+        TeamComponent best = null;
+        for (var team : sortedTeams(teams)) {
+            if (team.isParticipant() && hasRoom(teams, team, needed)
+                    && (best == null || team.getSize() < best.getSize()))
+                best = team;
+        }
+        return best;
+    }
+
+    private static boolean hasRoom(@Nonnull TeamListComponent teams, @Nonnull TeamComponent team, int needed) {
+        return teams.getTeamSize() <= 0 || team.getSize() + needed <= teams.getTeamSize();
+    }
+
+    @Nonnull
+    public static TeamListComponent defaultTeams() {
+        var presetId = GauntletConfig.get().getTeamsPreset();
+        var preset = presetId == null ? null : TeamListAsset.getAssetMap().get(presetId);
+        if (preset == null) {
+            GaiaLog.atWarning().log("Team preset " + presetId + " does not exist, the game starts without teams");
+            return new TeamListComponent();
+        }
+        return from(preset);
     }
 
     public static final String DEAD_ICON = "GG/Dead.png";
@@ -213,8 +249,9 @@ public class TeamUtils {
     /** Redraws the party and teams panels for the game's session, drawing the given players as offline */
     public static void updateHuds(@Nonnull GameEcs game, @Nonnull Set<UUID> disconnected) {
         var snapshot = TeamsHud.snapshot(game, disconnected);
-        new HudEvent(game.getSessionId(), PartyHud.ID, snapshot).dispatch();
-        new HudEvent(game.getSessionId(), TeamsHud.ID, snapshot).dispatch();
+        var world = game.get(ContextComponent.getComponentType()).map(ContextComponent::getWorld).orElse(null);
+        new HudEvent(game.getSessionId(), PartyHud.ID, snapshot, world).dispatch();
+        new HudEvent(game.getSessionId(), TeamsHud.ID, snapshot, world).dispatch();
     }
     @Nullable
     public static Optional<TeamComponent> teamOf(@Nullable TeamListComponent teamList, @Nonnull String teamId) {
@@ -281,23 +318,5 @@ public class TeamUtils {
             return PartyHud.TOP;
         }
         return PartyHud.TOP + (own.isParticipant() ? PartyHud.HEIGHT : PartyHud.SPECTATING_HEIGHT) + 10;
-    }
-
-    /**
-     * Participating teams with players, most kills first, each with its kills as
-     * points.
-     */
-    @Nonnull
-    public static List<Standing> standingsByKills(@Nullable GameEcs game) {
-        var teams = teamsOf(game).orElse(null);
-        if (teams == null)
-            return List.of();
-        return teams.getTeams().values().stream()
-                .filter(t -> t.isParticipant() && t.getSize() > 0)
-                .sorted(Comparator.comparingDouble((TeamComponent t) -> TeamUtils.getScore(t)).reversed()
-                        .thenComparing(TeamComponent::getId))
-                .map(t -> new Standing(t.getId(), (int) Math.round(TeamUtils.getScore(t)),
-                        (int) Math.round(t.getScore())))
-                .toList();
     }
 }

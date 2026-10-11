@@ -31,27 +31,31 @@ public class GameHandlers extends HandlerUtils {
             Resolve.success(sessionEvt, session, "server.gg.events.game.end.ended");
             return;
         }
+        var gameId = sessionEvt.getGameId();
+        session.setEnding(gameId);
 
         // wait for the timers to be done
         sessionEvt.settled().orTimeout(5, TimeUnit.SECONDS).whenComplete((a, error) -> {
-            // log error, continue anyways
-            if (error != null) {
-                Resolve.log(sessionEvt, session, "server.gg.events.game.deferral.error");
-            }
+            GauntletUtils.run(hub, () -> {
+                // log error, continue anyways
+                if (error != null) {
+                    Resolve.log(sessionEvt, session, "server.gg.events.game.deferral.error");
+                }
 
-            // clean the game
-            GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, sessionId));
+                // clean the game
+                GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, sessionId));
 
-            var players = GauntletUtils.playersFor(session);
-            for (var player : players) {
-                var playerComp = GauntletUtils.playerFor(player);
-                playerComp.ifPresent(comp -> {
-                    // null all of their games
-                    comp.setCurrentGame(null);
-                });
-            }
+                var players = GauntletUtils.playersFor(session);
+                for (var player : players) {
+                    var playerComp = GauntletUtils.playerFor(player);
+                    playerComp.ifPresent(comp -> {
+                        // null all of their games
+                        comp.setCurrentGame(null);
+                    });
+                }
 
-            Resolve.success(sessionEvt, session, "server.gg.events.game.deferral.success");
+                Resolve.success(sessionEvt, session, "server.gg.events.game.deferral.success");
+            });
         });
     }
 }

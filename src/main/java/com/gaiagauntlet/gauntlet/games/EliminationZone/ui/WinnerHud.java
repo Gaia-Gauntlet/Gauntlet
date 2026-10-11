@@ -12,6 +12,7 @@ import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
@@ -63,7 +64,10 @@ public final class WinnerHud implements HudElement {
     public static WinnerHudSnapshot snapshot(@Nullable GameEcs game) {
         if (game == null || EZState.currentState(game) != EZStates.ENDED)
             return null;
-        return new WinnerHudSnapshot(game, TeamUtils.standingsByKills(game), TeamUtils.teamsOf(game).orElse(null));
+        var standings = game.get(EZGameComponent.getComponentType()).map(EZGameComponent::getStandings).orElse(List.of());
+        if (standings.isEmpty())
+            return null;
+        return new WinnerHudSnapshot(game, standings, TeamUtils.teamsOf(game).orElse(null));
     }
 
     public static void update(@Nonnull GameEcs game) {
