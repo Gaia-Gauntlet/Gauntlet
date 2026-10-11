@@ -15,6 +15,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
@@ -50,8 +51,7 @@ public final class WinnerHud implements HudElement {
     }
 
     private record WinnerHudSnapshot(
-
-    ) implements HudDataSnapshot {
+            GameEcs game) implements HudDataSnapshot {
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class WinnerHud implements HudElement {
         if (state != EZStates.ENDED)
             return null;
 
-        return new WinnerHudSnapshot();
+        return new WinnerHudSnapshot(game);
     }
 
     @Override
@@ -85,8 +85,8 @@ public final class WinnerHud implements HudElement {
                     .log("Attempted to update the winner HUD with the incorrect snapshot!");
             return;
         }
-        var match = TeamUtils.standingsByKills(session);
-        var teams = TeamUtils.teamsOf(session).orElse(null);
+        var match = TeamUtils.standingsByKills(winnerHud.game);
+        var teams = TeamUtils.teamsOf(winnerHud.game).orElse(null);
 
         var winner = match.isEmpty() ? null : TeamUtils.teamOf(teams, match.getFirst().getTeamId()).orElse(null);
         cmd.set("#WinnerName.Text",

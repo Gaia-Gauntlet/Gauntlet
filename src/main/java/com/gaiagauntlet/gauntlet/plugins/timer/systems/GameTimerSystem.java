@@ -28,7 +28,6 @@ public class GameTimerSystem extends GameTickingSystem {
 
         if (!continueTimer) {
             // do end of timer stuff
-            gameTimerComponent.getOnComplete().run();
             for (var target : targets) {
                 TimerDisplay.clear(world, target.getTransform());
             }
@@ -36,6 +35,8 @@ public class GameTimerSystem extends GameTickingSystem {
             var ctx = GameStore.getContext(gameStore);
 
             MatchEventRegistry.dispatch(TimerCompleteEvent.of(gameStore, gameTimerComponent.getTimerId()), ctx.getGameId());
+            // remove the timer
+            gameStore.remove(GameTimerComponent.getComponentType());
             return;
         }
         var lastUpdateTime = gameTimerComponent.getLastUpdateTime();

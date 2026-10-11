@@ -11,6 +11,8 @@ import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
@@ -62,14 +64,17 @@ public final class TeamsHud implements HudElement {
     }
 
     private record TeamsHudSnapshot(
-        List<TeamComponent> otherTeams
+        List<TeamComponent> otherTeams,
+        int top
     ) implements HudDataSnapshot {}
 
     @Override
     public TeamsHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        var otherTeams = otherTeams(player, session);
+        if (session == null) return null;
+        var game = GameStore.withStore(player, session.getId()).orElse(null);
+        var otherTeams = otherTeams(player, game);
         if (otherTeams.isEmpty()) return null;
-        return new TeamsHudSnapshot(otherTeams);
+        return new TeamsHudSnapshot(otherTeams, TeamUtils.belowParty(game, player.getUuid()));
     }
 
     @Override
@@ -81,7 +86,7 @@ public final class TeamsHud implements HudElement {
     public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
         if (!(data instanceof TeamsHudSnapshot teamData)) {
             GaiaLog.atWarning().withSession(session)
-                    .log("Attempted to update the Party Hud with the incorrect snapshot!");
+                    .log("Attempted to update the Teams Hud with the incorrect snapshot!");
             return;
         }
         var teams = teamData.otherTeams;
@@ -90,7 +95,7 @@ public final class TeamsHud implements HudElement {
             rows.add(TeamUtils.membersOf(team));
         }
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = TeamUtils.belowParty(session, player.getUuid());
+        var top = teamData.top;
         if (!rows.equals(builtRows) || !ids.equals(builtTeams) || top != builtTop) {
             build(cmd, teams, rows, top);
         }
@@ -142,8 +147,8 @@ public final class TeamsHud implements HudElement {
      * Participating teams other than the viewer's that have members, ordered by id.
      */
     @Nonnull
-    private static List<TeamComponent> otherTeams(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        var teamList = TeamUtils.teamsOf(session).orElse(null);
+    private static List<TeamComponent> otherTeams(@Nonnull PlayerRef player, @Nullable GameEcs game) {
+        var teamList = TeamUtils.teamsOf(game).orElse(null);
         if (teamList == null) {
             return List.of();
         }

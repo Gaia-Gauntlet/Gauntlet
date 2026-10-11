@@ -94,7 +94,7 @@ public final class ZonesHud implements HudElement {
             HudDataSnapshot data) {
         if (!(data instanceof ZonesHudSnapshot zonesData)) {
             GaiaLog.atWarning().withSession(session)
-                    .log("Attempted to update the Party Hud with the incorrect snapshot!");
+                    .log("Attempted to update the Zones Hud with the incorrect snapshot!");
             return;
         }
 

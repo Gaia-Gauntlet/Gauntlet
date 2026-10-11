@@ -10,6 +10,7 @@ import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
@@ -65,7 +66,10 @@ public final class PartyHud implements HudElement {
 
     @Override
     public PartyDataHud gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        var team = TeamUtils.teamOf(session, player.getUuid()).orElse(null);
+        if (session == null)
+            return null;
+        var game = GameStore.withStore(player, session.getId()).orElse(null);
+        var team = TeamUtils.teamOf(game, player.getUuid()).orElse(null);
         if (team == null)
             return null;
         return new PartyDataHud(team);

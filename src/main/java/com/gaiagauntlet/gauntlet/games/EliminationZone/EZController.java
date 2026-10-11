@@ -93,7 +93,7 @@ public class EZController extends LobbyController {
 
     @Override
     public List<HudElement> getHudElements() {
-        return List.of(new ZonesHud(), new TimerHud(), new ScoreboardHud(), new WinnerHud());
+        return List.of(new ZonesHud(), new ScoreboardHud(), new WinnerHud());
     }
 
     @Override // temp, just messing around here

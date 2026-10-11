@@ -12,13 +12,14 @@ import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 /**
- * Event standings in the lobby, below the party panel: every participating team ranked by its event
+ * Event standings in the lobby, in the party panel's spot: every participating team ranked by its event
  * score, the viewer's own team highlighted. Takes the teams sidebar's place until the match reaches
  * the arena.
  */
@@ -33,9 +34,8 @@ public final class ScoreboardHud implements HudElement {
 
     private final HudWidgets.Sent sent = new HudWidgets.Sent();
 
-    /** The team ids in row order and the panel top the rows were built for, or null when they need building. */
+    /** The team ids in row order the rows were built for, or null when they need building. */
     @Nullable private List<String> builtTeams;
-    private int builtTop = -1;
 
     @Nonnull @Override public String getId() {
         return "Scoreboard";
@@ -80,9 +80,8 @@ public final class ScoreboardHud implements HudElement {
         var teams = scoreboard.teams;
         var own = scoreboard.own;
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = TeamUtils.belowParty(session, player.getUuid());
-        if (!ids.equals(builtTeams) || top != builtTop) {
-            build(cmd, teams, top);
+        if (!ids.equals(builtTeams)) {
+            build(cmd, teams);
         }
 
         for (int i = 0; i < teams.size(); i++) {
@@ -94,12 +93,11 @@ public final class ScoreboardHud implements HudElement {
         }
     }
 
-    private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams, int top) {
+    private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams) {
         sent.clear();
         builtTeams = teams.stream().map(TeamComponent::getId).toList();
-        builtTop = top;
 
-        HudWidgets.anchor(cmd, "#Scoreboard", top, RIGHT, WIDTH, PADDING * 2 + TITLE_HEIGHT + ROW_HEIGHT * teams.size());
+        HudWidgets.anchor(cmd, "#Scoreboard", PartyHud.TOP, RIGHT, WIDTH, PADDING * 2 + TITLE_HEIGHT + ROW_HEIGHT * teams.size());
         cmd.clear("#ScoreRows");
         for (int i = 0; i < teams.size(); i++) {
             var row = "#ScoreRows[" + i + "]";

@@ -28,9 +28,6 @@ public class GameTimerComponent implements GameComponent {
     @Getter
     private final List<GGPoi> pois = new ArrayList<>();
     @Getter
-    @Setter
-    Runnable onComplete;
-    @Getter
     private final String timerId;
     @Getter
     private String timerImageId = null;
@@ -49,21 +46,15 @@ public class GameTimerComponent implements GameComponent {
         this.countdownRemaining = other.countdownRemaining;
         this.isRunning = other.isRunning;
         this.timerImageId = other.timerImageId;
+        this.pois.addAll(other.pois);
     }
 
     public void startTimer(float time) {
-        startTimer(time, null);
-    }
-
-    public void startTimer(float time, Runnable onComplete) {
         if (time <= 0) {
             reset();
             return;
         }
         isRunning = true;
-        if (onComplete != null) {
-            this.onComplete = onComplete;
-        }
         countdownRemaining = time;
     }
 

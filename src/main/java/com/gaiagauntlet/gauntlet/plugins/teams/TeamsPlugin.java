@@ -6,7 +6,6 @@ import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
@@ -91,14 +90,24 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
         // sets up the game with the team stuff
         var teamList = new TeamListComponent();
-        gameStore.put(TeamListComponent.getGameComponentType(), teamList);
-        TeamUtils.initialiseTeams(teamList, EZGameConfig.get(gameStore).getTeamsPreset());
-        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), teamList);
+        var sessionTeamsList = sessionObject.ensure(TeamListComponent.getSessionComponentType(), teamList);
+
+        // put it on the store
+        gameStore.put(TeamListComponent.getGameComponentType(), sessionTeamsList);
+        // init the teams
+        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), sessionTeamsList);
     }
 
     @Override
     public SessionWriter capture(World world, GameEcs store, String sessionId) {
-        return null;
+        var teamList = store.get(TeamListComponent.getGameComponentType()).orElse(null);
+        
+        return new SessionWriter() {
+            private TeamListComponent teams = teamList;
+            public void apply(GameSession session) {
+                session.put(TeamListComponent.getSessionComponentType(), teams);
+            }
+        };
     }
 
     @Override

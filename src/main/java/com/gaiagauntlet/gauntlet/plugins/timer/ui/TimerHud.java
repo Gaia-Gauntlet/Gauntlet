@@ -73,7 +73,7 @@ public final class TimerHud implements HudElement {
             HudDataSnapshot data) {
         if (!(data instanceof TimerHudData timerData)) {
             GaiaLog.atWarning().withSession(session)
-                    .log("Attempted to update the Party Hud with the incorrect snapshot!");
+                    .log("Attempted to update the Timer Hud with the incorrect snapshot!");
             return;
         }
         if (session == null)

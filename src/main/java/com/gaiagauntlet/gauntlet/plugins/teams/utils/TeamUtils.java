@@ -4,6 +4,7 @@ import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
@@ -148,17 +149,6 @@ public class TeamUtils {
     }
 
     /**
-     * Initialise teams to a team list component from an asset. Does not populate
-     * teams beyond what
-     * has been manually defined in the {@code TeamListAsset}
-     */
-    public static void initialiseTeams(TeamListComponent teams, TeamListAsset teamAsset) {
-        for (TeamComponent team : teamAsset.getTeamList().values()) {
-            teams.addTeam(team.getId(), team.clone());
-        }
-    }
-
-    /**
      * Distribute players across existing team components. Any players already in a
      * team remain
      * there, and new players are fit in appropriately
@@ -202,10 +192,20 @@ public class TeamUtils {
         return session == null ? Optional.empty() : session.get(TeamListComponent.getSessionComponentType());
     }
 
+    @Nonnull
+    public static Optional<TeamListComponent> teamsOf(@Nullable GameEcs game) {
+        return game == null ? Optional.empty() : game.get(TeamListComponent.getGameComponentType());
+    }
+
     @Nullable
     public static Optional<TeamComponent> teamOf(@Nullable GameSession session, @Nonnull UUID player) {
         var teams = teamsOf(session);
         return teams.map(team -> team.get(player));
+    }
+
+    @Nonnull
+    public static Optional<TeamComponent> teamOf(@Nullable GameEcs game, @Nonnull UUID player) {
+        return teamsOf(game).map(teams -> teams.get(player));
     }
     @Nullable
     public static Optional<TeamComponent> teamOf(@Nullable TeamListComponent teamList, @Nonnull String teamId) {
@@ -266,8 +266,8 @@ public class TeamUtils {
      * Where a panel stacked just below the viewer's party panel starts. That panel
      * is shorter for a team that only watches.
      */
-    public static int belowParty(@Nullable GameSession session, @Nonnull UUID player) {
-        var own = teamOf(session, player).orElse(null);
+    public static int belowParty(@Nullable GameEcs game, @Nonnull UUID player) {
+        var own = teamOf(game, player).orElse(null);
         if (own == null) {
             return PartyHud.TOP;
         }
@@ -279,8 +279,8 @@ public class TeamUtils {
      * points.
      */
     @Nonnull
-    public static List<Standing> standingsByKills(@Nonnull GameSession session) {
-        var teams = teamsOf(session).orElse(null);
+    public static List<Standing> standingsByKills(@Nullable GameEcs game) {
+        var teams = teamsOf(game).orElse(null);
         if (teams == null)
             return List.of();
         return teams.getTeams().values().stream()

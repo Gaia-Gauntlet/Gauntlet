@@ -16,6 +16,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
+import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -73,6 +74,8 @@ public class EZLobbyManager implements LobbyManager {
         if (EZState.currentState(gameStore) == EZStates.LOBBY
                 && gameComp.getParticipants() >= EZGameConfig.get(gameStore).getMinPlayers()) {
             EZController.get().getArenaManager().start(world, gameStore, sessionId);
+            // add a timer that starts the match when it is over
+            gameStore.put(GameTimerComponent.getComponentType(), new GameTimerComponent("GameStarting"));
             return;
         }
 
