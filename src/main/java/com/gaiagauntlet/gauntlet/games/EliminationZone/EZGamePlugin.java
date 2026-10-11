@@ -54,6 +54,8 @@ public class EZGamePlugin extends JavaPlugin {
         MatchEventRegistry.register(MatchStateEvent.class, EZController.ID, MatchStateListeners::onMatchEnd);
         MatchEventRegistry.register(MatchStateEvent.class, EZController.ID, MatchStateListeners::onSuddenDeath);
         MatchEventRegistry.register(TimerCompleteEvent.class, EZController.ID, MatchStateListeners::onMatchEndTimer);
+
+        MatchMapOverlay.setup();
     }
 
     private void registerSubcomponents() {
