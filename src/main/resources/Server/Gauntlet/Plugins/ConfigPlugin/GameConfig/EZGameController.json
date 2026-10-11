@@ -10,7 +10,7 @@
   "MaxActiveBosses": 3,
   "GameEvents": {
     "IntervalSeconds": 45,
-    "FirstDrawAtSeconds": 90,
+    "FirstDrawAtSeconds": 100,
     "Entries": [
       {
         "Type": "WeatherEvent",
@@ -456,7 +456,8 @@
       }
     }
   ],
-  "StartBufferSeconds": 20,
+  "StartBufferSeconds": 60,
+  "SpawnProtectionSeconds": 90,
   "CornucopiaDurationSeconds": 27,
   "MinPlayers": 2
 }
