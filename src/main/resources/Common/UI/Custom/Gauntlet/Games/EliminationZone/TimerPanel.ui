@@ -1,0 +1,81 @@
+// Timer tab: the game timer of the selected session, its controls, and starting a new one.
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Current timer"; }
+
+            Group {
+                LayoutMode: Full;
+                Anchor: (Height: 60, Bottom: 8);
+                Background: (Color: #000000(0.18));
+
+                TimerLabel #GameTimerLive {
+                    Visible: false;
+                    Seconds: 0;
+                    Style: (FontSize: 40, Alignment: Center);
+                }
+                Label #GameTimerStill {
+                    Text: "--:--";
+                    Style: (FontSize: 40, Alignment: Center, TextColor: #878e9c);
+                }
+            }
+
+            $G.@Field #GameTimerIdField      { @Key = "Timer"; }
+            $G.@Field #GameTimerStateField   { @Key = "State"; }
+            $G.@Field #GameTimerBannerField  { @Key = "HUD banner"; }
+            $G.@Field #GameTimerMarkersField { @Key = "Markers"; }
+
+            $G.@ButtonRow {
+                $G.@Action  #GameTimerToggle   { @Anchor = (Right: 3); Text: "Pause"; }
+                $G.@Confirm #GameTimerComplete { @Anchor = (Left: 3, Right: 3); Text: "Complete now"; }
+                $G.@Danger  #GameTimerCancel   { @Anchor = (Left: 3); Text: "Cancel"; }
+            }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Adjust time"; }
+            $G.@ButtonRow {
+                $G.@Action #GameTimerMinus30 { @Anchor = (Right: 3); Text: "-30s"; }
+                $G.@Action #GameTimerPlus30  { @Anchor = (Left: 3, Right: 3); Text: "+30s"; }
+                $G.@Action #GameTimerPlus60  { @Anchor = (Left: 3, Right: 3); Text: "+1m"; }
+                $G.@Action #GameTimerPlus300 { @Anchor = (Left: 3); Text: "+5m"; }
+            }
+            $G.@PickerRow {
+                $G.@Input  #GameTimerAdjustSeconds { @Anchor = (Right: 6); @Placeholder = "seconds"; }
+                $G.@Go     #GameTimerAdd { @Anchor = (Right: 6); Text: "Add"; }
+                $G.@GoQuiet #GameTimerSet { Text: "Set"; }
+            }
+            $G.@Note { @Text = "Add takes a negative number to take time away. A timer never drops below one second this way, so it still completes."; }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Start a timer"; }
+            $G.@Note { @Text = "Replaces the current timer without completing it. When the new one runs out, listeners for its id fire."; }
+
+            $G.@Caption { @Text = "Timer id"; }
+            $G.@PickerRow {
+                $G.@Input #GameTimerStartId { @Placeholder = "timer id"; }
+            }
+            $G.@Caption { @Text = "Duration"; }
+            $G.@PickerRow {
+                $G.@Input #GameTimerStartSeconds { @Placeholder = "seconds"; }
+            }
+            $G.@Caption { @Text = "HUD banner"; }
+            $G.@PickerRow {
+                $G.@Picker #GameTimerBanner {}
+            }
+            $G.@ButtonRow {
+                $G.@Confirm #GameTimerStart { Text: "Start timer"; }
+            }
+        }
+    }
+}

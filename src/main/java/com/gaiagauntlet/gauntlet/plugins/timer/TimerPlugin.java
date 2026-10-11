@@ -33,7 +33,6 @@ public class TimerPlugin implements UiGamePlugin {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        // TODO: Make a timer admin tab
         return List.of();
     }
 

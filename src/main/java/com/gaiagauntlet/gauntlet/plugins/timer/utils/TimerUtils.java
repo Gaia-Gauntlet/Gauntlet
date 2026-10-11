@@ -82,4 +82,11 @@ public class TimerUtils {
             timerComp.play();
         });
     }
+
+    public static void complete(GameEcs gameStore) {
+        gameStore.get(GameTimerComponent.getComponentType()).ifPresent(timerComp -> {
+            timerComp.complete();
+            timerComp.play();
+        });
+    }
 }
