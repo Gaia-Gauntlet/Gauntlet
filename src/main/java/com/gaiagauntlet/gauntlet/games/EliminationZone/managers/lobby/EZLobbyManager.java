@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
