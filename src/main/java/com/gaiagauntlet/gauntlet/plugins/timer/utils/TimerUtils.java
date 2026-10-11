@@ -13,9 +13,10 @@ import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.ui.TimerHud;
 
 public class TimerUtils {
-    public static final String IMG_COUNTDOWN = "TimerHeaderUntilPortalOpens";
-    public static final String IMG_PORTA_OPEN = "TimerHeaderGetToThePortal";
-    public static final String IMG_STAGING = "TimerHeaderMatchStartsIn";
+    public static final String IMG_COUNTDOWN = "TimerHeaderMatchStartingSoon";
+    public static final String IMG_PORTAL_OPEN = "TimerHeaderGetToThePortal";
+    public static final String IMG_STAGING = "TimerHeaderUntilMatchStart";
+    public static final String IMG_GRACE_PERIOD = "TimerHeaderGracePeriod";
 
     public static Optional<GameTimerComponent> get(GameEcs gameStore) {
         return gameStore.get(GameTimerComponent.getComponentType());

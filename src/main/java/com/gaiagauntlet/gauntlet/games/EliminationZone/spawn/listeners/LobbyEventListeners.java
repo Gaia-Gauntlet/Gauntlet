@@ -71,7 +71,11 @@ public final class LobbyEventListeners {
             case INTRO_TIMER -> {
                 // timers complete inside a system tick, so the teleports wait for the store to finish processing
                 world.execute(() -> CornucopiaMovingPlatformsHandler.placeAllOnPlatforms(world, game));
-                TimerUtils.start(SpawnProtectionComponent.TIMER_ID, game, EZGameConfig.get(game).getSpawnProtectionSeconds());
+                TimerUtils.start(
+                    game,
+                    EZGameConfig.get(game).getSpawnProtectionSeconds(),
+                    new GameTimerComponent(SpawnProtectionComponent.TIMER_ID, TimerUtils.IMG_GRACE_PERIOD)
+                );
             }
             case SpawnProtectionComponent.TIMER_ID -> {
                 SpawnDamagePreventionSystem.onEnd(evt);

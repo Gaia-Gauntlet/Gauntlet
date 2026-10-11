@@ -245,7 +245,7 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private String zoneClosingPhaseSet = "";
     @Getter private int suddenDeathAt = 6;
     @Getter private float cornucopiaDurationSeconds = 27;
-    @Getter private float spawnProtectionSeconds = 30;
+    @Getter private float spawnProtectionSeconds = 90;
     @Getter private float cameraSequenceSeconds = 29;
     @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
@@ -255,7 +255,7 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private int maxActiveBosses = 3;
     @Getter private float killCreditSeconds = 10;
     @Getter private int[] scoreTable = {5, 4, 3, 2, 1, 0};
-    @Getter private float startBufferSeconds = 10;
+    @Getter private float startBufferSeconds = 60;
     @Getter private float arrivalTimeoutSeconds = 60;
     @Getter private int minPlayers = 2; // TODO: Increase this, just low for testing
 
