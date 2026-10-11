@@ -58,9 +58,7 @@ public class PlayerSystems {
                 return;
             }
 
-            var gameWorld = GameStore.withStore(hub, session.getId())
-                    .flatMap(s -> s.get(LobbyComponent.getComponentType()))
-                    .map(lobby -> lobby.getWorld())
+            var gameWorld = LobbyController.withArenaWorld(sessionId)
                     .filter(world -> world.isAlive() && world.getWorldConfig().getUuid().equals(destinationId))
                     .orElse(null);
 

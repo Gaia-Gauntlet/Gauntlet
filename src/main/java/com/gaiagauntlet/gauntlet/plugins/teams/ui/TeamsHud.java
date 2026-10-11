@@ -17,6 +17,8 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent.EliminationReason;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -52,15 +54,22 @@ public final class TeamsHud implements HudElement {
 
     /**
      * A game's teams as the party and teams panels draw them. Players disconnecting
-     * in this update are still in the universe, so they are listed to draw as offline.
+     * in this update are still in the universe, so they are listed to draw as
+     * offline.
      */
     public record TeamListSnapshot(
             GameEcs game,
             TeamListComponent teams,
             Set<UUID> disconnected) implements HudDataSnapshot {
 
-        public boolean isOnline(@Nonnull UUID player) {
-            return PlayerUtils.isOnline(player) && !disconnected.contains(player);
+        public boolean isOnline(@Nonnull UUID player) { // should be in it's own util
+            var playerRef = PlayerUtils.get(player);
+            if (playerRef == null || !playerRef.isValid())
+                return false;
+            var eliminated = playerRef.getComponentConcurrent(EliminatedComponent.getComponentType());
+            if (eliminated != null && eliminated.getReason() == EliminationReason.DISCONNECT)
+                return false;
+            return !disconnected.contains(player);
         }
     }
 

@@ -48,6 +48,6 @@ public final class EZAdmin {
         if (session == null) {
             return Optional.empty();
         }
-        return LobbyController.withArenaWorld(GauntletUtils.withHubWorld(), session.getId());
+        return LobbyController.withArenaWorld(session.getId());
     }
 }

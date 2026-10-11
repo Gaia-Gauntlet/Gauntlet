@@ -40,7 +40,7 @@ public final class Announcer {
     /** Large title and subtitle for everyone in the world, with an optional sound. Safe from any thread. */
     public static void title(@Nonnull World world, @Nonnull Message primary, @Nonnull Message secondary,
                              EventTitleStyle eventTitleStyle, @Nullable String soundEventId) {
-        WorldUtils.run(world, () -> {
+        GauntletUtils.run(world, () -> {
             for (var player : new ArrayList<>(world.getPlayerRefs())) {
                 EventTitleUtil.showEventTitleToPlayer(
                     player,
