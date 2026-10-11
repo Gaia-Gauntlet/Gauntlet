@@ -1,5 +1,8 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils.LootFountains;
+import java.util.concurrent.CompletableFuture;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -102,9 +105,11 @@ public class EZController extends LobbyController {
     }
 
     @Override
-    public void setupGame(World world, GameEcs gameStore, String sessionId) {
+    public CompletableFuture<Void> setupGame(World world, GameEcs gameStore, String sessionId) {
         // ensures it is present
         gameStore.put(ZoneComponent.TYPE, new ZoneComponent(sessionId));
+        gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
+        return LootFountains.randomize(world, sessionId);
     }
 
     public static boolean isEz(@Nullable GameSession session) {

@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.combat;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.DamageTrackerSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.EZDeathSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.FriendlyFireSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.SpawnDamagePreventionSystem;
@@ -15,5 +16,6 @@ public class EZCombat {
         registry.registerSystem(new SpawnDamagePreventionSystem());
         registry.registerSystem(new EZDeathSystem());
         registry.registerSystem(new FriendlyFireSystem());
+        registry.registerSystem(new DamageTrackerSystem());
     }
 }

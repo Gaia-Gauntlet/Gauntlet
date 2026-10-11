@@ -1,16 +1,17 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 import org.joml.Vector3i;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import javax.annotation.Nonnull;
 
@@ -37,18 +38,20 @@ public final class LootFountains {
     private static final int MIN_TIER = 1;
     private static final int MAX_TIER = 5;
     private static final String BLOCK_PREFIX = "GG_LootFountain_T";
+    private static final int REMOVE_SETTINGS = SetBlockSettings.NO_SEND_PARTICLES | SetBlockSettings.NO_SEND_AUDIO
+            | SetBlockSettings.NO_DROP_ITEMS;
 
     private LootFountains() {
     }
 
     /**
      * Loads every chunk the zones cover, then thins the fountains once they are all
-     * in.
+     * in. Completes once every zone is thinned.
      */
-    public static void randomize(@Nonnull World arena, String sessionId) {
+    @Nonnull
+    public static CompletableFuture<Void> randomize(@Nonnull World arena, String sessionId) {
         var indexes = new java.util.LinkedHashSet<Long>();
-        for (var zone : GameStore.ensureStore(arena, sessionId)
-                .ensure(ZoneComponent.TYPE, () -> new ZoneComponent(sessionId)).order()) {
+        for (var zone : EZGameConfig.get(arena, sessionId).getZones()) {
             if (zone.lootFountains().isEmpty()) {
                 continue;
             }
@@ -63,19 +66,20 @@ public final class LootFountains {
             }
         }
         if (indexes.isEmpty())
-            return;
+            return CompletableFuture.completedFuture(null);
 
         var loads = new ArrayList<CompletableFuture<?>>();
+        var chunkStore = arena.getChunkStore();
         for (long index : indexes) {
-            // TODO: Load chunks
-            // loads.add(arena.getChunkAsync(index).exceptionally(e -> null));
+            loads.add(chunkStore.getChunkReferenceAsync(index).exceptionally(e -> null));
         }
         LOGGER.atInfo().log("Loading %d chunks of %s before thinning loot fountains", loads.size(), arena.getName());
-        CompletableFuture.allOf(loads.toArray(CompletableFuture[]::new))
-                .whenComplete((ignored, error) -> arena.execute(() -> thin(arena, sessionId)));
+        return CompletableFuture.allOf(loads.toArray(CompletableFuture[]::new))
+                .thenCompose(ignored -> thin(arena, sessionId));
     }
 
-    private static void thin(@Nonnull World arena, String game) {
+    @Nonnull
+    private static CompletableFuture<Void> thin(@Nonnull World arena, String game) {
         var tierByBlockId = new HashMap<Integer, Integer>();
         for (int tier = MIN_TIER; tier <= MAX_TIER; tier++) {
             var id = BLOCK_PREFIX + tier;
@@ -86,47 +90,51 @@ public final class LootFountains {
             }
         }
         if (tierByBlockId.isEmpty()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
-        int removedTotal = 0;
-        var zoneComp = GameStore.ensureStore(arena, game).get(ZoneComponent.TYPE).orElse(null);
-        if (zoneComp == null)
-            return;
-        for (var zone : zoneComp.order()) {
-            var rules = new HashMap<Integer, LootFountainRule>();
-            for (var rule : zone.lootFountains()) {
-                if (rule.enabled() && rule.tier() >= MIN_TIER && rule.tier() <= MAX_TIER) {
-                    rules.putIfAbsent(rule.tier(), rule);
-                }
-            }
-            if (rules.isEmpty()) {
-                continue;
-            }
-            var found = discover(arena, zone, rules, tierByBlockId);
-            for (var entry : rules.entrySet()) {
-                int tier = entry.getKey();
-                var rule = entry.getValue();
-                var candidates = found.getOrDefault(tier, List.of());
-                int min = Math.max(0, rule.min());
-                int max = Math.max(min, rule.max());
-                int keep = Math.min(candidates.size(),
-                        min == max ? min : ThreadLocalRandom.current().nextInt(min, max + 1));
-                Collections.shuffle(candidates, ThreadLocalRandom.current());
-                int removed = 0;
-                for (var position : candidates.subList(keep, candidates.size())) {
-                    var blockSection = BlockUtils.getBlockSection(arena, position);
-                    if (blockSection != null) {
-                        blockSection.set(position.x(), position.y(), position.z(), BlockType.EMPTY_ID, 0,
-                                FillerBlockUtil.NO_FILLER);
-                        removed++;
-                    }
-                }
-                removedTotal += removed;
-                LOGGER.atInfo().log("Zone '%s' tier %d: kept %d of %d loot fountains", zone.id(), tier,
-                        candidates.size() - removed, candidates.size());
+        // one zone per task so the arena keeps ticking between zones
+        var zones = new ArrayList<CompletableFuture<Void>>();
+        for (var zone : EZGameConfig.get(arena, game).getZones()) {
+            zones.add(CompletableFuture.runAsync(() -> thinZone(arena, zone, tierByBlockId), arena)
+                    .exceptionally(error -> {
+                        LOGGER.atWarning().withCause(error).log("Thinning the loot fountains of zone '%s' failed",
+                                zone.id());
+                        return null;
+                    }));
+        }
+        return CompletableFuture.allOf(zones.toArray(CompletableFuture[]::new));
+    }
+
+    private static void thinZone(@Nonnull World arena, @Nonnull ZoneDefinition zone,
+            @Nonnull Map<Integer, Integer> tierByBlockId) {
+        var rules = new HashMap<Integer, LootFountainRule>();
+        for (var rule : zone.lootFountains()) {
+            if (rule.enabled() && rule.tier() >= MIN_TIER && rule.tier() <= MAX_TIER) {
+                rules.putIfAbsent(rule.tier(), rule);
             }
         }
-        LOGGER.atInfo().log("Loot fountain randomization removed %d blocks from %s", removedTotal, arena.getName());
+        if (rules.isEmpty()) {
+            return;
+        }
+        var found = discover(arena, zone, rules, tierByBlockId);
+        for (var entry : rules.entrySet()) {
+            int tier = entry.getKey();
+            var rule = entry.getValue();
+            var candidates = found.getOrDefault(tier, new ArrayList<>());
+            int min = Math.max(0, rule.min());
+            int max = Math.max(min, rule.max());
+            int keep = Math.min(candidates.size(),
+                    min == max ? min : ThreadLocalRandom.current().nextInt(min, max + 1));
+            Collections.shuffle(candidates, ThreadLocalRandom.current());
+            int removed = 0;
+            for (var position : candidates.subList(keep, candidates.size())) {
+                if (BlockUtils.setBlock(arena, position.x(), position.y(), position.z(), BlockType.EMPTY_KEY, REMOVE_SETTINGS)) {
+                    removed++;
+                }
+            }
+            LOGGER.atInfo().log("Zone '%s' tier %d: kept %d of %d loot fountains", zone.id(), tier,
+                    candidates.size() - removed, candidates.size());
+        }
     }
 
     /**
@@ -147,38 +155,44 @@ public final class LootFountains {
             }
             protectedByTier.put(tier, positions);
         });
-        var wanted = new ArrayList<>();
+        var wanted = new IntArrayList();
         tierByBlockId.forEach((blockId, tier) -> {
             if (rules.containsKey(tier)) {
-                wanted.add(blockId);
+                wanted.add((int) blockId);
             }
         });
 
-        // This is likely wildly inefficient, but it takes place while the game is
-        // preparing so there's
-        // plenty of time. Still... it could do with optimising for sure.
         int minY = Math.max(ChunkUtil.MIN_Y, (int) Math.floor(zone.minY()));
-        int maxY = Math.min(ChunkUtil.HEIGHT - 1, (int) Math.floor(zone.maxY()));
-        int minX = (int) Math.floor(zone.centerX() - zone.outerRadius());
-        int maxX = (int) Math.floor(zone.centerX() + zone.outerRadius());
-        int minZ = (int) Math.floor(zone.centerZ() - zone.outerRadius());
-        int maxZ = (int) Math.floor(zone.centerZ() + zone.outerRadius());
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    var pos = new Vector3i(x, y, z);
-                    int block = BlockUtils.getBlockId(arena, pos);
-                    if (!wanted.contains(block))
+        int maxY = (int) Math.floor(zone.maxY());
+        int minChunkX = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerX() - zone.outerRadius()));
+        int maxChunkX = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerX() + zone.outerRadius()));
+        int minChunkZ = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerZ() - zone.outerRadius()));
+        int maxChunkZ = ChunkUtil.chunkCoordinate((int) Math.floor(zone.centerZ() + zone.outerRadius()));
+        int minSection = ChunkUtil.indexSection(minY);
+        int maxSection = ChunkUtil.indexSection(maxY);
+        for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+                int worldMinX = ChunkUtil.minBlock(chunkX);
+                int worldMinZ = ChunkUtil.minBlock(chunkZ);
+                for (int sectionIndex = minSection; sectionIndex <= maxSection; sectionIndex++) {
+                    int sectionMinY = ChunkUtil.minBlock(sectionIndex);
+                    var section = BlockUtils.getBlockSection(arena, worldMinX, sectionMinY, worldMinZ);
+                    if (section == null || !section.containsAny(wanted)) {
                         continue;
-                    var tier = tierByBlockId.get(block);
-                    if (tier == null
-                            || y < minY || y > maxY
-                            || !contains(zone, x + 0.5, z + 0.5))
-                        continue;
-                    if (!protectedByTier.get(tier).contains(pos)) {
-                        result.computeIfAbsent(tier, ignored -> new ArrayList<>()).add(pos);
                     }
+                    section.find(wanted, (blockIndex, blockId) -> {
+                        int x = worldMinX + ChunkUtil.xFromIndex(blockIndex);
+                        int y = sectionMinY + ChunkUtil.yFromIndex(blockIndex);
+                        int z = worldMinZ + ChunkUtil.zFromIndex(blockIndex);
+                        var tier = tierByBlockId.get(blockId);
+                        if (tier == null || y < minY || y > maxY || !contains(zone, x + 0.5, z + 0.5)) {
+                            return;
+                        }
+                        var position = new Vector3i(x, y, z);
+                        if (!protectedByTier.get(tier).contains(position)) {
+                            result.computeIfAbsent(tier, ignored -> new ArrayList<>()).add(position);
+                        }
+                    });
                 }
             }
         }

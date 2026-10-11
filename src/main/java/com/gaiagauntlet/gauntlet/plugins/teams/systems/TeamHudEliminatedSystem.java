@@ -16,7 +16,6 @@ import com.hypixel.hytale.component.system.RefChangeSystem;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-/** Redraws the party and teams panels of a player's game when they are eliminated or brought back. */
 public final class TeamHudEliminatedSystem extends RefChangeSystem<EntityStore, EliminatedComponent> {
 
     @Override

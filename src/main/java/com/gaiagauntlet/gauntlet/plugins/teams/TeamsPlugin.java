@@ -62,7 +62,8 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
 
         EliminatedComponent.setComponentType(entityStore.registerComponent(
                 EliminatedComponent.class,
-                EliminatedComponent::new));
+                "Eliminated",
+                EliminatedComponent.CODEC));
         TeamPlayerComponent.setComponentType(entityStore.registerComponent(
                 TeamPlayerComponent.class,
                 "TeamPlayer",
@@ -96,14 +97,12 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
 
     @Override
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
-        // sets up the game with the team stuff
-        var teamList = new TeamListComponent();
-        var sessionTeamsList = sessionObject.ensure(TeamListComponent.getSessionComponentType(), teamList);
-
-        // put it on the store
-        gameStore.put(TeamListComponent.getGameComponentType(), sessionTeamsList);
-        // init the teams
-        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), sessionTeamsList);
+        var sessionTeams = sessionObject.get(TeamListComponent.getSessionComponentType())
+                .filter(teams -> !teams.getTeams().isEmpty())
+                .orElseGet(TeamUtils::defaultTeams);
+        var gameTeams = new TeamListComponent(sessionTeams);
+        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), gameTeams);
+        gameStore.put(TeamListComponent.getGameComponentType(), gameTeams);
     }
 
     @Override

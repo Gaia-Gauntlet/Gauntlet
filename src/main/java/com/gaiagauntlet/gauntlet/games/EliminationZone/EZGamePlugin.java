@@ -1,8 +1,11 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.map.MatchMapOverlay;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.scoring.EZScoring;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.EZBosses;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.components.EZCombatComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnComponent;
@@ -11,7 +14,6 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.EZSpawn;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.events.EZLootHandlers;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -50,7 +52,7 @@ public class EZGamePlugin extends JavaPlugin {
         EZZones.setup(this);
         EZSpawn.setup(this);
         EZUi.setup();
-        EZLootHandlers.setup();
+        EZScoring.setup();
         EZState.setup(this);
     }
 
@@ -63,6 +65,7 @@ public class EZGamePlugin extends JavaPlugin {
         // game components
         EZSpawnComponent.setComponentType(GameComponentRegistry.register(EZSpawnComponent.ID, EZSpawnComponent.class));
         EZGameComponent.setComponentType(GameComponentRegistry.register(EZGameComponent.ID, EZGameComponent.class));
+        EZCombatComponent.setComponentType(GameComponentRegistry.register(EZCombatComponent.ID, EZCombatComponent.class));
     }
 
     @Override

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * One combat zone of the arena: an annular sector (a slice of a ring) placed at a world-space
  * center. Angles are degrees where 0 points along +X and 90 along +Z. A zone closes by sweeping its
@@ -17,7 +19,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public final class ZoneDefinition {
 
-    public static final BuilderCodec<ZoneDefinition> CODEC = BuilderCodec.builder(ZoneDefinition.class, ZoneDefinition::new)
+    public static final BuilderCodec<@NotNull ZoneDefinition> CODEC = BuilderCodec.builder(ZoneDefinition.class, ZoneDefinition::new)
             .append(new KeyedCodec<>("Id", Codec.STRING), (z, v) -> z.id = v, z -> z.id)
 //            FIXME: This is causing the server to crash at boot, not currently sure why.
 //            .addValidator(Validators.nonEmptyString())

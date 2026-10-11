@@ -30,6 +30,8 @@ public class WorldGameStore implements Resource<EntityStore> {
                     (resource, v) -> resource.games = v,
                     resource -> resource.games)
             .add()
+            // stores saved before games carried their session id are keyed by it
+            .afterDecode(resource -> resource.games.forEach((sessionId, game) -> game.bindSession(sessionId)))
             .build();
 
     // gameId is just the current session

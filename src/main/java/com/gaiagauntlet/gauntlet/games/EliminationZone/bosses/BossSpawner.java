@@ -29,6 +29,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import org.joml.Vector3d;
 
+import com.hypixel.hytale.math.util.ChunkUtil;
+
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,29 +94,23 @@ public final class BossSpawner {
         var point = points.get(ThreadLocalRandom.current().nextInt(points.size()));
 
 
+        bosses.getPending().add(boss.roleId());
         GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(session);
-        place(session, arena, boss, point);
-
-        // TODO: Find out if this chunk loading stuff is actually necessary or if there's a better way around it.
-//        var chunk = arena.getChunkIfLoaded(chunkIndex);
-//        if (chunk != null) {
-//            place(game, arena, boss, point, chunk);
-//            return;
-//        }
-//        arena.getChunkAsync(chunkIndex).whenComplete((loaded, error) -> arena.execute(() -> {
-//            bosses.getPending().remove(boss.roleId());
-//            if (loaded == null || error != null) {
-//                GaiaLog.atWarning().log("The spawn chunk for " + boss.roleId() + " would not load")
-//                    .withGameId(game);
-//                return;
-//            }
-//            if (!isZoneOpen(game, point.zoneId())) {
-//                GaiaLog.atWarning().log(boss.roleId() + " not spawned: " + point.zoneId() + " started closing")
-//                    .withGameId(game);
-//                return;
-//            }
-//            place(game, arena, boss, point, loaded);
-//        }));
+        // an npc added to an unloaded chunk is removed straight away, so the spawn waits for its chunk
+        var chunkIndex = ChunkUtil.indexChunkFromBlock(point.position().x(), point.position().z());
+        arena.getChunkStore().getChunkReferenceAsync(chunkIndex).whenComplete((chunk, error) -> arena.execute(() -> {
+            bosses.getPending().remove(boss.roleId());
+            if (chunk == null || error != null) {
+                GaiaLog.atWarning().log("The spawn chunk for " + boss.roleId() + " would not load").withGameId(session);
+                return;
+            }
+            if (!isZoneOpen(session, arena, point.zoneId())) {
+                GaiaLog.atWarning().log(boss.roleId() + " not spawned: " + point.zoneId() + " started closing")
+                        .withGameId(session);
+                return;
+            }
+            place(session, arena, boss, point);
+        }));
     }
 
     /**

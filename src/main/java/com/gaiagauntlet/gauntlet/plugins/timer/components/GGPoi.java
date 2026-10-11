@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.components;
+package com.gaiagauntlet.gauntlet.plugins.timer.components;
 
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;

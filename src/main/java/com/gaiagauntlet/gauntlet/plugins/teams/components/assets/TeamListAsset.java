@@ -42,6 +42,11 @@ public class TeamListAsset implements JsonAssetWithMap<String, DefaultAssetMap<S
                     team -> team.teamList)
             .documentation("The full list of teams in this preset.")
             .add()
+            .append(new KeyedCodec<>("TeamSize", Codec.INTEGER),
+                    (team, v) -> team.teamSize = v == null ? 0 : v,
+                    team -> team.teamSize)
+            .documentation("The most players a team holds when players are distributed. Zero places no limit.")
+            .add()
             .build();
 
     private static AssetStore<String, TeamListAsset, DefaultAssetMap<String, TeamListAsset>> ASSET_STORE;
@@ -49,12 +54,14 @@ public class TeamListAsset implements JsonAssetWithMap<String, DefaultAssetMap<S
     private AssetExtraInfo.Data data;
     @Getter private String id;
     @Nonnull @Getter private Map<String, TeamComponent> teamList = new HashMap<>();
+    @Getter private int teamSize;
 
     public TeamListAsset() {
     }
     public TeamListAsset(TeamListAsset other) {
         data = other.data;
         id = other.id;
+        teamSize = other.teamSize;
         teamList = new ConcurrentHashMap<>(other.teamList.size());
         for (var team : other.teamList.entrySet()) {
             teamList.put(team.getKey(), team.getValue().clone());

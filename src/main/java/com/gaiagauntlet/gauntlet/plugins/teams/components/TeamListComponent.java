@@ -70,6 +70,16 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     private final Map<UUID, String> playerToTeam = new ConcurrentHashMap<>();
     @Setter @Getter private int teamSize;
 
+    public TeamListComponent() {
+    }
+
+    public TeamListComponent(@Nonnull TeamListComponent other) {
+        teamSize = other.teamSize;
+        for (var team : other.teamList.entrySet()) {
+            addTeam(team.getKey(), team.getValue().clone());
+        }
+    }
+
     public Map<String, TeamComponent> getTeams() {
         return teamList;
     }

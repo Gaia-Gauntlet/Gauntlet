@@ -9,6 +9,9 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.riprod.configly.Config;
 import com.riprod.configly.Configly;
+import com.hypixel.hytale.logger.HytaleLogger;
+
+import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
 
@@ -39,11 +42,25 @@ public class GauntletConfig extends Config {
                     config -> config.getBatchDelay())
             .documentation("How long the delay is between batches")
             .add()
+            .append(new KeyedCodec<>("TeamsPreset", Codec.STRING),
+                    (config, v) -> config.teamsPreset = v,
+                    config -> config.getTeamsPreset())
+            .documentation("The team preset a session plays with when an admin has not loaded one for it")
+            .add()
             .build();
+
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+    private static final GauntletConfig DEFAULTS = new GauntletConfig();
 
     @Nonnull
     public static GauntletConfig get() {
-        return Configly.getOrElse(TYPE, GauntletConfig.class, new GauntletConfig());
+        var config = Configly.get(TYPE, GauntletConfig.class);
+        if (config != null)
+            return config;
+        var stored = Configly.get(TYPE, Config.class);
+        LOGGER.atWarning().atMostEvery(60, TimeUnit.SECONDS).log("%s config is not loaded, using defaults (stored: %s)",
+                TYPE, stored == null ? "nothing" : stored.getClass().getName() + " from " + stored.getClass().getClassLoader());
+        return DEFAULTS;
     }
 
     @Getter
@@ -54,4 +71,6 @@ public class GauntletConfig extends Config {
     private Long batchDelay = 5L;
     @Getter
     private String hubId = null;
+    @Getter
+    private String teamsPreset = "EZDefault";
 }

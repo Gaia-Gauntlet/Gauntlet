@@ -7,6 +7,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.SpawnDamagePreventionSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnProtectionComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia.CornucopiaMovingPlatformsHandler;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
@@ -24,6 +25,7 @@ public final class LobbyEventListeners {
 
     public static final String GAME_MUSIC_CONTAINER = "Elimination_Zone_Start";
     public static final String INTRO_CAMERA_SEQUENCE = "HypeSequence";
+    public static final String INTRO_TIMER = "IntroSequence";
     private LobbyEventListeners() {}
 
     public static void onMatchState(MatchStateEvent event) {
@@ -42,7 +44,7 @@ public final class LobbyEventListeners {
         var world = ctx.getWorld();
 
         var config = EZGameConfig.get(gameEcs);
-        var gameTimerComp = new GameTimerComponent("IntroSequence", TimerUtils.IMG_STAGING);
+        var gameTimerComp = new GameTimerComponent(INTRO_TIMER, TimerUtils.IMG_STAGING);
         for (var poi : config.getArenaTimerPois()) {
             gameTimerComp.addPoi(poi);
         }
@@ -66,12 +68,12 @@ public final class LobbyEventListeners {
                 // start the game - the timer has finished
                 EZController.get().getArenaManager().start(world, game, sessionId);
             }
-            case "IntroSequence" -> {
+            case INTRO_TIMER -> {
                 // timers complete inside a system tick, so the teleports wait for the store to finish processing
                 world.execute(() -> CornucopiaMovingPlatformsHandler.placeAllOnPlatforms(world, game));
-                TimerUtils.start("SpawnProtection", game, EZGameConfig.get(game).getSpawnProtectionSeconds());
+                TimerUtils.start(SpawnProtectionComponent.TIMER_ID, game, EZGameConfig.get(game).getSpawnProtectionSeconds());
             }
-            case "SpawnProtection" -> {
+            case SpawnProtectionComponent.TIMER_ID -> {
                 SpawnDamagePreventionSystem.onEnd(evt);
             }
             default -> {

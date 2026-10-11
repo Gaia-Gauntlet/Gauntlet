@@ -1,8 +1,19 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import javax.annotation.Nullable;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
@@ -34,7 +45,7 @@ public class EZLobbyManager implements LobbyManager {
     public CompletableFuture<World> setupWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
         var hubWorld = hubAccessor.getExternalData().getWorld();
 
-        var cfg = EZGameConfig.get(hubWorld, sessionId);
+        var cfg = EZGameConfig.get(GauntletUtils.sessionFor(sessionId).orElse(null));
 
         return WorldUtils.spawnInstance(cfg.getInstanceTemplateName(), hubWorld, WorldUtils.spawnOf(hubWorld))
                 .whenComplete((world, err) -> {
@@ -71,37 +82,98 @@ public class EZLobbyManager implements LobbyManager {
         if (gameStore == null)
             return;
 
+        arrive(ref, player, accessor, sessionId, gameStore);
+        // every arrival changes who is online, standing, or on a team for the players already here
+        TeamUtils.updateHuds(gameStore, Set.of());
+    }
+
+    private static void arrive(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
+            String sessionId, GameEcs gameStore) {
         // Increment participant counter
         var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
         gameComp.incrementParticipants();
 
-        if (EZState.currentState(gameStore) == EZStates.LOBBY
-                && gameComp.getParticipants() >= EZGameConfig.get(gameStore).getMinPlayers()) {
-            if (TimerUtils.isRunning(gameStore, STARTING_TIMER))
-                return;
-            // EZController.get().getArenaManager().start(world, gameStore, sessionId);
-            // add a timer that starts the match when it is over
-            var config = EZGameConfig.get(gameStore);
-            var gameTimerComp = new GameTimerComponent(STARTING_TIMER, TimerUtils.IMG_COUNTDOWN);
-            for (var poi : config.getArenaTimerPois()) {
-                gameTimerComp.addPoi(poi);
-            }
-            TimerUtils.start(gameStore, 10, gameTimerComp);
+        var state = EZState.currentState(gameStore);
+        if (state == EZStates.LOBBY) {
+            joinLobby(ref, player, accessor, gameStore);
+            countDown(gameStore, gameComp.getParticipants(), GauntletUtils.playersFor(sessionId).size());
             return;
         }
-
-        var team = TeamUtils.withTeamFor(world, sessionId, player.getUuid());
-        if (team == null)
-            return;
-        var onlinePlayers = TeamUtils.getOnlinePlayers(team);
-        for (var teamPlayer : onlinePlayers) {
-            var comp = teamPlayer.getComponentConcurrent(EZPlayerComponent.getComponentType());
-            if (comp != null && comp.isAlive()) {
-                // warp to player
-
-            }
+        if (accessor.getComponent(ref, TeamPlayerComponent.getComponentType()) == null) {
+            var teamId = TeamUtils.teamOf(gameStore, player.getUuid()).map(TeamComponent::getId).orElse(null);
+            accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(teamId));
         }
-        // if party is alive
+        if ((state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH)
+                || TimerUtils.isRunning(gameStore, LobbyEventListeners.INTRO_TIMER))
+            return;
+
+        var team = TeamUtils.teamOf(gameStore, player.getUuid()).orElse(null);
+        if (team == null || !team.isParticipant()
+                || accessor.getComponent(ref, EliminatedComponent.getComponentType()) != null) {
+            spectate(ref, accessor);
+            return;
+        }
+        var teammate = livingTeammate(team, player, accessor.getExternalData().getWorld());
+        if (teammate == null) {
+            accessor.addComponent(ref, EliminatedComponent.getComponentType(), new EliminatedComponent());
+            spectate(ref, accessor);
+            return;
+        }
+        accessor.putComponent(ref, Teleport.getComponentType(),
+                Teleport.createForPlayer(teammate.getPosition(), teammate.getRotation()));
+    }
+
+    private static void countDown(GameEcs gameStore, int arrived, int expected) {
+        var config = EZGameConfig.get(gameStore);
+        if (arrived < config.getMinPlayers())
+            return;
+        var everyone = arrived >= expected;
+        if (TimerUtils.isRunning(gameStore, STARTING_TIMER)) {
+            var timer = TimerUtils.get(gameStore).orElseThrow();
+            if (everyone && timer.getCountdownRemaining() > config.getStartBufferSeconds())
+                timer.setTimer(config.getStartBufferSeconds());
+            return;
+        }
+        var gameTimerComp = new GameTimerComponent(STARTING_TIMER, TimerUtils.IMG_COUNTDOWN);
+        for (var poi : config.getArenaTimerPois()) {
+            gameTimerComp.addPoi(poi);
+        }
+        TimerUtils.start(gameStore, everyone ? config.getStartBufferSeconds() : config.getArrivalTimeoutSeconds(),
+                gameTimerComp);
+    }
+
+    // a match that has not started gives every arrival a clean slate and a team, since state from an earlier match is saved with the player
+    private static void joinLobby(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
+            GameEcs gameStore) {
+        accessor.tryRemoveComponent(ref, EliminatedComponent.getComponentType());
+        TeamUtils.teamsOf(gameStore).ifPresent(teams -> TeamUtils.distributePlayers(List.of(player), teams));
+        var teamId = TeamUtils.teamOf(gameStore, player.getUuid()).map(TeamComponent::getId).orElse(null);
+        accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(teamId));
+    }
+
+    private static void spectate(Ref<EntityStore> ref, ComponentAccessor<EntityStore> accessor) {
+        if (accessor.getComponent(ref, SpectatorComponent.getComponentType()) == null)
+            accessor.addComponent(ref, SpectatorComponent.getComponentType(), new SpectatorComponent());
+    }
+
+    @Nullable
+    private static Transform livingTeammate(TeamComponent team, PlayerRef self, World arena) {
+        for (var uuid : team.getPlayers()) {
+            if (uuid.equals(self.getUuid()))
+                continue;
+            var teammate = PlayerUtils.get(uuid);
+            var ref = teammate == null ? null : teammate.getReference();
+            if (ref == null || !ref.isValid() || ref.getStore() != arena.getEntityStore().getStore())
+                continue;
+            var store = ref.getStore();
+            if (store.getComponent(ref, EliminatedComponent.getComponentType()) != null
+                    || store.getComponent(ref, SpectatorComponent.getComponentType()) != null)
+                continue;
+            var transform = store.getComponent(ref, TransformComponent.getComponentType());
+            if (transform != null)
+                return transform.getTransform();
+        }
+        return null;
     }
 
     @Override

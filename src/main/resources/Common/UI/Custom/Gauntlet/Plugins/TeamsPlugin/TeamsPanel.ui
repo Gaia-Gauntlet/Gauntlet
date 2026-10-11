@@ -7,6 +7,15 @@ Group {
 
     $G.@Column {
         $G.@Card {
+            $G.@Header { @Text = "Load a preset"; }
+            $G.@Caption { @Text = "Replaces this session's teams, between games only"; }
+            $G.@PickerRow {
+                $G.@Picker #PresetPicker { @Anchor = (Right: 6); }
+                $G.@Go #PresetGo { Text: "Load"; }
+            }
+        }
+
+        $G.@Card {
             $G.@Header { @Text = "Assign a player"; }
             $G.@Caption { @Text = "Online and not on a team"; }
             $G.@PickerRow {

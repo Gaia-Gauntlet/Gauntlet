@@ -38,7 +38,7 @@ public abstract class LobbyController extends GameController {
 
     public abstract ArenaManager getArenaManager();
 
-    public abstract void setupGame(World world, GameEcs gameStore, String sessionId);
+    public abstract CompletableFuture<Void> setupGame(World world, GameEcs gameStore, String sessionId);
 
     public static Optional<World> withArenaWorld(World hubWorld, String sessionId) {
         return withArenaWorld(hubWorld.getEntityStore().getStore(), sessionId);
@@ -111,8 +111,9 @@ public abstract class LobbyController extends GameController {
                 // dispatch event
                 MatchEventRegistry.dispatch(new ArenaLoadedEvent(sessionId, world), getId());
 
-                setupGame(world, gameStore, sessionId);
-            });
+                // players are only sent in once the game has finished preparing its arena
+                return setupGame(world, gameStore, sessionId);
+            }).thenCompose(prepared -> prepared);
         });
     };
 
