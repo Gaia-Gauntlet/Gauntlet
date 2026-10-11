@@ -21,6 +21,9 @@ public class SessionRegistry implements CodecRegistry<SessionComponent> {
 
     private static final Map<String, SessionComponentType<?>> componentRegistry = new ConcurrentHashMap<>();
 
+    public static <T extends SessionComponent> SessionComponentType<T> register(String id, Class<T> cClass) {
+        return register(id, cClass, null);
+    };
     public static <T extends SessionComponent> SessionComponentType<T> register(String id, Class<T> cClass,
             BuilderCodec<T> codec) {
         if (componentRegistry.containsKey(id)) {

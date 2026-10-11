@@ -1,16 +1,12 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamType;
-import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;
@@ -26,6 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -40,6 +37,8 @@ public class CornucopiaMovingPlatformsHandler {
     public static final String FALLBACK_BLOCK_ID = "Rock_Ledge_Brick_Smooth"; // TODO: Make this a config option.
 
     public static void onMatchStart(MatchStateEvent evt) {
+        if (!Objects.equals(evt.getTo(), EZStates.RUNNING.name()))
+            return;
 
         var gameStore = evt.getGame();
         var gameContext = gameStore.get(ContextComponent.getComponentType()).orElse(null);
@@ -50,20 +49,9 @@ public class CornucopiaMovingPlatformsHandler {
 
         var config = EZGameConfig.get(gameStore);
 
-        Collection<Ref<EntityStore>> entities = new HashSet<>();
-
         var spawnsComponent = gameStore.ensure(EZSpawnComponent.getComponentType(), () -> new EZSpawnComponent(world));
 
         rise(world, config.getCameraSequenceSeconds(), spawnsComponent.getAllFilled());
-
-        world.scheduleAfter(() -> {
-            for (Ref<EntityStore> ref : entities) {
-                if (!ref.isValid())
-                    continue; // don't process invalid entities. Since this happens later, we don't know what
-                              // happened to them
-                ArenaBlocks.entityToBlock(world, ref);
-            }
-        }, (long) config.getCameraSequenceSeconds(), TimeUnit.SECONDS);
     }
 
     public static void rise(@Nonnull World world, double durationSeconds, @Nonnull List<Transform> spawns) {

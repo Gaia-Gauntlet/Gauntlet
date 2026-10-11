@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
@@ -65,6 +66,10 @@ public class PlayerHandlers extends HandlerUtils {
                     .param("operation", evt.getOperation().toString())
                     .param("reason", "an error was encountered during the handling logic (check logs)")));
         }
+
+        var players = new HashSet<>(GauntletUtils.playersFor(session));
+        players.add(playerRef);
+        refreshHud(players);
     }
 
     // player requested to join the session / game
@@ -263,6 +268,7 @@ public class PlayerHandlers extends HandlerUtils {
             return;
 
         GauntletOrchestrator.showHud(store, ref, playerRef);
+        sessionFor(playerRef).ifPresent(HandlerUtils::refreshHud);
     }
 
     /**

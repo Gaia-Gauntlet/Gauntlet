@@ -10,7 +10,7 @@ import lombok.Setter;
 /**
  * Where a session's match is in its life cycle, the countdown for the current
  * phase, and the
- * standings once it ends. Kept in the session's game store on the hub world,
+ * s once it ends. Kept in the session's game store on the hub world,
  * since the session
  * itself is locked while a game runs. Written on the hub thread through
  * MatchUtils. HUDs read it

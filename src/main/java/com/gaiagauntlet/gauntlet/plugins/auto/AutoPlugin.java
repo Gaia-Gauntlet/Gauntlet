@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
+import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.MatchTab;
@@ -42,7 +43,6 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
     }
 
     public void init(JavaPlugin host) {
-        VoteComponent.setComponentType(GameComponentRegistry.register(VoteComponent.ID, VoteComponent.class));
     }
 
     /**

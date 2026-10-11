@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.core.ui.interfaces;
+package com.gaiagauntlet.gauntlet.core.hud.interfaces;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,16 +26,24 @@ public interface HudElement {
         return 0;
     }
 
-    /** Whether the element shows for this player right now. Checked on every refresh. */
-    default boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        return true;
+    /**
+     * The session-wide data the element draws from, or null when the element does
+     * not apply to this player. Returning null hides the element.
+     */
+    @Nullable
+    default HudDataSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        return null;
     }
 
     /** Fills the parts that only change with the session. Runs when the HUD is shown and when the player's session changes. */
     default void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
     }
 
-    /** Rewrites the live fields. Runs on the refresh timer while the element is visible. */
-    default void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-    }
+    /**
+     * Rewrites the live fields from session-wide data. Event snapshots reach every
+     * player in the session, so this returns false without drawing when the data
+     * does not apply to this player.
+     */
+    boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data);
 }

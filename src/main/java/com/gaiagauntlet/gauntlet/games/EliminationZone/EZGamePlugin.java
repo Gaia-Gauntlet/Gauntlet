@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.EZSpawn;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
@@ -50,6 +51,7 @@ public class EZGamePlugin extends JavaPlugin {
         EZSpawn.setup(this);
         EZUi.setup();
         EZLootHandlers.setup();
+        EZState.setup(this);
     }
 
     private void registerComponents() {

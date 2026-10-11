@@ -1,17 +1,18 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
-import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.LobbyComponent;
+import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
+import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
+import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerStartedEvent;
+import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
 
 import java.util.Objects;
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public final class LobbyEventListeners {
 
     public static final String GAME_MUSIC_CONTAINER = "Elimination_Zone_Start";
-    public static final String INTRO_CAMERA_SEQUENCE = "ZoneShowcase";
+    public static final String INTRO_CAMERA_SEQUENCE = "HypeSequence";
     private LobbyEventListeners() {}
 
     public static void onMatchState(MatchStateEvent event) {
@@ -38,15 +39,35 @@ public final class LobbyEventListeners {
         }
         var world = ctx.getWorld();
 
-        var gameTimerComp = new GameTimerComponent();
         var config = EZGameConfig.get(gameEcs);
+        var gameTimerComp = new GameTimerComponent("IntroSequence", TimerUtils.IMG_STAGING);
+        for (var poi : config.getArenaTimerPois()) {
+            gameTimerComp.addPoi(poi);
+        }
         gameTimerComp.startTimer(config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds());
         gameEcs.put(GameTimerComponent.getComponentType(), gameTimerComp);
 
         MusicUtils.forcePlayMusicToAllPlayers(GAME_MUSIC_CONTAINER, session);
         world.scheduleAfter(
             () -> Announcer.cinematic(session.getId(), INTRO_CAMERA_SEQUENCE),
-            config.getCornucopiaDurationSeconds(), TimeUnit.SECONDS
+            (long) config.getCornucopiaDurationSeconds(), TimeUnit.SECONDS
         );
+    }
+
+    public static void onTimerComplete(TimerCompleteEvent evt) {
+        var game = evt.getGameStore();
+        var sessionId = evt.getSessionId();
+        var ctx = GameStore.getContext(game);
+        var world = ctx.getWorld();
+
+        switch (evt.getTimerId()) {
+            case "GameStarting" -> {
+                // start the game - the timer has finished
+                EZController.get().getArenaManager().start(world, game, sessionId);
+            }
+            default -> {
+                
+            }
+        }
     }
 }

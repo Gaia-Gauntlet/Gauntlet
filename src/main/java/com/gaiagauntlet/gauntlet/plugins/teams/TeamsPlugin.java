@@ -2,11 +2,10 @@ package com.gaiagauntlet.gauntlet.plugins.teams;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.PersistentGamePlugin;
@@ -17,6 +16,8 @@ import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
+import com.gaiagauntlet.gauntlet.plugins.teams.listeners.TeamHudListeners;
+import com.gaiagauntlet.gauntlet.plugins.teams.systems.TeamHudDeathSystem;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsTab;
@@ -25,6 +26,8 @@ import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.asseteditor.AssetEditorPlugin;
 import com.hypixel.hytale.builtin.asseteditor.event.AssetEditorActivateButtonEvent;
 import com.hypixel.hytale.component.ComponentAccessor;
+import com.hypixel.hytale.event.EventPriority;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -70,6 +73,10 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
         TeamListComponent.setGameComponentType(
                 GameComponentRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
 
+        entityStore.registerSystem(new TeamHudDeathSystem());
+        host.getEventRegistry().register(EventPriority.EARLY, PlayerDisconnectEvent.class,
+                TeamHudListeners::onPlayerDisconnect);
+
         // asset editor button
         var editor = AssetEditorPlugin.get();
         if (editor != null) {
@@ -91,14 +98,24 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
     public void setup(ComponentAccessor<EntityStore> arenaAccessor, GameSession sessionObject, GameEcs gameStore, String gameId) {
         // sets up the game with the team stuff
         var teamList = new TeamListComponent();
-        gameStore.put(TeamListComponent.getGameComponentType(), teamList);
-        TeamUtils.initialiseTeams(teamList, EZGameConfig.get(gameStore).getTeamsPreset());
-        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), teamList);
+        var sessionTeamsList = sessionObject.ensure(TeamListComponent.getSessionComponentType(), teamList);
+
+        // put it on the store
+        gameStore.put(TeamListComponent.getGameComponentType(), sessionTeamsList);
+        // init the teams
+        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), sessionTeamsList);
     }
 
     @Override
     public SessionWriter capture(World world, GameEcs store, String sessionId) {
-        return null;
+        var teamList = store.get(TeamListComponent.getGameComponentType()).orElse(null);
+        
+        return new SessionWriter() {
+            private TeamListComponent teams = teamList;
+            public void apply(GameSession session) {
+                session.put(TeamListComponent.getSessionComponentType(), teams);
+            }
+        };
     }
 
     @Override

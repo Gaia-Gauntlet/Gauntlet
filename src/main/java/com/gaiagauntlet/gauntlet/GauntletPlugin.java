@@ -22,6 +22,7 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
+import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -103,6 +104,7 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
         GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
         GameRegistry.registerPlugin(SpectatorPlugin.ID, this, SpectatorPlugin::new);
+        GameRegistry.registerPlugin(TimerPlugin.ID, this, TimerPlugin::new);
     }
 
     private void setupEvents() {

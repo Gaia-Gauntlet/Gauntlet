@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.plugins.events.components;
+package com.gaiagauntlet.gauntlet.plugins.events.assets;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;

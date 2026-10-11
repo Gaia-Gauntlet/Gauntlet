@@ -62,7 +62,6 @@ public class GameEcs {
         return newComp;
     }
 
-    @Nonnull
     public <T extends GameComponent> Optional<T> get(GameComponentType<T> type) {
         if (type == null) {
             throw new IllegalArgumentException(

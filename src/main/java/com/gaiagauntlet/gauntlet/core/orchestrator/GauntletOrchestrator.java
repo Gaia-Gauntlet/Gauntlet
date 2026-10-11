@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.core.orchestrator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,15 +28,17 @@ import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
+import com.gaiagauntlet.gauntlet.core.hud.huds.GauntletHud;
+import com.gaiagauntlet.gauntlet.core.hud.huds.SessionHud;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GameHandlers;
+import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.GauntletHudHandler;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.SessionHandlers;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.AdminSection;
-import com.gaiagauntlet.gauntlet.core.ui.huds.GauntletHud;
-import com.gaiagauntlet.gauntlet.core.ui.huds.SessionHud;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
@@ -70,9 +73,6 @@ public class GauntletOrchestrator {
             SessionsPage.ID, SessionsPage::new,
             PartyPage.ID, PartyPage::new);
 
-    /** The HUD currently shown to each player, so a replaced or abandoned HUD stops refreshing */
-    private static final Map<UUID, GauntletHud> huds = new ConcurrentHashMap<>();
-
     /**
      * Registers all of the events LATE so that they can be intercepted easily
      */
@@ -96,6 +96,7 @@ public class GauntletOrchestrator {
         registry.register(PlayerConnectEvent.class, PlayerHandlers::onPlayerConnect);
         registry.registerGlobal(PlayerReadyEvent.class, PlayerHandlers::onPlayerReady);
         registry.register(PlayerDisconnectEvent.class, PlayerHandlers::onPlayerDisconnect);
+        registry.register(HudEvent.class, GauntletHudHandler::onHudEvent);
     }
 
     /** Ensures the event handler is always run on the hub world */
@@ -110,7 +111,8 @@ public class GauntletOrchestrator {
     }
 
     /**
-     * Collects new admin sections for one admin page: the orchestrator's session tabs, then each game's
+     * Collects new admin sections for one admin page: the orchestrator's session
+     * tabs, then each game's
      * tabs, then the tabs of each UI plugin that has any
      */
     public static List<AdminSection> getAdminSections() {
@@ -119,7 +121,8 @@ public class GauntletOrchestrator {
                 sorted(List.of(new SessionTab(), new LogTab(), new PluginsTab()))));
         for (var gameId : GameRegistry.getGameIds()) {
             GameRegistry.getGame(gameId).ifPresent(
-                    game -> sections.add(new AdminSection(game.getDisplayName(), null, gameId, sorted(game.getAdminTabs()))));
+                    game -> sections
+                            .add(new AdminSection(game.getDisplayName(), null, gameId, sorted(game.getAdminTabs()))));
         }
         var plugins = new ArrayList<>(GameRegistry.getPlugins(UiGamePlugin.class));
         plugins.sort(Comparator.comparing(UiGamePlugin::getDisplayName, String.CASE_INSENSITIVE_ORDER));
@@ -141,10 +144,12 @@ public class GauntletOrchestrator {
     /** Finds a page by id among the core pages and the pages UI plugins provide */
     public static Optional<PageFactory> getPage(String pageId) {
         var core = corePages.get(pageId);
-        if (core != null) return Optional.of(core);
+        if (core != null)
+            return Optional.of(core);
         for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
             var page = plugin.getPages().get(pageId);
-            if (page != null) return Optional.of(page);
+            if (page != null)
+                return Optional.of(page);
         }
         return Optional.empty();
     }
@@ -153,7 +158,8 @@ public class GauntletOrchestrator {
     public static void openPage(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef,
             String pageId, @Nullable GameSession session) {
         var player = store.getComponent(ref, Player.getComponentType());
-        if (player == null) return;
+        if (player == null)
+            return;
 
         var factory = getPage(pageId);
         if (!factory.isPresent()) {
@@ -163,33 +169,24 @@ public class GauntletOrchestrator {
         player.getPageManager().openCustomPage(ref, store, factory.get().create(playerRef, session));
     }
 
-    /** Collects new HUD elements from the orchestrator, every UI plugin and every game, for one player's HUD, in draw order */
-    public static List<HudElement> getHudElements() {
-        var elements = new ArrayList<HudElement>(List.of(new SessionHud()));
-        for (var plugin : GameRegistry.getPlugins(UiGamePlugin.class)) {
-            elements.addAll(plugin.getHudElements());
-        }
-        for (var gameId : GameRegistry.getGameIds()) {
-            GameRegistry.getGame(gameId).ifPresent(game -> elements.addAll(game.getHudElements()));
-        }
-        elements.sort(Comparator.comparingInt(HudElement::getOrder).thenComparing(HudElement::getId));
-        return elements;
+    /**
+     * Collects new HUD elements from the orchestrator, every UI plugin and every
+     * game, for one player's HUD, in draw order
+     */
+    public static Map<String, HudElement> getHudElements() {
+        return GauntletHudHandler.getHudElements();
     }
 
-    /** Shows the player HUD, replacing the one the player had. Every HUD is shown through here */
+    /**
+     * Shows the player HUD, replacing the one the player had. Every HUD is shown
+     * through here
+     */
     public static void showHud(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef) {
-        var player = store.getComponent(ref, Player.getComponentType());
-        if (player == null) return;
-
-        var hud = new GauntletHud(playerRef);
-        var previous = huds.put(playerRef.getUuid(), hud);
-        if (previous != null) previous.stop();
-        player.getHudManager().addCustomHud(playerRef, hud);
+        GauntletHudHandler.showHud(store, ref, playerRef);
     }
 
     /** Stops the HUD of a player who left */
     public static void forgetHud(PlayerRef playerRef) {
-        var hud = huds.remove(playerRef.getUuid());
-        if (hud != null) hud.stop();
+        GauntletHudHandler.forgetHud(playerRef);
     }
 }

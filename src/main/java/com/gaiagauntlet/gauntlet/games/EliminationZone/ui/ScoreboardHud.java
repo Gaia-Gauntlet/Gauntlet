@@ -6,17 +6,20 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
+import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.huds.HudWidgets;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamUi;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 /**
- * Event standings in the lobby, below the party panel: every participating team ranked by its event
+ * Event standings in the lobby, in the party panel's spot: every participating team ranked by its event
  * score, the viewer's own team highlighted. Takes the teams sidebar's place until the match reaches
  * the arena.
  */
@@ -31,9 +34,8 @@ public final class ScoreboardHud implements HudElement {
 
     private final HudWidgets.Sent sent = new HudWidgets.Sent();
 
-    /** The team ids in row order and the panel top the rows were built for, or null when they need building. */
+    /** The team ids in row order the rows were built for, or null when they need building. */
     @Nullable private List<String> builtTeams;
-    private int builtTop = -1;
 
     @Nonnull @Override public String getId() {
         return "Scoreboard";
@@ -47,11 +49,20 @@ public final class ScoreboardHud implements HudElement {
         return 40;
     }
 
+    public record ScoreboardSnapshot(
+        GameSession session,
+        List<TeamComponent> teams
+    ) implements HudDataSnapshot {};
+
+    @Nullable
+    public static ScoreboardSnapshot snapshot(@Nullable GameSession session) {
+        if (session == null || !session.available() || !EZController.isEz(session)) return null; // hide if in an active game session
+        return new ScoreboardSnapshot(session, ranked(session));
+    }
+
     @Override
-    public boolean isVisible(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        // return EZController.isEz(session) && MatchUtils.get(session) != null && MatchUtils.inLobby(session)
-        //         && !ranked(session).isEmpty();
-        return false;
+    public HudDataSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        return snapshot(session);
     }
 
     @Override
@@ -60,15 +71,20 @@ public final class ScoreboardHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
-        var teams = ranked(session);
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, @Nonnull HudDataSnapshot data) {
+        if (!(data instanceof ScoreboardSnapshot scoreboard)) {
+            GaiaLog.atWarning().withSession(session).log("Attempted to update the scoreboard with the incorrect snapshot!");
+            return false;
+        }
+        if (session != scoreboard.session) return false;
+
+        var teams = scoreboard.teams;
+        var own = TeamUtils.teamOf(scoreboard.session, player.getUuid()).orElse(null);
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = TeamUi.belowParty(session, player.getUuid());
-        if (!ids.equals(builtTeams) || top != builtTop) {
-            build(cmd, teams, top);
+        if (!ids.equals(builtTeams)) {
+            build(cmd, teams);
         }
 
-        var own = TeamUi.teamOf(session, player.getUuid());
         for (int i = 0; i < teams.size(); i++) {
             var team = teams.get(i);
             var row = "#ScoreRows[" + i + "]";
@@ -76,32 +92,32 @@ public final class ScoreboardHud implements HudElement {
             sent.text(cmd, row + " #Points", Long.toString(Math.round(team.getScore())));
             sent.visible(cmd, row + " #Highlight", team == own);
         }
+        return true;
     }
 
-    private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams, int top) {
+    private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams) {
         sent.clear();
         builtTeams = teams.stream().map(TeamComponent::getId).toList();
-        builtTop = top;
 
-        HudWidgets.anchor(cmd, "#Scoreboard", top, RIGHT, WIDTH, PADDING * 2 + TITLE_HEIGHT + ROW_HEIGHT * teams.size());
+        HudWidgets.anchor(cmd, "#Scoreboard", PartyHud.TOP, RIGHT, WIDTH, PADDING * 2 + TITLE_HEIGHT + ROW_HEIGHT * teams.size());
         cmd.clear("#ScoreRows");
         for (int i = 0; i < teams.size(); i++) {
             var row = "#ScoreRows[" + i + "]";
             cmd.append("#ScoreRows", ROW);
-            cmd.set(row + " #Name.Text", TeamUi.displayName(teams.get(i)));
-            TeamUi.icon(cmd, row + " #Icon", row + " #Initial", teams.get(i));
+            cmd.set(row + " #Name.Text", TeamUtils.displayName(teams.get(i)));
+            TeamUtils.icon(cmd, row + " #Icon", row + " #Initial", teams.get(i));
         }
     }
 
     /** Participating teams with players, highest event score first, then by name. */
     @Nonnull
     private static List<TeamComponent> ranked(@Nullable GameSession session) {
-        var teamList = TeamUi.teamsOf(session);
+        var teamList = TeamUtils.teamsOf(session).orElse(null);
         if (teamList == null) return List.of();
         return teamList.getTeams().values().stream()
                 .filter(team -> team.isParticipant() && team.getSize() > 0)
                 .sorted(Comparator.comparingDouble(TeamComponent::getScore).reversed()
-                        .thenComparing(TeamUi::displayName, String.CASE_INSENSITIVE_ORDER))
+                        .thenComparing(TeamUtils::displayName, String.CASE_INSENSITIVE_ORDER))
                 .toList();
     }
 }

@@ -57,7 +57,7 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
                             // the player is on two teams - whoops - not much to be done about that though
                             // other than cry
                             GaiaLog.atWarning()
-                                    .log("Player " + PlayerUtils.resolveOnline(player) + " is on both team " + prev
+                                    .log("Player " + PlayerUtils.nameFor(player) + " is on both team " + prev
                                             + " and team " + teamEntry.getKey());
                             teams.remove(player, prev);
                         }

@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.core.ui.huds;
+package com.gaiagauntlet.gauntlet.core.hud.huds;
 
 import java.util.HashMap;
 import java.util.Map;
