@@ -135,7 +135,9 @@ public final class BossSpawner {
             }
         }
         if (candidates.isEmpty()) {
-            throw new IllegalStateException("No boss can spawn right now: every candidate is out, disabled, or in a closing zone");
+            GaiaLog.atInfo()
+                .log("No boss can spawn right now: every candidate is out, disabled, or in a closing zone")
+                .withGameId(game);
         }
         spawn(game, store, bosses.drawFrom(candidates));
     }

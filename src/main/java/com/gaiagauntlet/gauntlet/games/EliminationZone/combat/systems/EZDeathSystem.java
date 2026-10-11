@@ -98,17 +98,18 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         var world = Universe.get().getWorld(playerRef.getWorldUuid());
         sendDeathMessage(death, playerRef, killerPlayer, world);
 
-        // Check for sudden death
+        // Check for game end
         var session = GauntletUtils.sessionFor(playerComp.getSessionId()).orElse(null);
         if (session == null) return;
-        if (state != EZStates.SUDDEN_DEATH && GauntletUtils.playersFor(session).size() <= EZGameConfig.get(world, session.getId()).getSuddenDeathAt()) {
-            EZState.setState(gameStore, EZStates.SUDDEN_DEATH);
-        }
-
-        // Check for game end
         Collection<TeamComponent> aliveTeams = TeamUtils.withAliveTeams(world, session.getId());
         if (aliveTeams.size() == 1) {
             EZState.setState(gameStore, EZStates.ENDED);
+            return;
+        }
+
+        // Check for sudden death
+        if (state != EZStates.SUDDEN_DEATH && GauntletUtils.playersFor(session).size() <= EZGameConfig.get(world, session.getId()).getSuddenDeathAt()) {
+            EZState.setState(gameStore, EZStates.SUDDEN_DEATH);
         }
     }
 

@@ -4,15 +4,20 @@ import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyController;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
+import com.gaiagauntlet.gauntlet.utils.WorldUtils;
+import com.hypixel.hytale.server.core.Message;
 
 import java.util.Objects;
 
@@ -26,6 +31,18 @@ public final class MatchStateListeners {
 
     public static void onSuddenDeath(MatchStateEvent evt) {
         if (!Objects.equals(evt.getTo(), EZStates.SUDDEN_DEATH.name())) return;
+
+        GauntletUtils.sessionFor(evt.getSessionId()).orElse(null);
+        
+        WeatherService.startSuddenDeathWeather(gameRef);
+        MusicUtils.forcePlayMusicToAllPlayers("Battle_Of_Glory_Last_Stand_Combined");
+        Announcer.title(
+            gameRef.getWorld(),
+            Message.raw("SUDDEN DEATH!"),
+            Message.raw("Zones close twice as fast!"),
+            Announcer.Tone.DANGER,
+            Announcer.SOUND_MILESTONE_EVIL
+        );
     }
 
     public static void onMatchEnd(MatchStateEvent evt) {
