@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
@@ -66,6 +67,7 @@ public final class VoidTerrain {
     private static final Map<Integer, FluidReplacement> FLUID_CACHE = new HashMap<>();
 
     private final LongSet painted = new LongOpenHashSet();
+    private final LongSet pendingColumns = new LongOpenHashSet();
     private final Map<String, Double> lastEdge = new HashMap<>();
     private final ArrayDeque<Vector3i> spreadQueue = new ArrayDeque<>();
     private int paintedBlocks;
@@ -83,6 +85,7 @@ public final class VoidTerrain {
         }
         pinned.clear();
         painted.clear();
+        pendingColumns.clear();
         lastEdge.clear();
         spreadQueue.clear();
         abandoned.clear();
@@ -121,7 +124,8 @@ public final class VoidTerrain {
             if (current < previous) {
                 forEachColumnInBand(zone, current, previous + 1, (x, z) -> {
                     long column = packColumn(x, z);
-                    if (!painted.contains(column) && test.isInVoid(x + 0.5, zone.minY() + 1, z + 0.5)) {
+                    if (!painted.contains(column) && !pendingColumns.contains(column)
+                            && test.isInVoid(x + 0.5, zone.minY() + 1, z + 0.5)) {
                         newColumns.add(column);
                     }
                 });
@@ -131,12 +135,19 @@ public final class VoidTerrain {
         for (var band : bands) {
             lastEdge.put(band.zone().id(), band.edgeRadius());
         }
+        newColumns.addAll(pendingColumns);
+        pendingColumns.clear();
         var fluids = new FluidCursor(world);
         for (int i = 0; i < newColumns.size(); i++) {
             long column = newColumns.getLong(i);
             int x = unpackX(column);
             int z = unpackZ(column);
-
+            if (chunkFor(world, x, z) == null) {
+                if (!abandoned.contains(ChunkUtil.indexChunkFromBlock(x, z))) {
+                    pendingColumns.add(column);
+                }
+                continue;
+            }
             painted.add(column);
             int top = topFor(bands, x, z);
             for (int y = ChunkUtil.MIN_Y; y <= top; y++) {
@@ -165,8 +176,7 @@ public final class VoidTerrain {
         var retry = new ArrayList<Vector3i>();
         while (!spreadQueue.isEmpty()) {
             var block = spreadQueue.removeFirst();
-            var chunk = BlockUtils.getBlockSection(world, block);
-            if (chunk == null) {
+            if (chunkFor(world, block.x(), block.z()) == null) {
                 long index = ChunkUtil.indexChunkFromBlock(block.x(), block.z());
                 if (!abandoned.contains(index)) {
                     retry.add(block);
@@ -189,11 +199,8 @@ public final class VoidTerrain {
                 rotation = blockSection.getRotationIndex(block.x(), block.y(), block.z());
                 var replacement = blockReplacement(blockId, rotation, mappings, voidType);
                 if (replacement != null && blockId != replacement.index()) {
-                    blockSection.set(
-                        block.x(), block.y(), block.z(),
-                        replacement.index(), rotation,
-                        FillerBlockUtil.NO_FILLER
-                    );
+                    BlockOperations.setBlock(chunkStore, sectionRef, block.x(), block.y(), block.z(),
+                            replacement.index(), replacement.type(), rotation, FillerBlockUtil.NO_FILLER, PAINT_SETTINGS);
                     changed = true;
                 }
             }
@@ -206,11 +213,9 @@ public final class VoidTerrain {
                 } else {
                     changed |= fluids.clear(block.x(), block.y(), block.z());
                     if (blockId == BlockType.EMPTY_ID && replacement != null && replacement.block() != null) {
-                        blockSection.set(
-                            block.x(), block.y(), block.z(),
-                            replacement.block().index(), 0,
-                            FillerBlockUtil.NO_FILLER
-                        );
+                        BlockOperations.setBlock(chunkStore, sectionRef, block.x(), block.y(), block.z(),
+                                replacement.block().index(), replacement.block().type(), 0, FillerBlockUtil.NO_FILLER,
+                                PAINT_SETTINGS);
                         changed = true;
                     }
                 }
@@ -223,6 +228,26 @@ public final class VoidTerrain {
     }
 
     // Chunk access
+
+    @Nullable
+    private WorldChunk chunkFor(@Nonnull World world, int blockX, int blockZ) {
+        long index = ChunkUtil.indexChunkFromBlock(blockX, blockZ);
+        var chunk = world.getChunkStore().getChunkComponent(index, WorldChunk.getComponentType());
+        if (chunk != null) {
+            pin(index, chunk);
+            return chunk;
+        }
+        request(world, index);
+        return null;
+    }
+
+    private void request(@Nonnull World world, long index) {
+        if (abandoned.contains(index) || inflight.size() >= MAX_INFLIGHT_LOADS || !inflight.add(index)) {
+            return;
+        }
+        world.getChunkStore().getChunkReferenceAsync(index).whenComplete((ref, error) -> world.execute(() -> completed(index,
+                ref == null || !ref.isValid() ? null : ref.getStore().getComponent(ref, WorldChunk.getComponentType()), error)));
+    }
 
     private void completed(long index, @Nullable WorldChunk chunk, @Nullable Throwable error) {
         if (!inflight.remove(index)) {
@@ -241,6 +266,22 @@ public final class VoidTerrain {
         }
         loadedChunks++;
         failures.remove(index);
+        pin(index, chunk);
+    }
+
+    private void pin(long index, @Nonnull WorldChunk chunk) {
+        var previous = pinned.put(index, chunk);
+        if (previous == null) {
+            chunk.addKeepLoaded();
+        } else if (previous != chunk) {
+            previous.removeKeepLoaded();
+            chunk.addKeepLoaded();
+        }
+        Iterator<Map.Entry<Long, WorldChunk>> eldest = pinned.entrySet().iterator();
+        while (pinned.size() > MAX_PINNED_CHUNKS && eldest.hasNext()) {
+            eldest.next().getValue().removeKeepLoaded();
+            eldest.remove();
+        }
     }
 
     // Replacement lookup
