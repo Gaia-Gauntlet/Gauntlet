@@ -46,7 +46,13 @@ public class GameStore {
     }
     public static Optional<GameEcs> withStore(PlayerRef player, String sessionId) {
         var world = PlayerUtils.worldOf(player);
+        if (world == null) return Optional.empty();
         return withStore(world, sessionId);
+    }
+
+    /** Whether the player stands in the world that holds this game */
+    public static boolean isIn(PlayerRef player, GameEcs game) {
+        return withStore(player, game.getSessionId()).filter(store -> store == game).isPresent();
     }
 
     public static ContextComponent getContext(GameEcs store) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
+import com.gaiagauntlet.gauntlet.plugins.events.systems.EventTickSystem;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 /**
@@ -25,6 +26,7 @@ public class MatchEventsPlugin implements GamePlugin {
     @Override
     public void init(JavaPlugin plugin) {
         MatchEventRegistry.setup(plugin);
+        plugin.getEntityStoreRegistry().registerSystem(new EventTickSystem());
     }
 
 }

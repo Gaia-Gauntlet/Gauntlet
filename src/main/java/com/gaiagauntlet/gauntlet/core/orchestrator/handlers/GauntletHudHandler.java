@@ -42,17 +42,13 @@ public class GauntletHudHandler {
             return;
 
         var hud = new GauntletHud(playerRef);
-        var previous = huds.put(playerRef.getUuid(), hud);
-        if (previous != null)
-            previous.stop();
+        huds.put(playerRef.getUuid(), hud);
         player.getHudManager().addCustomHud(playerRef, hud);
     }
 
-    /** Stops the HUD of a player who left */
+    /** Stops routing HUD events to a player who left */
     public static void forgetHud(PlayerRef playerRef) {
-        var hud = huds.remove(playerRef.getUuid());
-        if (hud != null)
-            hud.stop();
+        huds.remove(playerRef.getUuid());
     }
 
     public static Map<String, HudElement> getHudElements() {
@@ -82,7 +78,12 @@ public class GauntletHudHandler {
         GauntletUtils.run(evt.getWorld(), () -> {
             for (var player : players) {
                 var hud = huds.get(player.getUuid());
-                if (hud != null) {
+                if (hud == null) {
+                    continue;
+                }
+                if (evt.isRefresh()) {
+                    hud.refresh(evt.getHudId());
+                } else if (evt.getHudId() != null) {
                     hud.onEvent(evt.getHudData(), evt.getHudId());
                 }
             }
@@ -90,6 +91,9 @@ public class GauntletHudHandler {
     }
 
     private static Collection<PlayerRef> gatherEventPlayers(HudEvent evt) {
+        if (evt.getPlayers() != null) {
+            return evt.getPlayers();
+        }
         if (evt.getSessionId() != null) {
             var players = GauntletUtils.playersFor(evt.getSessionId());
             return players;

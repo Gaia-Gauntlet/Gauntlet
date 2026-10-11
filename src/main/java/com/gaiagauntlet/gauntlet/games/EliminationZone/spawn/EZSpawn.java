@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.RisingBlock
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems.SpawnDamagePreventionSystem;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
+import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 public class EZSpawn {
@@ -22,6 +23,8 @@ public class EZSpawn {
         RisingBlockComponent
                 .setComponentType(plugin.getEntityStoreRegistry().registerComponent(RisingBlockComponent.class,
                         RisingBlockComponent::new));
+
+        TimerUtils.registerOnComplete("SpawnProtection", EZController.ID, SpawnDamagePreventionSystem::onEnd);
 
         plugin.getEntityStoreRegistry().registerSystem(new RisingBlockTickingSystem());
         plugin.getEntityStoreRegistry().registerSystem(new SpawnDamagePreventionSystem());

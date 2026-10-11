@@ -27,9 +27,8 @@ public interface HudElement {
     }
 
     /**
-     * Whether the element shows for this player right now.
-     * 
-     * Returning null will tear down the HUD
+     * The session-wide data the element draws from, or null when the element does
+     * not apply to this player. Returning null hides the element.
      */
     @Nullable
     default HudDataSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
@@ -40,7 +39,11 @@ public interface HudElement {
     default void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session) {
     }
 
-    /** Rewrites the live fields. Runs on the refresh timer while the element is visible. */
-    default void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
-    }
+    /**
+     * Rewrites the live fields from session-wide data. Event snapshots reach every
+     * player in the session, so this returns false without drawing when the data
+     * does not apply to this player.
+     */
+    boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data);
 }

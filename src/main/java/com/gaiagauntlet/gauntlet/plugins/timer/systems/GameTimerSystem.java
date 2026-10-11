@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameQuery;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
+import com.gaiagauntlet.gauntlet.plugins.timer.ui.TimerHud;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -37,6 +38,7 @@ public class GameTimerSystem extends GameTickingSystem {
             MatchEventRegistry.dispatch(TimerCompleteEvent.of(gameStore, gameTimerComponent.getTimerId()), ctx.getGameId());
             // remove the timer
             gameStore.remove(GameTimerComponent.getComponentType());
+            TimerHud.update(gameStore);
             return;
         }
         var lastUpdateTime = gameTimerComponent.getLastUpdateTime();
@@ -51,6 +53,7 @@ public class GameTimerSystem extends GameTickingSystem {
             TimerDisplay.showBase(world, target.getTransform());
             TimerDisplay.showTime(world, target.getTransform(), (int) Math.floor(timeRemaining));
         }
+        TimerHud.update(gameStore);
     }
 
     @Override

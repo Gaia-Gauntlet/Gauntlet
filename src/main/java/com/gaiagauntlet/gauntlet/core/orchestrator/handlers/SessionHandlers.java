@@ -93,6 +93,7 @@ public class SessionHandlers extends HandlerUtils {
         // pass stuff to the game
         // mark the next game as running
         session.startNext();
+        refreshHud(session);
         var future = game.setupGame(hub.getEntityStore().getStore(), session);
         future.whenComplete((value, error) -> {
             // run on the hub thread
@@ -124,6 +125,7 @@ public class SessionHandlers extends HandlerUtils {
                     cleanGame(hub, sessionEvt, session);
                     return;
                 }
+                refreshHud(session);
 
                 try {
                     var players = GauntletUtils.playersFor(session);
@@ -160,9 +162,11 @@ public class SessionHandlers extends HandlerUtils {
                             .param("action", "cleaning. Already getting cleaned up!")));
             return;
         }
+        refreshHud(session);
 
         if (!(GameRegistry.getGame(currentGame).orElse(null) instanceof GameController game)) {
             session.setErrored("No current game is available to cancel");
+            refreshHud(session);
             sessionEvt.complete(GaiaLog.atError().withSession(session)
                     .log(MessageUtils.msg("server.gg.events.session.error.unavailable")
                             .param("sessionId", session.getId())));
@@ -191,6 +195,7 @@ public class SessionHandlers extends HandlerUtils {
                 }
             }
 
+            refreshHud(session);
             Resolve.success(sessionEvt, session, "server.gg.events.session.clean.success");
         });
     }
@@ -205,8 +210,10 @@ public class SessionHandlers extends HandlerUtils {
         // clean players
         // for (var player : session.getParticipants())
 
+        var players = GauntletUtils.playersFor(session);
         var resource = withResource();
         resource.removeSession(session);
+        refreshHud(players);
         Resolve.success(sessionEvt, session, "server.gg.events.session.destroy.success");
     }
 
@@ -241,6 +248,7 @@ public class SessionHandlers extends HandlerUtils {
             case SET -> {
                 session.setGames(gameQueue);
                 installDefaults(session, gameQueue);
+                refreshHud(session);
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.success")
                         .param("action", "set the games list"));
                 return;
@@ -252,6 +260,7 @@ public class SessionHandlers extends HandlerUtils {
                     if (success)
                         removed++;
                 }
+                refreshHud(session);
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.removal.success")
                         .param("games", removed));
                 return;
@@ -259,6 +268,7 @@ public class SessionHandlers extends HandlerUtils {
             case APPEND -> {
                 session.addGames(gameQueue);
                 installDefaults(session, gameQueue);
+                refreshHud(session);
                 Resolve.success(sessionEvt, session, MessageUtils.msg("server.gg.events.session.game.success")
                         .param("action", "appended " + gameQueue.size() + " game(s)"));
             }

@@ -14,6 +14,8 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
+import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud;
+import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -206,6 +208,13 @@ public class TeamUtils {
     @Nonnull
     public static Optional<TeamComponent> teamOf(@Nullable GameEcs game, @Nonnull UUID player) {
         return teamsOf(game).map(teams -> teams.get(player));
+    }
+
+    /** Redraws the party and teams panels for the game's session, drawing the given players as offline */
+    public static void updateHuds(@Nonnull GameEcs game, @Nonnull Set<UUID> disconnected) {
+        var snapshot = TeamsHud.snapshot(game, disconnected);
+        new HudEvent(game.getSessionId(), PartyHud.ID, snapshot).dispatch();
+        new HudEvent(game.getSessionId(), TeamsHud.ID, snapshot).dispatch();
     }
     @Nullable
     public static Optional<TeamComponent> teamOf(@Nullable TeamListComponent teamList, @Nonnull String teamId) {

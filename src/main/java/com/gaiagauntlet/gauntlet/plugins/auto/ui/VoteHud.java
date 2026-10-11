@@ -60,16 +60,16 @@ public final class VoteHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
-            HudDataSnapshot data) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data) {
         if (!(data instanceof VoteData voteComp)) {
             GaiaLog.atWarning().withSession(session)
                     .log("Attempted to update the Vote Hud with the incorrect snapshot!");
-            return;
+            return false;
         }
         var vote = voteComp.vote;
         if (vote == null)
-            return;
+            return false;
         sent.text(cmd, "#VoteTimer",
                 TimerUtils.clock(vote.remainingSeconds()));
 
@@ -86,5 +86,6 @@ public final class VoteHud implements HudElement {
         var line = leading == null ? "No votes yet." : "Leading: " + SessionText.game(leading) + ".";
         line += mine == null ? " Type /vote to pick a game." : " You voted " + SessionText.game(mine) + ".";
         sent.text(cmd, "#VoteLeader", line);
+        return true;
     }
 }

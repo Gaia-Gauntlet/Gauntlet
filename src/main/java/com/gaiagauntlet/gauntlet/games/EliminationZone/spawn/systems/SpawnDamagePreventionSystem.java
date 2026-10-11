@@ -2,12 +2,15 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.systems;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnProtectionComponent;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.SystemGroup;
 import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
@@ -16,10 +19,14 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class SpawnDamagePreventionSystem extends DamageEventSystem {
+
+    private static final String SOUND_MILESTONE = "SFX_Discovery_Z1_Short";
 
     public SpawnDamagePreventionSystem() {
     }
@@ -41,16 +48,30 @@ public final class SpawnDamagePreventionSystem extends DamageEventSystem {
             @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer,
             @Nonnull Damage event) {
         var playerComp = archetypeChunk.getComponent(index, EZPlayerComponent.getComponentType());
-        if (playerComp == null) return;
+        if (playerComp == null)
+            return;
         var playerRef = archetypeChunk.getComponent(index, PlayerRef.getComponentType());
         assert playerRef != null;
         assert playerRef.getWorldUuid() != null;
         var world = Universe.get().getWorld(playerRef.getWorldUuid());
 
         var gameStore = GameStore.withStore(world, playerComp.getSessionId()).orElse(null);
-        if (gameStore == null) return; // not in the game
+        if (gameStore == null)
+            return; // not in the game
         var spawnProt = gameStore.get(SpawnProtectionComponent.getComponentType());
-        if (spawnProt.isEmpty()) return; // not in a spawn protection
+        if (spawnProt.isEmpty())
+            return; // not in a spawn protection
         event.setCancelled(true);
+    }
+
+    public static void onEnd(TimerCompleteEvent evt) {
+        var gameStore = evt.getGameStore();
+        var ctx = GameStore.getContext(gameStore);
+        gameStore.remove(SpawnProtectionComponent.getComponentType());
+        var world = ctx.getWorld();
+        Announcer.title(world,
+                msg("server.games.ez.events.spawnprotection.title"),
+                msg("server.games.ez.events.spawnprotection.description"),
+                EventTitleStyle.Major, SOUND_MILESTONE);
     }
 }

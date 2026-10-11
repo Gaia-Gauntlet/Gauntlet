@@ -16,6 +16,8 @@ import com.gaiagauntlet.gauntlet.plugins.teams.components.assets.TeamListAsset;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
+import com.gaiagauntlet.gauntlet.plugins.teams.listeners.TeamHudListeners;
+import com.gaiagauntlet.gauntlet.plugins.teams.systems.TeamHudDeathSystem;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsTab;
@@ -24,6 +26,8 @@ import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.builtin.asseteditor.AssetEditorPlugin;
 import com.hypixel.hytale.builtin.asseteditor.event.AssetEditorActivateButtonEvent;
 import com.hypixel.hytale.component.ComponentAccessor;
+import com.hypixel.hytale.event.EventPriority;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -68,6 +72,10 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
                 SessionRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
         TeamListComponent.setGameComponentType(
                 GameComponentRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
+
+        entityStore.registerSystem(new TeamHudDeathSystem());
+        host.getEventRegistry().register(EventPriority.EARLY, PlayerDisconnectEvent.class,
+                TeamHudListeners::onPlayerDisconnect);
 
         // asset editor button
         var editor = AssetEditorPlugin.get();

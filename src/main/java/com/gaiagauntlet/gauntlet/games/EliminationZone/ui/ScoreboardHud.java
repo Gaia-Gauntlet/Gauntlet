@@ -49,20 +49,20 @@ public final class ScoreboardHud implements HudElement {
         return 40;
     }
 
-    private record ScoreboardSnapshot(
-        List<TeamComponent> teams,
-        TeamComponent own
+    public record ScoreboardSnapshot(
+        GameSession session,
+        List<TeamComponent> teams
     ) implements HudDataSnapshot {};
+
+    @Nullable
+    public static ScoreboardSnapshot snapshot(@Nullable GameSession session) {
+        if (session == null || !session.available() || !EZController.isEz(session)) return null; // hide if in an active game session
+        return new ScoreboardSnapshot(session, ranked(session));
+    }
 
     @Override
     public HudDataSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-         // return EZController.isEz(session) && MatchUtils.get(session) != null && MatchUtils.inLobby(session)
-        //         && !ranked(session).isEmpty();
-        if (session == null || !session.available() || !EZController.isEz(session)) return null; // hide if in an active game session
-
-        var teams = ranked(session);
-        var own = TeamUtils.teamOf(session, player.getUuid()).orElse(null);
-        return new ScoreboardSnapshot(teams, own);
+        return snapshot(session);
     }
 
     @Override
@@ -71,14 +71,15 @@ public final class ScoreboardHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, @Nonnull HudDataSnapshot data) {
         if (!(data instanceof ScoreboardSnapshot scoreboard)) {
             GaiaLog.atWarning().withSession(session).log("Attempted to update the scoreboard with the incorrect snapshot!");
-            return;
+            return false;
         }
+        if (session != scoreboard.session) return false;
 
         var teams = scoreboard.teams;
-        var own = scoreboard.own;
+        var own = TeamUtils.teamOf(scoreboard.session, player.getUuid()).orElse(null);
         var ids = teams.stream().map(TeamComponent::getId).toList();
         if (!ids.equals(builtTeams)) {
             build(cmd, teams);
@@ -91,6 +92,7 @@ public final class ScoreboardHud implements HudElement {
             sent.text(cmd, row + " #Points", Long.toString(Math.round(team.getScore())));
             sent.visible(cmd, row + " #Highlight", team == own);
         }
+        return true;
     }
 
     private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams) {

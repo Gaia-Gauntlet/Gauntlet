@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.core.hud.huds.HudWidgets;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
@@ -25,12 +26,14 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  */
 public final class TimerHud implements HudElement {
 
+    public static final String ID = "Timer";
+
     private final HudWidgets.Sent sent = new HudWidgets.Sent();
 
     @Nonnull
     @Override
     public String getId() {
-        return "Timer";
+        return ID;
     }
 
     @Nonnull
@@ -44,23 +47,34 @@ public final class TimerHud implements HudElement {
         return 20;
     }
 
-    private record TimerHudData(
+    public record TimerHudData(
             GameEcs store,
-            GameTimerComponent timerComp) implements HudDataSnapshot {
+            GameTimerComponent timerComp,
+            String header) implements HudDataSnapshot {
+    }
+
+    @Nullable
+    public static TimerHudData snapshot(@Nullable GameEcs store) {
+        if (store == null)
+            return null;
+        var timer = TimerUtils.get(store).filter(GameTimerComponent::isRunning).orElse(null);
+        if (timer == null)
+            return null;
+        var header = header(timer.getTimerImageId());
+        if (header == null)
+            return null;
+        return new TimerHudData(store, timer, header);
+    }
+
+    public static void update(@Nonnull GameEcs store) {
+        new HudEvent(store.getSessionId(), ID, snapshot(store)).dispatch();
     }
 
     @Override
     public TimerHudData gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
         if (session == null)
             return null;
-        var store = GameStore.withStore(player, session.getId()).orElse(null);
-        if (store == null)
-            return null; // no store found - probably not in the game
-        var timer = TimerUtils.get(store).orElse(null);
-        if (timer == null)
-            return null; // no timer present, prolly not in the game either
-
-        return new TimerHudData(store, timer);
+        return snapshot(GameStore.withStore(player, session.getId()).orElse(null));
     }
 
     @Override
@@ -69,23 +83,19 @@ public final class TimerHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
-            HudDataSnapshot data) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data) {
         if (!(data instanceof TimerHudData timerData)) {
             GaiaLog.atWarning().withSession(session)
                     .log("Attempted to update the Timer Hud with the incorrect snapshot!");
-            return;
+            return false;
         }
-        if (session == null)
-            return;
-        var timer = timerData.timerComp;
+        if (!GameStore.isIn(player, timerData.store))
+            return false;
 
-        var header = header(timer.getTimerImageId());
-        if (header == null)
-            return;
-
-        sent.background(cmd, "#TimerImage", header);
-        sent.text(cmd, "#TimerLabel", TimerUtils.clock(timer.getCountdownRemaining()));
+        sent.background(cmd, "#TimerImage", timerData.header);
+        sent.text(cmd, "#TimerLabel", TimerUtils.clock(timerData.timerComp.getCountdownRemaining()));
+        return true;
     }
 
     /**
@@ -93,7 +103,7 @@ public final class TimerHud implements HudElement {
      * phase has none.
      */
     @Nullable
-    private static String header(@Nonnull String imageId) {
+    private static String header(@Nullable String imageId) {
         if (imageId == null)
             return null;
 

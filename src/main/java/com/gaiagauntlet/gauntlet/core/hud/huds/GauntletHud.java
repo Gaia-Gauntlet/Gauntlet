@@ -1,23 +1,18 @@
 package com.gaiagauntlet.gauntlet.core.hud.huds;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -27,7 +22,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  * pipeline. It holds every HUD
  * element the orchestrator collected, shows the ones that apply to the player
  * and their session, and
- * renders the visible ones every second.
+ * redraws them when a HUD event reaches it.
  */
 public final class GauntletHud extends CustomUIHud {
 
@@ -35,7 +30,6 @@ public final class GauntletHud extends CustomUIHud {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String HUD = "Gauntlet/Hud/Hud.ui";
-    private static final long REFRESH_MILLIS = 1000;
 
     private final Map<String, HudElement> elements = GauntletOrchestrator.getHudElements();
     private final Map<String, Integer> elementToIndex = buildElementIndex();
@@ -52,11 +46,9 @@ public final class GauntletHud extends CustomUIHud {
     /** Visibility last sent for each element, so only changes are pushed. */
     private final boolean[] shown = new boolean[elements.size()];
 
-    private final AtomicReference<ScheduledFuture<?>> refresh = new AtomicReference<>();
-
     /**
-     * Builds and renders touch the elements' caches, so the refresh timer and the
-     * world thread take turns.
+     * Builds and renders touch the elements' caches, so HUD events from different
+     * world threads take turns.
      */
     private final Object lock = new Object();
 
@@ -82,125 +74,76 @@ public final class GauntletHud extends CustomUIHud {
                 element.buildOnce(cmd, player, session);
             }
             for (var element : elements.values()) {
-                var data = element.gather(player, session);
-                var index = elementToIndex.get(element.getId());
-                shown[index] = data != null;
-                cmd.set("#Hud[" + index + "].Visible", shown[index]);
-                if (shown[index]) {
-                    element.render(cmd, player, session, data);
+                apply(cmd, element, player, session, element.gather(player, session), true);
+            }
+        }
+    }
+
+    /** Redraws one element from a snapshot its owner already gathered. A null snapshot hides it. */
+    public void onEvent(@Nullable HudDataSnapshot data, @Nonnull String hudId) {
+        var element = elements.get(hudId);
+        if (element == null) {
+            return;
+        }
+        send(cmd -> apply(cmd, element, getPlayerRef(), syncSession(cmd), data, false));
+    }
+
+    /** Gathers and redraws one element, or every element when the id is null. */
+    public void refresh(@Nullable String hudId) {
+        send(cmd -> {
+            var player = getPlayerRef();
+            var session = syncSession(cmd);
+            for (var element : elements.values()) {
+                if (hudId == null || hudId.equals(element.getId())) {
+                    apply(cmd, element, player, session, element.gather(player, session), false);
                 }
             }
-        }
-        startRefresh();
+        });
     }
 
-    public void onEvent(@Nonnull HudDataSnapshot data, String hudId) {
+    private void send(@Nonnull Consumer<UICommandBuilder> writer) {
         synchronized (lock) {
-            var element = elements.get(hudId);
-            if (element == null) {
-                return;
-            }
-
-            var player = getPlayerRef();
-            var session = sessionOf(player);
-            var cmd = new UICommandBuilder();
-            var index = elementToIndex.get(hudId);
-
-            var visible = data != null;
-            var wasVisible = shown[index];
-
-            shown[index] = visible;
-
-            if (wasVisible != visible) {
-                cmd.set("#Hud[" + index + "].Visible", visible);
-            }
-
-            if (visible) {
-                element.render(cmd, player, session, data);
-            }
-            if (cmd.getCommands().length > 0) {
-                update(false, cmd);
-            }
-        }
-    }
-
-    private void push() {
-        synchronized (lock) {
-            var player = getPlayerRef();
-            var session = sessionOf(player);
             var cmd = new UICommandBuilder();
             try {
-                var id = session == null ? null : session.getId();
-                if (!Objects.equals(id, sessionId)) {
-                    sessionId = id;
-                    for (var element : elements.values()) {
-                        element.buildOnce(cmd, player, session);
-                    }
-                }
-                for (var element : elements.values()) {
-                    var data = element.gather(player, session);
-                    var index = elementToIndex.get(element.getId());
-                    var visible = data != null;
-                    if (visible != shown[index]) {
-                        shown[index] = visible;
-                        cmd.set("#Hud[" + index + "].Visible", visible);
-                    }
-                    if (visible) {
-                        element.render(cmd, player, session, data);
-                    }
-                }
+                writer.accept(cmd);
             } catch (RuntimeException e) {
-                LOGGER.atWarning().withCause(e).log("HUD for %s failed to render; nothing sent", player.getUsername());
+                LOGGER.atWarning().withCause(e).log("HUD for %s failed to render; nothing sent",
+                        getPlayerRef().getUsername());
                 return;
             }
             if (cmd.getCommands().length > 0) {
                 update(false, cmd);
             }
+        }
+    }
+
+    /** Refills every element's session-bound parts when the player has moved to another session. */
+    @Nullable
+    private GameSession syncSession(@Nonnull UICommandBuilder cmd) {
+        var player = getPlayerRef();
+        var session = sessionOf(player);
+        var id = session == null ? null : session.getId();
+        if (!Objects.equals(id, sessionId)) {
+            sessionId = id;
+            for (var element : elements.values()) {
+                element.buildOnce(cmd, player, session);
+            }
+        }
+        return session;
+    }
+
+    private void apply(@Nonnull UICommandBuilder cmd, @Nonnull HudElement element, @Nonnull PlayerRef player,
+            @Nullable GameSession session, @Nullable HudDataSnapshot data, boolean force) {
+        var index = elementToIndex.get(element.getId());
+        var visible = data != null && element.render(cmd, player, session, data);
+        if (force || visible != shown[index]) {
+            shown[index] = visible;
+            cmd.set("#Hud[" + index + "].Visible", visible);
         }
     }
 
     @Nullable
     private static GameSession sessionOf(@Nonnull PlayerRef player) {
         return GauntletUtils.sessionFor(player).orElse(null);
-    }
-
-    // Refresh timer
-
-    private void startRefresh() {
-        var task = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(this::refreshTick, REFRESH_MILLIS,
-                REFRESH_MILLIS, TimeUnit.MILLISECONDS);
-        if (!refresh.compareAndSet(null, task)) {
-            task.cancel(false);
-        }
-    }
-
-    private void refreshTick() {
-        try {
-            var ref = getPlayerRef().getReference();
-            if (ref == null || !ref.isValid()) {
-                stop();
-                return;
-            }
-            push();
-        } catch (Throwable t) {
-            LOGGER.atWarning().withCause(t).log("HUD refresh failed; stopping it");
-            stop();
-        }
-    }
-
-    /**
-     * Stops the refresh timer. The layer stays on the client until it is replaced
-     * or removed.
-     */
-    public void stop() {
-        var task = refresh.getAndSet(null);
-        if (task != null) {
-            task.cancel(false);
-        }
-    }
-
-    @Override
-    protected void onRemove() {
-        stop();
     }
 }

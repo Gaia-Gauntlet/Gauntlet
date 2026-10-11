@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.plugins.teams.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamListComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -29,6 +31,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  * the match reaches the arena.
  */
 public final class TeamsHud implements HudElement {
+
+    public static final String ID = "Teams";
 
     private static final int RIGHT = 12;
     private static final int WIDTH = 250;
@@ -46,10 +50,32 @@ public final class TeamsHud implements HudElement {
     private List<String> builtTeams = List.of();
     private int builtTop = -1;
 
+    /**
+     * A game's teams as the party and teams panels draw them. Players disconnecting
+     * in this update are still in the universe, so they are listed to draw as offline.
+     */
+    public record TeamListSnapshot(
+            GameEcs game,
+            TeamListComponent teams,
+            Set<UUID> disconnected) implements HudDataSnapshot {
+
+        public boolean isOnline(@Nonnull UUID player) {
+            return PlayerUtils.isOnline(player) && !disconnected.contains(player);
+        }
+    }
+
+    @Nullable
+    public static TeamListSnapshot snapshot(@Nullable GameEcs game, @Nonnull Set<UUID> disconnected) {
+        var teams = TeamUtils.teamsOf(game).orElse(null);
+        if (teams == null)
+            return null;
+        return new TeamListSnapshot(game, teams, Set.copyOf(disconnected));
+    }
+
     @Nonnull
     @Override
     public String getId() {
-        return "Teams";
+        return ID;
     }
 
     @Nonnull
@@ -63,18 +89,14 @@ public final class TeamsHud implements HudElement {
         return 40;
     }
 
-    private record TeamsHudSnapshot(
-        List<TeamComponent> otherTeams,
-        int top
-    ) implements HudDataSnapshot {}
-
     @Override
-    public TeamsHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        if (session == null) return null;
-        var game = GameStore.withStore(player, session.getId()).orElse(null);
-        var otherTeams = otherTeams(player, game);
-        if (otherTeams.isEmpty()) return null;
-        return new TeamsHudSnapshot(otherTeams, TeamUtils.belowParty(game, player.getUuid()));
+    public TeamListSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+        if (session == null)
+            return null;
+        var snapshot = snapshot(GameStore.withStore(player, session.getId()).orElse(null), Set.of());
+        if (snapshot == null || otherTeams(player, snapshot.teams).isEmpty())
+            return null;
+        return snapshot;
     }
 
     @Override
@@ -83,19 +105,24 @@ public final class TeamsHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session, HudDataSnapshot data) {
-        if (!(data instanceof TeamsHudSnapshot teamData)) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data) {
+        if (!(data instanceof TeamListSnapshot teamData)) {
             GaiaLog.atWarning().withSession(session)
                     .log("Attempted to update the Teams Hud with the incorrect snapshot!");
-            return;
+            return false;
         }
-        var teams = teamData.otherTeams;
+        if (!GameStore.isIn(player, teamData.game))
+            return false;
+        var teams = otherTeams(player, teamData.teams);
+        if (teams.isEmpty())
+            return false;
         var rows = new ArrayList<List<UUID>>();
         for (var team : teams) {
             rows.add(TeamUtils.membersOf(team));
         }
         var ids = teams.stream().map(TeamComponent::getId).toList();
-        var top = teamData.top;
+        var top = TeamUtils.belowParty(teamData.game, player.getUuid());
         if (!rows.equals(builtRows) || !ids.equals(builtTeams) || top != builtTop) {
             build(cmd, teams, rows, top);
         }
@@ -107,7 +134,7 @@ public final class TeamsHud implements HudElement {
             for (int m = 0; m < members.size(); m++) {
                 var member = members.get(m);
                 var card = row + " #Members[" + m + "]";
-                var online = PlayerUtils.isOnline(member);
+                var online = teamData.isOnline(member);
                 var alive = !TeamUtils.isEliminated(member);
                 standing |= online && alive;
                 sent.visible(cmd, card + " #Dead", online && !alive);
@@ -117,6 +144,7 @@ public final class TeamsHud implements HudElement {
             sent.visible(cmd, row, standing);
             sent.text(cmd, row + " #TeamScore", Integer.toString(TeamUtils.score(teams.get(t))));
         }
+        return true;
     }
 
     private void build(@Nonnull UICommandBuilder cmd, @Nonnull List<TeamComponent> teams,
@@ -147,11 +175,7 @@ public final class TeamsHud implements HudElement {
      * Participating teams other than the viewer's that have members, ordered by id.
      */
     @Nonnull
-    private static List<TeamComponent> otherTeams(@Nonnull PlayerRef player, @Nullable GameEcs game) {
-        var teamList = TeamUtils.teamsOf(game).orElse(null);
-        if (teamList == null) {
-            return List.of();
-        }
+    private static List<TeamComponent> otherTeams(@Nonnull PlayerRef player, @Nonnull TeamListComponent teamList) {
         var own = teamList.get(player.getUuid());
         var teams = new ArrayList<TeamComponent>();
         for (var team : TeamUtils.sortedTeams(teamList)) {

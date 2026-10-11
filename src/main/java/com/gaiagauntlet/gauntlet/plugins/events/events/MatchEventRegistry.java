@@ -26,6 +26,4 @@ public class MatchEventRegistry {
         var dispatch = HytaleServer.get().getEventBus().dispatchFor(eventClass, gameId);
         GaiaLog.atInfo().withGameId(gameId).log("Dispatching event " + event + " for " + gameId);
         dispatch.dispatch(event);
-    }
-
-}
+    }}

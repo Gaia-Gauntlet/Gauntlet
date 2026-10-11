@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudDataSnapshot;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -31,12 +32,14 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  */
 public final class WinnerHud implements HudElement {
 
+    public static final String ID = "Winner";
+
     private static final String[] PODIUM = { "#PodiumFirst", "#PodiumSecond", "#PodiumThird" };
 
     @Nonnull
     @Override
     public String getId() {
-        return "Winner";
+        return ID;
     }
 
     @Nonnull
@@ -50,26 +53,28 @@ public final class WinnerHud implements HudElement {
         return 100;
     }
 
-    private record WinnerHudSnapshot(
-            GameEcs game) implements HudDataSnapshot {
+    public record WinnerHudSnapshot(
+            GameEcs game,
+            List<Standing> standings,
+            @Nullable TeamListComponent teams) implements HudDataSnapshot {
+    }
+
+    @Nullable
+    public static WinnerHudSnapshot snapshot(@Nullable GameEcs game) {
+        if (game == null || EZState.currentState(game) != EZStates.ENDED)
+            return null;
+        return new WinnerHudSnapshot(game, TeamUtils.standingsByKills(game), TeamUtils.teamsOf(game).orElse(null));
+    }
+
+    public static void update(@Nonnull GameEcs game) {
+        new HudEvent(game.getSessionId(), ID, snapshot(game)).dispatch();
     }
 
     @Override
     public WinnerHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        // return EZController.isEz(session) && MatchUtils.phase(session) ==
-        // MatchState.ENDED;
         if (session == null || !EZController.isEz(session))
             return null;
-        var game = GameStore.withStore(player, session.getId()).orElse(null);
-        if (game == null)
-            return null;
-
-        var state = EZState.currentState(game);
-
-        if (state != EZStates.ENDED)
-            return null;
-
-        return new WinnerHudSnapshot(game);
+        return snapshot(GameStore.withStore(player, session.getId()).orElse(null));
     }
 
     @Override
@@ -78,15 +83,17 @@ public final class WinnerHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
-            HudDataSnapshot data) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data) {
         if (!(data instanceof WinnerHudSnapshot winnerHud)) {
             GaiaLog.atWarning().withSession(session)
                     .log("Attempted to update the winner HUD with the incorrect snapshot!");
-            return;
+            return false;
         }
-        var match = TeamUtils.standingsByKills(winnerHud.game);
-        var teams = TeamUtils.teamsOf(winnerHud.game).orElse(null);
+        if (!GameStore.isIn(player, winnerHud.game))
+            return false;
+        var match = winnerHud.standings;
+        var teams = winnerHud.teams;
 
         var winner = match.isEmpty() ? null : TeamUtils.teamOf(teams, match.getFirst().getTeamId()).orElse(null);
         cmd.set("#WinnerName.Text",
@@ -117,7 +124,7 @@ public final class WinnerHud implements HudElement {
                 cmd.set(column + " #Initial.Text", "?");
             }
         }
-        return;
+        return true;
     }
 
     @Nullable

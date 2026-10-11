@@ -51,7 +51,7 @@ public final class SessionHud implements HudElement {
         return 5;
     }
 
-    private record SessionHudSnapshot(boolean inSession) implements HudDataSnapshot {
+    public record SessionHudSnapshot(boolean inSession) implements HudDataSnapshot {
     }
 
     @Override
@@ -70,8 +70,8 @@ public final class SessionHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
-            HudDataSnapshot data) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data) {
         var inSession = session != null;
         if (!Boolean.valueOf(inSession).equals(builtForSession)) {
             builtForSession = inSession;
@@ -82,12 +82,13 @@ public final class SessionHud implements HudElement {
 
         if (!inSession) {
             sent.text(cmd, "#SessionTitle", "Not in a session");
-            return;
+            return true;
         }
         sent.text(cmd, "#SessionTitle", session.getId());
         sent.text(cmd, "#SessionNow", SessionText.game(session.getCurrentGame()));
         sent.text(cmd, "#SessionState", SessionText.state(session));
         var next = SessionText.upNext(session, UP_NEXT_SHOWN);
         sent.text(cmd, "#SessionNext", next.isEmpty() ? "Nothing queued" : String.join(", ", next));
+        return true;
     }
 }

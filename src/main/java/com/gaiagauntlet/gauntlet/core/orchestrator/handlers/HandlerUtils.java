@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEvent;
@@ -42,6 +43,16 @@ public class HandlerUtils {
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return GauntletUtils.playerFor(player);
+    }
+
+    /** Regathers every HUD element for the session's players */
+    public static void refreshHud(@Nonnull GameSession session) {
+        HudEvent.refresh(session.getId()).dispatch();
+    }
+
+    /** Regathers every HUD element for players no longer reachable through a session */
+    public static void refreshHud(@Nonnull Collection<PlayerRef> players) {
+        HudEvent.refresh(players).dispatch();
     }
 
     /**

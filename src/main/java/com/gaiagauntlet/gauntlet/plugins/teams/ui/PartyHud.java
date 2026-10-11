@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.ui;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,6 +14,7 @@ import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud.TeamListSnapshot;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -23,9 +25,12 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
  * dead and disconnected
  * overlays. The cards are rebuilt whenever the viewer's team or its members
  * change.
+ * 
+ * Note: This is NOT a core file, but rather a teams plugin file that renders party info
  */
 public final class PartyHud implements HudElement {
 
+    public static final String ID = "Party";
     public static final int TOP = 52;
     public static final int HEIGHT = 178;
     public static final int SPECTATING_HEIGHT = 64;
@@ -46,7 +51,7 @@ public final class PartyHud implements HudElement {
     @Nonnull
     @Override
     public String getId() {
-        return "Party";
+        return ID;
     }
 
     @Nonnull
@@ -60,19 +65,14 @@ public final class PartyHud implements HudElement {
         return 30;
     }
 
-    private record PartyDataHud(
-            TeamComponent team) implements HudDataSnapshot {
-    }
-
     @Override
-    public PartyDataHud gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
+    public TeamListSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
         if (session == null)
             return null;
-        var game = GameStore.withStore(player, session.getId()).orElse(null);
-        var team = TeamUtils.teamOf(game, player.getUuid()).orElse(null);
-        if (team == null)
+        var snapshot = TeamsHud.snapshot(GameStore.withStore(player, session.getId()).orElse(null), Set.of());
+        if (snapshot == null || snapshot.teams().get(player.getUuid()) == null)
             return null;
-        return new PartyDataHud(team);
+        return snapshot;
     }
 
     @Override
@@ -81,33 +81,36 @@ public final class PartyHud implements HudElement {
     }
 
     @Override
-    public void render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
-            HudDataSnapshot data) {
-        if (!(data instanceof PartyDataHud partyHud)) {
+    public boolean render(@Nonnull UICommandBuilder cmd, @Nonnull PlayerRef player, @Nullable GameSession session,
+            @Nonnull HudDataSnapshot data) {
+        if (!(data instanceof TeamListSnapshot partyHud)) {
             GaiaLog.atWarning().withSession(session)
                     .log("Attempted to update the Party Hud with the incorrect snapshot!");
-            return;
+            return false;
         }
-        var team = partyHud.team;
+        if (!GameStore.isIn(player, partyHud.game()))
+            return false;
+        var team = partyHud.teams().get(player.getUuid());
         if (team == null) {
-            return;
+            return false;
         }
         var members = team.isParticipant() ? TeamUtils.membersOf(team) : List.<UUID>of();
         if (!team.getId().equals(builtTeam) || !members.equals(builtMembers)) {
             build(cmd, team, members);
         }
         if (!team.isParticipant()) {
-            return;
+            return true;
         }
         sent.text(cmd, "#PartyScore", Integer.toString(TeamUtils.score(team)));
         for (int i = 0; i < members.size(); i++) {
             var member = members.get(i);
             var card = "#PartyMembers[" + i + "]";
-            var online = PlayerUtils.isOnline(member);
+            var online = partyHud.isOnline(member);
             sent.visible(cmd, card + " #Dead", online && TeamUtils.isEliminated(member));
             sent.visible(cmd, card + " #Off", !online);
             sent.text(cmd, card + " #Score", TeamUtils.score(member) + " pts");
         }
+        return true;
     }
 
     private void build(@Nonnull UICommandBuilder cmd, @Nonnull TeamComponent team, @Nonnull List<UUID> members) {
