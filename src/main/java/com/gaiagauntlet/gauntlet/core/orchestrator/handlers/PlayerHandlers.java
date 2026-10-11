@@ -98,8 +98,10 @@ public class PlayerHandlers extends HandlerUtils {
 
             // otherwise, set them to be the same (as the owner)
             var resource = withResource();
-            // auto-removes from old session map - removes the party from a session
-            resource.addPartyToSession(party.getId(), null);
+            if (partySessionId != null) {
+                // if the partyId is not null, set it to null.
+                resource.addPartyToSession(party.getId(), null);
+            }
         }
 
         // - leave old session (pulls all party members out of session if party leader)
@@ -119,8 +121,7 @@ public class PlayerHandlers extends HandlerUtils {
                 return;
             }
             Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
-                    .param("playerName", playerRef.getUsername())
-                );
+                    .param("playerName", playerRef.getUsername()));
             return;
         }
 
