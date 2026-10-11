@@ -34,6 +34,7 @@ public class RejoinCommand extends AbstractTargetPlayerCommand {
      */
     public RejoinCommand() {
         super("rejoin", "server.commands.reputation.add.desc");
+        requireNoPermission();
     }
 
     @Override
