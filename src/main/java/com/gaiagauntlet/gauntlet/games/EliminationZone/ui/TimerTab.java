@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -12,6 +13,10 @@ import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.listeners.MatchStateListeners;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnProtectionComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
@@ -21,6 +26,15 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
 public final class TimerTab implements AdminTab {
 
+    private record KnownTimer(@Nonnull String id, @Nullable String banner) {
+    }
+
+    private static final String CUSTOM_ID = "Custom";
+    private static final List<KnownTimer> KNOWN_TIMERS = List.of(
+            new KnownTimer(EZLobbyManager.STARTING_TIMER, TimerUtils.IMG_COUNTDOWN),
+            new KnownTimer(LobbyEventListeners.INTRO_TIMER, TimerUtils.IMG_STAGING),
+            new KnownTimer(SpawnProtectionComponent.TIMER_ID, TimerUtils.IMG_GRACE_PERIOD),
+            new KnownTimer(MatchStateListeners.GAME_END_TIMER_ID, null));
     private static final String NO_BANNER = "None";
     private static final List<Widgets.Option> BANNERS = List.of(
             new Widgets.Option("No HUD banner", NO_BANNER),
@@ -35,6 +49,7 @@ public final class TimerTab implements AdminTab {
     private static final float DRIFT_SECONDS = 1.5f;
 
     @Nullable private GameTimerComponent sentTimer;
+    @Nullable private KnownTimer pendingFill;
     private float sentSeconds;
     private long sentAt;
 
@@ -60,6 +75,7 @@ public final class TimerTab implements AdminTab {
         }
         Widgets.bindValues(evt, "#GameTimerAdd", "timer.add", "", Map.of("@Num", "#GameTimerAdjustSeconds.Value"));
         Widgets.bindValues(evt, "#GameTimerSet", "timer.set", "", Map.of("@Num", "#GameTimerAdjustSeconds.Value"));
+        Widgets.bindChange(evt, "#GameTimerKnownId", "timer.pickId");
         Widgets.bindValues(evt, "#GameTimerStart", "timer.start", "", Map.of(
                 "@Text", "#GameTimerStartId.Value",
                 "@Num", "#GameTimerStartSeconds.Value",
@@ -69,9 +85,12 @@ public final class TimerTab implements AdminTab {
     @Override
     public void buildOnce(@Nonnull UICommandBuilder cmd, @Nonnull UIEventBuilder evt, @Nullable GameSession session) {
         sentTimer = null;
+        pendingFill = null;
         Widgets.fillPicker(cmd, "#GameTimerBanner", BANNERS);
+        Widgets.fillPicker(cmd, "#GameTimerKnownId", knownOptions());
         var timer = EZAdmin.game(session).flatMap(TimerUtils::get).orElse(null);
         if (timer == null) return;
+        cmd.set("#GameTimerKnownId.Value", known(timer.getTimerId()) == null ? CUSTOM_ID : timer.getTimerId());
         cmd.set("#GameTimerStartId.Value", timer.getTimerId());
         cmd.set("#GameTimerBanner.Value", timer.getTimerImageId() == null ? NO_BANNER : timer.getTimerImageId());
     }
@@ -81,6 +100,13 @@ public final class TimerTab implements AdminTab {
         var game = EZAdmin.game(session).orElse(null);
         var timer = game == null ? null : TimerUtils.get(game).orElse(null);
         var running = timer != null && timer.isRunning();
+
+        var fill = pendingFill;
+        if (fill != null) {
+            pendingFill = null;
+            cmd.set("#GameTimerStartId.Value", fill.id());
+            cmd.set("#GameTimerBanner.Value", fill.banner() == null ? NO_BANNER : fill.banner());
+        }
 
         cmd.set("#GameTimerLive.Visible", running);
         cmd.set("#GameTimerStill.Visible", !running);
@@ -110,6 +136,11 @@ public final class TimerTab implements AdminTab {
     @Override
     public Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nullable GameSession session, @Nonnull AdminPage page) {
         return switch (action) {
+            case "timer.pickId" -> {
+                var picked = known(event.pick());
+                pendingFill = picked == null ? new KnownTimer("", null) : picked;
+                yield null;
+            }
             case "timer.toggle" -> onTimer(session, page, action, (game, timer) -> {
                 var clock = TimerUtils.clock(timer.getCountdownRemaining());
                 if (timer.isRunning()) {
@@ -187,6 +218,24 @@ public final class TimerTab implements AdminTab {
         if (game == null) return session.getId() + " has no game in a live arena";
         if (timer == null) return "no timer";
         return timer.isRunning() ? "running" : "paused";
+    }
+
+    @Nonnull
+    private static List<Widgets.Option> knownOptions() {
+        var options = new ArrayList<Widgets.Option>(KNOWN_TIMERS.size() + 1);
+        options.add(new Widgets.Option("Custom id", CUSTOM_ID));
+        for (var known : KNOWN_TIMERS) {
+            options.add(new Widgets.Option(known.id(), known.id()));
+        }
+        return options;
+    }
+
+    @Nullable
+    private static KnownTimer known(@Nonnull String id) {
+        for (var known : KNOWN_TIMERS) {
+            if (known.id().equals(id)) return known;
+        }
+        return null;
     }
 
     @Nonnull

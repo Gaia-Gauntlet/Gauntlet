@@ -63,7 +63,8 @@ Group {
 
             $G.@Caption { @Text = "Timer id"; }
             $G.@PickerRow {
-                $G.@Input #GameTimerStartId { @Placeholder = "timer id"; }
+                $G.@Picker #GameTimerKnownId { @Anchor = (Right: 6); }
+                $G.@Input #GameTimerStartId { @Placeholder = "or type any id"; }
             }
             $G.@Caption { @Text = "Duration"; }
             $G.@PickerRow {
