@@ -117,6 +117,10 @@ public class PlayerHandlers extends HandlerUtils {
                         .param("oldSessionId", partySessionId), e);
                 return;
             }
+
+            // leave the session
+            var resource = withResource();
+            resource.addPartyToSession(party.getId(), null);
             Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
                     .param("playerName", playerRef.getUsername()));
             return;
