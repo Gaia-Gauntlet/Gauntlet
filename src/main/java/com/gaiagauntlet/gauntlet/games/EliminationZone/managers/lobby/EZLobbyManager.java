@@ -1,42 +1,40 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
-import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
-import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
-import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
-import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
-import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
-import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEventListeners;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
+import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class EZLobbyManager implements LobbyManager {
     public static final String STARTING_TIMER = "GameStarting";

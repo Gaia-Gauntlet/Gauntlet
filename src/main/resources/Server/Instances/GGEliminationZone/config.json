@@ -69,5 +69,9 @@
   "ResourceStorage": {
     "Type": "Hytale"
   },
-  "Plugin": {}
+  "Plugin": {
+    "WorldEvents": {
+      "EnableWorldEvents": false
+    }
+  }
 }
