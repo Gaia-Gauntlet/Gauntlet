@@ -98,10 +98,7 @@ public class PlayerHandlers extends HandlerUtils {
 
             // otherwise, set them to be the same (as the owner)
             var resource = withResource();
-            if (partySessionId != null) {
-                // if the partyId is not null, set it to null.
-                resource.addPartyToSession(party.getId(), null);
-            }
+            resource.addPartyToSession(party.getId(), sessionId);
         }
 
         // - leave old session (pulls all party members out of session if party leader)
