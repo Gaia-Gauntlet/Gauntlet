@@ -72,10 +72,24 @@ public class TeamUtils {
         return teams.get(player);
     }
 
-    public static Collection<TeamComponent> withAliveTeams(World world, String session) {
+    /**
+     * Participant teams with a member still competing: in the arena and not eliminated. The players in
+     * {@code out} are treated as gone, for eliminations and departures not yet applied to the store.
+     */
+    public static Collection<TeamComponent> withAliveTeams(World arena, String session, Set<UUID> out) {
         Collection<TeamComponent> aliveTeams = new HashSet<>();
-        for (TeamComponent team : TeamUtils.withTeamList(world, session).getTeams().values()) {
-            if (TeamUtils.hasAlive(team)) aliveTeams.add(team);
+        var store = arena.getEntityStore().getStore();
+        for (TeamComponent team : TeamUtils.withTeamList(arena, session).getTeams().values()) {
+            if (!team.isParticipant()) continue;
+            for (UUID uuid : team.getPlayers()) {
+                if (out.contains(uuid)) continue;
+                var player = PlayerUtils.get(uuid);
+                var ref = player == null ? null : player.getReference();
+                if (ref == null || !ref.isValid() || ref.getStore() != store) continue;
+                if (store.getComponent(ref, EliminatedComponent.getComponentType()) != null) continue;
+                aliveTeams.add(team);
+                break;
+            }
         }
         return aliveTeams;
     }

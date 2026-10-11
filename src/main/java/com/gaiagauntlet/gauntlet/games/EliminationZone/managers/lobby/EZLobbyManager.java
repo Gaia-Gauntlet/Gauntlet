@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
@@ -243,6 +244,13 @@ public class EZLobbyManager implements LobbyManager {
                 && gameComp.getParticipants() < EZGameConfig.get(gameStore).getMinPlayers()
                 && TimerUtils.isRunning(gameStore, STARTING_TIMER)) {
             TimerUtils.cancel(gameStore);
+        }
+
+        var state = EZState.currentState(gameStore);
+        if (state == EZStates.RUNNING || state == EZStates.SUDDEN_DEATH) {
+            var leaving = players.stream().map(PlayerRef::getUuid).collect(Collectors.toSet());
+            if (TeamUtils.withAliveTeams(arenaWorld, session, leaving).size() <= 1)
+                EZState.setState(gameStore, EZStates.ENDED);
         }
 
         return CompletableFuture.allOf(cleanupFutures.toArray(new CompletableFuture[0]));
