@@ -10,6 +10,7 @@ import com.hypixel.hytale.component.dependency.Order;
 import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefChangeSystem;
+import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -117,6 +118,7 @@ public final class SpectatingSystems {
         public void onComponentRemoved(@Nonnull Ref<EntityStore> ref, @Nonnull SpectatorComponent component,
                 @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer) {
             CreativeEraserSystems.refresh(ref, commandBuffer);
+            SpectatorComponent.exitGameMode(ref, commandBuffer);
             SpectatorCamera.stop(ref, SpectatorCamera.following(ref), commandBuffer);
             SpectatorCamera.forget(ref);
             unbindControls(ref, commandBuffer);
@@ -134,6 +136,27 @@ public final class SpectatingSystems {
                 return;
             }
             SpectatorCamera.followFirst(sessionId, ref, commandBuffer);
+        }
+    }
+
+    // the marker and the saved gamemode both travel with the player, so they are cleared wherever the player lands
+    public static final class ClearOnWorldEntry extends RefSystem<EntityStore> {
+
+        @Nonnull
+        @Override
+        public Query<EntityStore> getQuery() {
+            return Player.getComponentType();
+        }
+
+        @Override
+        public void onEntityAdded(@Nonnull Ref<EntityStore> ref, @Nonnull AddReason reason,
+                @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer) {
+            SpectatorComponent.clear(ref, commandBuffer);
+        }
+
+        @Override
+        public void onEntityRemove(@Nonnull Ref<EntityStore> ref, @Nonnull RemoveReason reason,
+                @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer) {
         }
     }
 

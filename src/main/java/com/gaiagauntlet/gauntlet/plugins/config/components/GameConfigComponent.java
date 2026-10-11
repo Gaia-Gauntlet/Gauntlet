@@ -16,7 +16,7 @@ public class GameConfigComponent implements GameComponent {
     public static final String ID = "GameConfigComponent";
 
     @Getter @Setter private static GameComponentType<@NotNull GameConfigComponent> componentType;
-    @Setter private String gameConfigAsset;
+    @Getter @Setter private String gameConfigAsset;
 
     public static BuilderCodec<@NotNull GameConfigComponent> CODEC = BuilderCodec
         .builder(GameConfigComponent.class, GameConfigComponent::new)

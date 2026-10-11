@@ -38,6 +38,7 @@ public class SpectatorPlugin implements GamePlugin, CommandGamePlugin {
         SpectatorComponent.setComponentType(registry.registerComponent(SpectatorComponent.class, SpectatorComponent::new));
 
         registry.registerSystem(new SpectatingSystems.OnSpectatorChange());
+        registry.registerSystem(new SpectatingSystems.ClearOnWorldEntry());
         registry.registerSystem(new SpectatingSystems.HideSpectators());
         registry.registerSystem(new SpectatingSystems.SpectatorControls());
         registry.registerSystem(new SpectatingSystems.FollowTarget());

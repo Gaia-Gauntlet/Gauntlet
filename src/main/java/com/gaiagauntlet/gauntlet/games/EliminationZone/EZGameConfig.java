@@ -16,6 +16,7 @@ import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.assetstore.map.AssetMapWithIndexes;
 import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
@@ -36,9 +37,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class EZGameConfig extends GameConfigAsset {
 
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final EZGameConfig DEFAULT = new EZGameConfig();
 
     public static final Validator<String> VOID_TARGET_VALIDATOR = new Validator<>() {
@@ -253,7 +256,11 @@ public class EZGameConfig extends GameConfigAsset {
     public static EZGameConfig get(GameEcs game) {
         var conf = ConfigUtils.getGameConfig(game);
         if (conf == null) {
-            // never configured
+            var reason = game.get(GameConfigComponent.getComponentType())
+                .map(component -> "config asset '" + component.getGameConfigAsset() + "' is not loaded")
+                .orElse("no GameConfigComponent is attached to its game store");
+            LOGGER.atWarning().atMostEvery(30, TimeUnit.SECONDS)
+                .log("[%s] Using the default EZ config: %s", game.getSessionId(), reason);
             return DEFAULT;
         }
         if (conf instanceof EZGameConfig ezConf) return ezConf;
