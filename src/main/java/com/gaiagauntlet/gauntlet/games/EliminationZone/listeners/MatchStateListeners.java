@@ -8,6 +8,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.utils.WeatherUtils;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
@@ -17,7 +18,9 @@ import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.universe.world.World;
 
 import java.util.Objects;
 
@@ -32,16 +35,19 @@ public final class MatchStateListeners {
     public static void onSuddenDeath(MatchStateEvent evt) {
         if (!Objects.equals(evt.getTo(), EZStates.SUDDEN_DEATH.name())) return;
 
-        GauntletUtils.sessionFor(evt.getSessionId()).orElse(null);
-        
-        WeatherService.startSuddenDeathWeather(gameRef);
+        World world = LobbyController.withArenaWorld(evt.getSessionId()).orElse(null);
+        if (world == null) return;
+        var game = GameStore.withStore(world, evt.getSessionId()).orElse(null);
+        if (game == null) return;
+        WeatherUtils.doWeather(game, "GG_Sudden_Death", Double.MAX_VALUE);
+
         MusicUtils.forcePlayMusicToAllPlayers("Battle_Of_Glory_Last_Stand_Combined");
         Announcer.title(
-            gameRef.getWorld(),
+            world,
             Message.raw("SUDDEN DEATH!"),
             Message.raw("Zones close twice as fast!"),
-            Announcer.Tone.DANGER,
-            Announcer.SOUND_MILESTONE_EVIL
+            EventTitleStyle.VoidEviction,
+            "SFX_Discovery_Z4_Short"
         );
     }
 
