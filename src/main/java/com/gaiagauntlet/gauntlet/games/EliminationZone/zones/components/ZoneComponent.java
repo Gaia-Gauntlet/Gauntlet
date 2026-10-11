@@ -325,10 +325,12 @@ public final class ZoneComponent implements GameComponent {
     // Admin controls
 
     public void pause() {
+        requireActive();
         paused = true;
     }
 
     public void resume() {
+        requireActive();
         paused = false;
     }
 
@@ -353,17 +355,16 @@ public final class ZoneComponent implements GameComponent {
 
     /** Adds seconds before the next milestone. */
     public void delay(double seconds) {
-        if (!active || seconds <= 0.0) {
-            return;
+        requireActive();
+        if (seconds <= 0.0) {
+            throw new IllegalArgumentException("The delay needs at least one second");
         }
         pendingDelaySeconds += seconds;
     }
 
     /** Moves the named zone to the front of the zones still waiting. */
     public void setNext(@Nonnull String zoneId) {
-        if (!active) {
-            throw new IllegalStateException("Zone closing is not running");
-        }
+        requireActive();
         int firstPending = stepIndex + 1;
         int current = -1;
         for (int i = 0; i < order.size(); i++) {
@@ -378,6 +379,12 @@ public final class ZoneComponent implements GameComponent {
         if (current != firstPending) {
             var zone = order.remove(current);
             order.add(firstPending, zone);
+        }
+    }
+
+    private void requireActive() {
+        if (!active) {
+            throw new IllegalStateException("Zone closing is not running");
         }
     }
 

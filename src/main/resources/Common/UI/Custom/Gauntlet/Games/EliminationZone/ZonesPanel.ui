@@ -1,4 +1,4 @@
-// Zones tab: the closing sequence and the phase pacing.
+// Zones tab: the closing sequence.
 $G = "../../Admin/Common.ui";
 
 Group {
@@ -24,16 +24,6 @@ Group {
                 $G.@Picker #ZoneNextPicker { @Anchor = (Right: 6); }
                 $G.@Go #ZoneNext { Text: "Close next"; }
             }
-        }
-    }
-
-    $G.@Gutter {}
-
-    $G.@Column {
-        $G.@Card {
-            $G.@Header { @Text = "Phase pacing"; }
-            $G.@Note { @Text = "Close, hold, and warning seconds per round. The last round repeats. Applies to the next match."; }
-            Group #PhaseList { LayoutMode: Top; }
         }
     }
 }

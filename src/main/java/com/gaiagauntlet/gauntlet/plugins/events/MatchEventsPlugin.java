@@ -35,7 +35,7 @@ public class MatchEventsPlugin implements GamePlugin, UiGamePlugin {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        return List.of(new EventsTab());
+        return List.of();
     }
 
 }

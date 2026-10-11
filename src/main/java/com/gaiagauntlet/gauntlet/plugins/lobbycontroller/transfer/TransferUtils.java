@@ -79,7 +79,7 @@ public class TransferUtils {
                         var ref = playerRef.getReference();
                         // ref.validate throws if in the wrong store :/
                         if (ref == null || !ref.isValid()
-                                || !playerRef.getWorldUuid().equals(origin.getWorldConfig().getUuid())) {
+                                || !origin.getWorldConfig().getUuid().equals(playerRef.getWorldUuid())) {
                             // ref is no longer in the origin world or is not valid - invalid state, end.
                             GaiaLog.atInfo().withSession(sessionId)
                                     .log(msg("server.gg.plugins.transfer.error.world")

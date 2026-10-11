@@ -2,9 +2,11 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.GGPoi;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.components.WeatherPoolOptionComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.LootFountainRule;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.config.components.GameConfigComponent;
+import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEvents;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.config.utils.ConfigUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
@@ -70,13 +72,13 @@ public class EZGameConfig extends GameConfigAsset {
             EZGameConfig::getZones)
         .documentation("Circle segment arena zones")
         .add()
-//        .append(new KeyedCodec<>("WeatherPool",
-//                new ArrayCodec<>(WeatherPoolOptionComponent.CODEC,
-//                    WeatherPoolOptionComponent[]::new)),
-//            (t, v) -> t.weatherPoolOptions = v,
-//            EZGameManager::getWeatherPoolOptions)
-//        .documentation("Pool of weather options to use during the game.")
-//        .add()
+       .append(new KeyedCodec<>("WeatherPool",
+               new ArrayCodec<>(WeatherPoolOptionComponent.CODEC,
+                   WeatherPoolOptionComponent[]::new)),
+           (t, v) -> t.weatherPoolOptions = v,
+           (t) -> t.getWeatherPoolOptions())
+       .documentation("Pool of weather options to use during the game.")
+       .add()
         .append(new KeyedCodec<>("ClosingVoidBlockMap",
                 new MapCodec<>(Codec.STRING, LinkedHashMap::new)),
             (p, v) -> p.closingVoidBlockMap = v == null ? Map.of() : Map.copyOf(v),
@@ -103,11 +105,11 @@ public class EZGameConfig extends GameConfigAsset {
             p -> p.zoneClosingPhaseSet)
         .documentation("Controls each zone's close, hold, warning, damage, and audio sequence.")
         .add()
-//        .append(new KeyedCodec<>("GameEvents", GameEvents.CODEC),
-//            (p, v) -> p.gameEvents = v,
-//            p -> p.gameEvents)
-//        .documentation("Controls each zone's close, hold, warning, damage, and audio sequence.")
-//        .add()
+        .append(new KeyedCodec<>("GameEvents", GameEvents.CODEC),
+            (p, v) -> p.gameEvents = v,
+            p -> p.gameEvents)
+        .documentation("Scheduled and randomly drawn events that run during the match.")
+        .add()
         .append(new KeyedCodec<>("SpawnProtectionSeconds", Codec.FLOAT),
             (p, v) -> p.spawnProtectionSeconds = v,
             p -> p.spawnProtectionSeconds)
@@ -225,7 +227,7 @@ public class EZGameConfig extends GameConfigAsset {
             0, "",
             DEFAULT_LOOT_FOUNTAIN_RULES)
     };
-//    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
+    @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
     @Getter private String zoneClosingPhaseSet = "";
@@ -235,7 +237,7 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private float cornucopiaDurationSeconds = 27;
     @Getter private float spawnProtectionSeconds = 30;
     @Getter private float cameraSequenceSeconds = 29;
-//    @Getter private GameEvents gameEvents;
+    @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
         new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))
     };

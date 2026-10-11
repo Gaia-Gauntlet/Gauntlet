@@ -28,6 +28,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public class EZLobbyManager implements LobbyManager {
+    public static final String STARTING_TIMER = "GameStarting";
 
     @Override
     public CompletableFuture<World> setupWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
@@ -56,17 +57,19 @@ public class EZLobbyManager implements LobbyManager {
         return GauntletUtils.runAsync(arenaWorld, () -> {
             var arenaPlayers = arenaWorld.getPlayerRefs();
             var hubWorld = GauntletUtils.withHubWorld();
-            arenaWorld.drainPlayersTo(hubWorld, arenaPlayers);
-        });
+            return arenaWorld.drainPlayersTo(hubWorld, arenaPlayers);
+        }).thenCompose(drained -> drained);
     };
 
     @Override
-    public void onJoin(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor, String sessionId) {
+    public void onJoin(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
+            String sessionId) {
         // add components
         accessor.putComponent(ref, EZPlayerComponent.getComponentType(), new EZPlayerComponent(sessionId));
         var world = accessor.getExternalData().getWorld();
         var gameStore = GameStore.withStore(world, sessionId).orElse(null);
-        if (gameStore == null) return;
+        if (gameStore == null)
+            return;
 
         // Increment participant counter
         var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
@@ -74,39 +77,47 @@ public class EZLobbyManager implements LobbyManager {
 
         if (EZState.currentState(gameStore) == EZStates.LOBBY
                 && gameComp.getParticipants() >= EZGameConfig.get(gameStore).getMinPlayers()) {
-            EZController.get().getArenaManager().start(world, gameStore, sessionId);
+            if (TimerUtils.isRunning(gameStore, STARTING_TIMER))
+                return;
+            // EZController.get().getArenaManager().start(world, gameStore, sessionId);
             // add a timer that starts the match when it is over
-            TimerUtils.start("GameStarting", gameStore, 10);
+            var config = EZGameConfig.get(gameStore);
+            var gameTimerComp = new GameTimerComponent(STARTING_TIMER, TimerUtils.IMG_COUNTDOWN);
+            for (var poi : config.getArenaTimerPois()) {
+                gameTimerComp.addPoi(poi);
+            }
+            TimerUtils.start(gameStore, 10, gameTimerComp);
             return;
         }
 
         var team = TeamUtils.withTeamFor(world, sessionId, player.getUuid());
-        if (team == null) return;
+        if (team == null)
+            return;
         var onlinePlayers = TeamUtils.getOnlinePlayers(team);
         for (var teamPlayer : onlinePlayers) {
             var comp = teamPlayer.getComponentConcurrent(EZPlayerComponent.getComponentType());
             if (comp != null && comp.isAlive()) {
                 // warp to player
-                
+
             }
         }
         // if party is alive
     }
 
-
-
     @Override
     public CompletableFuture<Void> onLeave(World arenaWorld, String session, Collection<PlayerRef> players) {
         // Increment participant counter
         var gameStore = GameStore.withStore(arenaWorld, session).orElse(null);
-        if (gameStore == null) return CompletableFuture.completedFuture(null);
+        if (gameStore == null)
+            return CompletableFuture.completedFuture(null);
         var gameComp = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
 
         for (var player : players) {
             gameComp.decrementParticipants();
             var ref = player.getReference();
-            if (!ref.isValid()) {
-                GaiaLog.atWarning().withSession(session).log("Player " + player.getUsername() + " has an invalid ref, unable to clean");
+            if (ref == null || !ref.isValid()) {
+                GaiaLog.atWarning().withSession(session)
+                        .log("Player " + player.getUsername() + " has an invalid ref, unable to clean");
                 continue;
             }
             var store = ref.getStore();
@@ -116,9 +127,16 @@ public class EZLobbyManager implements LobbyManager {
                 try {
                     store.tryRemoveComponent(ref, EZPlayerComponent.getComponentType());
                 } catch (Exception e) {
-                    GaiaLog.atError(e).withSession(session).log("Failed to clean " + player.getUsername() + " from EZGame with cause " + e.getLocalizedMessage());
+                    GaiaLog.atError(e).withSession(session).log("Failed to clean " + player.getUsername()
+                            + " from EZGame with cause " + e.getLocalizedMessage());
                 }
             });
+        }
+
+        if (EZState.currentState(gameStore) == EZStates.LOBBY
+                && gameComp.getParticipants() < EZGameConfig.get(gameStore).getMinPlayers()
+                && TimerUtils.isRunning(gameStore, STARTING_TIMER)) {
+            TimerUtils.cancel(gameStore);
         }
 
         return CompletableFuture.completedFuture(null);

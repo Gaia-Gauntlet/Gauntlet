@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -27,6 +28,7 @@ import com.hypixel.hytale.server.core.ui.Value;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import lombok.Getter;
 
@@ -175,18 +177,23 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         var tabId = dot < 0 ? "" : action.substring(0, dot);
         for (var tab : tabs) {
             if (tab.getId().equalsIgnoreCase(tabId)) {
-                try {
-                     return tab.handle(action, event, session, this);
-                } catch (IllegalStateException | IllegalArgumentException e) {
-                    return Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage());
-                } catch (RuntimeException e) {
-                    LOGGER.atWarning().withCause(e).log("Admin action %s failed", action);
-                    return Widgets.fail("Failed: " + e.getMessage());
-                }
+                return attempt(action, () -> tab.handle(action, event, session, this));
             }
         }
         LOGGER.atWarning().log("Admin page received unknown action %s", action);
         return null;
+    }
+
+    @Nullable
+    private static Message attempt(@Nonnull String action, @Nonnull Supplier<Message> task) {
+        try {
+            return task.get();
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            return Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage());
+        } catch (RuntimeException e) {
+            LOGGER.atWarning().withCause(e).log("Admin action %s failed", action);
+            return Widgets.fail("Failed: " + e.getMessage());
+        }
     }
 
     /** Installs or uninstalls the plugin of the open section in the selected session. */
@@ -199,20 +206,15 @@ public final class AdminPage extends InteractiveCustomUIPage<AdminPageEvent> {
         return SessionTab.plugin(session, op, section.pluginId(), this);
     }
 
-    /** Runs the task on the game's arena thread and reports what it says afterwards. */
-    // void onArena(@Nonnull Game target, @Nonnull BiConsumer<World, AdminPage> task, @Nonnull String pendingText) {
-        // var arena = ArenaComponent.TYPE.of(target).world();
-        // if (arena == null) {
-        //     throw new IllegalStateException(target.id() + " has no arena loaded");
-        // }
-        // Worlds.run(arena, () -> {
-        //     try {
-        //         task.accept(arena, this);
-        //     } catch (IllegalStateException | IllegalArgumentException e) {
-        //         pushStatus(Widgets.fail(e.getMessage() == null ? "That did not work" : e.getMessage()));
-        //     }
-        // });
-    // }
+    /** Runs the task on the world's thread and reports what it says afterwards. */
+    public void onWorld(@Nonnull World world, @Nonnull String action, @Nonnull Supplier<Message> task) {
+        GauntletUtils.run(world, () -> {
+            var status = attempt(action, task);
+            if (status != null) {
+                pushStatus(status);
+            }
+        });
+    }
 
     /** Sets the status line from any thread, rendering the active tab with it. */
     public void pushStatus(@Nonnull Message status) {

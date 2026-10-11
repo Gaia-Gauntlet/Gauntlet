@@ -4,6 +4,7 @@ import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
@@ -79,10 +80,7 @@ public class TeamUtils {
             var playerRef = Universe.get().getPlayer(uuid);
             if (Objects.isNull(playerRef))
                 continue;
-            var ref = playerRef.getReference();
-            assert ref != null;
-            var eliminated = ref.getStore().getComponent(ref, EliminatedComponent.getComponentType());
-            if (Objects.isNull(eliminated))
+            if (playerRef.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
                 return true;
         }
         return false;
@@ -213,8 +211,9 @@ public class TeamUtils {
     /** Redraws the party and teams panels for the game's session, drawing the given players as offline */
     public static void updateHuds(@Nonnull GameEcs game, @Nonnull Set<UUID> disconnected) {
         var snapshot = TeamsHud.snapshot(game, disconnected);
-        new HudEvent(game.getSessionId(), PartyHud.ID, snapshot).dispatch();
-        new HudEvent(game.getSessionId(), TeamsHud.ID, snapshot).dispatch();
+        var world = game.get(ContextComponent.getComponentType()).map(ContextComponent::getWorld).orElse(null);
+        new HudEvent(game.getSessionId(), PartyHud.ID, snapshot, world).dispatch();
+        new HudEvent(game.getSessionId(), TeamsHud.ID, snapshot, world).dispatch();
     }
     @Nullable
     public static Optional<TeamComponent> teamOf(@Nullable TeamListComponent teamList, @Nonnull String teamId) {

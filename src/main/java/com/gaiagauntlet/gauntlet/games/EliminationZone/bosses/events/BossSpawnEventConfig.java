@@ -16,6 +16,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesC
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
 import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEventConfig;
 import com.gaiagauntlet.gauntlet.plugins.events.events.SequenceEvent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -48,6 +49,7 @@ public class BossSpawnEventConfig extends GameEventConfig {
     }
 
     public BossSpawnEventConfig(String bossId) {
+        this.bossId = bossId;
     }
 
     @Override
@@ -68,6 +70,15 @@ public class BossSpawnEventConfig extends GameEventConfig {
         var bossId = bossEvent.getBossId();
         var game = gameEvent.getStore();
         var sessionId = gameEvent.getSessionId();
+        if (bossId == null || bossId.isBlank()) {
+            BossSpawner.spawnRandom(sessionId, GameStore.getContext(game).getWorld());
+            return;
+        }
         BossSpawner.spawn(sessionId, game, bossId);
+    }
+
+    @Override
+    public String describe() {
+        return bossId == null || bossId.isBlank() ? "Random boss" : "Boss " + bossId;
     }
 }

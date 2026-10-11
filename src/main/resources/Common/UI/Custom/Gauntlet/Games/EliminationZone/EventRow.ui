@@ -1,4 +1,4 @@
-// One queued match event: its text and a cancel button.
+// One queued event on the Events tab: when it runs, what it is, and a cancel button.
 $G = "../../Admin/Common.ui";
 
 Group {
@@ -9,5 +9,5 @@ Group {
         FlexWeight: 1;
         Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
     }
-    $G.@GoQuiet #Cancel { @Anchor = (Left: 6, Width: 70); Anchor: (Height: 24); Text: "Cancel"; }
+    $G.@GoQuiet #Cancel { @Anchor = (Width: 72); Text: "Cancel"; }
 }

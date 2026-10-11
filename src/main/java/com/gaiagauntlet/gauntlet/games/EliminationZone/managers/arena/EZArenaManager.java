@@ -6,9 +6,9 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnProtectionComponent;
+import com.gaiagauntlet.gauntlet.plugins.events.utils.EventUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
-import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class EZArenaManager implements ArenaManager {
@@ -21,8 +21,7 @@ public class EZArenaManager implements ArenaManager {
         }
 
         game.put(SpawnProtectionComponent.getComponentType(), new SpawnProtectionComponent());
-
-        TimerUtils.start("SpawnProtection", game, EZGameConfig.get(game).getSpawnProtectionSeconds());
+        EventUtils.setup(game, EZGameConfig.get(game).getGameEvents());
 
         return CompletableFuture.completedFuture(null);
     }

@@ -330,49 +330,51 @@ public class PlayerHandlers extends HandlerUtils {
                 : "client: " + reason.getClientDisconnectType();
         GaiaLog.atInfo().withSession(session).log("Player " + playerRef.getUsername() + " disconnected (" + reasonText + ")");
 
-        if (party != null) {
-            // leave the party
-            var playerId = playerRef.getUuid();
+        // player state is read before the hop since the engine may finish removing the player first
+        GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
+            if (party != null) {
+                // leave the party
+                var playerId = playerRef.getUuid();
 
-            var resource = GauntletUtils.withResource();
-            var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
-                resource.removeOffline(playerId);
-            }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
+                var resource = GauntletUtils.withResource();
+                var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+                    resource.removeOffline(playerId);
+                }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
 
-            party.removePlayer(playerId);
-            resource.markOffline(playerId, party.getId(), future);
-        }
+                party.removePlayer(playerId);
+                resource.markOffline(playerId, party.getId(), future);
+            }
 
-        if (session == null) {
-            GaiaLog.atWarning().log(msg("server.gg.events.players.disconnect.warn")
-                    .param("playerName", playerRef.getUsername())
-                    .param("reason", "Session not present"));
-            return;
-        }
+            if (session == null) {
+                GaiaLog.atWarning().log(msg("server.gg.events.players.disconnect.warn")
+                        .param("playerName", playerRef.getUsername())
+                        .param("reason", "Session not present"));
+                return;
+            }
 
-        var gameId = playerComponent == null ? null : playerComponent.getCurrentGame();
-        if (gameId == null || gameId.isEmpty()) {
-            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                    .param("playerName", playerRef.getUsername())
-                    .param("reason", "no game is active"));
-            return;
-        }
+            var gameId = playerComponent == null ? null : playerComponent.getCurrentGame();
+            if (gameId == null || gameId.isEmpty()) {
+                GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                        .param("playerName", playerRef.getUsername())
+                        .param("reason", "no game is active"));
+                return;
+            }
 
-        if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
-            GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                    .param("playerName", playerRef.getUsername())
-                    .param("reason", "game is not registered"));
-            return;
-        }
+            if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
+                GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                        .param("playerName", playerRef.getUsername())
+                        .param("reason", "game is not registered"));
+                return;
+            }
 
-        var hubWorld = GauntletUtils.withHubWorld();
-        try {
-            game.playerLeave(hubWorld, session.getId(), List.of(playerRef));
-        } catch (Exception e) {
-            GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                    .param("playerName", playerRef.getUsername())
-                    .param("reason", "the game controller threw " + e.getClass().getSimpleName()));
-        }
+            try {
+                game.playerLeave(GauntletUtils.withHubWorld(), session.getId(), List.of(playerRef));
+            } catch (Exception e) {
+                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                        .param("playerName", playerRef.getUsername())
+                        .param("reason", "the game controller threw " + e.getClass().getSimpleName()));
+            }
+        });
     }
 
     public static void handlePartyPlayer(World hub, PlayerPartyEvent evt) {

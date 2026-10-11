@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -51,6 +52,10 @@ public class EZSpawnComponent implements GameComponent {
                 collect();
             return spawnPoints.pop();
         });
+    }
+
+    public Optional<Transform> getAssigned(UUID player) {
+        return Optional.ofNullable(assignedLocation.get(player));
     }
 
     public List<Transform> getAllFilled() {

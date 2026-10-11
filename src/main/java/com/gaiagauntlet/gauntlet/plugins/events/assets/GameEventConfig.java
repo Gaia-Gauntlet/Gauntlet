@@ -33,4 +33,9 @@ public abstract class GameEventConfig {
     }
 
     public abstract String getId();
+
+    @Nonnull
+    public String describe() {
+        return getId();
+    }
 }

@@ -92,7 +92,6 @@ public final class BossSpawner {
         var point = points.get(ThreadLocalRandom.current().nextInt(points.size()));
 
 
-        bosses.getPending().add(boss.roleId());
         GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(session);
         place(session, arena, boss, point);
 
@@ -240,8 +239,8 @@ public final class BossSpawner {
     /** True unless the zone feature says the zone is closing or sealed. */
     private static boolean isZoneOpen(@Nonnull String game, World arena, @Nonnull String zoneId) {
 
-        var zones = GameStore.ensureStore(arena, game).get(ZoneComponent.TYPE).orElse(null);
-        if (zoneId.isEmpty() || zones == null || zones.isActive()) return true;
+        var zones = GameStore.withStore(arena, game).flatMap(store -> store.get(ZoneComponent.TYPE)).orElse(null);
+        if (zoneId.isEmpty() || zones == null || !zones.isActive()) return true;
 
         var active = zones.activeZone();
         if (active != null && active.id().equals(zoneId)) return false;

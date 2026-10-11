@@ -5,7 +5,9 @@ import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.SpawnDamagePreventionSystem;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia.CornucopiaMovingPlatformsHandler;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
@@ -60,9 +62,14 @@ public final class LobbyEventListeners {
         var world = ctx.getWorld();
 
         switch (evt.getTimerId()) {
-            case "GameStarting" -> {
+            case EZLobbyManager.STARTING_TIMER -> {
                 // start the game - the timer has finished
                 EZController.get().getArenaManager().start(world, game, sessionId);
+            }
+            case "IntroSequence" -> {
+                // timers complete inside a system tick, so the teleports wait for the store to finish processing
+                world.execute(() -> CornucopiaMovingPlatformsHandler.placeAllOnPlatforms(world, game));
+                TimerUtils.start("SpawnProtection", game, EZGameConfig.get(game).getSpawnProtectionSeconds());
             }
             case "SpawnProtection" -> {
                 SpawnDamagePreventionSystem.onEnd(evt);

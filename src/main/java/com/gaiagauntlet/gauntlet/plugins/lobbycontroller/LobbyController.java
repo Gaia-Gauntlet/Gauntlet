@@ -40,11 +40,11 @@ public abstract class LobbyController extends GameController {
 
     public abstract void setupGame(World world, GameEcs gameStore, String sessionId);
 
-    private Optional<World> withArenaWorld(World hubWorld, String sessionId) {
+    public static Optional<World> withArenaWorld(World hubWorld, String sessionId) {
         return withArenaWorld(hubWorld.getEntityStore().getStore(), sessionId);
     }
 
-    private Optional<World> withArenaWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
+    public static Optional<World> withArenaWorld(ComponentAccessor<EntityStore> hubAccessor, String sessionId) {
         if (!(GameStore.withStore(hubAccessor, sessionId).orElse(null) instanceof GameEcs hubStore)) {
             return Optional.empty();
         }

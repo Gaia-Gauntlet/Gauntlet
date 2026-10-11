@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
@@ -7,6 +8,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnCom
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;
@@ -51,7 +53,7 @@ public class CornucopiaMovingPlatformsHandler {
 
         var spawnsComponent = gameStore.ensure(EZSpawnComponent.getComponentType(), () -> new EZSpawnComponent(world));
 
-        rise(world, config.getCameraSequenceSeconds(), spawnsComponent.getAllFilled());
+        rise(world, config.getCornucopiaDurationSeconds(), spawnsComponent.getAllFilled());
     }
 
     public static void rise(@Nonnull World world, double durationSeconds, @Nonnull List<Transform> spawns) {
@@ -77,6 +79,15 @@ public class CornucopiaMovingPlatformsHandler {
                 }
             }
         }, (long) Math.max(0, durationSeconds), TimeUnit.SECONDS);
+    }
+
+    public static void placeAllOnPlatforms(@Nonnull World world, @Nonnull GameEcs gameStore) {
+        var spawns = gameStore.get(EZSpawnComponent.getComponentType()).orElse(null);
+        if (spawns == null)
+            return;
+        for (var player : GauntletUtils.playersFor(gameStore.getSessionId())) {
+            spawns.getAssigned(player.getUuid()).ifPresent(spawn -> placeOnPlatform(world, player, spawn));
+        }
     }
 
     /**

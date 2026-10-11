@@ -22,16 +22,10 @@
       }
     ],
     "Scheduled": {
-      "90": {
-        "Type": "ZoneBlockEvent"
-      },
       "59": {
         "Type": "WeatherEvent",
         "IsRandom": true,
         "DurationSeconds": 45
-      },
-      "60": {
-        "Type": "DisableSpawnProtectionEvent"
       }
     }
   },

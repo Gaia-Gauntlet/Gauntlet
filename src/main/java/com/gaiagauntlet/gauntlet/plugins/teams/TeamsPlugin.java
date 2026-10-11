@@ -17,7 +17,7 @@ import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedCompo
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.editor.UsernameTransformButton;
 import com.gaiagauntlet.gauntlet.plugins.teams.listeners.TeamHudListeners;
-import com.gaiagauntlet.gauntlet.plugins.teams.systems.TeamHudDeathSystem;
+import com.gaiagauntlet.gauntlet.plugins.teams.systems.TeamHudEliminatedSystem;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.PartyHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsHud;
 import com.gaiagauntlet.gauntlet.plugins.teams.ui.TeamsTab;
@@ -73,7 +73,7 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
         TeamListComponent.setGameComponentType(
                 GameComponentRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
 
-        entityStore.registerSystem(new TeamHudDeathSystem());
+        entityStore.registerSystem(new TeamHudEliminatedSystem());
         host.getEventRegistry().register(EventPriority.EARLY, PlayerDisconnectEvent.class,
                 TeamHudListeners::onPlayerDisconnect);
 

@@ -3,10 +3,14 @@ package com.gaiagauntlet.gauntlet.plugins.timer.utils;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.TimerDisplay;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
+import com.gaiagauntlet.gauntlet.plugins.timer.ui.TimerHud;
 
 public class TimerUtils {
     public static final String IMG_COUNTDOWN = "TimerHeaderUntilPortalOpens";
@@ -25,7 +29,7 @@ public class TimerUtils {
     /** Registers a listener for a specific timer id */
     public static void registerOnComplete(String timerId, String gameId, Consumer<TimerCompleteEvent> onComplete) {
         MatchEventRegistry.register(TimerCompleteEvent.class, gameId, evt -> {
-            if (evt.getTimerId() == timerId) {
+            if (timerId.equals(evt.getTimerId())) {
                 onComplete.accept(evt);
             }
         });
@@ -45,6 +49,25 @@ public class TimerUtils {
     public static void start(String timerId, GameEcs gameStore, float duration) {
         var timerComp = new GameTimerComponent(timerId);
         start(gameStore, duration, timerComp);
+    }
+
+    public static boolean isRunning(GameEcs gameStore, String timerId) {
+        return get(gameStore).filter(timer -> timer.isRunning() && timerId.equals(timer.getTimerId())).isPresent();
+    }
+
+    /** Removes the timer without completing it, clearing its displays and HUD. */
+    public static void cancel(GameEcs gameStore) {
+        var timer = get(gameStore).orElse(null);
+        if (timer == null)
+            return;
+        gameStore.remove(GameTimerComponent.getComponentType());
+        var world = GameStore.getContext(gameStore).getWorld();
+        GauntletUtils.run(world, () -> {
+            for (var poi : timer.getPois()) {
+                TimerDisplay.clear(world, poi.getTransform());
+            }
+        });
+        TimerHud.update(gameStore);
     }
 
     public static void stop(GameEcs gameStore) {

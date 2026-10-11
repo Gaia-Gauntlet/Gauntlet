@@ -70,11 +70,18 @@ public class GameSession {
             .add()
             .build();
 
-    @Getter private Map<String, SessionComponent> sessionComponents;
-    @Getter private String id;
-    @Getter private Set<String> parties = ConcurrentHashMap.newKeySet();
-    /** Ids of the plugins installed in this session. Only these are set up for its games */
-    @Getter private Set<String> plugins = ConcurrentHashMap.newKeySet();
+    @Getter
+    private Map<String, SessionComponent> sessionComponents;
+    @Getter
+    private String id;
+    @Getter
+    private Set<String> parties = ConcurrentHashMap.newKeySet();
+    /**
+     * Ids of the plugins installed in this session. Only these are set up for its
+     * games
+     */
+    @Getter
+    private Set<String> plugins = ConcurrentHashMap.newKeySet();
 
     private volatile boolean locked = false;
 
@@ -105,18 +112,23 @@ public class GameSession {
         }
     }
 
-    @Getter private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
-
+    @Getter
+    private final ArrayDeque<String> gameSequence = new ArrayDeque<>();
 
     // design here may change. My head canon is that the currentGame will pop from
     // the array and the array of the sequence will shrink.
     // Alternatively we could store the index of the current game inside the
     // sequence and keep the sequence as-is
     // I'm good with either
-    @Getter private String currentGame;
+    @Getter
+    private String currentGame;
 
-    @Getter @NotNull private SessionState sessionState = SessionState.IDLE;
-    @Getter @Nullable private String errorReason;
+    @Getter
+    @NotNull
+    private SessionState sessionState = SessionState.IDLE;
+    @Getter
+    @Nullable
+    private String errorReason;
 
     public GameSession() {
         sessionComponents = new ConcurrentHashMap<>();
@@ -183,9 +195,6 @@ public class GameSession {
             return null;
         }
 
-        // set the lock
-        locked = true;
-
         errorReason = null;
         sessionState = SessionState.SETTING_UP;
         return currentGame;
@@ -201,6 +210,9 @@ public class GameSession {
     public boolean setRunning(String gameIdCheck) {
         if (transitionBlocked(SessionState.RUNNING, gameIdCheck))
             return false;
+
+        // set the lock
+        locked = true;
 
         errorReason = null;
         sessionState = SessionState.RUNNING;
@@ -232,6 +244,17 @@ public class GameSession {
         if (transitionBlocked(SessionState.CLEANING, gameIdCheck))
             return false;
         sessionState = SessionState.CLEANING;
+        locked = false;
+        return true;
+    }
+    /**
+     * Returns TRUE if the transition happened. Returns FALSE if already in cleaning
+     * or game is not running
+     */
+    public boolean setEnding(String gameIdCheck) {
+        if (transitionBlocked(SessionState.ENDING, gameIdCheck))
+            return false;
+        sessionState = SessionState.ENDING;
         locked = false;
         return true;
     }

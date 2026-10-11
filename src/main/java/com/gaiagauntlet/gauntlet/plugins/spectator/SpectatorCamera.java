@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.plugins.spectator;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
@@ -116,12 +117,12 @@ public final class SpectatorCamera {
         var players = GauntletUtils.playersFor(session);
         var world = accessor.getExternalData().getWorld();
         var pool = new ArrayList<Ref<EntityStore>>();
-        var eliminated = accessor.getComponent(spectator, EliminatedComponent.getComponentType());
-        var spectatorTeam = TeamUtils.withTeamFor(world, session, self.getUuid());
+        var game = GameStore.withStore(world, session).orElse(null);
+        var spectatorTeam = TeamUtils.teamOf(game, self.getUuid()).orElse(null);
         for (var pass = 0; pass < 2 && pool.isEmpty(); pass++) {
             for (var candidate : players) {
-                var candidateTeam = TeamUtils.withTeamFor(world, session, candidate.getUuid());
-                if (eliminated != null || candidate.getUuid().equals(self.getUuid())) continue;
+                var candidateTeam = TeamUtils.teamOf(game, candidate.getUuid()).orElse(null);
+                if (candidate.getUuid().equals(self.getUuid())) continue;
 
                 var sameTeam = candidateTeam == null || (spectatorTeam != null && spectatorTeam.getId().equals(candidateTeam.getId()));
                 if (pass == 0 && !sameTeam) continue;
@@ -129,7 +130,8 @@ public final class SpectatorCamera {
                 var player = findInWorld(world, candidate.getUuid());
                 var ref = player == null ? null : player.getReference();
                 if (ref != null && ref.isValid() && ref.getStore() == spectator.getStore()
-                        && accessor.getComponent(ref, SpectatorComponent.getComponentType()) == null) {
+                        && accessor.getComponent(ref, SpectatorComponent.getComponentType()) == null
+                        && accessor.getComponent(ref, EliminatedComponent.getComponentType()) == null) {
                     pool.add(ref);
                 }
             }
@@ -153,9 +155,8 @@ public final class SpectatorCamera {
         var self = accessor.getComponent(spectator, PlayerRef.getComponentType());
         if (self == null) return false;
 
-        var participants = GauntletUtils.playersFor(session);
-        var teams = TeamUtils.withTeamList(world, session);
-        var spectatorTeam = TeamUtils.withTeamFor(world, session, self.getUuid());
+        var spectatorTeam = TeamUtils.teamOf(GameStore.withStore(world, session).orElse(null), self.getUuid())
+                .orElse(null);
 
         return spectatorTeam == null || !TeamUtils.hasAlive(spectatorTeam);
     }

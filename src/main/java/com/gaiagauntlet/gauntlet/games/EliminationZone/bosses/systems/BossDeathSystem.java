@@ -29,12 +29,9 @@ public final class BossDeathSystem extends DeathSystems.OnDeathSystem {
         if (marker == null) return;
 
         var sessionId = marker.getSessionId();
-
         var world = store.getExternalData().getWorld();
-        var game = GameStore.withStore(world, sessionId).orElse(null);
-    
-        var gameId = GameStore.withResource(world).getId(game);
+        if (GameStore.withStore(world, sessionId).isEmpty()) return;
 
-        BossSpawner.onDefeated(gameId, world, marker.getBossId());
+        BossSpawner.onDefeated(sessionId, world, marker.getBossId());
     }
 }

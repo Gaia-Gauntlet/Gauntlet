@@ -3,6 +3,7 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -28,11 +29,13 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         var world = store.getExternalData().getWorld();
 
         var sessionId = playerComp.getSessionId();
-        var gameStore = GameStore.withStore(world, sessionId);
+        var gameStore = GameStore.withStore(world, sessionId).orElse(null);
         
         // IDK WHAT TO DO WHEN PEOPLE DIE AND IT'S MAKING ME CRASH TF OUT :)
 
         // uhhh spectator i guess?
-        store.addComponent(ref, SpectatorComponent.getComponentType(), new SpectatorComponent());
+        commandBuffer.addComponent(ref, EliminatedComponent.getComponentType(), new EliminatedComponent());
+        commandBuffer.addComponent(ref, SpectatorComponent.getComponentType(), new SpectatorComponent());
+
     }
 }
