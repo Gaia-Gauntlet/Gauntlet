@@ -88,7 +88,7 @@ public class EZController extends LobbyController {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        return List.of(new ZonesTab(), new BossesTab(), new EventsTab());
+        return List.of(new ZonesTab(), new BossesTab());
     }
 
     @Override

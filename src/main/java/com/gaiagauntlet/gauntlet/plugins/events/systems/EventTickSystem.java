@@ -53,7 +53,7 @@ public class EventTickSystem extends GameTickingSystem {
 
     /** Processes and emits the event */
     private void processEvent(String sessionId, GameEcs store, SequenceHolder evtHolder) {
-        var event = new SequenceEvent(sessionId, evtHolder.getGameConfig());
+        var event = new SequenceEvent(sessionId, evtHolder.getGameConfig(), store);
 
         final var dispatcher = HytaleServer.get().getEventBus().dispatchFor(SequenceEvent.class,
                 evtHolder.getID());

@@ -4,6 +4,7 @@ import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.SpawnDamagePreventionSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
@@ -11,7 +12,6 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
-import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerStartedEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
 
@@ -44,8 +44,7 @@ public final class LobbyEventListeners {
         for (var poi : config.getArenaTimerPois()) {
             gameTimerComp.addPoi(poi);
         }
-        gameTimerComp.startTimer(config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds());
-        gameEcs.put(GameTimerComponent.getComponentType(), gameTimerComp);
+        TimerUtils.start(gameEcs, config.getCornucopiaDurationSeconds() + config.getCameraSequenceSeconds(), gameTimerComp);
 
         MusicUtils.forcePlayMusicToAllPlayers(GAME_MUSIC_CONTAINER, session);
         world.scheduleAfter(
@@ -64,6 +63,9 @@ public final class LobbyEventListeners {
             case "GameStarting" -> {
                 // start the game - the timer has finished
                 EZController.get().getArenaManager().start(world, game, sessionId);
+            }
+            case "SpawnProtection" -> {
+                SpawnDamagePreventionSystem.onEnd(evt);
             }
             default -> {
                 

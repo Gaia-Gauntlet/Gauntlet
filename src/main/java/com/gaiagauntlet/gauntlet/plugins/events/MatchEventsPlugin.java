@@ -3,6 +3,9 @@ package com.gaiagauntlet.gauntlet.plugins.events;
 import java.util.List;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
+import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.events.systems.EventTickSystem;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -11,8 +14,9 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
  * Game-wide events and event listening. Listen based on `GameId` to only
  * receive local events with the relevant and oftentimes necessary context
  */
-public class MatchEventsPlugin implements GamePlugin {
+public class MatchEventsPlugin implements GamePlugin, UiGamePlugin {
     public static final String ID = "GameEventsPlugin";
+
     @Override
     public String getId() {
         return ID;
@@ -27,6 +31,11 @@ public class MatchEventsPlugin implements GamePlugin {
     public void init(JavaPlugin plugin) {
         MatchEventRegistry.setup(plugin);
         plugin.getEntityStoreRegistry().registerSystem(new EventTickSystem());
+    }
+
+    @Override
+    public List<AdminTab> getAdminTabs() {
+        return List.of(new EventsTab());
     }
 
 }

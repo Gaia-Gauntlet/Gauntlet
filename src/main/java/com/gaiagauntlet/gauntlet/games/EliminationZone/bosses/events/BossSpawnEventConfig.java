@@ -4,15 +4,25 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NotNull;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.BossSpawner;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.BossSpawner.SpawnPoint;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossScalingComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
 import com.gaiagauntlet.gauntlet.plugins.events.assets.GameEventConfig;
 import com.gaiagauntlet.gauntlet.plugins.events.events.SequenceEvent;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.util.ChunkUtil;
+
+import lombok.Getter;
 
 public class BossSpawnEventConfig extends GameEventConfig {
     public static final String Id = "BossSpawnEvent";
@@ -29,7 +39,9 @@ public class BossSpawnEventConfig extends GameEventConfig {
             .add()
             .build();
 
+    @Getter
     private String bossId;
+    @Getter
     private String zoneId;
 
     public BossSpawnEventConfig() {
@@ -50,52 +62,12 @@ public class BossSpawnEventConfig extends GameEventConfig {
     }
 
     public static void execute(SequenceEvent gameEvent) {
-        var gameEventConfig = gameEvent.getGameConfig();
-        if (!(gameEventConfig instanceof BossSpawnEventConfig bossEvent)) return;
-        GameRef gameRef = gameEvent.getGameRef();
-
-        String zoneId = bossEvent.getZoneId();
-        String bossId = bossEvent.getBossId();
-
-        // Spawn selected boss
-        if (bossId != null && !bossId.isBlank()) {
-            BossScalingComponent definition = BossRoleResolver.resolve(bossId);
-            if (definition == null || !definition.isEnabled() || !definition.allowsZone(zoneId)) {
-                HytaleLogger.getLogger().atWarning().log("boss: explicit BossId '" + bossId
-                        + "' is not an enabled, zone-eligible boss; skipped", "event");
-                return;
-            }
-            BossService.spawn(gameRef, bossId, zoneId);
+        var gameEventConfig = gameEvent.getConfig();
+        if (!(gameEventConfig instanceof BossSpawnEventConfig bossEvent))
             return;
-        }
-
-        // Spawn random boss
-        var candidates = BossRoleResolver.generateRolesToBossScalingComponents().values();
-        var eligible = new ArrayList<BossScalingComponent>();
-        var zone = GameUtils.getGameStore().getComponent(gameRef, ZoneClosingComponent.getComponentType());
-        var bossesGameComponent = GameUtils.getGameStore().getComponent(gameRef, BossesGameComponent.getComponentType());
-
-        for (BossScalingComponent candidate : candidates) {
-            for (SectorZone pendingZone : zone.getPendingZones()) {
-                if (candidate.isEnabled()
-                    && candidate.getZoneTags().contains(pendingZone.getId())
-                    && !BossService.hasActiveBoss(gameRef, candidate.getRoleId())
-                    && !zone.getActiveZone().getId().equals(pendingZone.getId())
-                    && !zone.getClosedZones().stream().anyMatch(z -> z.getId().equals(pendingZone.getId()))
-                    && !bossesGameComponent.getPendingSpawns().containsKey(candidate.getRoleId())
-                ) {
-                    eligible.add(candidate);
-                }
-            }
-        }
-
-        if (eligible.isEmpty()) {
-            GGLogger.log(gameRef, "boss: no eligible boss configured"
-                    + (zoneId == null ? "" : " for zone '" + zoneId + "'") + "; skipped", "event");
-            return;
-        }
-
-        BossScalingComponent chosen = eligible.get(new Random().nextInt(eligible.size()));
-        BossService.spawn(gameRef, chosen.getRoleId(), chosen.getZoneTags().getFirst());
+        var bossId = bossEvent.getBossId();
+        var game = gameEvent.getStore();
+        var sessionId = gameEvent.getSessionId();
+        BossSpawner.spawn(sessionId, game, bossId);
     }
 }

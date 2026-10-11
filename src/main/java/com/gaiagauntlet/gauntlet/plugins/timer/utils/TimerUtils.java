@@ -9,8 +9,8 @@ import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 
 public class TimerUtils {
-    public static final String IMG_COUNTDOWN = "TimerHeaderUntilPortalOpens"; 
-    public static final String IMG_PORTA_OPEN = "TimerHeaderGetToThePortal"; 
+    public static final String IMG_COUNTDOWN = "TimerHeaderUntilPortalOpens";
+    public static final String IMG_PORTA_OPEN = "TimerHeaderGetToThePortal";
     public static final String IMG_STAGING = "TimerHeaderMatchStartsIn";
 
     public static Optional<GameTimerComponent> get(GameEcs gameStore) {
@@ -28,6 +28,34 @@ public class TimerUtils {
             if (evt.getTimerId() == timerId) {
                 onComplete.accept(evt);
             }
+        });
+    }
+    /** Registers a listener for a specific timer id */
+    public static void registerOnComplete(String gameId, Consumer<TimerCompleteEvent> onComplete) {
+        MatchEventRegistry.register(TimerCompleteEvent.class, gameId, onComplete::accept);
+    }
+
+    /** Sets up and starts a timer with a given component */
+    public static void start(GameEcs gameStore, float duration, GameTimerComponent timerComponent) {
+        gameStore.put(GameTimerComponent.getComponentType(), timerComponent);
+        timerComponent.startTimer(duration);
+    }
+
+    /** A thin timer that doesn't render anywhere but emits an event on end. */
+    public static void start(String timerId, GameEcs gameStore, float duration) {
+        var timerComp = new GameTimerComponent(timerId);
+        start(gameStore, duration, timerComp);
+    }
+
+    public static void stop(GameEcs gameStore) {
+        gameStore.get(GameTimerComponent.getComponentType()).ifPresent(timerComp -> {
+            timerComp.pause();
+        });
+    }
+
+    public static void play(GameEcs gameStore) {
+        gameStore.get(GameTimerComponent.getComponentType()).ifPresent(timerComp -> {
+            timerComp.play();
         });
     }
 }
