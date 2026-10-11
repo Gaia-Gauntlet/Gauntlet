@@ -14,6 +14,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyController;
+import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
@@ -64,6 +65,16 @@ public final class MatchStateListeners {
         );
 
         TimerUtils.start(GAME_END_TIMER_ID, evt.getGame(), END_SEQUENCE_LENGTH);
+
+        // The end can be reached from inside a system, so the store is only changed on a later task.
+        LobbyController.withArenaWorld(evt.getSessionId()).ifPresent(world -> world.execute(() -> {
+            var store = world.getEntityStore().getStore();
+            for (var player : world.getPlayerRefs()) {
+                var ref = player.getReference();
+                if (ref != null && ref.isValid())
+                    SpectatorComponent.clear(ref, store);
+            }
+        }));
     }
 
     public static void onMatchEndTimer(TimerCompleteEvent evt) {
