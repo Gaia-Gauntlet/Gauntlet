@@ -215,15 +215,26 @@ public class EZLobbyManager implements LobbyManager {
             var playerWorld = store.getExternalData().getWorld();
             var cleanupFuture = GauntletUtils.runAsync(playerWorld, () -> {
                 // remove the component off the player
+                // type assertion because it cannot infer correctly if done inlined
+                CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
                 try {
-                    store.addComponent(ref, EliminatedComponent.getComponentType(),
-                            new EliminatedComponent(EliminationReason.KILLED));
+                    store.tryRemoveComponent(ref, EliminatedComponent.getComponentType());
                     store.tryRemoveComponent(ref, EZPlayerComponent.getComponentType());
+
+
+                    // teleport back to the hub
+                    return SpawnUtil.teleportToSpawn(ref, store, hubWorld, playerWorld, transform -> {
+                        GaiaLog.atInfo().log(
+                                "Teleported " + player.getUsername() + " to the hub at " + transform.toString());
+                    });
                 } catch (Exception e) {
                     GaiaLog.atError(e).withSession(session).log("Failed to clean " + player.getUsername()
                             + " from EZGame with cause " + e.getLocalizedMessage());
+                    future.completeExceptionally(e);
                 }
-            });
+                
+                return future;
+            }).thenCompose(future -> future);
             cleanupFutures.add(cleanupFuture);
 
         }

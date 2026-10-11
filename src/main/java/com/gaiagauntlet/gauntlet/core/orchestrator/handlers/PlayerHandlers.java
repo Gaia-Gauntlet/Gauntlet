@@ -22,10 +22,12 @@ import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.HytaleServer;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.SpawnUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class PlayerHandlers extends HandlerUtils {
@@ -248,9 +250,10 @@ public class PlayerHandlers extends HandlerUtils {
                                 .param("playerName", playerRef.getUsername()), error);
                         return;
                     }
+                    
                     Resolve.success(evt, session, msg("server.gg.events.players.leave.success")
                             .param("playerName", playerRef.getUsername()));
-                    
+
                     return;
                 });
             } catch (Exception e) {
@@ -328,10 +331,12 @@ public class PlayerHandlers extends HandlerUtils {
         var reason = evt.getDisconnectReason();
         var reasonText = reason == null ? "unknown"
                 : reason.getServerDisconnectReason() != null ? "server: " + reason.getServerDisconnectReason()
-                : "client: " + reason.getClientDisconnectType();
-        GaiaLog.atInfo().withSession(session).log("Player " + playerRef.getUsername() + " disconnected (" + reasonText + ")");
+                        : "client: " + reason.getClientDisconnectType();
+        GaiaLog.atInfo().withSession(session)
+                .log("Player " + playerRef.getUsername() + " disconnected (" + reasonText + ")");
 
-        // player state is read before the hop since the engine may finish removing the player first
+        // player state is read before the hop since the engine may finish removing the
+        // player first
         GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
             if (party != null) {
                 // leave the party
@@ -389,7 +394,8 @@ public class PlayerHandlers extends HandlerUtils {
                 .orElseGet(() -> PartyUtils.getParty(playerRef).orElse(null));
         if (party == null) {
             // cannot join or leave a party that does not exist
-            Resolve.success(evt, playerRef.getUsername() + " is not in a party and party " + evt.getPartyId() + " does not exist");
+            Resolve.success(evt,
+                    playerRef.getUsername() + " is not in a party and party " + evt.getPartyId() + " does not exist");
             return;
         }
 

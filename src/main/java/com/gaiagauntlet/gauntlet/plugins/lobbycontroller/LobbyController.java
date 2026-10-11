@@ -46,7 +46,8 @@ public abstract class LobbyController extends GameController {
 
     public static Optional<World> withArenaWorld(GameSession session) {
 
-        if (session == null) return Optional.empty();
+        if (session == null)
+            return Optional.empty();
 
         var existing = session.get(LobbyComponent.getComponentType());
         if (!existing.isPresent())
@@ -148,9 +149,8 @@ public abstract class LobbyController extends GameController {
         if (arenaWorld == null)
             return CompletableFuture.completedFuture(null);
 
-        return GauntletUtils.runAsync(arenaWorld, () -> {
-            getLobbyManager().onLeave(hubWorld, arenaWorld, sessionId, players);
-            return null;
-        });
+        return GauntletUtils.runAsync(arenaWorld,
+                () -> getLobbyManager().onLeave(hubWorld, arenaWorld, sessionId, players))
+                .thenCompose(future -> future);
     }
 }
