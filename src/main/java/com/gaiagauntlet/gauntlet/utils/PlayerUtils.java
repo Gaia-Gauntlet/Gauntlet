@@ -1,9 +1,14 @@
 package com.gaiagauntlet.gauntlet.utils;
 
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.auth.ProfileServiceClient;
 import com.hypixel.hytale.server.core.auth.ServerAuthManager;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -169,6 +174,31 @@ public final class PlayerUtils {
             if (user != null)
                 continue; // player is online, skip the auth process
             resolve(username, client, token);
+        }
+    }
+
+    /** Clear inventory, set to adventure, and restore health. */
+    public static void reset(PlayerRef playerRef) {
+        var ref = playerRef.getReference();
+        if (ref == null) return;
+        var accessor = ref.getStore();
+
+        // clear inventory
+        InventoryComponent
+            .getCombined(accessor, ref, InventoryComponent.EVERYTHING)
+            .clear();
+
+        // EVERYTHING does not include tools, so we clear them separately
+        final var toolComponent = accessor.getComponent(ref, InventoryComponent.Tool.getComponentType());
+        if (toolComponent != null)
+            toolComponent.getInventory().clear();
+
+        Player.setGameMode(ref, GameMode.Adventure, accessor);
+
+        // restore health
+        EntityStatMap stats = accessor.getComponent(ref, EntityStatMap.getComponentType());
+        if (stats != null) {
+            stats.maximizeStatValue(DefaultEntityStatTypes.getHealth());
         }
     }
 }

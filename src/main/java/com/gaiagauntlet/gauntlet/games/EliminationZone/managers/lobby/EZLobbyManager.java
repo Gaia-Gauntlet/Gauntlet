@@ -66,6 +66,9 @@ public class EZLobbyManager implements LobbyManager {
         return GauntletUtils.runAsync(arenaWorld, () -> {
             var arenaPlayers = arenaWorld.getPlayerRefs();
             var hubWorld = GauntletUtils.withHubWorld();
+            for (PlayerRef arenaPlayer : arenaPlayers) {
+                PlayerUtils.reset(arenaPlayer);
+            }
             return arenaWorld.drainPlayersTo(hubWorld, arenaPlayers);
         }).thenCompose(drained -> drained);
     };
@@ -83,6 +86,8 @@ public class EZLobbyManager implements LobbyManager {
         arrive(ref, player, accessor, sessionId, gameStore);
         // every arrival changes who is online, standing, or on a team for the players already here
         TeamUtils.updateHuds(gameStore, Set.of());
+
+        PlayerUtils.reset(player);
     }
 
     private static void arrive(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
@@ -184,6 +189,7 @@ public class EZLobbyManager implements LobbyManager {
 
         for (var player : players) {
             gameComp.decrementParticipants();
+            PlayerUtils.reset(player);
             var ref = player.getReference();
             if (ref == null || !ref.isValid()) {
                 GaiaLog.atWarning().withSession(session)
@@ -208,6 +214,7 @@ public class EZLobbyManager implements LobbyManager {
                 && TimerUtils.isRunning(gameStore, STARTING_TIMER)) {
             TimerUtils.cancel(gameStore);
         }
+
 
         return CompletableFuture.completedFuture(null);
     }
