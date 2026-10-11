@@ -33,7 +33,7 @@ public class RejoinCommand extends AbstractTargetPlayerCommand {
      * Default Constructor for a {@link ReputationAddCommand} instance.
      */
     public RejoinCommand() {
-        super("rejoin", "server.commands.reputation.add.desc");
+        super("rejoin", "server.commands.rejoin.desc");
         requireNoPermission();
     }
 

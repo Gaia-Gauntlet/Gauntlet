@@ -45,8 +45,13 @@ party.ownership.demote.self = You have been demoted in {party}
 party.ownership.demote = {player} has been demoted in {party}
 
 party.invite.leaderonly = Only the <b>party leader</b> can send party invites!
-party.invite.declined.you = <color is="#ed7f77">Declined</color> invite to join <b>your party</b>.
-party.invite.declined = <b>{recipient}</b> <color is="#ed7f77">decline</color> your invite to join <b>your party</b>.
+party.invite.self = You can't invite yourself to a party!
+party.invite.pending = <b>{recipient}</b> already has an active invite from you.
+party.invite.member = <b>{recipient}</b> is already in this party!
+party.invite.missing = You don't have an invite from this party!
+party.invite.missing.decline = You don't have an invite to that party to decline!
+party.invite.declined.you = <color is="#ed7f77">Declined</color> invite to join <b>{party}</b>.
+party.invite.declined = <b>{recipient}</b> <color is="#ed7f77">declined</color> your invite to join <b>your party</b>.
 party.invite.sent = Invited <b>{recipient}</b> to join your party!\n<i>The invite will expire in {expiry}s</i>.
 party.invite.received = \n<color is="#ebcb94">======</color> You have received a party invite from <b>{sender}</b>! <color is="#ebcb94">======</color>\n\\
                         Use <b>/party</b> to <color is="#77ed7d">accept</color>.\n\

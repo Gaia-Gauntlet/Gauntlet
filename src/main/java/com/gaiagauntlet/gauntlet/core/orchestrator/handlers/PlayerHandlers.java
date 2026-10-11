@@ -88,7 +88,7 @@ public class PlayerHandlers extends HandlerUtils {
         if (!sessionId.equals(partySessionId)) {
             if (!isOwner) {
                 // not owner and owner is not already in session
-                Resolve.error(evt, session, msg("server.gg.events.players.join.existing.error")
+                Resolve.error(evt, session, msg("server.gg.events.players.join.existing.notowner")
                         .param("playerName", playerRef.getUsername())
                         .param("partySessionId", partySessionId)
                         .param("sessionId", sessionId)
