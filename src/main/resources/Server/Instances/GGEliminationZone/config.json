@@ -56,7 +56,7 @@
   "IsBlockSpawnersEnabled": true,
   "IsSpawnMarkersEnabled": true,
   "IsAllNPCFrozen": false,
-  "GameplayConfig": "Default",
+  "GameplayConfig": "EliminationZone",
   "IsCompassUpdating": true,
   "IsSavingPlayers": false,
   "IsSavingChunks": true,
@@ -65,7 +65,9 @@
   "IsObjectiveMarkersEnabled": true,
   "DeleteOnUniverseStart": false,
   "DeleteOnRemove": false,
-  "DisabledFluidTickers": [],
+  "DisabledFluidTickers": [
+    "Fluid=Fire"
+  ],
   "ResourceStorage": {
     "Type": "Hytale"
   },
