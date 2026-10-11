@@ -102,7 +102,7 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         var session = GauntletUtils.sessionFor(playerComp.getSessionId()).orElse(null);
         if (session == null) return;
         Collection<TeamComponent> aliveTeams = TeamUtils.withAliveTeams(world, session.getId());
-        if (aliveTeams.size() >= 1) {
+        if (aliveTeams.size() <= 1) {
             EZState.setState(gameStore, EZStates.ENDED);
             return;
         }
