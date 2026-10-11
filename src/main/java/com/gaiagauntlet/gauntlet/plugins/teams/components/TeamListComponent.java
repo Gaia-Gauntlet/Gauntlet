@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.teams.components;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -162,8 +163,6 @@ public final class TeamListComponent implements SessionComponent, GameComponent 
     public Set<UUID> getPlayers() {
         return playerToTeam.keySet();
     }
-
-    // add more here, since this is not enough
 
     /** Stored teams do not carry their id, only their key in the list, so a team is copied under its key when they differ */
     private static TeamComponent withId(String teamId, TeamComponent team) {

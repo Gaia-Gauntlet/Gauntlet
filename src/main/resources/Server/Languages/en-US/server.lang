@@ -19,6 +19,7 @@ items.varyns_scythe.name = Varyn's Scythe
 general.damageCauses.environmental = The Void
 general.damageCauses.fire = fire
 
+commands.kit_Gg_lobby.desc = Clear inventory, then give items for the Gaia Gauntlet lobby.
 commands.kitGg1.desc = Clear inventory, then give every tier 1 (Crude) weapon and armor piece retuned in the balance pass.
 commands.kitGg2.desc = Clear inventory, then give every tier 2 (Copper) weapon and armor piece retuned in the balance pass.
 commands.kitGg3.desc = Clear inventory, then give every tier 3 (Iron) weapon and armor piece retuned in the balance pass.

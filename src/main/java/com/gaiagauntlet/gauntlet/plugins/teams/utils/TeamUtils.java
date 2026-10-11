@@ -72,6 +72,14 @@ public class TeamUtils {
         return teams.get(player);
     }
 
+    public static Collection<TeamComponent> withAliveTeams(World world, String session) {
+        Collection<TeamComponent> aliveTeams = new HashSet<>();
+        for (TeamComponent team : TeamUtils.withTeamList(world, session).getTeams().values()) {
+            if (TeamUtils.hasAlive(team)) aliveTeams.add(team);
+        }
+        return aliveTeams;
+    }
+
     /**
      * Checks if a team has any alive players. Truthy if and only if a player on
      * this team is online and is not eliminated.
