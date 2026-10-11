@@ -415,3 +415,4 @@ varyn.soul-mark.team.detail = Stay close to help them break the mark.
 varyn.soul-mark.hint = {player}: I need to keep moving, find bright lights, or get close to a teammate!
 deathCause.varyn-shadow-bleed = was reaped by the Varyn Shadow
 void = The Void
+items.Party_Hud_Accessor.name = Parties

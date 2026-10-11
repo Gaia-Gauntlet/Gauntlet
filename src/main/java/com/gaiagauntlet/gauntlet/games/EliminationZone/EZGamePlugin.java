@@ -16,7 +16,9 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
+import com.gaiagauntlet.gauntlet.plugins.spectator.interactions.TeamSpectateControlInteraction;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
@@ -36,6 +38,7 @@ public class EZGamePlugin extends JavaPlugin {
     protected void setup() {
         LOGGER.atInfo().log("Setting up EZGame!");
         registerComponents();
+
         // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
 
