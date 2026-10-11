@@ -482,13 +482,20 @@ public class PlayerHandlers extends HandlerUtils {
             }
         }
 
-        // leave session
-        if (partySession != null) {
+        // a player moving to another party follows it out of this session, anyone else keeps playing in a
+        // party of their own
+        var switching = withResource().getParties().values().stream()
+                .anyMatch(party -> party != oldParty && party.includesPlayer(playerRef));
+        if (partySession != null && switching) {
             try {
                 GauntletEventRegistry.dispatch(PlayerGameEvent.Remove(playerRef, partySession.getId()));
             } catch (Exception e) {
                 evt.log(GaiaLog.atWarning().withCause(e).withSession(partySession).log("Failed to leave old session"));
             }
+        } else if (partySession != null && !isAlone) {
+            var soloParty = PartyUtils.ensureParty(playerRef);
+            withResource().addPartyToSession(soloParty.getId(), partySession.getId());
+            refreshHud(partySession);
         }
         Resolve.success(evt, msg("server.gg.commands.party.left").param("player", playerRef.getUsername())
                 .param("party", oldParty.getLabel()));
