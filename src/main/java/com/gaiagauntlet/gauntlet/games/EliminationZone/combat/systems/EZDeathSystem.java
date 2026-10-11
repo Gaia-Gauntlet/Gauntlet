@@ -101,7 +101,7 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         // Check for sudden death
         var session = GauntletUtils.sessionFor(playerComp.getSessionId()).orElse(null);
         if (session == null) return;
-        if (GauntletUtils.playersFor(session).size() <= EZGameConfig.get(world, session.getId()).getSuddenDeathAt()) {
+        if (state != EZStates.SUDDEN_DEATH && GauntletUtils.playersFor(session).size() <= EZGameConfig.get(world, session.getId()).getSuddenDeathAt()) {
             EZState.setState(gameStore, EZStates.SUDDEN_DEATH);
         }
 
