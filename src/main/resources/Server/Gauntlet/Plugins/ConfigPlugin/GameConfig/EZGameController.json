@@ -30,6 +30,9 @@
     }
   },
   "SuddenDeathAt": 6,
+  "BossArt": {
+    "Zombie_Trex": "NPC/Boss/Zombie_TRex"
+  },
   "ClosingVoidBlockMap": {
     "Default": "Build_Lightsource_Pink",
     "Solid": "Void_Cube",

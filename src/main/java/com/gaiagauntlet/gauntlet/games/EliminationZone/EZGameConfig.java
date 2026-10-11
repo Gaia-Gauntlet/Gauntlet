@@ -87,6 +87,14 @@ public class EZGameConfig extends GameConfigAsset {
            (t) -> t.getWeatherPoolOptions())
        .documentation("Pool of weather options to use during the game.")
        .add()
+        .append(new KeyedCodec<>("BossArt",
+                new MapCodec<>(Codec.STRING, LinkedHashMap::new)),
+            (p, v) -> p.bossArt = v == null ? Map.of() : Map.copyOf(v),
+            p -> p.bossArt)
+        .documentation("Art to draw a boss with in place of its role's model, keyed by NPC role ID. Each value "
+            + "is a Common folder holding Models/Model.blockymodel and Models/Texture.png, rigged to the same "
+            + "skeleton as the role's model so its animations still fit.")
+        .add()
         .append(new KeyedCodec<>("ClosingVoidBlockMap",
                 new MapCodec<>(Codec.STRING, LinkedHashMap::new)),
             (p, v) -> p.closingVoidBlockMap = v == null ? Map.of() : Map.copyOf(v),
@@ -240,6 +248,7 @@ public class EZGameConfig extends GameConfigAsset {
             DEFAULT_LOOT_FOUNTAIN_RULES)
     };
     @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
+    @Getter private Map<String, String> bossArt = Map.of();
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
     @Getter private String zoneClosingPhaseSet = "";
