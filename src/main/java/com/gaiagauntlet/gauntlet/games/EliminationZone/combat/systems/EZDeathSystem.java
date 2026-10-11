@@ -128,10 +128,10 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
             // Death message
             Universe.get().sendMessage(
                 Message.translation("gg.announcement.kill.player")
-                    .param("killer", Message.raw(killerRef.getUsername())
+                    .param("killer", Message.raw(killerRef.getUsername()))
                     .param("victim", Message.raw(playerRef.getUsername()))
                     .param("killMethod", damageCauseMessage)
-                    .bold(true))
+                    .bold(true)
             );
 
         } else {
