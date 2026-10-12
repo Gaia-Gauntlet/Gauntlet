@@ -19,10 +19,16 @@ public class CareerUtils {
     }
 
     public static void add(PlayerRef player, String gameId, String statId, Long amount) {
-        
+        careerFor(player).increment(gameId, statId, amount)
+    }
+    public static void add(PlayerRef player, CareerStats statId, Long amount) {
+        careerFor(player).increment(statId, amount)
     }
 
     public static Long get(PlayerRef player, String gameId, String statId) {
         return careerFor(player).get(gameId, statId);
+    }
+    public static Long get(PlayerRef player, CareerStats statId) {
+        return careerFor(player).get(statId);
     }
 }
