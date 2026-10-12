@@ -50,18 +50,18 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
      * the schedule, so nothing escapes.
      */
     // private static void tick() {
-    //     try {
-    //         GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
-    //             try {
-    //                 MatchUtils.tick();
-    //                 VoteUtils.tick();
-    //             } catch (RuntimeException e) {
-    //                 LOGGER.atWarning().withCause(e).log("Match tick failed");
-    //             }
-    //         });
-    //     } catch (RuntimeException e) {
-    //         // the universe is not up yet
-    //     }
+    // try {
+    // GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
+    // try {
+    // MatchUtils.tick();
+    // VoteUtils.tick();
+    // } catch (RuntimeException e) {
+    // LOGGER.atWarning().withCause(e).log("Match tick failed");
+    // }
+    // });
+    // } catch (RuntimeException e) {
+    // // the universe is not up yet
+    // }
     // }
 
     @Override

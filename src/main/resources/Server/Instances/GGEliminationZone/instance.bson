@@ -63,8 +63,8 @@
   "SaveNewChunks": true,
   "IsUnloadingChunks": false,
   "IsObjectiveMarkersEnabled": true,
-  "DeleteOnUniverseStart": false,
-  "DeleteOnRemove": false,
+  "DeleteOnUniverseStart": true,
+  "DeleteOnRemove": true,
   "DisabledFluidTickers": [
     "Fluid=Fire"
   ],

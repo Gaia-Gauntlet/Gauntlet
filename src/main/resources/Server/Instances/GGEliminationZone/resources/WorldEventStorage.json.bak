@@ -1,0 +1,35 @@
+{
+  "Active": [
+    {
+      "UUID": "e3f1c5d2-4b6a-4f8e-9c3b-1a2b3c4d5e6f",
+      "Asset": "Goblin_Breach_Event",
+      "Stage": {
+        "Id": 0,
+        "Forks": [
+          {
+            "Conditions": [
+              {
+                "Type": "IntervalCondition",
+                "RemainingSeconds": 0.0
+              },
+              {
+                "Type": "LocationCondition"
+              }
+            ]
+          }
+        ]
+      },
+      "RepeatCount": -1,
+      "Transient": true,
+      "Context": [
+        {
+          "Key": "GoblinWorldBreachInterval",
+          "Context": {
+            "Type": "IntervalContext"
+          }
+        }
+      ]
+    }
+  ],
+  "Complete": []
+}
