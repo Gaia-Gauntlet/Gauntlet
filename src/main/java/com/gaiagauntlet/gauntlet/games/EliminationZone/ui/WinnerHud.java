@@ -62,11 +62,9 @@ public final class WinnerHud implements HudElement {
 
     @Nullable
     public static WinnerHudSnapshot snapshot(@Nullable GameEcs game) {
-        if (game == null || EZState.currentState(game) != EZStates.ENDED)
-            return null;
+        if (game == null || EZState.currentState(game) != EZStates.ENDED) return null;
         var standings = game.get(EZGameComponent.getComponentType()).map(EZGameComponent::getStandings).orElse(List.of());
-        if (standings.isEmpty())
-            return null;
+        if (standings.isEmpty()) return null;
         return new WinnerHudSnapshot(game, standings, TeamUtils.teamsOf(game).orElse(null));
     }
 
@@ -76,8 +74,7 @@ public final class WinnerHud implements HudElement {
 
     @Override
     public WinnerHudSnapshot gather(@Nonnull PlayerRef player, @Nullable GameSession session) {
-        if (session == null || !EZController.isEz(session))
-            return null;
+        if (!EZController.isEz(session)) return null;
         return snapshot(GameStore.withStore(player, session.getId()).orElse(null));
     }
 

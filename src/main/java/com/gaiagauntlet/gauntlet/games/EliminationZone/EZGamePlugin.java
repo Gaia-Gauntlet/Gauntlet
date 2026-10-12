@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.listeners.MatchStateListeners;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.map.MatchMapOverlay;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.scoring.EZScoring;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
@@ -15,8 +16,13 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
+import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
+import com.gaiagauntlet.gauntlet.plugins.spectator.interactions.TeamSpectateControlInteraction;
+import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
@@ -36,12 +42,20 @@ public class EZGamePlugin extends JavaPlugin {
     protected void setup() {
         LOGGER.atInfo().log("Setting up EZGame!");
         registerComponents();
+
         // Register the game
         GameRegistry.registerGame(EZController.ID, EZController::new);
 
         registerSubcomponents();
+
         // register the config
         GameConfigAsset.CODEC.register(EZController.ID, EZGameConfig.class, EZGameConfig.CODEC);
+
+        MatchEventRegistry.register(MatchStateEvent.class, EZController.ID, MatchStateListeners::onMatchEnd);
+        MatchEventRegistry.register(MatchStateEvent.class, EZController.ID, MatchStateListeners::onSuddenDeath);
+        MatchEventRegistry.register(TimerCompleteEvent.class, EZController.ID, MatchStateListeners::onMatchEndTimer);
+
+        MatchMapOverlay.setup();
     }
 
     private void registerSubcomponents() {

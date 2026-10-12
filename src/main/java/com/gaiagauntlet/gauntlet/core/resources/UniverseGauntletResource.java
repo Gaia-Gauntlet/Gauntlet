@@ -200,7 +200,7 @@ public class UniverseGauntletResource {
         }
         removePartyFromSession(partyId, existing);
 
-        var session = sessions.get(sessionId);
+        var session = sessionId == null ? null : sessions.get(sessionId);
         if (session == null)
             return existing;
         // don't use a provided accessor - since we don't want anyone else removing

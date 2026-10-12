@@ -80,13 +80,13 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
         if (ref == null || !ref.isValid())
             return;
         var store = ref.getStore();
-        var viewer = store.getComponent(ref, PlayerRef.getComponentType());
+        var viewer = store.getComponentConcurrent(ref, PlayerRef.getComponentType());
         if (viewer == null)
             return;
         var team = TeamUtils.teamOf(game, viewer.getUuid()).orElse(null);
         var standing = team != null && team.isParticipant()
-                && store.getComponent(ref, EliminatedComponent.getComponentType()) == null
-                && store.getComponent(ref, SpectatorComponent.getComponentType()) == null;
+                && store.getComponentConcurrent(ref, EliminatedComponent.getComponentType()) == null
+                && store.getComponentConcurrent(ref, SpectatorComponent.getComponentType()) == null;
         if (!standing) {
             sentTeammates.remove(viewer.getUuid());
             player.getWorldMapTracker().setPlayerMapFilter(null);

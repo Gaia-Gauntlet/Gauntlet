@@ -50,6 +50,10 @@ public abstract class GauntletEvent implements IEvent<Void> {
     public void log(GaiaLog log) {
         if (consumer == null)
             return;
-        consumer.accept(log);
+        try {
+            consumer.accept(log);
+        } catch (Exception e) {
+            LOGGER.atWarning().withCause(e).log("Failed to report progress for event!");
+        }
     }
 }

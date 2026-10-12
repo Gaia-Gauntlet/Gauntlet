@@ -1,0 +1,44 @@
+{
+  "TranslationProperties": {
+    "Name": "gg.items.Party_Hud_Accessor.name"
+  },
+  "Set": "Furniture_Temple_Light",
+  "Model": "Blocks/Decorative_Sets/Temple_Light/Gaia_Statue_01.blockymodel",
+  "Texture": "Blocks/Decorative_Sets/Temple_Light/Gaia_Statue_01_Textures/default.png",
+  "Icon": "Icons/ItemsGenerated/Furniture_Temple_Light_Statue.png",
+  "IconProperties": {
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Scale": 0.29,
+    "Translation": [
+      0,
+      -33.51
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Furniture"
+    ],
+    "Family": [
+      "Temple"
+    ]
+  },
+  "Scale": 0.6,
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "MaxStack": 1,
+  "Quality": "Legendary",
+  "UsePlayerAnimations": true,
+  "Interactions": {
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "OpenGauntletPage",
+          "Page": "Party"
+        }
+      ]
+    }
+  }
+}

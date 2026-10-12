@@ -57,8 +57,19 @@ public class TransferUtils {
                         return;
                     }
 
-                    // immediately hop back to the origin thread to add the component (rip lol)
-                    GauntletUtils.run(origin, () -> {
+                    var ref = playerRef.getReference();
+                    if (ref == null) {
+                        GaiaLog.atWarning().withSession(sessionId)
+                                .log(msg("server.gg.plugins.transfer.error.world")
+                                        .param("player", playerRef.getUsername())
+                                        .param("world", destination.getName())
+                                        .param("reason", "player is between worlds"));
+                        return;
+                    }
+                    var refStore = ref.getStore();
+                    var refWorld = refStore.getExternalData().getWorld();
+                    // hop onto the player's world thread to ensure the components are added from their thread
+                    GauntletUtils.run(refWorld, () -> {
 
                         var warpComponent = Teleport.createForPlayer(destination, transform);
 
@@ -76,23 +87,21 @@ public class TransferUtils {
                         warpComponent
                                 .setOnComplete(moveComplete(playerRef.getUsername(), sessionId, destination.getName()));
 
-                        var ref = playerRef.getReference();
                         // ref.validate throws if in the wrong store :/
-                        if (ref == null || !ref.isValid()
-                                || !origin.getWorldConfig().getUuid().equals(playerRef.getWorldUuid())) {
+                        if (ref == null || !ref.isValid()) {
                             // ref is no longer in the origin world or is not valid - invalid state, end.
                             GaiaLog.atInfo().withSession(sessionId)
                                     .log(msg("server.gg.plugins.transfer.error.world")
                                             .param("player", playerRef.getUsername())
                                             .param("world", destination.getName())
-                                            .param("reason", "player no longer being in " + origin.getName()));
+                                            .param("reason", "player ref is no longer valid"));
                             return;
                         }
 
                         // put the teleport component
-                        originAccessor.putComponent(ref, PlayerMarker.getComponentType(),
+                        refStore.putComponent(ref, PlayerMarker.getComponentType(),
                                 new PlayerMarker(sessionId, destination.getWorldConfig().getUuid()));
-                        originAccessor.putComponent(ref, Teleport.getComponentType(),
+                        refStore.putComponent(ref, Teleport.getComponentType(),
                                 warpComponent);
                     });
                 });

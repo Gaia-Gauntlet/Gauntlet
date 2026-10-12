@@ -1,2 +1,9 @@
 events.spawnprotection.title=Fight!
 events.spawnprotection.description=Grace Period Has Ended!
+
+lobby.join=<color is="#55FF55">+</color> <b>{player}</b> joined the match {status}
+lobby.leave=<color is="#FF5555">-</color> <b>{player}</b> left the match {status}
+lobby.status.waiting=<color is="#AAAAAA">({count}/{needed} needed to start)</color>
+lobby.status.ready=<color is="#AAAAAA">({count}/{max} players, starting soon)</color>
+lobby.full=<color is="#FF8844">This match is full at {max} players. You are spectating.</color>
+lobby.late=<color is="#FF8844">This match has already started. You are spectating.</color>

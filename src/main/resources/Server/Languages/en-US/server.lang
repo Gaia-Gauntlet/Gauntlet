@@ -18,9 +18,13 @@ items.Food_Cheese.name = Foog Cheese
 items.varyns_scythe.name = Varyn's Scythe
 general.damageCauses.environmental = The Void
 general.damageCauses.fire = fire
+general.damageCauses.fall = falling
+general.damageCauses.command = command
 
+commands.kit_Gg_lobby.desc = Clear inventory, then give items for the Gaia Gauntlet lobby.
 commands.kitGg1.desc = Clear inventory, then give every tier 1 (Crude) weapon and armor piece retuned in the balance pass.
 commands.kitGg2.desc = Clear inventory, then give every tier 2 (Copper) weapon and armor piece retuned in the balance pass.
 commands.kitGg3.desc = Clear inventory, then give every tier 3 (Iron) weapon and armor piece retuned in the balance pass.
 commands.kitGg4.desc = Clear inventory, then give every tier 4 (Thorium / Doomed) weapon and armor piece retuned in the balance pass.
 commands.kitGg5.desc = Clear inventory, then give every tier 5 (Mithril / Onyxium) weapon and armor piece retuned in the balance pass.
+commands.rejoin.desc = Rejoin the party and session you disconnected from

@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.interactions.OpenGauntletPageInteraction;
 import com.gaiagauntlet.gauntlet.core.party.commands.RejoinCommand;
 import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
 import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
@@ -24,6 +25,7 @@ import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -61,6 +63,11 @@ public class GauntletPlugin extends JavaPlugin {
         // Setup the events
         GauntletEventRegistry.setup(this);
         GauntletCore.setup(this);
+
+        // Register interactions
+        getCodecRegistry(Interaction.CODEC).register(OpenGauntletPageInteraction.ID,
+            OpenGauntletPageInteraction.class,
+            OpenGauntletPageInteraction.CODEC);
     }
 
     private void setupResources() {

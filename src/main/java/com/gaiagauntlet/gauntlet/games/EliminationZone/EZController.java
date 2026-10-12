@@ -12,6 +12,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ScoreboardHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesHud;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.TimerTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
@@ -91,7 +92,7 @@ public class EZController extends LobbyController {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        return List.of(new ZonesTab(), new EventsTab(), new BossesTab());
+        return List.of(new TimerTab(), new ZonesTab(), new EventsTab(), new BossesTab());
     }
 
     @Override

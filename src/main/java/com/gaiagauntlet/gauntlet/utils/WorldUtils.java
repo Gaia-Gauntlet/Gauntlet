@@ -13,6 +13,8 @@ import com.hypixel.hytale.server.core.util.io.FileUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,38 +24,6 @@ public final class WorldUtils {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     private WorldUtils() {
-    }
-
-    /** Runs on the world's thread: inline when already there, queued otherwise. */
-    public static void run(@Nonnull World world, @Nonnull Runnable task) {
-        if (world.isInThread()) {
-            task.run();
-        } else {
-            world.execute(task);
-        }
-    }
-
-    /** The world the player's entity lives in, falling back to the world the player is joining. */
-    @Nullable
-    public static World worldOf(@Nonnull PlayerRef player) {
-        var ref = player.getReference();
-        if (ref != null && ref.isValid()) {
-            var world = ref.getStore().getExternalData().getWorld();
-            if (world != null) {
-                return world;
-            }
-        }
-        var uuid = player.getWorldUuid();
-        return uuid == null ? null : Universe.get().getWorld(uuid);
-    }
-
-    @Nonnull
-    public static java.util.Collection<World> allWorlds() {
-        return new java.util.ArrayList<>(Universe.get().getWorlds().values());
-    }
-
-    public static boolean isUsable(@Nullable World world) {
-        return world != null && world.isAlive() && world.isTicking();
     }
 
     /** The world's configured spawn, or the origin when none is configured. */

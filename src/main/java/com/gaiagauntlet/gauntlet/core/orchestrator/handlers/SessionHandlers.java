@@ -88,8 +88,8 @@ public class SessionHandlers extends HandlerUtils {
 
         if (!(GameRegistry.getGame(nextGameId).orElse(null) instanceof GameController game)) {
             sessionEvt.complete(GaiaLog.atError().withSession(session)
-                    .log(MessageUtils.msg("server.gg.events.session.error.unavailable")
-                            .param("sessionId", session.getId())));
+                    .log(MessageUtils.msg("server.gg.events.session.generic.missing.game")
+                            .param("gameId", String.valueOf(nextGameId))));
             return;
         }
 
@@ -97,6 +97,10 @@ public class SessionHandlers extends HandlerUtils {
         // mark the next game as running
         session.startNext();
         refreshHud(session);
+        var starting = msg("server.gg.gauntlet.session.starting").param("game", game.getDisplayName());
+        for (var player : GauntletUtils.playersFor(session)) {
+            player.sendMessage(starting);
+        }
         var future = game.setupGame(hub.getEntityStore().getStore(), session);
         future.whenComplete((value, error) -> {
             // run on the hub thread
@@ -171,7 +175,7 @@ public class SessionHandlers extends HandlerUtils {
             session.setErrored("No current game is available to cancel");
             refreshHud(session);
             sessionEvt.complete(GaiaLog.atError().withSession(session)
-                    .log(MessageUtils.msg("server.gg.events.session.error.unavailable")
+                    .log(MessageUtils.msg("server.gg.events.session.error.nocurrent")
                             .param("sessionId", session.getId())));
             return;
         }

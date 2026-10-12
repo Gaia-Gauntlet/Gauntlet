@@ -34,8 +34,8 @@ public final class HudEvent implements IEvent<Void> {
         this(sessionId, null, hudId, snapshot, false, world);
     }
 
-    private HudEvent(@Nullable String sessionId, @Nullable Collection<PlayerRef> players, @Nullable String hudId,
-            @Nullable HudDataSnapshot snapshot, boolean refresh, @Nullable World world) {
+    public HudEvent(@Nullable String sessionId, @Nullable Collection<PlayerRef> players, @Nullable String hudId,
+                    @Nullable HudDataSnapshot snapshot, boolean refresh, @Nullable World world) {
         this.hudData = snapshot;
         this.sessionId = sessionId;
         this.players = players;

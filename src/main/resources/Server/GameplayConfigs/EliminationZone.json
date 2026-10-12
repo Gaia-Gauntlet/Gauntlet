@@ -15,6 +15,6 @@
   "Player": {
     "MovementConfig": "Default",
     "MaxDeployableEntities": -1,
-    "ArmorVisibilityOption": "HelmetOnly"
+    "ArmorVisibilityOption": "None"
   }
 }

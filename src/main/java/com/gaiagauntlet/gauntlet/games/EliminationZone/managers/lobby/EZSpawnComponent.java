@@ -54,6 +54,12 @@ public class EZSpawnComponent implements GameComponent {
         });
     }
 
+    public void release(UUID player) {
+        var spawn = assignedLocation.remove(player);
+        if (spawn != null)
+            spawnPoints.push(spawn);
+    }
+
     public Optional<Transform> getAssigned(UUID player) {
         return Optional.ofNullable(assignedLocation.get(player));
     }

@@ -8,13 +8,25 @@
   "SpawnProvider": {
     "Id": "Global",
     "SpawnPoint": {
-      "X": -99,
-      "Y": 128.0,
-      "Z": 0,
-      "Pitch": -90,
-      "Yaw": 0,
+      "X": -98.49644470214844,
+      "Y": 93.0,
+      "Z": -0.4888696074485779,
+      "Pitch": 9.637153625488281,
+      "Yaw": -0.1656961739063263,
       "Roll": 0.0
     }
+  },
+  "WorldGen": {
+    "Type": "Flat",
+    "Tint": "#5b9e28",
+    "Layers": [
+      {
+        "From": 0,
+        "To": 1,
+        "BlockType": "Soil_Grass",
+        "Environment": "Unknown"
+      }
+    ]
   },
   "WorldMap": {
     "Type": "WorldGen"
@@ -22,34 +34,13 @@
   "ChunkStorage": {
     "Type": "Hytale"
   },
-  "ChunkConfig": {
-    "KeepLoadedRegion": {
-      "Min": {
-        "X": -600,
-        "Y": -500
-      },
-      "Max": {
-        "X": 400,
-        "Y": 500
-      }
-    },
-    "PregenerateRegion": {
-      "Min": {
-        "X": -600,
-        "Y": -500
-      },
-      "Max": {
-        "X": 400,
-        "Y": 500
-      }
-    }
-  },
+  "ChunkConfig": {},
   "IsTicking": true,
   "IsBlockTicking": true,
   "IsPvpEnabled": true,
   "IsFallDamageEnabled": true,
   "IsGameTimePaused": true,
-  "GameTime": "0001-08-08T12:00:46.000047857Z",
+  "GameTime": "0001-12-08T12:00:00Z",
   "ForcedWeather": "Zone1_Sunny",
   "ClientEffects": {
     "SunHeightPercent": 100.0,
@@ -70,28 +61,19 @@
   "IsSavingPlayers": false,
   "IsSavingChunks": true,
   "SaveNewChunks": true,
-  "IsUnloadingChunks": true,
+  "IsUnloadingChunks": false,
   "IsObjectiveMarkersEnabled": true,
-  "DeleteOnUniverseStart": true,
-  "DeleteOnRemove": true,
-  "DisabledFluidTickers": [],
+  "DeleteOnUniverseStart": false,
+  "DeleteOnRemove": false,
+  "DisabledFluidTickers": [
+    "Fluid=Fire"
+  ],
   "ResourceStorage": {
     "Type": "Hytale"
   },
   "Plugin": {
-    "Instance": {
-      "PreventReconnection": true,
-      "RemovalConditions": [
-        {
-          "Type": "IdleTimeout",
-          "TimeoutSeconds": 300
-        }
-      ]
+    "WorldEvents": {
+      "EnableWorldEvents": false
     }
-  },
-  "DisplayName": "Elimination Zone",
-  "GameMode": "Adventure",
-  "GameModeTypeOnDeath": "HardcoreSpectator",
-  "HardcoreMode": "PerPlayer",
-  "HardcoreLives": 1
+  }
 }

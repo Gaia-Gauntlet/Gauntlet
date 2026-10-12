@@ -87,6 +87,14 @@ public class EZGameConfig extends GameConfigAsset {
            (t) -> t.getWeatherPoolOptions())
        .documentation("Pool of weather options to use during the game.")
        .add()
+        .append(new KeyedCodec<>("BossArt",
+                new MapCodec<>(Codec.STRING, LinkedHashMap::new)),
+            (p, v) -> p.bossArt = v == null ? Map.of() : Map.copyOf(v),
+            p -> p.bossArt)
+        .documentation("Art to draw a boss with in place of its role's model, keyed by NPC role ID. Each value "
+            + "is a Common folder holding Models/Model.blockymodel and Models/Texture.png, rigged to the same "
+            + "skeleton as the role's model so its animations still fit.")
+        .add()
         .append(new KeyedCodec<>("ClosingVoidBlockMap",
                 new MapCodec<>(Codec.STRING, LinkedHashMap::new)),
             (p, v) -> p.closingVoidBlockMap = v == null ? Map.of() : Map.copyOf(v),
@@ -168,6 +176,12 @@ public class EZGameConfig extends GameConfigAsset {
             p -> p.minPlayers)
         .documentation("The minimum number of players required to start the game.")
         .add()
+        .append(new KeyedCodec<>("MaxPlayers", Codec.INTEGER),
+            (p, v) -> p.maxPlayers = v,
+            p -> p.maxPlayers)
+        .addValidator(Validators.greaterThanOrEqual(1))
+        .documentation("The most players that can compete in one match. Anyone arriving once it is full spectates instead.")
+        .add()
         .append(new KeyedCodec<>("KillCreditSeconds", Codec.FLOAT),
             (p, v) -> p.killCreditSeconds = v,
             p -> p.killCreditSeconds)
@@ -188,6 +202,12 @@ public class EZGameConfig extends GameConfigAsset {
         .append(new KeyedCodec<>("ArrivalTimeoutSeconds", Codec.FLOAT),
             (p, v) -> p.arrivalTimeoutSeconds = v,
             p -> p.arrivalTimeoutSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("Seconds the lobby waits for the rest of the session once the minimum player count has arrived.")
+        .add()
+        .append(new KeyedCodec<>("MatchEndSeconds", Codec.FLOAT),
+            (p, v) -> p.matchEndSeconds = v,
+            p -> p.matchEndSeconds)
         .addValidator(Validators.greaterThanOrEqual(0F))
         .documentation("Seconds the lobby waits for the rest of the session once the minimum player count has arrived.")
         .add()
@@ -240,13 +260,15 @@ public class EZGameConfig extends GameConfigAsset {
             DEFAULT_LOOT_FOUNTAIN_RULES)
     };
     @Getter private WeatherPoolOptionComponent[] weatherPoolOptions = new WeatherPoolOptionComponent[0];
+    @Getter private Map<String, String> bossArt = Map.of();
     @Getter private Map<String, String> closingVoidBlockMap = Map.of();
     @Getter private String closingVoidBlock = "Build_Black_Cube";
     @Getter private String zoneClosingPhaseSet = "";
     @Getter private int suddenDeathAt = 6;
     @Getter private float cornucopiaDurationSeconds = 27;
-    @Getter private float spawnProtectionSeconds = 30;
+    @Getter private float spawnProtectionSeconds = 90;
     @Getter private float cameraSequenceSeconds = 29;
+    @Getter private float matchEndSeconds = 10;
     @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
         new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))
@@ -255,9 +277,10 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private int maxActiveBosses = 3;
     @Getter private float killCreditSeconds = 10;
     @Getter private int[] scoreTable = {5, 4, 3, 2, 1, 0};
-    @Getter private float startBufferSeconds = 10;
+    @Getter private float startBufferSeconds = 60;
     @Getter private float arrivalTimeoutSeconds = 60;
     @Getter private int minPlayers = 2; // TODO: Increase this, just low for testing
+    @Getter private int maxPlayers = 40;
 
 
     @Nonnull

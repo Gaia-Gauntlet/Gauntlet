@@ -15,19 +15,9 @@ import lombok.Setter;
 public class EZGameComponent implements GameComponent {
     @Getter @Setter private static GameComponentType<@NotNull EZGameComponent> componentType;
     public static final String ID = "EZGameComponent";
-    /** List of participants, require X participants before the game can start */
-    @Getter private int participants;
     @Getter @Setter private List<Standing> standings = List.of();
 
     public EZGameComponent() {
 
-    }
-
-    public void incrementParticipants() {
-        participants++;
-    }
-
-    public void decrementParticipants() {
-        participants--;
     }
 }

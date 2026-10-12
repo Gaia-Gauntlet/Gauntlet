@@ -97,16 +97,16 @@ public class PartyUtils {
         var party = ensureParty(sender);
         var invites = getInvitesComp(recipient);
         if (sender.getUuid().equals(recipient.getUuid())) {
-            sender.sendMessage(msg("You can't invite yourself to a party!").color(Color.RED));
+            sender.sendMessage(msg("server.gg.commands.party.invite.self").color(Color.RED));
             return;
         } else if (!party.getOwner().equals(sender.getUuid())) {
             sender.sendMessage(msg("server.gg.commands.party.invite.leaderonly"));
             return;
         } else if (hasActiveInvite(party.getId(), recipient)) {
-            sender.sendMessage(msg(recipient.getUsername() + " already has an active invite from you."));
+            sender.sendMessage(msg("server.gg.commands.party.invite.pending").param("recipient", recipient.getUsername()));
             return;
         } else if (party.includesPlayer(recipient)) {
-            sender.sendMessage(msg(recipient.getUsername() + " is already in this party!"));
+            sender.sendMessage(msg("server.gg.commands.party.invite.member").param("recipient", recipient.getUsername()));
             return;
         }
         UUID uuid = sender.getWorldUuid();
@@ -147,7 +147,7 @@ public class PartyUtils {
 
     public static void acceptInvite(PartyComponent party, PlayerRef recipient) {
         if (!hasActiveInvite(party.getId(), recipient)) {
-            recipient.sendMessage(msg("You don't have an invite from this party!").color(Color.RED));
+            recipient.sendMessage(msg("server.gg.commands.party.invite.missing").color(Color.RED));
             return;
         }
 
@@ -164,7 +164,7 @@ public class PartyUtils {
         var invites = getInvitesComp(recipient);
         var invite = invites.removeInvite(party.getId());
         if (Objects.isNull(invite)) {
-            recipient.sendMessage(msg("You don't have an invite to that party to decline!").color(Color.RED));
+            recipient.sendMessage(msg("server.gg.commands.party.invite.missing.decline").color(Color.RED));
             return;
         }
         recipient.sendMessage(msg("server.gg.commands.party.invite.declined.you").param("party", party.getId()));

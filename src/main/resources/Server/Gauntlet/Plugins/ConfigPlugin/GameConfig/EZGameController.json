@@ -10,7 +10,7 @@
   "MaxActiveBosses": 3,
   "GameEvents": {
     "IntervalSeconds": 45,
-    "FirstDrawAtSeconds": 90,
+    "FirstDrawAtSeconds": 100,
     "Entries": [
       {
         "Type": "WeatherEvent",
@@ -30,6 +30,9 @@
     }
   },
   "SuddenDeathAt": 6,
+  "BossArt": {
+    "Zombie_Trex": "NPC/Boss/Zombie_TRex"
+  },
   "ClosingVoidBlockMap": {
     "Default": "Build_Lightsource_Pink",
     "Solid": "Void_Cube",
@@ -456,7 +459,9 @@
       }
     }
   ],
-  "StartBufferSeconds": 20,
+  "StartBufferSeconds": 60,
+  "SpawnProtectionSeconds": 90,
   "CornucopiaDurationSeconds": 27,
-  "MinPlayers": 2
+  "MinPlayers": 12,
+  "MaxPlayers": 40
 }

@@ -3,3 +3,4 @@ session.transition.success=Transitioning {sessionId} to {newState} from {oldStat
 editor.usernamesResolved=Every username was converted
 editor.usernamesUnresolved=Could not find these players: {names}
 party.rejoin=Rejoin {party} within the next {duration} seconds with <color is="#ffd500">/rejoin</color>
+session.starting=<color is="#FFD37E"><b>{game}</b> is beginning! Sending everyone to the arena...</color>

@@ -73,12 +73,58 @@ public class TeamUtils {
     }
 
     /**
+     * Participant teams with a member still competing: in the arena and not eliminated. The players in
+     * {@code out} are treated as gone, for eliminations and departures not yet applied to the store.
+     */
+    public static Collection<TeamComponent> withAliveTeams(World arena, String session, Set<UUID> out) {
+        Collection<TeamComponent> aliveTeams = new HashSet<>();
+        var store = arena.getEntityStore().getStore();
+        for (TeamComponent team : TeamUtils.withTeamList(arena, session).getTeams().values()) {
+            if (!team.isParticipant()) continue;
+            for (UUID uuid : team.getPlayers()) {
+                if (out.contains(uuid)) continue;
+                var player = PlayerUtils.get(uuid);
+                var ref = player == null ? null : player.getReference();
+                if (ref == null || !ref.isValid() || ref.getStore() != store) continue;
+                if (store.getComponent(ref, EliminatedComponent.getComponentType()) != null) continue;
+                aliveTeams.add(team);
+                break;
+            }
+        }
+        return aliveTeams;
+    }
+
+    /** Players on a participant team who stand in the game's world and are not eliminated, treating {@code out} as gone. */
+    public static int countAlive(@Nonnull GameEcs game, @Nonnull Set<UUID> out) {
+        var teams = teamsOf(game).orElse(null);
+        if (teams == null)
+            return 0;
+        var arenaId = GameStore.getContext(game).getWorld().getWorldConfig().getUuid();
+        var alive = 0;
+        // every team
+        for (var team : teams.getTeams().values()) {
+            if (!team.isParticipant())
+                continue;
+            // every player (ignoring non-participants like camera crew)
+            for (var uuid : team.getPlayers()) {
+                if (out.contains(uuid))
+                    continue;
+                var player = PlayerUtils.get(uuid);
+                if (player != null && arenaId.equals(player.getWorldUuid())
+                        && player.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
+                    alive++;
+            }
+        }
+        return alive;
+    }
+
+    /**
      * Checks if a team has any alive players. Truthy if and only if a player on
      * this team is online and is not eliminated.
      */
     public static boolean hasAlive(TeamComponent team) {
         for (UUID uuid : team.getPlayers()) {
-            var playerRef = Universe.get().getPlayer(uuid);
+            var playerRef = PlayerUtils.get(uuid);
             if (Objects.isNull(playerRef))
                 continue;
             if (playerRef.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
@@ -152,9 +198,9 @@ public class TeamUtils {
 
     /**
      * Places every player who is not on a team yet. Party members still to be placed go together to the
-     * smallest team with room for all of them, joining a teammate's team when one of them is already
-     * placed; a party no team can hold is split across the smallest teams with room. Players stay
-     * unplaced only when every team is full.
+     * fullest team with room for all of them, joining a teammate's team when one of them is already
+     * placed. A party no team can hold is split across the fullest teams with room. Teams fill up
+     * before an empty one is opened. Players stay unplaced only when every team is full.
      */
     public static void distributePlayers(@Nonnull Collection<PlayerRef> players, @Nonnull TeamListComponent teams) {
         var groups = new LinkedHashMap<String, List<UUID>>();
@@ -171,9 +217,9 @@ public class TeamUtils {
             var members = group.getValue();
             var target = partyTeam(group.getKey(), teams, members.size());
             if (target == null)
-                target = smallestWithRoom(teams, members.size());
+                target = fullestWithRoom(teams, members.size());
             for (var member : members) {
-                var team = target != null ? target : smallestWithRoom(teams, 1);
+                var team = target != null ? target : fullestWithRoom(teams, 1);
                 if (team == null) {
                     GaiaLog.atWarning().log("Every team is full, " + PlayerUtils.nameFor(member) + " was not placed");
                     continue;
@@ -196,12 +242,14 @@ public class TeamUtils {
         return null;
     }
 
+    /** Without a team size there is nothing to fill, so players are spread across the smallest teams instead. */
     @Nullable
-    private static TeamComponent smallestWithRoom(@Nonnull TeamListComponent teams, int needed) {
+    private static TeamComponent fullestWithRoom(@Nonnull TeamListComponent teams, int needed) {
+        boolean fill = teams.getTeamSize() > 0;
         TeamComponent best = null;
         for (var team : sortedTeams(teams)) {
             if (team.isParticipant() && hasRoom(teams, team, needed)
-                    && (best == null || team.getSize() < best.getSize()))
+                    && (best == null || (fill ? team.getSize() > best.getSize() : team.getSize() < best.getSize())))
                 best = team;
         }
         return best;

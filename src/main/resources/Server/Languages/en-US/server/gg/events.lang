@@ -6,7 +6,7 @@ session.missing=Session <b>{sessionId}</b> is not present!
 
 # Game Events
 game.deferral.error=Failed to finalize deferred tasks for {sessionId} when closing {gameId}
-game.deferral.success=<color is="#06f906">Finalized game end in {sessionId} for game {gameId}</success>
+game.deferral.success=<color is="#06f906">Finalized game end in {sessionId} for game {gameId}</color>
 game.end.ended=Game {gameId} in {sessionId} already ended 
 game.end.success=Ended game {gameId} in {sessionId} 
 game.queue.missing=No games to remove!
@@ -15,6 +15,7 @@ game.queue.missing=No games to remove!
 session.generic.missing.game=Game {gameId} not registered
 session.error.unavailable=Session {sessionId} is in state {sessionState} and is not available for {action}
 session.error.notpending=Session {sessionId} has no pending game
+session.error.nocurrent=Session {sessionId} has no current game to cancel
 session.setup.error=Starting game {gameId} for session {sessionId} failed with reason {reason}
 session.setup.invalid=Session {sessionId} in a weird start during starting {gameId}! Incorrect game registered! Cleaning game {gameId}
 session.join.error=Moving {players} player(s) into {gameId} for {sessionId} failed. {cause}
@@ -47,6 +48,7 @@ players.join.success={playerName} was sent into {sessionId}
 players.join.new.error=Failed adding {playerName} to {sessionId}. {cause}
 players.join.existed=Removed {playerName} from {oldSessionId}, joining {sessionId}
 players.join.existing.error=Failed removing {playerName} from {oldSessionId}. {cause}
+players.join.existing.notowner={playerName} does not own party {partyName}, so they cannot move it from {partySessionId} to {sessionId}
 players.join.perms.error={playerName} is not an owner of party {partyName} - which is in {partySessionId} - and cannot change it to {sessionId}
 
 players.leave.existing=Removing {playerName} from {oldSessionId} before joining {sessionId}...

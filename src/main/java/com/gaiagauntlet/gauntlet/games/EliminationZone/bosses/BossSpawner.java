@@ -135,9 +135,23 @@ public final class BossSpawner {
             }
         }
         if (candidates.isEmpty()) {
-            throw new IllegalStateException("No boss can spawn right now: every candidate is out, disabled, or in a closing zone");
+            GaiaLog.atInfo()
+                .log("No boss can spawn right now: every candidate is out, disabled, or in a closing zone")
+                .withGameId(game);
         }
         spawn(game, store, bosses.drawFrom(candidates));
+    }
+
+    /** The model drawn with the art in the given Common folder, keeping everything else, animations included. */
+    @Nonnull
+    private static Model withArt(@Nonnull Model model, @Nonnull String folder) {
+        return new Model(model.getModelAssetId(), model.getScale(), model.getRandomAttachmentIds(),
+                model.getAttachments(), model.getBoundingBox(), folder + "/Models/Model.blockymodel",
+                folder + "/Models/Texture.png", model.getGradientSet(), model.getGradientId(), model.getEyeHeight(),
+                model.getCrouchOffset(), model.getSittingOffset(), model.getSleepingOffset(),
+                model.getAnimationSetMap(), model.getCamera(), model.getLight(), model.getParticles(),
+                model.getTrails(), model.getPhysicsValues(), model.getDetailBoxes(), model.getPhobia(),
+                model.getPhobiaModelAssetId());
     }
 
     private static void place(@Nonnull String sessionId, @Nonnull World arena, @Nonnull BossScalingComponent boss, @Nonnull SpawnPoint point
@@ -151,11 +165,14 @@ public final class BossSpawner {
         }
 //        chunk.addKeepLoaded();
         var store = arena.getEntityStore().getStore();
+        var art = EZGameConfig.get(arena, sessionId).getBossArt().get(boss.roleId());
         var spawned = npc.spawnEntity(store, roleIndex, point.position(), new Rotation3f(0f, 0f, 0f), null,
                 (entity, ref, s) -> {
                     var model = s.getComponent(ref, ModelComponent.getComponentType());
-                    if (model != null && boss.physicalScale() != 1f) {
+                    if (model != null && (boss.physicalScale() != 1f || art != null)) {
                         var scaled = Model.createScaledModel(ModelAsset.getAssetMap().getAsset(model.getModel().getModelAssetId()), boss.physicalScale());
+                        if (art != null)
+                            scaled = withArt(scaled, art);
                         entity.setInitialModelScale(boss.physicalScale());
                         s.removeComponent(ref, ModelComponent.getComponentType());
                         s.addComponent(ref, ModelComponent.getComponentType(), new ModelComponent(scaled));
