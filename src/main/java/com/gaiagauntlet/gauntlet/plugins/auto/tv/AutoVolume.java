@@ -30,6 +30,7 @@ public class AutoVolume extends TriggerEffect {
         var player = context.getStore().getComponent(ref, PlayerRef.getComponentType());
         if (player == null)
             return;
+        // always hop to get out of the ticking system
         GauntletUtils.withHubWorld().execute(() -> {
             var current = GauntletUtils.sessionFor(player).orElse(null);
             if (current != null && current.getId().equals(AutoUtils.DEFAULT_SESSION))
