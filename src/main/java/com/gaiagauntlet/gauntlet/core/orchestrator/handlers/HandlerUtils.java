@@ -100,7 +100,7 @@ public class HandlerUtils {
                     GaiaLog.atError(e).withSession(session)
                             .log(mes
                                     .param("sessionId", session.getId())
-                                    .param("cause", Objects.requireNonNullElse(e.getLocalizedMessage(), e.getClass().getSimpleName()))
+                                    .param("cause", MessageUtils.reason(e))
                                     .param("gameId", gameOf(session))));
         }
 

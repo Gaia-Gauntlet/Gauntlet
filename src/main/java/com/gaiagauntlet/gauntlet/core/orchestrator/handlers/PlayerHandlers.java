@@ -1,9 +1,11 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
+import java.util.function.Consumer;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.error;
@@ -25,13 +27,11 @@ import com.gaiagauntlet.gauntlet.core.party.utils.PartyUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.SpawnUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public class PlayerHandlers extends HandlerUtils {
@@ -83,6 +83,9 @@ public class PlayerHandlers extends HandlerUtils {
 
         var sessionId = evt.getSessionId();
         var playerRef = evt.getPlayer();
+        var slot = withResource().takeOffline(playerRef.getUuid());
+        if (slot != null && slot.sessionId() != null && !slot.sessionId().equals(sessionId))
+            sessionFor(slot.sessionId()).ifPresent(old -> leaveGame(old, old.getCurrentGame(), playerRef, true));
         var party = PartyUtils.ensureParty(playerRef);
         var partySession = PartyUtils.sessionFor(party.getId()).orElse(null);
         var partySessionId = partySession != null ? partySession.getId() : null;
@@ -170,7 +173,7 @@ public class PlayerHandlers extends HandlerUtils {
             } catch (Exception e) {
                 evt.complete(GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                         .param("playerName", playerRef.getUsername())
-                        .param("reason", e.getLocalizedMessage())));
+                        .param("reason", MessageUtils.reason(e))));
             }
         });
     }
@@ -179,6 +182,7 @@ public class PlayerHandlers extends HandlerUtils {
     private static void handlePlayerLeave(PlayerGameEvent evt, GameSession session, PlayerComponent player) {
         var sessionId = evt.getSessionId();
         var playerRef = evt.getPlayer();
+        withResource().takeOffline(playerRef.getUuid());
         var party = PartyUtils.getParty(playerRef).orElse(null);
         if (party == null) {
             Resolve.error(evt, session, msg("server.gg.events.players.leave.new.error")
@@ -248,7 +252,7 @@ public class PlayerHandlers extends HandlerUtils {
                     player.setCurrentGame(null);
                 }
                 // run the player disconnection logic
-                game.playerLeave(hubWorld, sessionId, List.of(playerRef)).whenComplete((_, error) -> {
+                game.playerLeave(hubWorld, sessionId, List.of(playerRef), true).whenComplete((_, error) -> {
                     if (error != null) {
                         Resolve.error(evt, session, msg("server.gg.events.players.leave.new.error")
                                 .param("playerName", playerRef.getUsername()), error);
@@ -279,6 +283,33 @@ public class PlayerHandlers extends HandlerUtils {
         sessionFor(playerRef).ifPresent(HandlerUtils::refreshHud);
     }
 
+    /** Puts a reconnecting player back into the session they dropped out of, if their slot is still held. */
+    public static boolean rejoin(PlayerRef playerRef, Consumer<Message> reply) {
+        var resource = withResource();
+        var slot = resource.takeOffline(playerRef.getUuid());
+        if (slot == null)
+            return false;
+        var session = slot.sessionId() == null ? null : sessionFor(slot.sessionId()).orElse(null);
+        var party = PartyUtils.getParty(slot.partyId()).orElse(null);
+        var partyKept = party != null
+                && Objects.equals(PartyUtils.sessionFor(party).map(GameSession::getId).orElse(null), slot.sessionId());
+        if (partyKept) {
+            reply.accept(msg("server.gg.gauntlet.party.rejoining").param("party", party.getLabel()));
+            GauntletEventRegistry.dispatch(PlayerPartyEvent.Join(playerRef, party.getId())
+                    .onComplete(log -> reply.accept(log.toMessage())));
+            return true;
+        }
+        var current = PartyUtils.getParty(playerRef).orElse(null);
+        if (session == null || (current != null && PartyUtils.sessionFor(current).isPresent()))
+            return false;
+        var solo = PartyUtils.ensureParty(playerRef);
+        resource.addPartyToSession(solo.getId(), session.getId());
+        reply.accept(msg("server.gg.gauntlet.party.rejoining").param("party", solo.getLabel()));
+        GauntletEventRegistry.dispatch(PlayerGameEvent.Add(playerRef, session.getId())
+                .onComplete(log -> reply.accept(log.toMessage())));
+        return true;
+    }
+
     /**
      * 1. Setup Player (add components?)<br />
      * 2. Route player to their game controller (if session is active)<br />
@@ -300,14 +331,14 @@ public class PlayerHandlers extends HandlerUtils {
         // setup to do later
         holder.ensureAndGetComponent(PlayerComponent.getComponentType());
 
-        var offlinePair = GauntletUtils.withResource().getOffline(playerRef.getUuid());
-        if (offlinePair != null) {
-            var delay = offlinePair.key().getDelay(TimeUnit.SECONDS);
-            var party = PartyUtils.getParty(offlinePair.value()).map(p -> p.getLabel()).orElse("Unknown");
+        var slot = withResource().getOffline(playerRef.getUuid());
+        if (slot != null) {
+            var party = PartyUtils.getParty(slot.partyId()).map(PartyComponent::getLabel).orElse("your match");
             playerRef.sendMessage(msg("server.gg.gauntlet.party.rejoin")
                     .param("party", party)
-                    .param("duration", delay));
+                    .param("duration", slot.secondsLeft()));
         }
+
     }
 
     /**
@@ -343,16 +374,11 @@ public class PlayerHandlers extends HandlerUtils {
         // player first
         GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
             if (party != null) {
-                // leave the party
-                var playerId = playerRef.getUuid();
-
-                var resource = GauntletUtils.withResource();
-                var future = HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
-                    resource.removeOffline(playerId);
-                }, GauntletConfig.get().getTimeoutSeconds(), TimeUnit.SECONDS);
-
-                party.removePlayer(playerId);
-                resource.markOffline(playerId, party.getId(), future);
+                if (!party.includesPlayer(playerRef))
+                    return;
+                party.removePlayer(playerRef.getUuid());
+                withResource().markOffline(playerRef.getUuid(), session == null ? null : session.getId(), party.getId(),
+                        GauntletConfig.get().getTimeoutSeconds());
             }
 
             if (session == null) {
@@ -361,30 +387,31 @@ public class PlayerHandlers extends HandlerUtils {
                         .param("reason", "Session not present"));
                 return;
             }
-
             var gameId = playerComponent == null ? null : playerComponent.getCurrentGame();
-            if (gameId == null || gameId.isEmpty()) {
-                GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                        .param("playerName", playerRef.getUsername())
-                        .param("reason", "no game is active"));
-                return;
-            }
-
-            if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
-                GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                        .param("playerName", playerRef.getUsername())
-                        .param("reason", "game is not registered"));
-                return;
-            }
-
-            try {
-                game.playerLeave(GauntletUtils.withHubWorld(), session.getId(), List.of(playerRef));
-            } catch (Exception e) {
-                GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
-                        .param("playerName", playerRef.getUsername())
-                        .param("reason", "the game controller threw " + e.getClass().getSimpleName()));
-            }
+            leaveGame(session, gameId, playerRef, false);
         });
+    }
+
+    private static void leaveGame(GameSession session, @Nullable String gameId, PlayerRef playerRef, boolean forfeit) {
+        if (gameId == null || gameId.isEmpty()) {
+            GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "no game is active"));
+            return;
+        }
+        if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
+            GaiaLog.atError().withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "game is not registered"));
+            return;
+        }
+        try {
+            game.playerLeave(GauntletUtils.withHubWorld(), session.getId(), List.of(playerRef), forfeit);
+        } catch (Exception e) {
+            GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.disconnect.warn")
+                    .param("playerName", playerRef.getUsername())
+                    .param("reason", "the game controller threw " + e.getClass().getSimpleName()));
+        }
     }
 
     public static void handlePartyPlayer(World hub, PlayerPartyEvent evt) {

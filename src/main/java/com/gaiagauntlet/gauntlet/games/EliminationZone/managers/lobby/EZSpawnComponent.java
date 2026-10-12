@@ -56,7 +56,7 @@ public class EZSpawnComponent implements GameComponent {
 
     public void release(UUID player) {
         var spawn = assignedLocation.remove(player);
-        if (spawn != null)
+        if (spawn != null && !spawnPoints.contains(spawn))
             spawnPoints.push(spawn);
     }
 

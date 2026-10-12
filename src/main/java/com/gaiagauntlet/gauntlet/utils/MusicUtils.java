@@ -18,7 +18,9 @@ public final class MusicUtils {
 
     public static void forcePlayMusicContainerToPlayer(String musicContainer, PlayerRef playerRef) {
         int containerIndex = MusicContainer.getAssetMap().getIndex(musicContainer);
-        World world = Universe.get().getWorld(playerRef.getWorldUuid());
+        var worldId = playerRef.getWorldUuid();
+        var world = worldId == null ? null : Universe.get().getWorld(worldId);
+        if (world == null) return;
         world.execute(() -> {
             Ref<EntityStore> ref = playerRef.getReference();
             if (ref == null || !ref.isValid()) return;

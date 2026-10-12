@@ -11,7 +11,10 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.SpawnUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -178,6 +181,34 @@ public final class PlayerUtils {
     }
 
     /** Clear inventory, set to adventure, and restore health. */
+    /** Completes once the player holds a valid ref in the hub, or exceptionally when they never arrive. */
+    @Nonnull
+    public static CompletableFuture<Void> sendToHub(@Nonnull PlayerRef player) {
+        var landed = new CompletableFuture<Void>();
+        var ref = player.getReference();
+        if (ref == null || !ref.isValid()) {
+            landed.completeExceptionally(new IllegalStateException(player.getUsername() + " is not in a world"));
+            return landed;
+        }
+        var playerWorld = ref.getStore().getExternalData().getWorld();
+        var hub = GauntletUtils.withHubWorld();
+        SpawnUtil.resolveSpawnPoint(hub, player.getUuid()).thenAcceptAsync(spawn -> {
+            if (!ref.isValid()) {
+                landed.completeExceptionally(new IllegalStateException(player.getUsername() + " left before the hub teleport"));
+                return;
+            }
+            var store = ref.getStore();
+            var teleport = Teleport.createForPlayer(hub, spawn);
+            teleport.setOnComplete(landed);
+            store.tryRemoveComponent(ref, Teleport.getComponentType());
+            store.addComponent(ref, Teleport.getComponentType(), teleport);
+        }, playerWorld).exceptionally(error -> {
+            landed.completeExceptionally(error);
+            return null;
+        });
+        return landed;
+    }
+
     public static void reset(PlayerRef playerRef) {
         var ref = playerRef.getReference();
         if (ref == null) return;

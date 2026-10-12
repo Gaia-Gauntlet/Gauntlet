@@ -155,10 +155,10 @@ public final class SpectatorCamera {
         var self = accessor.getComponent(spectator, PlayerRef.getComponentType());
         if (self == null) return false;
 
-        var spectatorTeam = TeamUtils.teamOf(GameStore.withStore(world, session).orElse(null), self.getUuid())
-                .orElse(null);
+        var game = GameStore.withStore(world, session).orElse(null);
+        var spectatorTeam = TeamUtils.teamOf(game, self.getUuid()).orElse(null);
 
-        return spectatorTeam == null || !TeamUtils.hasAlive(spectatorTeam);
+        return spectatorTeam == null || !TeamUtils.hasAlive(game, spectatorTeam);
     }
 
     /**

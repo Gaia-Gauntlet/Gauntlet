@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.PlayerMarker;
 import com.gaiagauntlet.gauntlet.core.utils.EZLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.RisingBlockComponent;
@@ -86,7 +87,8 @@ public class CornucopiaMovingPlatformsHandler {
         if (spawns == null)
             return;
         for (var player : GauntletUtils.playersFor(gameStore.getSessionId())) {
-            spawns.getAssigned(player.getUuid()).ifPresent(spawn -> placeOnPlatform(world, player, spawn));
+            spawns.getAssigned(player.getUuid())
+                    .ifPresent(spawn -> placeOnPlatform(world, gameStore.getSessionId(), player, spawn));
         }
     }
 
@@ -94,20 +96,28 @@ public class CornucopiaMovingPlatformsHandler {
      * Puts a player on top of their risen platform, with a solid block under them
      * in case the platform drifted.
      */
-    public static void placeOnPlatform(@Nonnull World world, @Nonnull PlayerRef player, @Nonnull Transform spawn) {
+    public static void placeOnPlatform(@Nonnull World world, @Nonnull String sessionId, @Nonnull PlayerRef player,
+            @Nonnull Transform spawn) {
         var ref = player.getReference();
         if (ref == null || !ref.isValid()) {
             return;
         }
-        var store = ref.getStore();
         var goal = new Transform(spawn);
-        var current = store.getComponent(ref, TransformComponent.getComponentType());
-        if (current != null) {
-            goal.setRotation(current.getRotation());
-        }
         goal.getPosition().add(0, HEIGHT + 1, 0);
         var under = ArenaBlocks.blockAt(goal.getPosition());
         BlockUtils.setBlock(world, under.x, under.y - 3, under.z, FALLBACK_BLOCK_ID);
-        store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(world, goal));
+        GauntletUtils.run(ref.getStore().getExternalData().getWorld(), () -> {
+            if (!ref.isValid())
+                return;
+            var store = ref.getStore();
+            var current = store.getComponent(ref, TransformComponent.getComponentType());
+            if (current != null) {
+                goal.setRotation(current.getRotation());
+            }
+            if (store != world.getEntityStore().getStore())
+                store.putComponent(ref, PlayerMarker.getComponentType(),
+                        new PlayerMarker(sessionId, world.getWorldConfig().getUuid()));
+            store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(world, goal));
+        });
     }
 }

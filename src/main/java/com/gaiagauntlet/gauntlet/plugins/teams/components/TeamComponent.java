@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -97,16 +96,15 @@ public class TeamComponent {
                 lookups.toArray(CompletableFuture[]::new)
             ).join();
 
-            var players = new HashSet<UUID>(entries.length);
+            team.players.clear();
             for (var i = 0; i < entries.length; i++) {
                 var uuid = lookups.get(i).join();
                 if (uuid == null) {
                     LOGGER.atWarning().log("Team roster entry '%s' could not be resolved to a player", entries[i]);
                     continue;
                 }
-                players.add(uuid);
+                team.players.add(uuid);
             }
-            team.players = players;
         })
         .build();
 
@@ -121,7 +119,7 @@ public class TeamComponent {
     @Getter final String id;
     @Getter @Nonnull String name = "";
     @Getter @Nonnull TeamType teamType = TeamType.Participant;
-    @Getter @Nonnull Set<UUID> players = ConcurrentHashMap.newKeySet();
+    @Getter @Nonnull final Set<UUID> players = ConcurrentHashMap.newKeySet();
     @Getter @Setter double score;
     /**
      * List of player names - this is ONLY intended to be added via the asset
@@ -144,7 +142,6 @@ public class TeamComponent {
         this.id = id;
         this.name = name != null ? name : "";
         this.teamType = teamType != null ? teamType : TeamType.Participant;
-        this.players = new HashSet<>();
         this.icon = icon;
     }
 
@@ -157,7 +154,7 @@ public class TeamComponent {
         this.id = id;
         name = other.name;
         teamType = other.teamType;
-        players = new HashSet<>(other.players);
+        players.addAll(other.players);
         icon = other.icon;
         score = other.score;
     }

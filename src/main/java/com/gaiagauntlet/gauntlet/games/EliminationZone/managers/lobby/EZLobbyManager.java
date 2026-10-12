@@ -25,6 +25,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.listeners.LobbyEven
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
@@ -40,7 +41,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.SpawnUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -69,17 +69,17 @@ public class EZLobbyManager implements LobbyManager {
 
     @Override
     public CompletableFuture<Void> cleanWorld(World arenaWorld) {
-        InstancesPlugin.safeRemoveInstance(arenaWorld);
-        GaiaLog.atInfo().log("cleaning world...");
+        GaiaLog.atInfo().log("cleaning world " + arenaWorld.getName());
         return GauntletUtils.runAsync(arenaWorld, () -> {
             var arenaPlayers = arenaWorld.getPlayerRefs();
-            var hubWorld = GauntletUtils.withHubWorld();
             for (PlayerRef arenaPlayer : arenaPlayers) {
                 PlayerUtils.reset(arenaPlayer);
             }
-            return arenaWorld.drainPlayersTo(hubWorld, arenaPlayers);
-        }).thenCompose(drained -> drained);
-    };
+            return arenaWorld.drainPlayersTo(GauntletUtils.withHubWorld(), arenaPlayers);
+        }).thenCompose(drained -> drained)
+                .whenComplete((_, error) -> GauntletUtils.runAsync(arenaWorld,
+                        () -> InstancesPlugin.safeRemoveInstance(arenaWorld)));
+    }
 
     @Override
     public void onJoin(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
@@ -99,6 +99,12 @@ public class EZLobbyManager implements LobbyManager {
 
     private static void arrive(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
             GameEcs gameStore) {
+        var assigned = TeamUtils.teamOf(gameStore, player.getUuid()).orElse(null);
+        if (assigned != null && !assigned.isParticipant()) {
+            PlayerUtils.reset(player);
+            spectate(ref, accessor);
+            return;
+        }
         var state = EZState.currentState(gameStore);
         if (state == EZStates.LOBBY) {
             arriveInLobby(ref, player, accessor, gameStore);
@@ -116,15 +122,13 @@ public class EZLobbyManager implements LobbyManager {
         if (state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH)
             return;
 
-        if (accessor.getComponent(ref, TeamPlayerComponent.getComponentType()) == null)
-            accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(team.getId()));
-        if (accessor.getComponent(ref, EliminatedComponent.getComponentType()) != null) {
-            spectate(ref, accessor);
-            return;
-        }
-        var teammate = livingTeammate(team, player, accessor.getExternalData().getWorld());
+        accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(team.getId()));
+        var ledger = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
+        var teammate = ledger.isEliminated(player.getUuid()) ? null
+                : livingTeammate(team, player, accessor.getExternalData().getWorld());
         if (teammate == null) {
-            accessor.addComponent(ref, EliminatedComponent.getComponentType(),
+            ledger.eliminate(player.getUuid());
+            accessor.putComponent(ref, EliminatedComponent.getComponentType(),
                     new EliminatedComponent(EliminationReason.KILLED));
             spectate(ref, accessor);
             return;
@@ -253,73 +257,51 @@ public class EZLobbyManager implements LobbyManager {
 
     @Override
     public CompletableFuture<Void> onLeave(World hubWorld, World arenaWorld, String session,
-            Collection<PlayerRef> players) {
+            Collection<PlayerRef> players, boolean forfeit) {
         var gameStore = GameStore.withStore(arenaWorld, session).orElse(null);
         if (gameStore == null)
             return CompletableFuture.completedFuture(null);
         var leaving = players.stream().map(PlayerRef::getUuid).collect(Collectors.toSet());
         var state = EZState.currentState(gameStore);
-        if (state == EZStates.LOBBY)
-            leaveLobby(gameStore, arenaWorld, players, leaving);
-        var cleanupFutures = new ArrayList<CompletableFuture<Void>>();
+        if (state == EZStates.LOBBY || forfeit)
+            leaveTeams(gameStore, arenaWorld, players, leaving, state == EZStates.LOBBY);
 
+        var arenaId = arenaWorld.getWorldConfig().getUuid();
+        var landings = new ArrayList<CompletableFuture<Void>>();
         for (var player : players) {
             var ref = player.getReference();
-            if (ref == null || !ref.isValid()) {
-                GaiaLog.atWarning().withSession(session)
-                        .log("Player " + player.getUsername() + " has an invalid ref, unable to clean");
+            if (ref == null || !ref.isValid() || !arenaId.equals(player.getWorldUuid()))
                 continue;
-            }
-            var store = ref.getStore();
-            var playerWorld = store.getExternalData().getWorld();
-            var cleanupFuture = GauntletUtils.runAsync(playerWorld, () -> {
-                // remove the component off the player
-                // type assertion because it cannot infer correctly if done inlined
-                CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-                try {
-                    PlayerUtils.reset(player);
-                    store.tryRemoveComponent(ref, EliminatedComponent.getComponentType());
-                    store.tryRemoveComponent(ref, EZPlayerComponent.getComponentType());
-
-                    // teleport back to the hub
-                    return SpawnUtil.teleportToSpawn(ref, store, hubWorld, playerWorld, transform -> {
-                        GaiaLog.atInfo().log(
-                                "Teleported " + player.getUsername() + " to the hub at " + transform.toString());
-                    });
-                } catch (Exception e) {
-                    GaiaLog.atError(e).withSession(session).log("Failed to clean " + player.getUsername()
-                            + " from EZGame with cause " + e.getLocalizedMessage());
-                    future.completeExceptionally(e);
-                }
-
-                return future;
-            }).thenCompose(future -> future);
-            cleanupFutures.add(cleanupFuture);
-
+            PlayerUtils.reset(player);
+            landings.add(PlayerUtils.sendToHub(player).exceptionally(error -> {
+                GaiaLog.atError(error).withSession(session)
+                        .log("Could not return " + player.getUsername() + " to the hub");
+                return null;
+            }));
         }
 
-        if (state == EZStates.RUNNING || state == EZStates.SUDDEN_DEATH) {
-            if (TeamUtils.withAliveTeams(arenaWorld, session, leaving).size() <= 1)
-                EZState.setState(gameStore, EZStates.ENDED);
-        }
-
-        return CompletableFuture.allOf(cleanupFutures.toArray(new CompletableFuture[0]));
+        EZState.checkEnd(gameStore);
+        return CompletableFuture.allOf(landings.toArray(new CompletableFuture[0]));
     }
 
-    private static void leaveLobby(GameEcs gameStore, World arena, Collection<PlayerRef> players, Set<UUID> leaving) {
+    private static void leaveTeams(GameEcs gameStore, World arena, Collection<PlayerRef> players, Set<UUID> leaving,
+            boolean lobby) {
         var teams = TeamUtils.teamsOf(gameStore).orElse(null);
         if (teams == null)
             return;
         var arenaId = arena.getWorldConfig().getUuid();
+        var spawns = gameStore.get(EZSpawnComponent.getComponentType()).orElse(null);
         for (var player : players) {
             var team = teams.get(player.getUuid());
             if (team == null)
                 continue;
             teams.remove(player.getUuid(), team.getId());
-            if (team.isParticipant() && arenaId.equals(player.getWorldUuid()))
+            if (spawns != null)
+                spawns.release(player.getUuid());
+            if (lobby && team.isParticipant() && arenaId.equals(player.getWorldUuid()))
                 announce(gameStore, "server.games.ez.lobby.leave", player, leaving);
         }
-        if (TeamUtils.countAlive(gameStore, leaving) < EZGameConfig.get(gameStore).getMinPlayers()
+        if (lobby && TeamUtils.countAlive(gameStore, leaving) < EZGameConfig.get(gameStore).getMinPlayers()
                 && TimerUtils.isRunning(gameStore, STARTING_TIMER))
             TimerUtils.cancel(gameStore);
         TeamUtils.updateHuds(gameStore, Set.of());

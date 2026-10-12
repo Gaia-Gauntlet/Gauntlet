@@ -111,7 +111,7 @@ public class SessionHandlers extends HandlerUtils {
                             .log(MessageUtils.msg("server.gg.events.session.setup.error")
                                     .param("sessionId", session.getId())
                                     .param("gameId", nextGameId)
-                                    .param("reason", error.getLocalizedMessage()));
+                                    .param("reason", MessageUtils.reason(error)));
 
                     session.setErrored("Error thrown during setup");
                     // cancel the game immediately - run on the hub thread
@@ -147,7 +147,7 @@ public class SessionHandlers extends HandlerUtils {
                 } catch (Exception e) {
                     GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                             .param("playerName", "all session players")
-                            .param("reason", e.getLocalizedMessage()));
+                            .param("reason", MessageUtils.reason(e)));
                 }
                 sessionEvt.complete(GaiaLog.atInfo().withSession(session)
                         .log(MessageUtils.msg("server.gg.events.session.setup.success")
@@ -190,7 +190,7 @@ public class SessionHandlers extends HandlerUtils {
                             .log(MessageUtils.msg("server.gg.events.session.setup.error")
                                     .param("sessionId", session.getId())
                                     .param("gameId", currentGame)
-                                    .param("reason", error.getLocalizedMessage()));
+                                    .param("reason", MessageUtils.reason(error)));
                     session.setErrored("Error thrown when cancelling");
                 } else {
                     var success = session.setComplete(currentGame);

@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.core.commands;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
@@ -187,7 +189,7 @@ public class SessionCommands extends AbstractCommandCollection {
                 ctx.sendMessage(
                         markup(Message.translation("server.gg.commands.session.list.line")
                                 .param("sessionId", sessionEntry.getKey())
-                                .param("game", session.getCurrentGame())
+                                .param("game", Objects.requireNonNullElse(session.getCurrentGame(), "none"))
                                 .param("gamesList",
                                         games != null && games.size() >= 1
                                                 ? String.join(", ", session.getGameSequence())

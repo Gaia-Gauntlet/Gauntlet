@@ -1,5 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.teams;
 
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import java.util.stream.Collectors;
+import com.gaiagauntlet.gauntlet.plugins.teams.systems.ClearTeamStateOnWorldEntry;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
@@ -75,6 +79,7 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
                 GameComponentRegistry.register(TeamListComponent.ID, TeamListComponent.class, TeamListComponent.CODEC));
 
         entityStore.registerSystem(new TeamHudEliminatedSystem());
+        entityStore.registerSystem(new ClearTeamStateOnWorldEntry());
         host.getEventRegistry().register(EventPriority.EARLY, PlayerDisconnectEvent.class,
                 TeamHudListeners::onPlayerDisconnect);
 
@@ -101,14 +106,30 @@ public class TeamsPlugin implements PersistentGamePlugin, UiGamePlugin {
                 .filter(teams -> !teams.getTeams().isEmpty())
                 .orElseGet(TeamUtils::defaultTeams);
         var gameTeams = new TeamListComponent(sessionTeams);
-        TeamUtils.distributePlayers(GauntletUtils.playersFor(sessionObject), gameTeams);
+        var players = GauntletUtils.playersFor(sessionObject);
+        var present = players.stream().map(PlayerRef::getUuid).collect(Collectors.toSet());
+        for (var team : gameTeams.getTeams().values()) {
+            for (var uuid : List.copyOf(team.getPlayers())) {
+                if (!present.contains(uuid))
+                    gameTeams.remove(uuid, team.getId());
+            }
+        }
+        TeamUtils.distributePlayers(players, gameTeams);
         gameStore.put(TeamListComponent.getGameComponentType(), gameTeams);
     }
 
     @Override
     public SessionWriter capture(World world, GameEcs store, String sessionId) {
-        var teamList = store.get(TeamListComponent.getGameComponentType()).orElse(null);
-        
+        var teamList = store.get(TeamListComponent.getGameComponentType()).map(TeamListComponent::new).orElse(null);
+        if (teamList != null) {
+            for (var team : teamList.getTeams().values()) {
+                for (var uuid : List.copyOf(team.getPlayers())) {
+                    if (PlayerUtils.get(uuid) == null)
+                        teamList.remove(uuid, team.getId());
+                }
+            }
+        }
+
         return new SessionWriter() {
             private TeamListComponent teams = teamList;
             public void apply(GameSession session) {

@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.core.party.commands;
 
+import com.gaiagauntlet.gauntlet.core.orchestrator.handlers.PlayerHandlers;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 
 import javax.annotation.Nonnull;
@@ -7,8 +8,6 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
-import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.hypixel.hytale.builtin.adventure.reputation.command.ReputationAddCommand;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -42,21 +41,9 @@ public class RejoinCommand extends AbstractTargetPlayerCommand {
             @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef, @Nonnull World world,
             @Nonnull Store<EntityStore> store) {
 
-        var resource = GauntletUtils.withResource();
-        var playerId = playerRef.getUuid();
-        var pairing = resource.getOffline(playerId);
-        if (pairing == null) {
-            playerRef.sendMessage(msg("server.gg.commands.party.notoffline"));
-            return;
-        }
-
-        resource.removeOffline(playerId);
-
-        // dispatch add to party - marks as online again and joins the session if the
-        // session is active
-        GauntletEventRegistry.dispatch(
-                PlayerPartyEvent.Join(playerRef, pairing.second())
-                        .onMessage(msg -> ctx.sendMessage(msg.toMessage()))
-                        .onComplete(message -> ctx.sendMessage(message.toMessage())));
+        GauntletUtils.run(GauntletUtils.withHubWorld(), () -> {
+            if (!PlayerHandlers.rejoin(playerRef, ctx::sendMessage))
+                playerRef.sendMessage(msg("server.gg.commands.party.notoffline"));
+        });
     }
 }

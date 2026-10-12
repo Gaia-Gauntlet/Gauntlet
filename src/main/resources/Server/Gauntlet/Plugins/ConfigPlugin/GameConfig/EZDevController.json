@@ -463,5 +463,5 @@
   "SpawnProtectionSeconds": 90,
   "CornucopiaDurationSeconds": 27,
   "MinPlayers": 2,
-  "MaxPlayers": 40
+  "MaxPlayers": 3
 }

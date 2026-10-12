@@ -64,15 +64,14 @@ public abstract class LobbyController extends GameController {
     @Override
     public final CompletableFuture<Void> setupGame(ComponentAccessor<EntityStore> hubAccessor, GameSession session) {
         var sessionId = session.getId();
-        if (!(GameStore.ensureStore(hubAccessor, sessionId) instanceof GameEcs hubStore)) {
-            return CompletableFuture.completedFuture(null);
-        }
         var existing = session.get(LobbyComponent.getComponentType());
         if (existing.isPresent()) {
             GaiaLog.atWarning().withSession(session)
                     .log("Initializing " + getId() + " with session " + sessionId
                             + " where a game was already initialized! Previous game did not shut down correctly. Clearing and continuing");
-            hubStore.clear();
+            var stale = existing.get().getWorld();
+            if (stale.isAlive())
+                getLobbyManager().cleanWorld(stale);
         }
 
         return getLobbyManager().setupWorld(hubAccessor, sessionId).thenCompose(world -> {
@@ -127,7 +126,9 @@ public abstract class LobbyController extends GameController {
         if (arena == null)
             return CompletableFuture.failedFuture(new IllegalStateException("No live arena for session " + sessionId));
 
+        var arenaId = arena.getWorldConfig().getUuid();
         var playerSets = players.stream()
+                .filter(player -> !arenaId.equals(player.getWorldUuid()))
                 .map(player -> Pair.of(player, getLobbyManager().locationFor(player, arena, sessionId))).toList();
 
         TransferUtils.queue(store, arena, sessionId, playerSets);
@@ -144,13 +145,14 @@ public abstract class LobbyController extends GameController {
     };
 
     @Override
-    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> players) {
+    public CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> players,
+            boolean forfeit) {
         var arenaWorld = withArenaWorld(sessionId).orElse(null);
         if (arenaWorld == null)
             return CompletableFuture.completedFuture(null);
 
         return GauntletUtils.runAsync(arenaWorld,
-                () -> getLobbyManager().onLeave(hubWorld, arenaWorld, sessionId, players))
+                () -> getLobbyManager().onLeave(hubWorld, arenaWorld, sessionId, players, forfeit))
                 .thenCompose(future -> future);
     }
 }

@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.listeners;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
@@ -57,21 +57,17 @@ public final class MatchStateListeners {
     public static void onMatchEnd(MatchStateEvent evt) {
         if (!Objects.equals(evt.getTo(), EZStates.ENDED.name())) return;
 
-        new HudEvent(
-            evt.getSessionId(), null, WinnerHud.ID, null, true, null
-        ).dispatch();
-
-        MusicUtils.forcePlayMusicToAllPlayers(
-            END_SEQUENCE_MUSIC,
-            GauntletUtils.sessionFor(evt.getSessionId()).orElse(null)
-        );
         var game = evt.getGame();
-        var config = EZGameConfig.get(game);
+        TimerUtils.start(GAME_END_TIMER_ID, game, EZGameConfig.get(game).getMatchEndSeconds());
 
-        TimerUtils.start(GAME_END_TIMER_ID, game, config.getMatchEndSeconds());
-
+        var world = LobbyController.withArenaWorld(evt.getSessionId()).orElse(null);
+        attempt(evt, "show the winner", () -> new HudEvent(
+            evt.getSessionId(), null, WinnerHud.ID, null, true, null
+        ).dispatch());
+        if (world == null) return;
+        attempt(evt, "play the end music", () -> MusicUtils.forcePlayMusicToAllPlayers(END_SEQUENCE_MUSIC, world));
         // The end can be reached from inside a system, so the store is only changed on a later task.
-        LobbyController.withArenaWorld(evt.getSessionId()).ifPresent(world -> world.execute(() -> {
+        attempt(evt, "release spectators", () -> world.execute(() -> {
             var store = world.getEntityStore().getStore();
             for (var player : world.getPlayerRefs()) {
                 var ref = player.getReference();
@@ -79,6 +75,14 @@ public final class MatchStateListeners {
                     SpectatorComponent.clear(ref, store);
             }
         }));
+    }
+
+    private static void attempt(MatchStateEvent evt, String step, Runnable action) {
+        try {
+            action.run();
+        } catch (RuntimeException e) {
+            GaiaLog.atError(e).withSession(evt.getSessionId()).log("Match end failed to " + step);
+        }
     }
 
     public static void onMatchEndTimer(TimerCompleteEvent evt) {

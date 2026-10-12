@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.ClearMatchStateOnWorldEntry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.listeners.MatchStateListeners;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.map.MatchMapOverlay;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.scoring.EZScoring;
@@ -76,6 +77,7 @@ public class EZGamePlugin extends JavaPlugin {
         EZPlayerComponent.setComponentType(
             entityStore.registerComponent(EZPlayerComponent.class, EZPlayerComponent::new)
         );
+        entityStore.registerSystem(new ClearMatchStateOnWorldEntry());
         // game components
         EZSpawnComponent.setComponentType(GameComponentRegistry.register(EZSpawnComponent.ID, EZSpawnComponent.class));
         EZGameComponent.setComponentType(GameComponentRegistry.register(EZGameComponent.ID, EZGameComponent.class));

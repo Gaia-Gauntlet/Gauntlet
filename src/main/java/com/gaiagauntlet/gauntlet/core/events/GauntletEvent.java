@@ -1,12 +1,11 @@
 package com.gaiagauntlet.gauntlet.core.events;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.hypixel.hytale.event.IEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Wrapper for all events
@@ -19,7 +18,7 @@ public abstract class GauntletEvent implements IEvent<Void> {
 
     private Consumer<GaiaLog> consumer = null;
     private Consumer<GaiaLog> onComplete = null;
-    @Getter @Setter private boolean inProgress = true;
+    private final AtomicBoolean inProgress = new AtomicBoolean(true);
 
     // part of the event builder to add a callback
     public GauntletEvent onMessage(Consumer<GaiaLog> consumer) {
@@ -33,10 +32,13 @@ public abstract class GauntletEvent implements IEvent<Void> {
         return this;
     }
 
+    public boolean isInProgress() {
+        return inProgress.get();
+    }
+
     public void complete(GaiaLog reason) {
-        if (!inProgress)
+        if (!inProgress.compareAndSet(true, false))
             return;
-        inProgress = false;
         if (this.onComplete != null) {
             try {
                 this.onComplete.accept(reason);

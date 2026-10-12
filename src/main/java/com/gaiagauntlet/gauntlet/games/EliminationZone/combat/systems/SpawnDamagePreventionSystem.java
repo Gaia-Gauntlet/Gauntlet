@@ -5,6 +5,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnPro
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -53,7 +54,7 @@ public final class SpawnDamagePreventionSystem extends DamageEventSystem {
         var playerRef = archetypeChunk.getComponent(index, PlayerRef.getComponentType());
         assert playerRef != null;
         assert playerRef.getWorldUuid() != null;
-        var world = Universe.get().getWorld(playerRef.getWorldUuid());
+        var world = store.getExternalData().getWorld();
 
         var gameStore = GameStore.withStore(world, playerComp.getSessionId()).orElse(null);
         if (gameStore == null)

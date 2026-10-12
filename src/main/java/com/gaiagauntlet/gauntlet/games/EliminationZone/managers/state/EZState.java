@@ -1,6 +1,11 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state;
 
+import java.util.Set;
+
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
@@ -33,6 +38,20 @@ public class EZState {
             GaiaLog.atError(exception).log("State " + stateValue + " is not a valid EZState");
             return EZStates.ERROR;
         }
+    }
+
+    public static void checkEnd(GameEcs game) {
+        var state = currentState(game);
+        if (state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH)
+            return;
+        var world = GameStore.getContext(game).getWorld();
+        if (TeamUtils.withAliveTeams(world, game.getSessionId(), Set.of()).size() <= 1) {
+            setState(game, EZStates.ENDED);
+            return;
+        }
+        if (state != EZStates.SUDDEN_DEATH
+                && TeamUtils.countAlive(game, Set.of()) <= EZGameConfig.get(game).getSuddenDeathAt())
+            setState(game, EZStates.SUDDEN_DEATH);
     }
 
     // boolean on whether or not it was successful

@@ -97,7 +97,12 @@ public class GauntletUtils {
                 future.completeExceptionally(e);
             }
         };
-        run(world, task);
+        try {
+            run(world, task);
+        } catch (Exception e) {
+            GaiaLog.atError(e).log("World " + (world == null ? "none" : world.getName()) + " refused a task");
+            future.completeExceptionally(e);
+        }
         return future;
     }
 

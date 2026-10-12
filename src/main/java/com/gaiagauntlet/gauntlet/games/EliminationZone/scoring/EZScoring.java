@@ -18,7 +18,6 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
@@ -50,6 +49,7 @@ public final class EZScoring {
         var teams = TeamUtils.teamsOf(game).orElse(null);
         if (teams == null)
             return List.of();
+        var ledger = game.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
         var entries = new ArrayList<Entry>();
         for (var team : teams.getTeams().values()) {
             if (!team.isParticipant() || team.getSize() == 0)
@@ -59,15 +59,13 @@ public final class EZScoring {
             var kills = 0;
             for (var uuid : team.getPlayers()) {
                 var player = PlayerUtils.get(uuid);
-                if (player == null)
-                    continue;
-                var teamPlayer = player.getComponentConcurrent(TeamPlayerComponent.getComponentType());
+                var teamPlayer = player == null ? null
+                        : player.getComponentConcurrent(TeamPlayerComponent.getComponentType());
                 if (teamPlayer != null)
                     kills += teamPlayer.getKills();
-                var eliminated = player.getComponentConcurrent(EliminatedComponent.getComponentType());
-                if (eliminated != null)
-                    eliminatedAt = Math.max(eliminatedAt, eliminated.getEliminatedAt());
-                else if (GameStore.isIn(player, game))
+                if (ledger.isEliminated(uuid))
+                    eliminatedAt = Math.max(eliminatedAt, ledger.eliminatedAt(uuid));
+                else if (player != null && GameStore.isIn(player, game))
                     alive = true;
             }
             entries.add(new Entry(team, alive, eliminatedAt, kills));

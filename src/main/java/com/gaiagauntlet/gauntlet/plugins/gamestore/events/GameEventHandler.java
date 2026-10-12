@@ -59,6 +59,6 @@ public class GameEventHandler {
                 }
             }
         })));
-        evt.complete(GaiaLog.atInfo().withSession(session).log("Finished writing games to session"));
+        evt.log(GaiaLog.atInfo().withSession(session).log("Queued writing " + gameId + " back to the session"));
     }
 }
