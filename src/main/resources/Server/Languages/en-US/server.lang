@@ -20,6 +20,7 @@ general.damageCauses.environmental = The Void
 general.damageCauses.fire = fire
 general.damageCauses.fall = falling
 general.damageCauses.command = command
+general.damageCauses.physical = physical
 
 commands.kit_Gg_lobby.desc = Clear inventory, then give items for the Gaia Gauntlet lobby.
 commands.kitGg1.desc = Clear inventory, then give every tier 1 (Crude) weapon and armor piece retuned in the balance pass.
