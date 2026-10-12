@@ -2,7 +2,6 @@ package com.gaiagauntlet.gauntlet.core.resources;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 
 import com.gaiagauntlet.gauntlet.core.party.components.PartyComponent;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,6 @@ import com.hypixel.hytale.codec.codecs.map.MapCodec;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.resources.UniverseResourceType;
 
-import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,7 +43,17 @@ public class UniverseGauntletResource {
     @Nonnull @Getter private Map<String, GameSession> sessions = new ConcurrentHashMap<>();
     @Nonnull @Getter private Map<String, PartyComponent> parties = new ConcurrentHashMap<>();
 
-    private Map<UUID, Pair<ScheduledFuture<?>, String>> offlinePlayers = new ConcurrentHashMap<>();
+    private Map<UUID, RejoinSlot> offlinePlayers = new ConcurrentHashMap<>();
+
+    public record RejoinSlot(@Nullable String sessionId, @Nonnull String partyId, long deadline) {
+        public boolean expired() {
+            return System.currentTimeMillis() > deadline;
+        }
+
+        public long secondsLeft() {
+            return Math.max(0, (deadline - System.currentTimeMillis()) / 1000);
+        }
+    }
 
     // faster lookup maps for hotpath efficiency. Should not be considered the
     // source of truth
@@ -234,25 +242,29 @@ public class UniverseGauntletResource {
         session.getParties().remove(partyId);
     }
 
-    @Nullable 
-    public Pair<ScheduledFuture<?>, String> getOffline(UUID playerId) {
-        if (playerId == null) return null;
-        return offlinePlayers.get(playerId);
+    @Nullable
+    public RejoinSlot getOffline(@Nullable UUID player) {
+        if (player == null)
+            return null;
+        var slot = offlinePlayers.get(player);
+        if (slot != null && slot.expired()) {
+            offlinePlayers.remove(player, slot);
+            return null;
+        }
+        return slot;
     }
 
-    public void removeOffline(UUID player) {
-        if (player == null) return;
-        var pair = offlinePlayers.remove(player);
-        if (pair == null) return;
-        if (pair.first().isCancelled()) return;
-        pair.first().cancel(false); // clean up the future
+    @Nullable
+    public RejoinSlot takeOffline(@Nullable UUID player) {
+        var slot = getOffline(player);
+        if (slot != null)
+            offlinePlayers.remove(player, slot);
+        return slot;
     }
 
-    public void markOffline(UUID player, String partyId, ScheduledFuture<?> future) {
-        // remove any existing
-        removeOffline(player);
-
-        // re-mark as offline
-        offlinePlayers.put(player, Pair.of(future, partyId));
+    public void markOffline(@Nonnull UUID player, @Nullable String sessionId, @Nonnull String partyId, long seconds) {
+        offlinePlayers.compute(player, (uuid, existing) -> existing != null && !existing.expired()
+                && Objects.equals(existing.sessionId(), sessionId) ? existing
+                        : new RejoinSlot(sessionId, partyId, System.currentTimeMillis() + seconds * 1000));
     }
 }

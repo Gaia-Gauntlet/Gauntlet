@@ -4,11 +4,7 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
-import com.gaiagauntlet.gauntlet.plugins.auto.ui.MatchTab;
-import com.gaiagauntlet.gauntlet.plugins.auto.ui.VotePage;
-import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
@@ -54,10 +50,5 @@ public class GameStatePlugin implements SimpleGamePlugin, UiGamePlugin {
     @Override
     public List<HudElement> getHudElements() {
         return List.of();
-    }
-
-    @Override
-    public Map<String, PageFactory> getPages() {
-        return Map.of(VoteUtils.PAGE_ID, VotePage::new);
     }
 }

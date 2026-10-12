@@ -47,11 +47,7 @@ public class GameHandlers extends HandlerUtils {
 
                 var players = GauntletUtils.playersFor(session);
                 for (var player : players) {
-                    var playerComp = GauntletUtils.playerFor(player);
-                    playerComp.ifPresent(comp -> {
-                        // null all of their games
-                        comp.setCurrentGame(null);
-                    });
+                    GauntletUtils.updatePlayer(player, comp -> comp.setCurrentGame(null));
                 }
 
                 Resolve.success(sessionEvt, session, "server.gg.events.game.deferral.success");

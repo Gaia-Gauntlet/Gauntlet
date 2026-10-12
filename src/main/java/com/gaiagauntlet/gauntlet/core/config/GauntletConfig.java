@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.validation.Validators;
 import com.riprod.configly.Config;
 import com.riprod.configly.Configly;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -35,6 +36,7 @@ public class GauntletConfig extends Config {
             .append(new KeyedCodec<>("BatchSize", Codec.LONG),
                     (config, v) -> config.batchSize = v,
                     config -> config.getBatchSize())
+            .addValidator(Validators.greaterThanOrEqual(1L))
             .documentation("How big the batches are")
             .add()
             .append(new KeyedCodec<>("BatchDelay", Codec.LONG),

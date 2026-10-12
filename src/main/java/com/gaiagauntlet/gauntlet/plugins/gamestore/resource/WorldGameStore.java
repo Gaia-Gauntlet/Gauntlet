@@ -64,6 +64,10 @@ public class WorldGameStore implements Resource<EntityStore> {
         return game;
     }
 
+    public void remove(String sessionId) {
+        games.remove(sessionId);
+    }
+
     public void clearGame(String sessionId) {
         var game = games.get(sessionId);
         game.clear();

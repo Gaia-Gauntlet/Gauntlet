@@ -12,14 +12,12 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
-import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.pages.AdminPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
 import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.Standing;
-import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.components.MatchComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
@@ -59,8 +57,6 @@ public final class MatchTab implements AdminTab {
         Widgets.bind(evt, "#MatchEnd", "match.end");
         Widgets.bind(evt, "#MatchStop", "match.stop");
         Widgets.bind(evt, "#ResetScores", "match.resetscores");
-        Widgets.bind(evt, "#VoteOpen", "match.voteopen");
-        Widgets.bind(evt, "#VoteClose", "match.voteclose");
     }
 
     @Override
@@ -80,7 +76,6 @@ public final class MatchTab implements AdminTab {
         Widgets.field(cmd, "TimerField", timer(MatchUtils.get(session)));
         Widgets.field(cmd, "AliveField", alive(session));
         Widgets.fillList(cmd, "PreflightList", preflight(session), "Nothing to check");
-        Widgets.field(cmd, "VoteField", vote(session));
         */
     }
 
@@ -146,31 +141,8 @@ public final class MatchTab implements AdminTab {
                 teams.getTeams().values().forEach(TeamComponent::clearScore);
                 yield Widgets.ok("Event scores reset");
             }
-            case "match.voteopen" -> {
-                if (VoteUtils.isOpen(session)) yield Widgets.fail("A vote is already open");
-                VoteUtils.open(session, VoteUtils.allGames(), MatchUtils.END_SCREEN_SECONDS);
-                yield Widgets.ok("Vote open for " + MatchUtils.END_SCREEN_SECONDS + " seconds");
-            }
-            case "match.voteclose" -> {
-                if (!VoteUtils.isOpen(session)) yield Widgets.fail("No vote is open");
-                VoteUtils.closeNow(session);
-                yield Widgets.ok("Vote closed");
-            }
             default -> null;
         };
-        */
-       return null;
-    }
-
-    @Nonnull
-    private static String vote(@Nullable GameSession session) {
-        /*
-        var vote = VoteUtils.get(session);
-        if (vote == null) return "none yet";
-        if (vote.isClosed()) {
-            return vote.getWinner() == null ? "closed with no votes" : "won by " + SessionText.game(vote.getWinner());
-        }
-        return vote.totalVotes() + " votes, " + MatchUtils.clock(vote.remainingSeconds()) + " left";
         */
        return null;
     }

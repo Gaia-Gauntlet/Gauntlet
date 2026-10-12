@@ -25,6 +25,7 @@ import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionComponentsEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
@@ -84,6 +85,8 @@ public class GauntletOrchestrator {
         GauntletEventRegistry.on(EventPriority.LAST, NewSessionEvent.class, wrap(SessionHandlers::handleNewSession));
         GauntletEventRegistry.on(EventPriority.LAST, SessionPluginEvent.class,
                 wrap(SessionHandlers::handleSessionPlugin));
+        GauntletEventRegistry.on(EventPriority.LAST, SessionComponentsEvent.class,
+                wrap(SessionHandlers::handleSessionComponents));
 
         // game event handling
         GauntletEventRegistry.on(EventPriority.LAST, GameEvent.class, wrap(GameHandlers::handleGame));

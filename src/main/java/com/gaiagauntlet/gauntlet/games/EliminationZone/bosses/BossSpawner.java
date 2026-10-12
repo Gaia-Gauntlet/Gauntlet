@@ -1,5 +1,6 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.bosses;
 
+import com.hypixel.hytale.server.core.universe.world.storage.GetChunkFlags;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
@@ -96,9 +97,9 @@ public final class BossSpawner {
 
         bosses.getPending().add(boss.roleId());
         GaiaLog.atInfo().log(String.format("Loading the spawn chunk for %s", boss.roleId())).withGameId(session);
-        // an npc added to an unloaded chunk is removed straight away, so the spawn waits for its chunk
+        // an npc added to a chunk that is not ticking is unloaded into it straight away, so the spawn waits for its chunk to tick
         var chunkIndex = ChunkUtil.indexChunkFromBlock(point.position().x(), point.position().z());
-        arena.getChunkStore().getChunkReferenceAsync(chunkIndex).whenComplete((chunk, error) -> arena.execute(() -> {
+        arena.getChunkStore().getChunkReferenceAsync(chunkIndex, GetChunkFlags.SET_TICKING).whenComplete((chunk, error) -> arena.execute(() -> {
             bosses.getPending().remove(boss.roleId());
             if (chunk == null || error != null) {
                 GaiaLog.atWarning().log("The spawn chunk for " + boss.roleId() + " would not load").withGameId(session);
@@ -120,6 +121,10 @@ public final class BossSpawner {
     public static void spawnRandom(@Nonnull String game, @Nonnull World arena) {
         var store = GameStore.ensureStore(arena, game);
         BossesComponent bosses = store.ensure(BossesComponent.TYPE, BossesComponent::new);
+        if (bosses.count() >= EZGameConfig.get(store).getMaxActiveBosses()) {
+            GaiaLog.atInfo().log("No boss spawned: the arena is at its boss limit").withGameId(game);
+            return;
+        }
 
         var points = spawnPoints(arena, game);
         var candidates = new ArrayList<String>();
@@ -138,6 +143,7 @@ public final class BossSpawner {
             GaiaLog.atInfo()
                 .log("No boss can spawn right now: every candidate is out, disabled, or in a closing zone")
                 .withGameId(game);
+            return;
         }
         spawn(game, store, bosses.drawFrom(candidates));
     }
@@ -181,7 +187,7 @@ public final class BossSpawner {
                 });
         if (spawned == null) {
 //            chunk.removeKeepLoaded();
-            GaiaLog.atWarning().log("Spawning " + boss.roleId() + " failed").withGameId(sessionId);
+            GaiaLog.atInfo().log("Spawning " + boss.roleId() + " was cancelled, the engine did not create it").withGameId(sessionId);
             return;
         }
         Ref<EntityStore> ref = spawned.first();

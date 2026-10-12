@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionStateEvent;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
@@ -94,6 +96,17 @@ public class GameSession {
         sessionComponents.put(type.getIndex(), component);
     }
 
+    /** Puts components keyed by their registered id, replacing any the session already has */
+    public boolean putAll(Map<String, SessionComponent> components) {
+        if (locked) {
+            GaiaLog.atWarning().log("Attempted to write " + components.keySet() + " to " + getId()
+                    + " while game is locked (state is " + sessionState.toString() + ") - addition was blocked!");
+            return false;
+        }
+        sessionComponents.putAll(components);
+        return true;
+    }
+
     public <T extends SessionComponent> Optional<T> get(SessionComponentType<T> type) {
         var sesComp = sessionComponents.get(type.getIndex());
         if (sesComp == null)
@@ -134,6 +147,8 @@ public class GameSession {
     @Getter
     @Nullable
     private String errorReason;
+    @Getter
+    private int generation;
 
     public GameSession() {
         sessionComponents = new ConcurrentHashMap<>();
@@ -164,10 +179,6 @@ public class GameSession {
         }
 
         if (sessionState.to(state)) {
-            logger().log(MessageUtils.msg("server.gg.gauntlet.session.transition.success")
-                    .param("sessionId", this.id)
-                    .param("newState", state.toString())
-                    .param("oldState", sessionState.toString()));
             return false; // transition allowed, not blocked
         }
 
@@ -175,6 +186,26 @@ public class GameSession {
                 + " instead!");
 
         return true;
+    }
+
+    private boolean transition(SessionState state, @Nullable String gameIdCheck, Runnable apply) {
+        if (transitionBlocked(state, gameIdCheck))
+            return false;
+        var from = sessionState;
+        apply.run();
+        sessionState = state;
+        locked = state == SessionState.RUNNING;
+        logger().log(MessageUtils.msg("server.gg.gauntlet.session.transition.success")
+                .param("sessionId", this.id)
+                .param("newState", state.toString())
+                .param("oldState", from.toString()));
+        GauntletEventRegistry.dispatch(new SessionStateEvent(id, from, state, currentGame, generation));
+        return true;
+    }
+
+    /** Whether the attempt started under this generation is still the session's current one */
+    public boolean isCurrent(int attempt) {
+        return attempt == generation;
     }
 
     private GaiaLog logger() {
@@ -191,37 +222,27 @@ public class GameSession {
      */
     @Nullable
     public String startNext() {
-        if (transitionBlocked(SessionState.SETTING_UP, null))
+        if (gameSequence.isEmpty())
             return null;
-
-        currentGame = gameSequence.pollFirst();
-
-        if (currentGame == null) {
-            return null;
-        }
-
-        errorReason = null;
-        sessionState = SessionState.SETTING_UP;
-        return currentGame;
+        var started = transition(SessionState.SETTING_UP, null, () -> {
+            currentGame = gameSequence.pollFirst();
+            generation++;
+            errorReason = null;
+        });
+        return started ? currentGame : null;
     }
 
     /**
-     * Checks if the current game is still the current game, and then sets it as
-     * running
+     * Sets the game started under this attempt as running, refusing once the
+     * attempt has been abandoned
      * <br />
      * <br />
      * <b>MANAGED BY THE ORCHESTRATOR</b>
      */
-    public boolean setRunning(String gameIdCheck) {
-        if (transitionBlocked(SessionState.RUNNING, gameIdCheck))
+    public boolean setRunning(int attempt) {
+        if (!isCurrent(attempt))
             return false;
-
-        // set the lock
-        locked = true;
-
-        errorReason = null;
-        sessionState = SessionState.RUNNING;
-        return true;
+        return transition(SessionState.RUNNING, null, () -> errorReason = null);
     }
 
     /**
@@ -232,13 +253,7 @@ public class GameSession {
      * Recovers from an errored state - but keeps the error reason
      */
     public boolean setComplete(String gameIdCheck) {
-        if (transitionBlocked(SessionState.FINISHED, gameIdCheck))
-            return false;
-        errorReason = null;
-        sessionState = SessionState.FINISHED;
-        // ensure the lock is off - it should already be though
-        locked = false;
-        return true;
+        return transition(SessionState.FINISHED, gameIdCheck, () -> errorReason = null);
     }
 
     /**
@@ -246,29 +261,34 @@ public class GameSession {
      * or game is not running
      */
     public boolean setCleaning(String gameIdCheck) {
-        if (transitionBlocked(SessionState.CLEANING, gameIdCheck))
-            return false;
-        sessionState = SessionState.CLEANING;
-        locked = false;
-        return true;
+        return transition(SessionState.CLEANING, gameIdCheck, () -> {
+        });
     }
+
     /**
      * Returns TRUE if the transition happened. Returns FALSE if already in cleaning
      * or game is not running
      */
     public boolean setEnding(String gameIdCheck) {
-        if (transitionBlocked(SessionState.ENDING, gameIdCheck))
-            return false;
-        sessionState = SessionState.ENDING;
-        locked = false;
-        return true;
+        return transition(SessionState.ENDING, gameIdCheck, () -> {
+        });
     }
 
     /** Set if the session resulted in an error of some kind */
     public void setErrored(String errorReason) {
-        sessionState = SessionState.ERROR;
-        this.errorReason = errorReason;
-        locked = false;
+        transition(SessionState.ERROR, null, () -> this.errorReason = errorReason);
+    }
+
+    /**
+     * Gives up on the attempt in progress, so a setup or clean still running for it
+     * can no longer change the session. Leaves the session in ERROR, from which a
+     * CLEAN tears the game down
+     */
+    public void abandon(String errorReason) {
+        transition(SessionState.ERROR, null, () -> {
+            generation++;
+            this.errorReason = errorReason;
+        });
     }
 
     /** adds a game to the sequence */

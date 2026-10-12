@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
@@ -27,10 +29,10 @@ import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
-import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 /**
- * The selected session's roster. Players are picked from who is online, every team is its own block
+ * The selected session's roster. Players are picked from the session's online players, every team is its own block
  * with online and offline members told apart, and members can be assigned or removed.
  */
 public final class TeamsTab implements AdminTab {
@@ -84,7 +86,7 @@ public final class TeamsTab implements AdminTab {
         var teamList = TeamUtils.teamsOf(session).orElse(null);
 
         var unassigned = new ArrayList<UUID>();
-        for (var player : Universe.get().getPlayers()) {
+        for (var player : session == null ? Set.<PlayerRef>of() : GauntletUtils.playersFor(session)) {
             if (teamList == null || teamList.get(player.getUuid()) == null) {
                 unassigned.add(player.getUuid());
             }
@@ -94,7 +96,7 @@ public final class TeamsTab implements AdminTab {
             pickerUnassigned = List.copyOf(unassigned);
             Widgets.fillPicker(cmd, "#AssignPlayer", memberOptions(pickerUnassigned));
         }
-        Widgets.field(cmd, "UnassignedField", unassigned.isEmpty() ? "everyone online is on a team" : unassigned.size() + " online without a team");
+        Widgets.field(cmd, "UnassignedField", unassigned.isEmpty() ? "everyone in the session is on a team" : unassigned.size() + " in the session without a team");
 
         var teams = teamList == null ? List.<TeamComponent>of() : TeamUtils.sortedTeams(teamList);
         var ids = teams.stream().map(TeamComponent::getId).toList();

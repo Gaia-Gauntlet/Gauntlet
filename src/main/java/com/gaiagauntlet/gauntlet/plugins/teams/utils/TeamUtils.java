@@ -109,28 +109,26 @@ public class TeamUtils {
             for (var uuid : team.getPlayers()) {
                 if (out.contains(uuid))
                     continue;
-                var player = PlayerUtils.get(uuid);
-                if (player != null && arenaId.equals(player.getWorldUuid())
-                        && player.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
+                if (competing(PlayerUtils.get(uuid), arenaId))
                     alive++;
             }
         }
         return alive;
     }
 
-    /**
-     * Checks if a team has any alive players. Truthy if and only if a player on
-     * this team is online and is not eliminated.
-     */
-    public static boolean hasAlive(TeamComponent team) {
-        for (UUID uuid : team.getPlayers()) {
-            var playerRef = PlayerUtils.get(uuid);
-            if (Objects.isNull(playerRef))
-                continue;
-            if (playerRef.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
+    /** Whether any player on the team stands in the game's world and is not eliminated. */
+    public static boolean hasAlive(@Nonnull GameEcs game, @Nonnull TeamComponent team) {
+        var arenaId = GameStore.getContext(game).getWorld().getWorldConfig().getUuid();
+        for (var uuid : team.getPlayers()) {
+            if (competing(PlayerUtils.get(uuid), arenaId))
                 return true;
         }
         return false;
+    }
+
+    private static boolean competing(@Nullable PlayerRef player, @Nonnull UUID arenaId) {
+        return player != null && arenaId.equals(player.getWorldUuid())
+                && player.getComponentConcurrent(EliminatedComponent.getComponentType()) == null;
     }
 
     public static Collection<PlayerRef> getOnlinePlayers(TeamListComponent teams) {

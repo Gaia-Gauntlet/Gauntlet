@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,8 @@ public class GauntletUtils {
     @Nonnull
     public static Optional<GameSession> sessionFor(@Nonnull PlayerRef player) {
         var party = PartyUtils.getParty(player).orElse(null);
-        if (party == null) return Optional.empty();
+        if (party == null)
+            return Optional.empty();
         return PartyUtils.sessionFor(party.getId());
     }
 
@@ -70,6 +72,23 @@ public class GauntletUtils {
         return players;
     }
 
+    public static void updatePlayer(@Nonnull PlayerRef player, @Nonnull Consumer<PlayerComponent> change) {
+        var ref = player.getReference();
+        if (ref == null || !ref.isValid())
+            return;
+        run(ref.getStore().getExternalData().getWorld(), () -> {
+            if (!ref.isValid())
+                return;
+            var component = ref.getStore().getComponent(ref, PlayerComponent.getComponentType());
+            if (component != null)
+                try {
+                    change.accept(component);
+                } catch (Exception e) {
+                    GaiaLog.atError(e).log("Failed to run player mutation to " + player.getUsername());
+                }
+        });
+    }
+
     @Nonnull
     public static Optional<PlayerComponent> playerFor(@Nonnull PlayerRef player) {
         return Optional.ofNullable(player.getComponentConcurrent(PlayerComponent.getComponentType()));
@@ -97,7 +116,12 @@ public class GauntletUtils {
                 future.completeExceptionally(e);
             }
         };
-        run(world, task);
+        try {
+            run(world, task);
+        } catch (Exception e) {
+            GaiaLog.atError(e).log("World " + (world == null ? "none" : world.getName()) + " refused a task");
+            future.completeExceptionally(e);
+        }
         return future;
     }
 

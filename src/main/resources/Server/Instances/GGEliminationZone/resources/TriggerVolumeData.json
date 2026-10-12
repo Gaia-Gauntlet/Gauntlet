@@ -293,8 +293,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
@@ -409,8 +408,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
@@ -530,8 +528,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
@@ -955,6 +952,40 @@
       },
       "Name": "Boss Spawn - Sporeback_Snail"
     },
+    "38cad24b-d8f7-4055-9371-3c1b004c35ea": {
+      "Position": {
+        "X": -69.5,
+        "Y": 49.0,
+        "Z": -29.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (7)"
+    },
     "da8aefaf-b3a3-4e9e-9c8e-b2535dc30ae4": {
       "Position": {
         "X": -131.5,
@@ -1117,8 +1148,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
@@ -1490,8 +1520,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": -0.0,
@@ -1569,6 +1598,40 @@
         "gg.spawn": "Empty"
       },
       "Name": "Player Spawn (76)"
+    },
+    "b64deeae-afe1-42fd-b7f3-5c89d8cda30d": {
+      "Position": {
+        "X": -127.5,
+        "Y": 49.0,
+        "Z": 28.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.5,
+          "Y": -1.0,
+          "Z": -0.5
+        },
+        "Max": {
+          "X": 0.5,
+          "Y": 1.0,
+          "Z": 0.5
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 3.141592502593994,
+          "Z": 0.0
+        }
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "KeepLoaded": false,
+      "Tags": {
+        "gg.spawn": "Empty"
+      },
+      "Name": "Player Spawn (8)"
     },
     "0dc8931b-8fc5-4904-9d39-3ec50af807d1": {
       "Position": {
@@ -1820,8 +1883,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": -0.0,
@@ -1902,8 +1964,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "SoundEvent": "SFX_Player_Pickup_Item",
-          "Volume": 1.0,
-          "Pitch": 1.5,
+          "PitchSemitones": 7.01954984664917,
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,

@@ -15,6 +15,8 @@ import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
+import com.gaiagauntlet.gauntlet.plugins.career.CareerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.chat.ChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
@@ -105,13 +107,15 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(GameStatePlugin.ID, this, GameStatePlugin::new);
         GameRegistry.registerPlugin(ConfigPlugin.ID, this, ConfigPlugin::new);
         GameRegistry.registerPlugin(GameStorePlugin.ID, this, GameStorePlugin::new);
-        GameRegistry.registerPlugin(AutoPlugin.ID, this, AutoPlugin::new);
         GameRegistry.registerPlugin(MatchEventsPlugin.ID, this, MatchEventsPlugin::new);
         GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
         GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
+        GameRegistry.registerPlugin(ChatPlugin.ID, this, ChatPlugin::new);
         GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
         GameRegistry.registerPlugin(SpectatorPlugin.ID, this, SpectatorPlugin::new);
         GameRegistry.registerPlugin(TimerPlugin.ID, this, TimerPlugin::new);
+        GameRegistry.registerPlugin(AutoPlugin.ID, this, AutoPlugin::new);
+        GameRegistry.registerPlugin(CareerPlugin.ID, this, CareerPlugin::new);
     }
 
     private void setupEvents() {

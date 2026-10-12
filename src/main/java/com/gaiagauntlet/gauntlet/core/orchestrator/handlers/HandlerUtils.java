@@ -84,10 +84,7 @@ public class HandlerUtils {
         }
 
         for (var player : players) {
-            var playerComp = GauntletUtils.playerFor(player);
-            playerComp.ifPresent(comp -> {
-                comp.setCurrentGame(gameId);
-            });
+            GauntletUtils.updatePlayer(player, comp -> comp.setCurrentGame(gameId));
         }
 
         // add all of the players to the game
@@ -100,7 +97,7 @@ public class HandlerUtils {
                     GaiaLog.atError(e).withSession(session)
                             .log(mes
                                     .param("sessionId", session.getId())
-                                    .param("cause", Objects.requireNonNullElse(e.getLocalizedMessage(), e.getClass().getSimpleName()))
+                                    .param("cause", MessageUtils.reason(e))
                                     .param("gameId", gameOf(session))));
         }
 

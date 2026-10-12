@@ -1,5 +1,9 @@
 package com.gaiagauntlet.gauntlet.core.events;
 
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
+
+import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -38,13 +42,15 @@ public class GauntletEventRegistry {
         }
         registry.registerGlobal(priority, type, event -> {
             if (!GauntletUtils.withHubWorld().isInThread()) {
-                LOGGER.atSevere().log("Event %s was dispatched outside of the hub thread! Mods must use GauntletEvents.dispatch", type.getSimpleName());
+                event.complete(GaiaLog.atError().log("Event " + type.getSimpleName()
+                        + " was dispatched outside of the hub thread! Mods must use GauntletEvents.dispatch"));
                 return;
             }
             try {
                 listener.accept(event);
             } catch (RuntimeException e) {
-                LOGGER.atSevere().withCause(e).log("Listener for %s failed", type.getSimpleName());
+                event.complete(GaiaLog.atError(e).log("Listener for " + type.getSimpleName() + " failed: "
+                        + MessageUtils.reason(e)));
             }
         });
     }
@@ -57,9 +63,11 @@ public class GauntletEventRegistry {
                 var dispatcher = HytaleServer.get().getEventBus().dispatchFor((Class) event.getClass());
                 if (dispatcher.hasListener()) {
                     dispatcher.dispatch(event);
+                } else {
+                    event.complete(GaiaLog.atDebug().log("No handler is registered for " + event.getClass().getSimpleName()));
                 }
             } catch (RuntimeException e) {
-                LOGGER.atSevere().withCause(e).log("Dispatch of %s failed", event);
+                event.complete(GaiaLog.atError(e).log("Dispatch of " + event.getClass().getSimpleName() + " failed"));
             }
         });
     }

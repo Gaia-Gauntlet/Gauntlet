@@ -27,6 +27,7 @@ public interface LobbyManager {
      */
     public void onJoin(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor, String sessionId);
 
-    public CompletableFuture<Void> onLeave(World hubWorld, World arenaWorld, String session, Collection<PlayerRef> player);
+    public CompletableFuture<Void> onLeave(World hubWorld, World arenaWorld, String session, Collection<PlayerRef> player,
+            boolean forfeit);
     public CompletableFuture<Transform> locationFor(PlayerRef player, World world, String sessionId);
 }

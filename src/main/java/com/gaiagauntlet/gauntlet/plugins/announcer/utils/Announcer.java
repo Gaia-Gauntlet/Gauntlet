@@ -9,7 +9,6 @@ import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
@@ -22,13 +21,6 @@ import java.util.Objects;
 
 public final class Announcer {
     private Announcer() {}
-
-    /** Chat line to every online player. */
-    public static void chat(@Nonnull Message message) {
-        for (var player : new ArrayList<>(Universe.get().getPlayers())) {
-            player.sendMessage(message);
-        }
-    }
 
     /** Chat line to every player in the world. */
     public static void chat(World world, @Nonnull Message message) {

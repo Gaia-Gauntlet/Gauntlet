@@ -40,7 +40,8 @@ Group {
             $G.@Header { @Text = "Game"; }
             $G.@ButtonRow {
                 $G.@Confirm #SetupGame { @Anchor = (Right: 3); Text: "Set up next game"; }
-                $G.@Danger #StopGame { @Anchor = (Left: 3); Text: "Stop game"; }
+                $G.@Danger #StopGame { @Anchor = (Left: 3, Right: 3); Text: "Stop game"; }
+                $G.@Danger #RecoverGame { @Anchor = (Left: 3); Text: "Recover"; }
             }
             $G.@Note { @Text = "Setting up takes the first game off the queue and runs it. The Match tab runs the match itself."; }
         }

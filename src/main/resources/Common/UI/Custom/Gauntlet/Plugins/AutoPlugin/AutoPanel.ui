@@ -1,0 +1,69 @@
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Status"; }
+            $G.@Field #AutoInstalledField { @Key = "Installed"; }
+            $G.@Field #AutoStateField     { @Key = "State"; }
+            $G.@Field #AutoConfigField    { @Key = "Config"; }
+            $G.@Field #AutoPausedField    { @Key = "Paused"; }
+            $G.@Field #AutoFailuresField  { @Key = "Failures"; }
+            $G.@Field #AutoTimerField     { @Key = "Timer"; }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Up next"; }
+            $G.@Field #AutoRotationField { @Key = "Rotation"; }
+            $G.@Field #AutoPoolField     { @Key = "Pool"; }
+            $G.@Field #AutoCurrentField  { @Key = "Now playing"; }
+            $G.@Field #AutoNextField     { @Key = "Up next"; }
+            $G.@Field #AutoVoteField     { @Key = "Vote"; }
+            $G.@Field #AutoStartsField   { @Key = "Starts in"; }
+            $G.@Caption { @Text = "Next preset"; }
+            $G.@PickerRow {
+                $G.@Picker #AutoPresetPicker {}
+            }
+            $G.@ButtonRow {
+                $G.@Confirm #AutoPlayNext  { @Anchor = (Right: 3); Text: "Play next"; }
+                $G.@Action #AutoClearPick  { @Anchor = (Left: 3); Text: "Clear pick"; }
+            }
+            $G.@Note { @Text = "A pick takes the place of the rotation once, even over a vote's winner."; }
+            $G.@ButtonRow {
+                $G.@Action #AutoOpenVote  { @Anchor = (Right: 3); Text: "Open vote"; }
+                $G.@Action #AutoCloseVote { @Anchor = (Left: 3, Right: 3); Text: "Close vote"; }
+                $G.@Confirm #AutoStartNow { @Anchor = (Left: 3); Text: "Start now"; }
+            }
+            $G.@Note { @Text = "Votes only open between games. Closing a vote locks its winner early."; }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Config"; }
+            $G.@Caption { @Text = "Session config"; }
+            $G.@PickerRow {
+                $G.@Picker #AutoConfigPicker {}
+            }
+            $G.@ButtonRow {
+                $G.@Confirm #AutoApply { @Anchor = (Right: 3); Text: "Use for this session"; }
+                $G.@Action #AutoReset  { @Anchor = (Left: 3); Text: "Back to default"; }
+            }
+            $G.@Note { @Text = "The default is the config named after the session."; }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Control"; }
+            $G.@ButtonRow {
+                $G.@Action #AutoPause  { @Anchor = (Right: 3); Text: "Pause"; }
+                $G.@Action #AutoResume { @Anchor = (Left: 3); Text: "Resume"; }
+            }
+            $G.@Note { @Text = "Resuming also clears the failure count."; }
+        }
+    }
+}

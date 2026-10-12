@@ -1,8 +1,8 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems;
 
-import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.components.EZCombatComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
@@ -10,10 +10,8 @@ import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedComponent;
 import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.TeamPlayerComponent;
-import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -29,12 +27,10 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathSystems;
 import com.hypixel.hytale.server.core.modules.entity.gamemode.GameModeTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-import java.util.Collection;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -82,6 +78,8 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         commandBuffer.addComponent(ref, EliminatedComponent.getComponentType(), new EliminatedComponent());
 
         var victim = store.getComponent(ref, PlayerRef.getComponentType());
+        if (victim != null)
+            gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new).eliminate(victim.getUuid());
         var killer = victim == null ? null : killerOf(victim, death, gameStore, store);
         var killerTeamPlayer = killer == null ? null
                 : store.getComponent(killer, TeamPlayerComponent.getComponentType());
@@ -94,24 +92,9 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         var playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
 
         assert playerRef != null;
-        assert playerRef.getWorldUuid() != null;
-        var world = Universe.get().getWorld(playerRef.getWorldUuid());
+        var world = store.getExternalData().getWorld();
         sendDeathMessage(death, playerRef, killerPlayer, world);
-
-        // Check for game end
-        var session = GauntletUtils.sessionFor(playerComp.getSessionId()).orElse(null);
-        if (session == null) return;
-        Collection<TeamComponent> aliveTeams = TeamUtils.withAliveTeams(world, session.getId(), Set.of(playerRef.getUuid()));
-        if (aliveTeams.size() <= 1) {
-            EZState.setState(gameStore, EZStates.ENDED);
-            return;
-        }
-
-        // Check for sudden death
-        if (state != EZStates.SUDDEN_DEATH
-                && TeamUtils.countAlive(gameStore, Set.of(playerRef.getUuid())) <= EZGameConfig.get(gameStore).getSuddenDeathAt()) {
-            EZState.setState(gameStore, EZStates.SUDDEN_DEATH);
-        }
+        world.execute(() -> EZState.checkEnd(gameStore));
     }
 
     private static void sendDeathMessage(
@@ -127,7 +110,7 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
 
         if (killerRef != null) {
             // Death message
-            Universe.get().sendMessage(
+            Announcer.chat(world,
                 Message.translation("gg.announcement.kill.player")
                     .param("killer", Message.raw(killerRef.getUsername()))
                     .param("victim", Message.raw(playerRef.getUsername()))
@@ -136,7 +119,7 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
             );
 
         } else {
-            Universe.get().sendMessage(
+            Announcer.chat(world,
                 Message.translation("gg.announcement.kill.environment")
                     .param("victim", Message.raw(playerRef.getUsername()))
                     .param("killMethod", damageCauseMessage)

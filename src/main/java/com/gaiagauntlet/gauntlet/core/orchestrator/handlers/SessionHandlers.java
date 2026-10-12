@@ -9,6 +9,7 @@ import java.util.List;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionComponentsEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
@@ -71,7 +72,24 @@ public class SessionHandlers extends HandlerUtils {
                 deleteSession(hub, sessionEvt, session);
                 return;
             }
+            case RECOVER -> {
+                recoverSession(sessionEvt, session);
+                return;
+            }
         }
+    }
+
+    private static void recoverSession(SessionEvent sessionEvt, GameSession session) {
+        var state = session.getSessionState();
+        if (!state.active()) {
+            Resolve.success(sessionEvt, session, msg("server.gg.events.session.recover.idle")
+                    .param("sessionState", state.toString()));
+            return;
+        }
+        session.abandon("Recovered from " + state);
+        refreshHud(session);
+        Resolve.success(sessionEvt, session, msg("server.gg.events.session.recover.success")
+                .param("sessionState", state.toString()));
     }
 
     private static void setupGame(World hub, SessionEvent sessionEvt, GameSession session) {
@@ -96,6 +114,7 @@ public class SessionHandlers extends HandlerUtils {
         // pass stuff to the game
         // mark the next game as running
         session.startNext();
+        var attempt = session.getGeneration();
         refreshHud(session);
         var starting = msg("server.gg.gauntlet.session.starting").param("game", game.getDisplayName());
         for (var player : GauntletUtils.playersFor(session)) {
@@ -105,13 +124,18 @@ public class SessionHandlers extends HandlerUtils {
         future.whenComplete((value, error) -> {
             // run on the hub thread
             GauntletUtils.run(hub, () -> {
+                if (!session.isCurrent(attempt)) {
+                    Resolve.success(sessionEvt, session, msg("server.gg.events.session.stale")
+                            .param("action", "setup").param("attempt", attempt));
+                    return;
+                }
                 if (error != null) {
                     // errored
                     GaiaLog.atError().withSession(session).withCause(error)
                             .log(MessageUtils.msg("server.gg.events.session.setup.error")
                                     .param("sessionId", session.getId())
                                     .param("gameId", nextGameId)
-                                    .param("reason", error.getLocalizedMessage()));
+                                    .param("reason", MessageUtils.reason(error)));
 
                     session.setErrored("Error thrown during setup");
                     // cancel the game immediately - run on the hub thread
@@ -119,7 +143,7 @@ public class SessionHandlers extends HandlerUtils {
                     return;
                 }
 
-                var check = session.setRunning(nextGameId);
+                var check = session.setRunning(attempt);
                 if (!check) {
                     // something has gone horribly wrong
                     GaiaLog.atError().withSession(session)
@@ -147,7 +171,7 @@ public class SessionHandlers extends HandlerUtils {
                 } catch (Exception e) {
                     GaiaLog.atError(e).withSession(session).log(msg("server.gg.events.players.join.warn")
                             .param("playerName", "all session players")
-                            .param("reason", e.getLocalizedMessage()));
+                            .param("reason", MessageUtils.reason(e)));
                 }
                 sessionEvt.complete(GaiaLog.atInfo().withSession(session)
                         .log(MessageUtils.msg("server.gg.events.session.setup.success")
@@ -181,16 +205,22 @@ public class SessionHandlers extends HandlerUtils {
         }
 
         // pass stuff to the game
+        var attempt = session.getGeneration();
         var future = game.cleanGame(hub, session);
         future.whenComplete((value, error) -> {
             // run on the hub thread
             GauntletUtils.run(hub, () -> {
+                if (!session.isCurrent(attempt)) {
+                    Resolve.success(sessionEvt, session, msg("server.gg.events.session.stale")
+                            .param("action", "clean").param("attempt", attempt));
+                    return;
+                }
                 if (error != null) {
                     GaiaLog.atError().withSession(session).withCause(error)
                             .log(MessageUtils.msg("server.gg.events.session.setup.error")
                                     .param("sessionId", session.getId())
                                     .param("gameId", currentGame)
-                                    .param("reason", error.getLocalizedMessage()));
+                                    .param("reason", MessageUtils.reason(error)));
                     session.setErrored("Error thrown when cancelling");
                 } else {
                     var success = session.setComplete(currentGame);
@@ -283,6 +313,23 @@ public class SessionHandlers extends HandlerUtils {
                         .param("action", "appended " + gameQueue.size() + " game(s)"));
             }
         }
+    }
+
+    public static void handleSessionComponents(World hub, SessionComponentsEvent componentsEvt) {
+        if (!(sessionFor(componentsEvt.getSessionId()).orElse(null) instanceof GameSession session)) {
+            Resolve.error(componentsEvt, MessageUtils.msg("server.gg.events.session.missing").param("sessionId",
+                    componentsEvt.getSessionId()));
+            return;
+        }
+        if (!session.available() || !session.putAll(componentsEvt.getComponents())) {
+            Resolve.error(componentsEvt, session, MessageUtils.msg("server.gg.events.session.error.unavailable")
+                    .param("sessionState", session.getSessionState().toString())
+                    .param("action", "changing its components"));
+            return;
+        }
+        refreshHud(session);
+        Resolve.success(componentsEvt, session, MessageUtils.msg("server.gg.events.session.components.success")
+                .param("components", String.join(", ", componentsEvt.getComponents().keySet())));
     }
 
     public static void handleSessionPlugin(World hub, SessionPluginEvent pluginEvt) {

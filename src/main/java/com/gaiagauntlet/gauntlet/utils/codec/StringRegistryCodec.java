@@ -11,6 +11,7 @@ import org.bson.BsonValue;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.ExtraInfo;
+import com.hypixel.hytale.codec.exception.CodecException;
 import com.hypixel.hytale.codec.schema.SchemaContext;
 import com.hypixel.hytale.codec.schema.config.ObjectSchema;
 import com.hypixel.hytale.codec.schema.config.Schema;
@@ -23,10 +24,17 @@ public class StringRegistryCodec<T extends SerializableComponent, M extends Map<
 
     private CodecRegistry<T> registry;
     private Supplier<M> supplier;
+    private boolean strict;
 
     public StringRegistryCodec(CodecRegistry<T> registry, Supplier<M> supplier) {
+        this(registry, supplier, false);
+    }
+
+    /** A strict codec fails the whole decode on an unknown or broken component instead of skipping it */
+    public StringRegistryCodec(CodecRegistry<T> registry, Supplier<M> supplier, boolean strict) {
         this.registry = registry;
         this.supplier = supplier;
+        this.strict = strict;
     }
 
     @Override
@@ -49,6 +57,8 @@ public class StringRegistryCodec<T extends SerializableComponent, M extends Map<
             BsonValue value = entry.getValue();
 
             if (codec == null) {
+                if (strict)
+                    throw new CodecException("No component with a codec is registered as " + id);
                 LOGGER.atWarning().atMostEvery(30, TimeUnit.SECONDS)
                         .log("Skipping game component without a codec while decoding: %s", id);
                 continue;
@@ -58,6 +68,8 @@ public class StringRegistryCodec<T extends SerializableComponent, M extends Map<
 
                 map.put(id, codec.decode(value, extraInfo));
             } catch (Exception exception) {
+                if (strict)
+                    throw new CodecException("Failed to decode component " + id, exception);
                 LOGGER.atWarning().withCause(exception).log("Failed to decode game component: %s", id);
             } finally {
                 extraInfo.popKey();

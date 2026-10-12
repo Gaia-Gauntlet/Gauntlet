@@ -1,0 +1,13 @@
+vote.open=<color is="#E8A93B"><b>Vote for the next game! Type /vote to pick one</b></color>
+vote.won=<color is="#E8A93B"><b>Voting closed. Up next: {preset} with {votes} votes</b></color>
+vote.none=<color is="#878e9c">Voting closed with no votes, so the next game is picked at random</color>
+next=<color is="#E8A93B"><b>Up next: {preset}</b></color>
+
+presets.ez_solos.title=Elimination Zone: Solos
+presets.ez_solos.description=Every player for themselves
+presets.ez_doubles.title=Elimination Zone: Doubles
+presets.ez_doubles.description=Teams of two
+presets.ez_triples.title=Elimination Zone: Triples
+presets.ez_triples.description=Teams of three
+
+vote.overridden=<color is="#E8A93B"><b>The vote was ended, an admin picked the next game: {preset}</b></color>

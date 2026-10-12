@@ -1,5 +1,9 @@
 package com.gaiagauntlet.gauntlet.plugins.lobbycontroller.transfer;
 
+import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
+import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
+import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +57,7 @@ public class TransferUtils {
                                 .log(msg("server.gg.plugins.transfer.error.world")
                                         .param("player", playerRef.getUsername())
                                         .param("world", destination.getName())
-                                        .param("reason", err.getLocalizedMessage()));
+                                        .param("reason", MessageUtils.reason(err)));
                         return;
                     }
 
@@ -98,11 +102,25 @@ public class TransferUtils {
                             return;
                         }
 
+                        var reason = !destination.isAlive() ? "the arena has closed"
+                                : !GauntletUtils.sessionFor(playerRef).map(session -> session.getId().equals(sessionId))
+                                        .orElse(false) ? "they are no longer in the session"
+                                : GauntletUtils.sessionFor(sessionId).map(GameSession::getSessionState)
+                                        .orElse(null) != SessionState.RUNNING ? "the game is no longer running" : null;
+                        if (reason != null) {
+                            GaiaLog.atInfo().withSession(sessionId)
+                                    .log(msg("server.gg.plugins.transfer.error.world")
+                                            .param("player", playerRef.getUsername())
+                                            .param("world", destination.getName())
+                                            .param("reason", reason));
+                            return;
+                        }
+
                         // put the teleport component
                         refStore.putComponent(ref, PlayerMarker.getComponentType(),
                                 new PlayerMarker(sessionId, destination.getWorldConfig().getUuid()));
-                        refStore.putComponent(ref, Teleport.getComponentType(),
-                                warpComponent);
+                        refStore.tryRemoveComponent(ref, Teleport.getComponentType());
+                        refStore.addComponent(ref, Teleport.getComponentType(), warpComponent);
                     });
                 });
             }, delay, TimeUnit.SECONDS);
@@ -118,7 +136,7 @@ public class TransferUtils {
                 GaiaLog.atError(error).withSession(sessionId).log(msg("server.gg.plugins.transfer.failed")
                         .param("player", playerName)
                         .param("world", worldName)
-                        .param("cause", error.getLocalizedMessage()));
+                        .param("cause", MessageUtils.reason(error)));
                 return;
             }
             GaiaLog.atInfo().withSession(sessionId).log(msg("server.gg.plugins.transfer.success")
