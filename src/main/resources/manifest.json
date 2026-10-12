@@ -20,7 +20,8 @@
     "ServerVersion": ">=0.7.0-pre.5 <0.8.0",
     "Dependencies": {
         "Hytale:AssetModule": "*",
-        "Hytale:EntityModule": "*"
+        "Hytale:EntityModule": "*",
+        "Hytale:TriggerVolumes": "*"
     },
     "OptionalDependencies": {
         "com.creditor:Creditor": "*"

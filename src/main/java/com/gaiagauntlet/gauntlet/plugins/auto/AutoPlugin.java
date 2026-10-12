@@ -5,6 +5,7 @@ import java.util.Map;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionStateEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.AutoComponent;
@@ -14,9 +15,11 @@ import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.PresetRotation
 import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.SequentialRotation;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.VoteRotation;
 import com.gaiagauntlet.gauntlet.plugins.auto.events.AutoSessionEvents;
+import com.gaiagauntlet.gauntlet.plugins.auto.tv.AutoVolume;
 import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
+import com.hypixel.hytale.builtin.triggervolumes.TriggerVolumesPlugin;
 import com.hypixel.hytale.event.EventPriority;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
@@ -78,6 +81,9 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
         AutoComponent.setComponentType(SessionRegistry.register(AutoComponent.ID, AutoComponent.class,
                 AutoComponent.CODEC));
 
+        TriggerVolumesPlugin.get().registerEffectType(AutoVolume.ID, AutoVolume.class, AutoVolume.CODEC);
+
+        GauntletEventRegistry.on(SessionEvent.class, AutoSessionEvents::onSession);
         GauntletEventRegistry.on(SessionStateEvent.class, AutoSessionEvents::onSessionState);
         GauntletEventRegistry.on(PlayerGameEvent.class, AutoSessionEvents::onPlayerGame);
         GauntletEventRegistry.on(PlayerPartyEvent.class, AutoSessionEvents::onPlayerParty);

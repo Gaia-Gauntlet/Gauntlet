@@ -13,9 +13,12 @@ import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionComponentsEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent.SessionPluginOp;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -46,6 +49,8 @@ public final class AutoUtils {
     public static final String IDLE = "AutoIdle";
     public static final String RETRY = "AutoRetry";
 
+    public static final String DEFAULT_SESSION = "Default";
+
     private AutoUtils() {
     }
 
@@ -59,6 +64,7 @@ public final class AutoUtils {
     public static void scheduleAll() {
         var hub = GauntletUtils.withHubWorld();
         hub.execute(() -> {
+            ensureDefaultSession();
             var sessions = GauntletUtils.withResource().getSessions();
             for (var store : new ArrayList<>(GameStore.withResource(hub).getAll())) {
                 if (!sessions.containsKey(store.getSessionId()))
@@ -66,6 +72,17 @@ public final class AutoUtils {
             }
             sessions.values().forEach(AutoUtils::advance);
         });
+    }
+
+    /** Creates the Default session with Auto installed when it is missing. Runs on the hub thread */
+    public static void ensureDefaultSession() {
+        if (GauntletUtils.sessionFor(DEFAULT_SESSION).isPresent())
+            return;
+        GaiaLog.atInfo().log("Auto creates the " + DEFAULT_SESSION + " session");
+        GauntletEventRegistry.dispatch(new NewSessionEvent(new GameSession(DEFAULT_SESSION))
+                .onComplete(created -> then(DEFAULT_SESSION, created, () -> GauntletEventRegistry.dispatch(
+                        new SessionPluginEvent(SessionPluginOp.INSTALL, DEFAULT_SESSION, AutoPlugin.ID)
+                                .onComplete(_ -> schedule(DEFAULT_SESSION))))));
     }
 
     public static boolean runs(@Nonnull GameSession session) {
