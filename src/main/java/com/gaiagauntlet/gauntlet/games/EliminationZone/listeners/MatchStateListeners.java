@@ -2,9 +2,11 @@ package com.gaiagauntlet.gauntlet.games.EliminationZone.listeners;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
@@ -63,8 +65,10 @@ public final class MatchStateListeners {
             END_SEQUENCE_MUSIC,
             GauntletUtils.sessionFor(evt.getSessionId()).orElse(null)
         );
+        var game = evt.getGame();
+        var config = EZGameConfig.get(game);
 
-        TimerUtils.start(GAME_END_TIMER_ID, evt.getGame(), END_SEQUENCE_LENGTH);
+        TimerUtils.start(GAME_END_TIMER_ID, game, config.getMatchEndSeconds());
 
         // The end can be reached from inside a system, so the store is only changed on a later task.
         LobbyController.withArenaWorld(evt.getSessionId()).ifPresent(world -> world.execute(() -> {
@@ -79,8 +83,10 @@ public final class MatchStateListeners {
 
     public static void onMatchEndTimer(TimerCompleteEvent evt) {
         if (!Objects.equals(evt.getTimerId(), GAME_END_TIMER_ID)) return;
+        var ctx = GameStore.getContext(evt.getGameStore());
+
         GauntletEventRegistry.dispatch(
-            new SessionEvent(SessionEvent.SessionOperation.CLEAN, evt.getSessionId())
+            new GameEndEvent(ctx.getWorld(), evt.getSessionId(), ctx.getGameId())
         );
     }
 }

@@ -205,6 +205,12 @@ public class EZGameConfig extends GameConfigAsset {
         .addValidator(Validators.greaterThanOrEqual(0F))
         .documentation("Seconds the lobby waits for the rest of the session once the minimum player count has arrived.")
         .add()
+        .append(new KeyedCodec<>("MatchEndSeconds", Codec.FLOAT),
+            (p, v) -> p.matchEndSeconds = v,
+            p -> p.matchEndSeconds)
+        .addValidator(Validators.greaterThanOrEqual(0F))
+        .documentation("Seconds the lobby waits for the rest of the session once the minimum player count has arrived.")
+        .add()
         .build();
 
     @Getter private String instanceTemplateName = "GGEliminationZone";
@@ -262,6 +268,7 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private float cornucopiaDurationSeconds = 27;
     @Getter private float spawnProtectionSeconds = 90;
     @Getter private float cameraSequenceSeconds = 29;
+    @Getter private float matchEndSeconds = 10;
     @Getter private GameEvents gameEvents;
     @Getter private GGPoi[] arenaTimerPois = new GGPoi[]{
         new GGPoi(new Transform(-98, 58, 0, 0, 180, 0))
