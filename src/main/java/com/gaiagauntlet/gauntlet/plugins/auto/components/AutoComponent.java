@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * How Auto runs one session: which AutoSessionAsset it follows and whether an admin paused it.
+ * How Auto runs one session: which AutoSession it follows and whether an admin paused it.
  * Changed in place, since the session refuses new components while its game runs
  */
 public final class AutoComponent implements SessionComponent {
@@ -30,13 +30,31 @@ public final class AutoComponent implements SessionComponent {
                     (auto, v) -> auto.paused = v != null && v,
                     auto -> auto.paused)
             .add()
+            .append(new KeyedCodec<>("Cursor", Codec.INTEGER),
+                    (auto, v) -> auto.cursor = v == null ? 0 : v,
+                    auto -> auto.cursor)
+            .add()
+            .append(new KeyedCodec<>("CurrentPreset", Codec.STRING),
+                    (auto, v) -> auto.currentPreset = v,
+                    auto -> auto.currentPreset)
+            .add()
+            .append(new KeyedCodec<>("NextPreset", Codec.STRING),
+                    (auto, v) -> auto.nextPreset = v,
+                    auto -> auto.nextPreset)
+            .add()
             .build();
 
     @Getter @Setter private static SessionComponentType<@NotNull AutoComponent> componentType;
 
-    /** The AutoSessionAsset to follow, or null to follow the one named after the session */
+    /** The AutoSession to follow, or null to follow the one named after the session */
     @Getter @Setter @Nullable private volatile String configId;
     @Getter @Setter private volatile boolean paused;
     /** Failures since the last game reached RUNNING. Not saved, a restart starts the count over */
     @Getter @Setter private volatile int failures;
+    /** How far a sequential rotation has gone through its presets */
+    @Getter @Setter private volatile int cursor;
+    /** The preset applied for the current or last game */
+    @Getter @Setter @Nullable private volatile String currentPreset;
+    /** A preset an admin picked to play next, taking the place of the rotation once */
+    @Getter @Setter @Nullable private volatile String nextPreset;
 }

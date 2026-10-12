@@ -8,7 +8,11 @@ import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionStateEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.AutoComponent;
-import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.AutoSessionAsset;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.AutoSession;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.SessionPreset;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.PresetRotation;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.SequentialRotation;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.VoteRotation;
 import com.gaiagauntlet.gauntlet.plugins.auto.events.AutoSessionEvents;
 import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
@@ -25,7 +29,6 @@ import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.AutoTab;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.MatchTab;
-import com.gaiagauntlet.gauntlet.plugins.auto.ui.VoteHud;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.VotePage;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
@@ -58,10 +61,18 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
     }
 
     public void init(JavaPlugin host) {
-        host.getAssetRegistry().register(HytaleAssetStore.builder(AutoSessionAsset.class, new DefaultAssetMap<>())
+        PresetRotation.CODEC.register(SequentialRotation.TYPE, SequentialRotation.class, SequentialRotation.CODEC);
+        PresetRotation.CODEC.register(VoteRotation.TYPE, VoteRotation.class, VoteRotation.CODEC);
+
+        host.getAssetRegistry().register(HytaleAssetStore.builder(SessionPreset.class, new DefaultAssetMap<>())
+                .setPath("Gauntlet/Plugins/" + ID + "/Presets")
+                .setCodec(SessionPreset.CODEC)
+                .setKeyFunction(SessionPreset::getId)
+                .build());
+        host.getAssetRegistry().register(HytaleAssetStore.builder(AutoSession.class, new DefaultAssetMap<>())
                 .setPath("Gauntlet/Plugins/" + ID + "/Session")
-                .setCodec(AutoSessionAsset.CODEC)
-                .setKeyFunction(AutoSessionAsset::getId)
+                .setCodec(AutoSession.CODEC)
+                .setKeyFunction(AutoSession::getId)
                 .build());
 
         AutoComponent.setComponentType(SessionRegistry.register(AutoComponent.ID, AutoComponent.class,
@@ -98,12 +109,12 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        return List.of(new MatchTab(), new AutoTab());
+        return List.of(new AutoTab());
     }
 
     @Override
     public List<HudElement> getHudElements() {
-        return List.of(new VoteHud());
+        return List.of();
     }
 
     @Override

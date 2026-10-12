@@ -96,6 +96,17 @@ public class GameSession {
         sessionComponents.put(type.getIndex(), component);
     }
 
+    /** Puts components keyed by their registered id, replacing any the session already has */
+    public boolean putAll(Map<String, SessionComponent> components) {
+        if (locked) {
+            GaiaLog.atWarning().log("Attempted to write " + components.keySet() + " to " + getId()
+                    + " while game is locked (state is " + sessionState.toString() + ") - addition was blocked!");
+            return false;
+        }
+        sessionComponents.putAll(components);
+        return true;
+    }
+
     public <T extends SessionComponent> Optional<T> get(SessionComponentType<T> type) {
         var sesComp = sessionComponents.get(type.getIndex());
         if (sesComp == null)

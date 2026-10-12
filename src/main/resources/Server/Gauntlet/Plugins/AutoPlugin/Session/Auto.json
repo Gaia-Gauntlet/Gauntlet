@@ -5,5 +5,17 @@
   "IdleGraceSeconds": 60,
   "SetupTimeoutSeconds": 60,
   "CleanTimeoutSeconds": 30,
-  "RetrySeconds": [5, 15, 60]
+  "RetrySeconds": [
+    5,
+    15,
+    60
+  ],
+  "Rotation": {
+    "Type": "Sequential",
+    "Presets": [
+      "EZ_Doubles",
+      "EZ_Solos",
+      "EZ_Triples"
+    ]
+  }
 }

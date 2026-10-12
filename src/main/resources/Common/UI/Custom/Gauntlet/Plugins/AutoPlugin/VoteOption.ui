@@ -1,10 +1,10 @@
-// One game on the vote: its name, its share of the votes as a bar and a count, and the vote button.
+// One game on the vote: its name, its description, its share of the votes as a bar and a count, and the vote button.
 $Common = "../../../Common.ui";
 $G = "../../Admin/Common.ui";
 
 Group {
     LayoutMode: Left;
-    Anchor: (Height: 58, Bottom: 6);
+    Anchor: (Height: 76, Bottom: 6);
     Background: (Color: #000000(0.25));
     Padding: (Full: 8);
 
@@ -15,6 +15,10 @@ Group {
         Label #Name {
             Anchor: (Height: 22);
             Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
+        }
+        Label #Description {
+            Anchor: (Height: 18);
+            Style: (FontSize: 12, TextColor: #878e9c, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
         }
         Group {
             Anchor: (Height: 20);
@@ -29,5 +33,5 @@ Group {
         }
     }
 
-    $G.@Go #Pick { @Anchor = (Left: 12, Top: 6); Text: "Vote"; }
+    $G.@Go #Pick { @Anchor = (Left: 12, Top: 15); Text: "Vote"; }
 }

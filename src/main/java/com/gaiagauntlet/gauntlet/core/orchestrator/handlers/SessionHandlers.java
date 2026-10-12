@@ -9,6 +9,7 @@ import java.util.List;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionComponentsEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
@@ -312,6 +313,23 @@ public class SessionHandlers extends HandlerUtils {
                         .param("action", "appended " + gameQueue.size() + " game(s)"));
             }
         }
+    }
+
+    public static void handleSessionComponents(World hub, SessionComponentsEvent componentsEvt) {
+        if (!(sessionFor(componentsEvt.getSessionId()).orElse(null) instanceof GameSession session)) {
+            Resolve.error(componentsEvt, MessageUtils.msg("server.gg.events.session.missing").param("sessionId",
+                    componentsEvt.getSessionId()));
+            return;
+        }
+        if (!session.available() || !session.putAll(componentsEvt.getComponents())) {
+            Resolve.error(componentsEvt, session, MessageUtils.msg("server.gg.events.session.error.unavailable")
+                    .param("sessionState", session.getSessionState().toString())
+                    .param("action", "changing its components"));
+            return;
+        }
+        refreshHud(session);
+        Resolve.success(componentsEvt, session, MessageUtils.msg("server.gg.events.session.components.success")
+                .param("components", String.join(", ", componentsEvt.getComponents().keySet())));
     }
 
     public static void handleSessionPlugin(World hub, SessionPluginEvent pluginEvt) {

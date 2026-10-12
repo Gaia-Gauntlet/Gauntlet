@@ -40,6 +40,7 @@ session.plugin.needed=Plugin {pluginId} is needed by {plugins} in {sessionId}
 session.plugin.required=Cannot set up {gameId} in {sessionId} until {plugins} are installed
 session.plugin.install.success=<color is="#06f906">Installed {plugins} in {sessionId}</color>
 session.plugin.uninstall.success=<color is="#06f906">Uninstalled {pluginId} from {sessionId}</color>
+session.components.success=<color is="#06f906">Put {components} on {sessionId}</color>
 
 # Player Events
 players.connect.warn=Player {playerName} not routed because {reason}

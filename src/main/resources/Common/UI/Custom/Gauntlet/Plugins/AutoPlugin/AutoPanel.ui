@@ -14,6 +14,31 @@ Group {
             $G.@Field #AutoFailuresField  { @Key = "Failures"; }
             $G.@Field #AutoTimerField     { @Key = "Timer"; }
         }
+
+        $G.@Card {
+            $G.@Header { @Text = "Up next"; }
+            $G.@Field #AutoRotationField { @Key = "Rotation"; }
+            $G.@Field #AutoPoolField     { @Key = "Pool"; }
+            $G.@Field #AutoCurrentField  { @Key = "Now playing"; }
+            $G.@Field #AutoNextField     { @Key = "Up next"; }
+            $G.@Field #AutoVoteField     { @Key = "Vote"; }
+            $G.@Field #AutoStartsField   { @Key = "Starts in"; }
+            $G.@Caption { @Text = "Next preset"; }
+            $G.@PickerRow {
+                $G.@Picker #AutoPresetPicker {}
+            }
+            $G.@ButtonRow {
+                $G.@Confirm #AutoPlayNext  { @Anchor = (Right: 3); Text: "Play next"; }
+                $G.@Action #AutoClearPick  { @Anchor = (Left: 3); Text: "Clear pick"; }
+            }
+            $G.@Note { @Text = "A pick takes the place of the rotation once, even over a vote's winner."; }
+            $G.@ButtonRow {
+                $G.@Action #AutoOpenVote  { @Anchor = (Right: 3); Text: "Open vote"; }
+                $G.@Action #AutoCloseVote { @Anchor = (Left: 3, Right: 3); Text: "Close vote"; }
+                $G.@Confirm #AutoStartNow { @Anchor = (Left: 3); Text: "Start now"; }
+            }
+            $G.@Note { @Text = "Votes only open between games. Closing a vote locks its winner early."; }
+        }
     }
 
     $G.@Gutter {}

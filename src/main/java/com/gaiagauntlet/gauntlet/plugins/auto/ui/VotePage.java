@@ -7,12 +7,13 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
-import com.gaiagauntlet.gauntlet.core.ui.SessionText;
 import com.gaiagauntlet.gauntlet.core.ui.events.AdminPageEvent;
 import com.gaiagauntlet.gauntlet.core.ui.pages.GauntletPage;
 import com.gaiagauntlet.gauntlet.core.ui.pages.Widgets;
 import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.SessionPreset;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.AutoUtils;
 import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -34,6 +35,7 @@ public final class VotePage extends GauntletPage {
     @Nullable private VoteComponent built;
     /** Whether the header was last laid out for a closed vote, or null before it was laid out. */
     @Nullable private Boolean builtClosed;
+    private long shownDeadline = -1;
 
     public VotePage(@Nonnull PlayerRef playerRef, @Nullable GameSession session) {
         super(playerRef, 2000);
@@ -45,6 +47,7 @@ public final class VotePage extends GauntletPage {
         cmd.append(PAGE);
         Widgets.bind(evt, "#CloseButton", "page.close");
         built = null;
+        shownDeadline = -1;
     }
 
     @Override
@@ -56,15 +59,12 @@ public final class VotePage extends GauntletPage {
             built = vote;
             builtClosed = closed;
             buildRows(cmd, evt, vote);
-            cmd.set("#TimerText.Visible", !closed);
-            cmd.set("#TimerClock.Visible", !closed);
-            if (!closed) {
-                cmd.set("#TimerClock.Seconds", vote.remainingSeconds());
-            }
-            cmd.set("#Result.Text", vote == null ? "No vote right now"
-                    : !closed ? ""
-                    : vote.getWinner() == null ? "Vote closed" : "Up next: " + SessionText.game(vote.getWinner()));
+            cmd.set("#Result.TextSpans", vote == null ? Message.raw("No vote right now")
+                    : !closed ? Message.raw("")
+                    : vote.getWinner() == null ? Message.raw("Vote closed")
+                    : Message.raw("Up next: ").insert(VoteUtils.title(vote.getWinner())));
         }
+        timer(cmd, closed ? -1 : AutoUtils.secondsToStart(session));
         if (vote == null) {
             cmd.set("#Summary.Text", "");
             return;
@@ -94,7 +94,11 @@ public final class VotePage extends GauntletPage {
         for (int i = 0; i < options.size(); i++) {
             var row = "#Options[" + i + "]";
             cmd.append("#Options", OPTION);
-            cmd.set(row + " #Name.Text", SessionText.game(options.get(i)));
+            cmd.set(row + " #Name.TextSpans", VoteUtils.title(options.get(i)));
+            var preset = SessionPreset.getAssetMap().get(options.get(i));
+            if (preset != null && preset.getDescription() != null) {
+                cmd.set(row + " #Description.TextSpans", Message.translation(preset.getDescription()));
+            }
             Widgets.bindArg(evt, row + " #Pick", "vote.cast", options.get(i));
         }
     }
@@ -106,7 +110,18 @@ public final class VotePage extends GauntletPage {
         var vote = VoteUtils.get(session());
         if (vote == null || vote.isClosed()) return Widgets.fail("The vote has closed");
         if (!vote.cast(playerRef.getUuid(), event.arg())) return Widgets.fail("That game is not on the vote");
-        return Widgets.ok("You voted for " + SessionText.game(event.arg()));
+        return Widgets.ok("You voted for ").insert(VoteUtils.title(event.arg()));
+    }
+
+    private void timer(@Nonnull UICommandBuilder cmd, int seconds) {
+        var deadline = seconds < 0 ? -1 : System.currentTimeMillis() + seconds * 1000L;
+        if ((deadline < 0) == (shownDeadline < 0) && (deadline < 0 || Math.abs(deadline - shownDeadline) < 1500)) return;
+        shownDeadline = deadline;
+        cmd.set("#TimerText.Visible", seconds >= 0);
+        cmd.set("#TimerClock.Visible", seconds >= 0);
+        if (seconds >= 0) {
+            cmd.set("#TimerClock.Seconds", seconds);
+        }
     }
 
     /** The viewer's session now, or the one the page opened for if they have since left it. */

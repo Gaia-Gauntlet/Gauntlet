@@ -1,6 +1,10 @@
 package com.gaiagauntlet.gauntlet.plugins.auto.utils;
 
+import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -8,13 +12,20 @@ import javax.annotation.Nullable;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionComponentsEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionQueueEvent.SessionQueueOp;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.AutoComponent;
-import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.AutoSessionAsset;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.AutoSession;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.SessionPreset;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.rotation.VoteRotation;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
@@ -81,8 +92,8 @@ public final class AutoUtils {
     }
 
     @Nullable
-    public static AutoSessionAsset config(@Nonnull GameSession session, @Nonnull AutoComponent auto) {
-        return AutoSessionAsset.getAssetMap().get(configId(session, auto));
+    public static AutoSession config(@Nonnull GameSession session, @Nonnull AutoComponent auto) {
+        return AutoSession.getAssetMap().get(configId(session, auto));
     }
 
     private static void advance(@Nonnull GameSession session) {
@@ -95,11 +106,12 @@ public final class AutoUtils {
         var config = config(session, auto);
         if (config == null) {
             GaiaLog.atWarning().withSession(session)
-                    .log("Auto has no AutoSessionAsset named " + configId(session, auto) + ", so it is not running");
+                    .log("Auto has no AutoSession named " + configId(session, auto) + ", so it is not running");
             stop(hub, session.getId());
             return;
         }
 
+        // runs validators and retry hook to verify the state is working properly
         var present = GauntletUtils.playersFor(session).size();
         switch (session.getSessionState()) {
             case SETTING_UP -> arm(hub, session, SETUP_DEADLINE, config.getSetupTimeoutSeconds(), null);
@@ -116,20 +128,23 @@ public final class AutoUtils {
                     arm(hub, session, RETRY, delay, null);
             }
             case IDLE, FINISHED -> {
-                if (present < config.getSpinUpPlayers() || session.getNext() == null) {
+                var rotation = session.getNext() == null ? config.getRotation() : null;
+                if (present < config.getSpinUpPlayers() || (session.getNext() == null && rotation == null)) {
                     stop(hub, session.getId());
                     return;
                 }
-                var pause = session.getSessionState() == SessionState.FINISHED ? config.getIntermissionSeconds()
-                        : config.getGatherSeconds();
+                var intermission = session.getSessionState() == SessionState.FINISHED
+                        || (rotation != null && rotation.holdsIntermission());
+                var pause = intermission ? config.getIntermissionSeconds() : config.getGatherSeconds();
                 if (auto.getFailures() > 0) {
                     var delay = retryDelay(session, auto, config);
                     if (delay < 0)
                         return;
                     pause = Math.max(pause, delay);
                 }
-                var timerId = session.getSessionState() == SessionState.FINISHED ? INTERMISSION : GATHER;
-                arm(hub, session, timerId, pause, TimerUtils.IMG_COUNTDOWN);
+                if (arm(hub, session, intermission ? INTERMISSION : GATHER, pause, TimerUtils.IMG_COUNTDOWN)
+                        && rotation != null && auto.getNextPreset() == null)
+                    rotation.open(session, auto);
             }
         }
     }
@@ -144,11 +159,13 @@ public final class AutoUtils {
         if (auto != null && !auto.isPaused() && config != null) {
             var state = session.getSessionState();
             var present = GauntletUtils.playersFor(session).size();
+            var waitEnded = (timerId.equals(GATHER) || timerId.equals(INTERMISSION))
+                    && (state == SessionState.IDLE || state == SessionState.FINISHED)
+                    && present >= config.getSpinUpPlayers();
+            if (waitEnded && session.getNext() == null && startPreset(session, auto, config))
+                return;
             var op = switch (timerId) {
-                case GATHER, INTERMISSION -> (state == SessionState.IDLE || state == SessionState.FINISHED)
-                        && present >= config.getSpinUpPlayers() && session.getNext() != null
-                                ? SessionOperation.SETUP
-                                : null;
+                case GATHER, INTERMISSION -> waitEnded && session.getNext() != null ? SessionOperation.SETUP : null;
                 case SETUP_DEADLINE -> state == SessionState.SETTING_UP ? SessionOperation.RECOVER : null;
                 case CLEAN_DEADLINE -> state == SessionState.ENDING || state == SessionState.CLEANING
                         ? SessionOperation.RECOVER
@@ -158,6 +175,8 @@ public final class AutoUtils {
                 default -> null;
             };
             if (op != null) {
+                if (op == SessionOperation.SETUP)
+                    session.remove(VoteComponent.getComponentType());
                 GaiaLog.atInfo().withSession(session).log("Auto sends " + op + " to " + sessionId + " after " + timerId);
                 GauntletEventRegistry.dispatch(new SessionEvent(op, sessionId).onComplete(_ -> schedule(sessionId)));
             }
@@ -165,9 +184,111 @@ public final class AutoUtils {
         advance(session);
     }
 
+    /**
+     * Applies the admin's pick or the rotation's, then queues its game and sets it up, each step only
+     * once the one before it succeeded. Returns false when there was nothing to start
+     */
+    private static boolean startPreset(@Nonnull GameSession session, @Nonnull AutoComponent auto,
+            @Nonnull AutoSession config) {
+        var rotation = config.getRotation();
+        var override = auto.getNextPreset();
+        var presetId = override != null ? override : rotation == null ? null : rotation.pick(session, auto);
+        if (presetId == null)
+            return false;
+        if (override != null) {
+            auto.setNextPreset(null);
+            session.remove(VoteComponent.getComponentType());
+        }
+        var preset = SessionPreset.getAssetMap().get(presetId);
+        if (preset == null) {
+            GaiaLog.atError().withSession(session).log("Auto cannot start preset " + presetId + ", it is not loaded");
+            return false;
+        }
+
+        var sessionId = session.getId();
+        GaiaLog.atInfo().withSession(session).log("Auto applies preset " + presetId + " to " + sessionId);
+        GauntletEventRegistry.dispatch(new SessionComponentsEvent(sessionId, preset.components())
+                .onComplete(applied -> then(sessionId, applied, () -> GauntletEventRegistry.dispatch(
+                        new SessionQueueEvent(SessionQueueOp.APPEND, sessionId, List.of(preset.getGame()))
+                                .onComplete(queued -> then(sessionId, queued, () -> {
+                                    GauntletUtils.sessionFor(sessionId).ifPresent(current -> {
+                                        var latest = auto(current);
+                                        if (latest != null)
+                                            latest.setCurrentPreset(presetId);
+                                        VoteUtils.tell(current, msg("server.gg.plugins.auto.next")
+                                                .param("preset", VoteUtils.title(presetId)));
+                                    });
+                                    GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.SETUP, sessionId)
+                                            .onComplete(_ -> schedule(sessionId)));
+                                }))))));
+        return true;
+    }
+
+    /** Runs the next step on a fresh hub task, or re-reads the session when the step before failed */
+    private static void then(@Nonnull String sessionId, @Nullable GaiaLog result, @Nonnull Runnable next) {
+        GauntletUtils.withHubWorld().execute(() -> {
+            if (result != null && result.getLevel().intValue() >= Level.WARNING.intValue()) {
+                schedule(sessionId);
+                return;
+            }
+            next.run();
+        });
+    }
+
+    /** The preset the session plays next if nothing changes: the admin's pick, else the rotation's */
+    @Nullable
+    public static String upNext(@Nonnull GameSession session, @Nonnull AutoComponent auto) {
+        if (auto.getNextPreset() != null)
+            return auto.getNextPreset();
+        var config = config(session, auto);
+        var rotation = config == null ? null : config.getRotation();
+        return rotation == null ? null : rotation.upNext(session, auto);
+    }
+
+    /** Makes the admin's pick the next preset, ending an open vote since its result would be ignored */
+    public static void pickNext(@Nonnull GameSession session, @Nonnull AutoComponent auto, @Nonnull String presetId) {
+        auto.setNextPreset(presetId);
+        if (!VoteUtils.isOpen(session))
+            return;
+        session.remove(VoteComponent.getComponentType());
+        VoteUtils.tell(session, msg("server.gg.plugins.auto.vote.overridden").param("preset", VoteUtils.title(presetId)));
+        HudEvent.refresh(session.getId()).dispatch();
+    }
+
+    /** Opens a vote now. Only a vote rotation between games can, and not while one is open or an admin picked */
+    public static boolean openVote(@Nonnull GameSession session) {
+        var auto = auto(session);
+        var config = auto == null ? null : config(session, auto);
+        if (config == null || !(config.getRotation() instanceof VoteRotation rotation) || !session.available()
+                || VoteUtils.isOpen(session) || auto.getNextPreset() != null)
+            return false;
+        session.remove(VoteComponent.getComponentType());
+        rotation.open(session, auto);
+        return VoteUtils.isOpen(session);
+    }
+
+    /** Seconds left before the next game starts, or -1 when the session is not waiting on one */
+    public static int secondsToStart(@Nonnull GameSession session) {
+        return GameStore.withStore(GauntletUtils.withHubWorld(), session.getId())
+                .flatMap(TimerUtils::get)
+                .filter(timer -> timer.isRunning()
+                        && (GATHER.equals(timer.getTimerId()) || INTERMISSION.equals(timer.getTimerId())))
+                .map(timer -> (int) Math.ceil(timer.getCountdownRemaining()))
+                .orElse(-1);
+    }
+
+    /** Ends the gather or intermission now, so the next game starts at once */
+    public static boolean startNow(@Nonnull GameSession session) {
+        var store = GameStore.withStore(GauntletUtils.withHubWorld(), session.getId()).orElse(null);
+        if (store == null || !(TimerUtils.isRunning(store, GATHER) || TimerUtils.isRunning(store, INTERMISSION)))
+            return false;
+        TimerUtils.complete(store);
+        return true;
+    }
+
     /** The wait before the next retry, or -1 once the retries ran out and Auto paused the session */
     private static int retryDelay(@Nonnull GameSession session, @Nonnull AutoComponent auto,
-            @Nonnull AutoSessionAsset config) {
+            @Nonnull AutoSession config) {
         var retries = config.getRetrySeconds();
         var failures = Math.max(1, auto.getFailures());
         if (retries == null || failures > retries.length) {
@@ -180,17 +301,21 @@ public final class AutoUtils {
         return retries[failures - 1];
     }
 
-    /** Arms the timer unless it is already counting down, replacing whatever timer was waiting before */
-    private static void arm(@Nonnull World hub, @Nonnull GameSession session, @Nonnull String timerId, int seconds,
+    /**
+     * Arms the timer unless it is already counting down, replacing whatever timer was waiting before.
+     * Returns whether a new countdown started
+     */
+    private static boolean arm(@Nonnull World hub, @Nonnull GameSession session, @Nonnull String timerId, int seconds,
             @Nullable String image) {
         var sessionId = session.getId();
         var store = GameStore.ensureStore(hub, sessionId);
         store.ensure(ContextComponent.getComponentType(), () -> new ContextComponent(hub, AutoPlugin.ID, sessionId));
         if (TimerUtils.isRunning(store, timerId))
-            return;
+            return false;
         var timer = image == null ? new GameTimerComponent(timerId) : new GameTimerComponent(timerId, image);
         TimerUtils.start(store, seconds, timer);
         TimerHud.update(store);
+        return true;
     }
 
     /**

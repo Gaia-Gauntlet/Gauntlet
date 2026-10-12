@@ -18,14 +18,6 @@ import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 
 import lombok.Getter;
 
-/**
- * A session's vote on its next game: the games on offer, one vote per player,
- * and when it closes.
- * After it closes it keeps the winner so the end screen can show it. Kept in
- * the session's game
- * store on the hub world, and not saved, since a vote only lives for one end
- * screen.
- */
 public final class VoteComponent implements SessionComponent {
 
     public static final String ID = "VoteComponent";
@@ -37,8 +29,6 @@ public final class VoteComponent implements SessionComponent {
     @Getter
     private final List<String> options;
     private final Map<UUID, String> votes = new ConcurrentHashMap<>();
-    @Getter
-    private float endsIn;
 
     /** The game that won, or null while the vote is open or when nobody voted. */
     @Getter
@@ -47,23 +37,10 @@ public final class VoteComponent implements SessionComponent {
     @Getter
     private volatile boolean closed;
 
-    public VoteComponent(@Nonnull List<String> options, float duration) {
+    public VoteComponent(@Nonnull List<String> options) {
         this.options = List.copyOf(options);
-        this.endsIn = duration;
     }
 
-    public int remainingSeconds() {
-        return Math.round(endsIn);
-    }
-
-    public float decrementTimer(float dt) {
-        return endsIn -= dt;
-    }
-
-    /**
-     * Records or changes a player's vote. Returns false when the vote is closed or
-     * the game is not on offer.
-     */
     public boolean cast(@Nonnull UUID player, @Nonnull String gameId) {
         if (closed || !options.contains(gameId))
             return false;
@@ -76,7 +53,6 @@ public final class VoteComponent implements SessionComponent {
         return votes.get(player);
     }
 
-    /** Votes per option, in option order, with zero for options nobody picked. */
     @Nonnull
     public Map<String, Integer> tally() {
         var tally = new HashMap<String, Integer>();
@@ -85,10 +61,6 @@ public final class VoteComponent implements SessionComponent {
         return tally;
     }
 
-    /**
-     * The option with the most votes, a random one of them on a tie, or null when
-     * nobody voted.
-     */
     @Nullable
     public String leader(@Nonnull Random random) {
         var tally = tally();

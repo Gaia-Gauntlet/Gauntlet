@@ -28,11 +28,13 @@ $Common.@PageOverlay {
                 // While the vote is open the clock counts down on the client. Once it closes, the result
                 // takes its place.
                 Label #TimerText {
+                    Visible: false;
                     Anchor: (Width: 112);
                     Text: "Closes in";
                     Style: (FontSize: 24, RenderBold: true, TextColor: #E8A93B, VerticalAlignment: Center);
                 }
                 TimerLabel #TimerClock {
+                    Visible: false;
                     Anchor: (Width: 90);
                     Style: (FontSize: 24);
                     Seconds: 0;
@@ -60,6 +62,12 @@ $Common.@PageOverlay {
                     Text: "Pick a game. You can change your vote until it closes.";
                     Style: (FontSize: 12, TextColor: #7a9cc6, VerticalAlignment: Center, Wrap: true, WrapMaxLines: 1);
                 }
+            }
+
+            Label #ReopenNote {
+                Anchor: (Height: 20, Top: 6);
+                Text: "Closed this? Type /vote to open it again at any time.";
+                Style: (FontSize: 12, TextColor: #878e9c, HorizontalAlignment: Center, VerticalAlignment: Center);
             }
         }
     }
