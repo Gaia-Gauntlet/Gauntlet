@@ -1,7 +1,7 @@
 {
   "Type": "GaiaGauntlet",
   "HubId": "gaiagauntlethub",
-  "BatchSize": 1,
-  "BatchDelay": 10,
+  "BatchSize": 10,
+  "BatchDelay": 5,
   "TeamsPreset": "EZDefault"
 }
