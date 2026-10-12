@@ -82,7 +82,11 @@ public final class ChatUtils {
             parts.add(Message.raw(" "));
         }
         if (rank != null) {
-            parts.add(Message.raw(rank.getPrefix()).color(ColorParseUtil.colorToHexString(rank.getColor())));
+            parts.add(Message
+                .raw(rank.getPrefix())
+                .color(ColorParseUtil.colorToHexString(rank.getColor()))
+                .bold(true)
+            );
             parts.add(Message.raw(" "));
         }
 
