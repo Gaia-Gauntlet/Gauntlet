@@ -176,6 +176,12 @@ public class EZGameConfig extends GameConfigAsset {
             p -> p.minPlayers)
         .documentation("The minimum number of players required to start the game.")
         .add()
+        .append(new KeyedCodec<>("MaxPlayers", Codec.INTEGER),
+            (p, v) -> p.maxPlayers = v,
+            p -> p.maxPlayers)
+        .addValidator(Validators.greaterThanOrEqual(1))
+        .documentation("The most players that can compete in one match. Anyone arriving once it is full spectates instead.")
+        .add()
         .append(new KeyedCodec<>("KillCreditSeconds", Codec.FLOAT),
             (p, v) -> p.killCreditSeconds = v,
             p -> p.killCreditSeconds)
@@ -267,6 +273,7 @@ public class EZGameConfig extends GameConfigAsset {
     @Getter private float startBufferSeconds = 60;
     @Getter private float arrivalTimeoutSeconds = 60;
     @Getter private int minPlayers = 2; // TODO: Increase this, just low for testing
+    @Getter private int maxPlayers = 40;
 
 
     @Nonnull

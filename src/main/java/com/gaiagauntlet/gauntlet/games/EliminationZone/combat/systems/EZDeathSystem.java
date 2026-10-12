@@ -108,7 +108,8 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
         }
 
         // Check for sudden death
-        if (state != EZStates.SUDDEN_DEATH && GauntletUtils.playersFor(session).size() <= EZGameConfig.get(world, session.getId()).getSuddenDeathAt()) {
+        if (state != EZStates.SUDDEN_DEATH
+                && TeamUtils.countAlive(gameStore, Set.of(playerRef.getUuid())) <= EZGameConfig.get(gameStore).getSuddenDeathAt()) {
             EZState.setState(gameStore, EZStates.SUDDEN_DEATH);
         }
     }

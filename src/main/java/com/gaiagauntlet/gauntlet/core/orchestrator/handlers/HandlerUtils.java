@@ -1,5 +1,7 @@
 package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 
+import java.util.Objects;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -98,8 +100,8 @@ public class HandlerUtils {
                     GaiaLog.atError(e).withSession(session)
                             .log(mes
                                     .param("sessionId", session.getId())
-                                    .param("cause", e.getLocalizedMessage())
-                                    .param("gameId", session.getCurrentGame())));
+                                    .param("cause", Objects.requireNonNullElse(e.getLocalizedMessage(), e.getClass().getSimpleName()))
+                                    .param("gameId", gameOf(session))));
         }
 
         public static void error(GauntletEvent evt, GameSession session, Message mes) {
@@ -131,13 +133,13 @@ public class HandlerUtils {
         public static void success(GauntletEvent evt, GameSession session, Message mes) {
             evt.complete(
                     GaiaLog.atInfo().withSession(session)
-                            .log(mes.param("sessionId", session.getId()).param("gameId", session.getCurrentGame())));
+                            .log(mes.param("sessionId", session.getId()).param("gameId", gameOf(session))));
         }
 
         public static void log(GauntletEvent evt, GameSession session, Message mes) {
             evt.log(
                     GaiaLog.atInfo().withSession(session)
-                            .log(mes.param("sessionId", session.getId()).param("gameId", session.getCurrentGame())));
+                            .log(mes.param("sessionId", session.getId()).param("gameId", gameOf(session))));
         }
 
         public static void log(GauntletEvent evt, GameSession session, String key) {
@@ -146,6 +148,10 @@ public class HandlerUtils {
 
         public static void success(GauntletEvent evt, GameSession session, String key) {
             success(evt, session, MessageUtils.msg(key));
+        }
+
+        private static String gameOf(GameSession session) {
+            return Objects.requireNonNullElse(session.getCurrentGame(), "none");
         }
     }
 }

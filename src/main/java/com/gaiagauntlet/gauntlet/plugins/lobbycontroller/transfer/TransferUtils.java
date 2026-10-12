@@ -58,6 +58,14 @@ public class TransferUtils {
                     }
 
                     var ref = playerRef.getReference();
+                    if (ref == null) {
+                        GaiaLog.atWarning().withSession(sessionId)
+                                .log(msg("server.gg.plugins.transfer.error.world")
+                                        .param("player", playerRef.getUsername())
+                                        .param("world", destination.getName())
+                                        .param("reason", "player is between worlds"));
+                        return;
+                    }
                     var refStore = ref.getStore();
                     var refWorld = refStore.getExternalData().getWorld();
                     // hop onto the player's world thread to ensure the components are added from their thread

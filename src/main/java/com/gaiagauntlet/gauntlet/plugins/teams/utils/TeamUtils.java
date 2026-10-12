@@ -94,6 +94,30 @@ public class TeamUtils {
         return aliveTeams;
     }
 
+    /** Players on a participant team who stand in the game's world and are not eliminated, treating {@code out} as gone. */
+    public static int countAlive(@Nonnull GameEcs game, @Nonnull Set<UUID> out) {
+        var teams = teamsOf(game).orElse(null);
+        if (teams == null)
+            return 0;
+        var arenaId = GameStore.getContext(game).getWorld().getWorldConfig().getUuid();
+        var alive = 0;
+        // every team
+        for (var team : teams.getTeams().values()) {
+            if (!team.isParticipant())
+                continue;
+            // every player (ignoring non-participants like camera crew)
+            for (var uuid : team.getPlayers()) {
+                if (out.contains(uuid))
+                    continue;
+                var player = PlayerUtils.get(uuid);
+                if (player != null && arenaId.equals(player.getWorldUuid())
+                        && player.getComponentConcurrent(EliminatedComponent.getComponentType()) == null)
+                    alive++;
+            }
+        }
+        return alive;
+    }
+
     /**
      * Checks if a team has any alive players. Truthy if and only if a player on
      * this team is online and is not eliminated.

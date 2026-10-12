@@ -55,6 +55,7 @@ public class EliminatedComponent implements Component<EntityStore> {
 
     public EliminatedComponent(EliminatedComponent other) {
         this.eliminatedAt = other.eliminatedAt;
+        this.reason = other.reason;
     }
 
     @Override

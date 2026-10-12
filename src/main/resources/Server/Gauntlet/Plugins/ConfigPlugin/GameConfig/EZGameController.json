@@ -462,5 +462,6 @@
   "StartBufferSeconds": 60,
   "SpawnProtectionSeconds": 90,
   "CornucopiaDurationSeconds": 27,
-  "MinPlayers": 2
+  "MinPlayers": 12,
+  "MaxPlayers": 40
 }

@@ -97,6 +97,10 @@ public class SessionHandlers extends HandlerUtils {
         // mark the next game as running
         session.startNext();
         refreshHud(session);
+        var starting = msg("server.gg.gauntlet.session.starting").param("game", game.getDisplayName());
+        for (var player : GauntletUtils.playersFor(session)) {
+            player.sendMessage(starting);
+        }
         var future = game.setupGame(hub.getEntityStore().getStore(), session);
         future.whenComplete((value, error) -> {
             // run on the hub thread

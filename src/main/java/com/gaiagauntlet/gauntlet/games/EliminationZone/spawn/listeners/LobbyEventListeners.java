@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.systems.SpawnDamagePreventionSystem;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.components.SpawnProtectionComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.cornucopia.CornucopiaMovingPlatformsHandler;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class LobbyEventListeners {
 
+    public static final String PREGAME_MUSIC_CONTAINER = "Battle_Of_Glory_Pregame_15sec";
     public static final String GAME_MUSIC_CONTAINER = "Elimination_Zone_Start";
     public static final String INTRO_CAMERA_SEQUENCE = "HypeSequence";
     public static final String INTRO_TIMER = "IntroSequence";
@@ -65,7 +67,8 @@ public final class LobbyEventListeners {
 
         switch (evt.getTimerId()) {
             case EZLobbyManager.STARTING_TIMER -> {
-                // start the game - the timer has finished
+                if (EZState.currentState(game) != EZStates.LOBBY)
+                    return;
                 EZController.get().getArenaManager().start(world, game, sessionId);
             }
             case INTRO_TIMER -> {

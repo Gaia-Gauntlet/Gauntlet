@@ -42,7 +42,7 @@ public final class MatchStateListeners {
         if (game == null) return;
         WeatherUtils.doWeather(game, "GG_Sudden_Death", Double.MAX_VALUE);
 
-        MusicUtils.forcePlayMusicToAllPlayers("Battle_Of_Glory_Last_Stand_Combined");
+        MusicUtils.forcePlayMusicToAllPlayers("Battle_Of_Glory_Last_Stand_Combined", world);
         Announcer.title(
             world,
             Message.raw("SUDDEN DEATH!"),
