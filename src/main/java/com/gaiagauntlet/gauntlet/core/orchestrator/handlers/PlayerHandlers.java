@@ -244,13 +244,13 @@ public class PlayerHandlers extends HandlerUtils {
         var hubWorld = GauntletUtils.withHubWorld();
         GauntletUtils.run(hubWorld, () -> {
             try {
-                var currentGame = player.getCurrentGame();
-                if (currentGame != null && currentGame.equals(gameId)) {
-                    // only remove as current game once we've confirmed it is still their current
-                    // game
-                    // this task may be really long, and the player might've changed games during it
-                    player.setCurrentGame(null);
-                }
+                // only remove as current game once we've confirmed it is still their current
+                // game
+                // this task may be really long, and the player might've changed games during it
+                GauntletUtils.updatePlayer(playerRef, comp -> {
+                    if (gameId.equals(comp.getCurrentGame()))
+                        comp.setCurrentGame(null);
+                });
                 // run the player disconnection logic
                 game.playerLeave(hubWorld, sessionId, List.of(playerRef), true).whenComplete((_, error) -> {
                     if (error != null) {

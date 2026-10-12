@@ -25,6 +25,7 @@ session.clean.success=<color is="#00FF00">Successfully cleaned {gameId} for {ses
 session.clean.error=Cancelling game {gameId} for session {sessionId} failed with reason {reason}
 
 session.destroy.success=<color is="#06f906">Deleted session {sessionId}</color>
+session.destroy.waiting=Session {sessionId} is busy, it will be deleted once its game {gameId} has been cleaned up
 
 session.game.success=<color is="#06f906">Successfully {action} in {sessionId}</color>
 session.game.removal.success=<color is="#06f906">Successfully removed {games} game(s) from {sessionId}</color>

@@ -41,10 +41,4 @@ public final class MusicUtils {
             forcePlayMusicContainerToPlayer(musicContainer, playerRef);
         }
     }
-
-    public static void forcePlayMusicToAllPlayers(String musicContainer) {
-        for (World world : Universe.get().getWorlds().values()) {
-            forcePlayMusicToAllPlayers(musicContainer, world);
-        }
-    }
 }

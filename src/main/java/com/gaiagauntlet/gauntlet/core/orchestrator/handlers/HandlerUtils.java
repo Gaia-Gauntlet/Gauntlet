@@ -84,10 +84,7 @@ public class HandlerUtils {
         }
 
         for (var player : players) {
-            var playerComp = GauntletUtils.playerFor(player);
-            playerComp.ifPresent(comp -> {
-                comp.setCurrentGame(gameId);
-            });
+            GauntletUtils.updatePlayer(player, comp -> comp.setCurrentGame(gameId));
         }
 
         // add all of the players to the game
