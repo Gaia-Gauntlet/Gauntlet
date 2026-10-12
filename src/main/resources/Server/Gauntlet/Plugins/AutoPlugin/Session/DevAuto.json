@@ -1,0 +1,9 @@
+{
+  "SpinUpPlayers": 1,
+  "GatherSeconds": 5,
+  "IntermissionSeconds": 15,
+  "IdleGraceSeconds": 60,
+  "SetupTimeoutSeconds": 60,
+  "CleanTimeoutSeconds": 30,
+  "RetrySeconds": [5, 15, 60]
+}

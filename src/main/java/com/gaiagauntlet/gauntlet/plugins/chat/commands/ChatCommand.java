@@ -11,6 +11,9 @@ public class ChatCommand extends AbstractCommandCollection {
         addSubCommand(new ChannelCommand(ChatChannel.GLOBAL));
         addSubCommand(new ChannelCommand(ChatChannel.PARTY));
         addSubCommand(new ChannelCommand(ChatChannel.TEAM));
+        addSubCommand(new ChannelCommand(ChatChannel.SESSION));
+        addSubCommand(new ChannelCommand(ChatChannel.ANNOUNCEMENT));
+        addSubCommand(new ChannelCommand(ChatChannel.SPECTATOR));
         addSubCommand(new WhisperCommand());
     }
 }

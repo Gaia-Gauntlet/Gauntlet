@@ -1,10 +1,16 @@
 channel.global=Global
 channel.party=Party
 channel.team=Team
+channel.session=Session
+channel.announcement=Announcement
+channel.spectator=Spectator
 channel.whisper=Whisper
 
 tag.party=[PARTY]
 tag.team=[TEAM]
+tag.session=[SESSION]
+tag.announcement=[ANNOUNCEMENT]
+tag.spectator=[SPECTATOR]
 tag.whisper=[WHISPER]
 line={name}: {message}
 line.whisper={name} to {target}: {message}
@@ -12,15 +18,22 @@ line.whisper={name} to {target}: {message}
 selected=Now chatting in <b>{channel}</b>.
 selected.whisper=Now whispering <b>{player}</b>.
 
+unavailable.global=<color is="#ed7f77">You are not in a world.</color>
 unavailable.party=<color is="#ed7f77">You are not in a party.</color>
 unavailable.team=<color is="#ed7f77">You are not on a team.</color>
+unavailable.session=<color is="#ed7f77">You are not in a session.</color>
+unavailable.announcement=<color is="#ed7f77">You do not have permission to make announcements.</color>
+unavailable.spectator=<color is="#ed7f77">You are not in a world.</color>
 unavailable.whisper=<color is="#ed7f77">That player is no longer online.</color>
 whisper.self=<color is="#ed7f77">You can't whisper yourself.</color>
 
 commands.chat.desc=Choose who your chat messages go to
-commands.global.desc=Send your messages to everyone
+commands.global.desc=Send your messages to everyone in your world
 commands.party.desc=Send your messages to your party
 commands.team.desc=Send your messages to your team
+commands.session.desc=Send your messages to everyone in your session
+commands.announcement.desc=Announce to every player on the server
+commands.spectator.desc=Send your messages to the spectators in your world
 commands.whisper.desc=Send your messages to one player
 commands.whisper.arg=The player to whisper
 commands.whisper.message.desc=Whisper a single message to one player

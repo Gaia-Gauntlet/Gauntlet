@@ -1,0 +1,44 @@
+$G = "../../Admin/Common.ui";
+
+Group {
+    LayoutMode: Left;
+    Visible: false;
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Status"; }
+            $G.@Field #AutoInstalledField { @Key = "Installed"; }
+            $G.@Field #AutoStateField     { @Key = "State"; }
+            $G.@Field #AutoConfigField    { @Key = "Config"; }
+            $G.@Field #AutoPausedField    { @Key = "Paused"; }
+            $G.@Field #AutoFailuresField  { @Key = "Failures"; }
+            $G.@Field #AutoTimerField     { @Key = "Timer"; }
+        }
+    }
+
+    $G.@Gutter {}
+
+    $G.@Column {
+        $G.@Card {
+            $G.@Header { @Text = "Config"; }
+            $G.@Caption { @Text = "Session config"; }
+            $G.@PickerRow {
+                $G.@Picker #AutoConfigPicker {}
+            }
+            $G.@ButtonRow {
+                $G.@Confirm #AutoApply { @Anchor = (Right: 3); Text: "Use for this session"; }
+                $G.@Action #AutoReset  { @Anchor = (Left: 3); Text: "Back to default"; }
+            }
+            $G.@Note { @Text = "The default is the config named after the session."; }
+        }
+
+        $G.@Card {
+            $G.@Header { @Text = "Control"; }
+            $G.@ButtonRow {
+                $G.@Action #AutoPause  { @Anchor = (Right: 3); Text: "Pause"; }
+                $G.@Action #AutoResume { @Anchor = (Left: 3); Text: "Resume"; }
+            }
+            $G.@Note { @Text = "Resuming also clears the failure count."; }
+        }
+    }
+}

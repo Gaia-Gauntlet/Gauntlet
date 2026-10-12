@@ -26,6 +26,8 @@ public class SessionEvent extends GauntletEvent {
         /** Cancels the current game in the session */
         CLEAN,
         /** Deletes the session */
-        DELETE
+        DELETE,
+        /** Abandons a stuck setup or clean, leaving the session in ERROR for a CLEAN */
+        RECOVER
     }
 }

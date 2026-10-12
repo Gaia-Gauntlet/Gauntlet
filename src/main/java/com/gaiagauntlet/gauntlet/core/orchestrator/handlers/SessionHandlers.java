@@ -71,7 +71,24 @@ public class SessionHandlers extends HandlerUtils {
                 deleteSession(hub, sessionEvt, session);
                 return;
             }
+            case RECOVER -> {
+                recoverSession(sessionEvt, session);
+                return;
+            }
         }
+    }
+
+    private static void recoverSession(SessionEvent sessionEvt, GameSession session) {
+        var state = session.getSessionState();
+        if (!state.active()) {
+            Resolve.success(sessionEvt, session, msg("server.gg.events.session.recover.idle")
+                    .param("sessionState", state.toString()));
+            return;
+        }
+        session.abandon("Recovered from " + state);
+        refreshHud(session);
+        Resolve.success(sessionEvt, session, msg("server.gg.events.session.recover.success")
+                .param("sessionState", state.toString()));
     }
 
     private static void setupGame(World hub, SessionEvent sessionEvt, GameSession session) {
@@ -96,6 +113,7 @@ public class SessionHandlers extends HandlerUtils {
         // pass stuff to the game
         // mark the next game as running
         session.startNext();
+        var attempt = session.getGeneration();
         refreshHud(session);
         var starting = msg("server.gg.gauntlet.session.starting").param("game", game.getDisplayName());
         for (var player : GauntletUtils.playersFor(session)) {
@@ -105,6 +123,11 @@ public class SessionHandlers extends HandlerUtils {
         future.whenComplete((value, error) -> {
             // run on the hub thread
             GauntletUtils.run(hub, () -> {
+                if (!session.isCurrent(attempt)) {
+                    Resolve.success(sessionEvt, session, msg("server.gg.events.session.stale")
+                            .param("action", "setup").param("attempt", attempt));
+                    return;
+                }
                 if (error != null) {
                     // errored
                     GaiaLog.atError().withSession(session).withCause(error)
@@ -119,7 +142,7 @@ public class SessionHandlers extends HandlerUtils {
                     return;
                 }
 
-                var check = session.setRunning(nextGameId);
+                var check = session.setRunning(attempt);
                 if (!check) {
                     // something has gone horribly wrong
                     GaiaLog.atError().withSession(session)
@@ -181,10 +204,16 @@ public class SessionHandlers extends HandlerUtils {
         }
 
         // pass stuff to the game
+        var attempt = session.getGeneration();
         var future = game.cleanGame(hub, session);
         future.whenComplete((value, error) -> {
             // run on the hub thread
             GauntletUtils.run(hub, () -> {
+                if (!session.isCurrent(attempt)) {
+                    Resolve.success(sessionEvt, session, msg("server.gg.events.session.stale")
+                            .param("action", "clean").param("attempt", attempt));
+                    return;
+                }
                 if (error != null) {
                     GaiaLog.atError().withSession(session).withCause(error)
                             .log(MessageUtils.msg("server.gg.events.session.setup.error")

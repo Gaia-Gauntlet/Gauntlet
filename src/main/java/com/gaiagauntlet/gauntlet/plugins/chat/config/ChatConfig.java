@@ -34,7 +34,7 @@ public class ChatConfig extends Config {
             .append(new KeyedCodec<>("MessageColor", ProtocolCodecs.COLOR),
                     (config, v) -> config.messageColor = v,
                     config -> config.getMessageColor())
-            .documentation("The color of message text in global, party and team chat")
+            .documentation("The color of message text in global, party, team, session and spectator chat")
             .add()
             .append(new KeyedCodec<>("PartyColor", ProtocolCodecs.COLOR),
                     (config, v) -> config.partyColor = v,
@@ -45,6 +45,21 @@ public class ChatConfig extends Config {
                     (config, v) -> config.teamColor = v,
                     config -> config.getTeamColor())
             .documentation("The color of the team chat tag")
+            .add()
+            .append(new KeyedCodec<>("SessionColor", ProtocolCodecs.COLOR),
+                    (config, v) -> config.sessionColor = v,
+                    config -> config.getSessionColor())
+            .documentation("The color of the session chat tag")
+            .add()
+            .append(new KeyedCodec<>("AnnouncementColor", ProtocolCodecs.COLOR),
+                    (config, v) -> config.announcementColor = v,
+                    config -> config.getAnnouncementColor())
+            .documentation("The color of the announcement tag and the whole announced line")
+            .add()
+            .append(new KeyedCodec<>("SpectatorColor", ProtocolCodecs.COLOR),
+                    (config, v) -> config.spectatorColor = v,
+                    config -> config.getSpectatorColor())
+            .documentation("The color of the spectator chat tag")
             .add()
             .append(new KeyedCodec<>("WhisperColor", ProtocolCodecs.COLOR),
                     (config, v) -> config.whisperColor = v,
@@ -68,6 +83,12 @@ public class ChatConfig extends Config {
     private Color partyColor = ColorParseUtil.parseColor("#6CB4FF");
     @Getter
     private Color teamColor = ColorParseUtil.parseColor("#6EE07F");
+    @Getter
+    private Color sessionColor = ColorParseUtil.parseColor("#C9A0FF");
+    @Getter
+    private Color announcementColor = ColorParseUtil.parseColor("#FFD54A");
+    @Getter
+    private Color spectatorColor = ColorParseUtil.parseColor("#8C8C8C");
     @Getter
     private Color whisperColor = ColorParseUtil.parseColor("#A8A8A8");
 

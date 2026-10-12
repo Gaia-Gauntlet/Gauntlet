@@ -3,6 +3,9 @@
   "MessageColor": "#FFFFFF",
   "PartyColor": "#6CB4FF",
   "TeamColor": "#6EE07F",
+  "SessionColor": "#C9A0FF",
+  "AnnouncementColor": "#FFD54A",
+  "SpectatorColor": "#8C8C8C",
   "WhisperColor": "#A8A8A8",
   "Ranks": {
     "Hytale": {

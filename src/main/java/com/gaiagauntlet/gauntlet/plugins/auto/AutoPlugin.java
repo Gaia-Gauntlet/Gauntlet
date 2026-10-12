@@ -2,13 +2,28 @@ package com.gaiagauntlet.gauntlet.plugins.auto;
 
 import java.util.List;
 import java.util.Map;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionStateEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.SimpleGamePlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.AutoComponent;
+import com.gaiagauntlet.gauntlet.plugins.auto.components.assets.AutoSessionAsset;
+import com.gaiagauntlet.gauntlet.plugins.auto.events.AutoSessionEvents;
+import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
+import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
+import com.hypixel.hytale.event.EventPriority;
+import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.registry.SessionRegistry;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.PageFactory;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.VoteComponent;
+import com.gaiagauntlet.gauntlet.plugins.auto.ui.AutoTab;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.MatchTab;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.VoteHud;
 import com.gaiagauntlet.gauntlet.plugins.auto.ui.VotePage;
@@ -34,7 +49,7 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
 
     @Override
     public List<String> getDependencies() {
-        return List.of(GameStorePlugin.ID);
+        return List.of(GameStorePlugin.ID, TimerPlugin.ID);
     }
 
     @Override
@@ -43,6 +58,23 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
     }
 
     public void init(JavaPlugin host) {
+        host.getAssetRegistry().register(HytaleAssetStore.builder(AutoSessionAsset.class, new DefaultAssetMap<>())
+                .setPath("Gauntlet/Plugins/" + ID + "/Session")
+                .setCodec(AutoSessionAsset.CODEC)
+                .setKeyFunction(AutoSessionAsset::getId)
+                .build());
+
+        AutoComponent.setComponentType(SessionRegistry.register(AutoComponent.ID, AutoComponent.class,
+                AutoComponent.CODEC));
+
+        GauntletEventRegistry.on(SessionStateEvent.class, AutoSessionEvents::onSessionState);
+        GauntletEventRegistry.on(PlayerGameEvent.class, AutoSessionEvents::onPlayerGame);
+        GauntletEventRegistry.on(PlayerPartyEvent.class, AutoSessionEvents::onPlayerParty);
+        TimerUtils.registerOnComplete(ID, AutoSessionEvents::onTimerComplete);
+
+        var events = host.getEventRegistry();
+        events.register(EventPriority.LAST, PlayerDisconnectEvent.class, AutoSessionEvents::onDisconnect);
+        events.register(AllWorldsLoadedEvent.class, AutoSessionEvents::onWorldsLoaded);
     }
 
     /**
@@ -66,7 +98,7 @@ public class AutoPlugin implements SimpleGamePlugin, UiGamePlugin {
 
     @Override
     public List<AdminTab> getAdminTabs() {
-        return List.of(new MatchTab());
+        return List.of(new MatchTab(), new AutoTab());
     }
 
     @Override

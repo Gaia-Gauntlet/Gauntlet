@@ -57,6 +57,7 @@ public final class SessionTab implements AdminTab {
 
         Widgets.bind(evt, "#SetupGame", "session.game.setup");
         Widgets.bind(evt, "#StopGame", "session.game.stop");
+        Widgets.bind(evt, "#RecoverGame", "session.game.recover");
 
         Widgets.bindValues(evt, "#AddGame", "session.queue.add", "", Map.of("@Pick", "#GamePicker.Value"));
         Widgets.bindValues(evt, "#PlayNext", "session.queue.next", "", Map.of("@Pick", "#GamePicker.Value"));
@@ -111,6 +112,7 @@ public final class SessionTab implements AdminTab {
             case "session.destroy" -> sessionDestroy(session, page);
             case "session.game.setup" -> gameSetup(session, page);
             case "session.game.stop" -> gameStop(session, page);
+            case "session.game.recover" -> gameRecover(session, page);
             case "session.queue.add" -> queue(session, SessionQueueOp.APPEND, List.of(event.pick()), page);
             case "session.queue.remove" -> queue(session, SessionQueueOp.REMOVE, List.of(event.pick()), page);
             case "session.plugin.install" -> plugin(session, SessionPluginOp.INSTALL, event.pick(), page);
@@ -175,6 +177,15 @@ public final class SessionTab implements AdminTab {
                         .onMessage(msg -> page.pushStatus(msg.toMessage()))
                         .onComplete(message -> page.pushStatus(message.toMessage())));
         return msg("server.gg.commands.session.cleanup.pending").param("sessionId", sessionId);
+    }
+
+    private Message gameRecover(@NonNull GameSession session, AdminPage page) {
+        var sessionId = session.getId();
+        GauntletEventRegistry.dispatch(
+                new SessionEvent(SessionOperation.RECOVER, sessionId)
+                        .onMessage(msg -> page.pushStatus(msg.toMessage()))
+                        .onComplete(message -> page.pushStatus(message.toMessage())));
+        return msg("server.gg.commands.session.recover.pending").param("sessionId", sessionId);
     }
 
     private Message queue(@NonNull GameSession session, SessionQueueOp op, List<String> games, AdminPage page) {

@@ -63,12 +63,11 @@ public final class VoidTerrain {
         }
     }
 
-    private static final Map<Long, Replacement> BLOCK_CACHE = new HashMap<>();
-    private static final Map<Integer, FluidReplacement> FLUID_CACHE = new HashMap<>();
-
     private final LongSet painted = new LongOpenHashSet();
     private final LongSet pendingColumns = new LongOpenHashSet();
     private final Map<String, Double> lastEdge = new HashMap<>();
+    private final Map<Long, Replacement> blockCache = new HashMap<>();
+    private final Map<Integer, FluidReplacement> fluidCache = new HashMap<>();
     private final ArrayDeque<Vector3i> spreadQueue = new ArrayDeque<>();
     private int paintedBlocks;
 
@@ -87,6 +86,8 @@ public final class VoidTerrain {
         painted.clear();
         pendingColumns.clear();
         lastEdge.clear();
+        blockCache.clear();
+        fluidCache.clear();
         spreadQueue.clear();
         abandoned.clear();
         inflight.clear();
@@ -298,10 +299,10 @@ public final class VoidTerrain {
     }
 
     @Nullable
-    private static Replacement blockReplacement(int blockId, int rotation, @Nonnull Map<String, String> mappings,
+    private Replacement blockReplacement(int blockId, int rotation, @Nonnull Map<String, String> mappings,
             @Nonnull BlockType fallback) {
         long key = ((long) blockId << 32) | (rotation & 0xffffffffL);
-        var cached = BLOCK_CACHE.get(key);
+        var cached = blockCache.get(key);
         if (cached != null) {
             return cached;
         }
@@ -316,14 +317,14 @@ public final class VoidTerrain {
         }
         var replacement = lookup(target, fallback);
         if (replacement != null) {
-            BLOCK_CACHE.put(key, replacement);
+            blockCache.put(key, replacement);
         }
         return replacement;
     }
 
     @Nullable
-    private static FluidReplacement fluidReplacement(int fluidId, @Nonnull Map<String, String> mappings, @Nonnull BlockType fallback) {
-        var cached = FLUID_CACHE.get(fluidId);
+    private FluidReplacement fluidReplacement(int fluidId, @Nonnull Map<String, String> mappings, @Nonnull BlockType fallback) {
+        var cached = fluidCache.get(fluidId);
         if (cached != null) {
             return cached;
         }
@@ -346,7 +347,7 @@ public final class VoidTerrain {
             replacement = block == null ? null : new FluidReplacement(block, Fluid.EMPTY_ID, (byte) 0);
         }
         if (replacement != null) {
-            FLUID_CACHE.put(fluidId, replacement);
+            fluidCache.put(fluidId, replacement);
         }
         return replacement;
     }

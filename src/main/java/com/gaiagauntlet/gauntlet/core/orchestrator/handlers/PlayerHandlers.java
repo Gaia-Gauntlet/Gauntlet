@@ -3,7 +3,9 @@ package com.gaiagauntlet.gauntlet.core.orchestrator.handlers;
 import java.util.function.Consumer;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.CompletableFuture;
 import java.util.List;
 import java.util.Objects;
 
@@ -212,14 +214,18 @@ public class PlayerHandlers extends HandlerUtils {
             withResource().removePartyFromSession(party.getId(), sessionId);
         }
 
+        var memberLeaves = new ArrayList<CompletableFuture<Void>>();
         if (isOwner && sessionId.equals(partySessionId)) {
             // connect all of the party members to this session also
             var members = party.getAllOnlinePlayers();
             for (var member : members) {
                 if (member.getUuid().equals(playerRef.getUuid()))
                     continue; // party owner - no need
+                var left = new CompletableFuture<Void>();
+                memberLeaves.add(left);
                 try {
-                    GauntletEventRegistry.dispatch(new PlayerGameEvent(member, sessionId, PlayerOp.REMOVE));
+                    GauntletEventRegistry.dispatch(new PlayerGameEvent(member, sessionId, PlayerOp.REMOVE)
+                            .onComplete(_ -> left.complete(null)));
                 } catch (Exception e) {
                     Resolve.error(evt, session, msg("server.gg.events.players.leave.new.error")
                             .param("playerName", playerRef.getUsername()), e);
@@ -228,6 +234,13 @@ public class PlayerHandlers extends HandlerUtils {
             }
         }
 
+        // the owner leaves last so whoever waits on this event knows the whole party is out
+        CompletableFuture.allOf(memberLeaves.toArray(CompletableFuture[]::new)).whenComplete((_, _) ->
+                GauntletUtils.run(GauntletUtils.withHubWorld(), () -> leaveCurrentGame(evt, session, playerRef)));
+    }
+
+    private static void leaveCurrentGame(PlayerGameEvent evt, GameSession session, PlayerRef playerRef) {
+        var sessionId = session.getId();
         var gameId = session.getCurrentGame();
         if (gameId == null || gameId.isEmpty()) {
             evt.complete(GaiaLog.atWarning().withSession(session).log(msg("server.gg.events.players.leave.warn")

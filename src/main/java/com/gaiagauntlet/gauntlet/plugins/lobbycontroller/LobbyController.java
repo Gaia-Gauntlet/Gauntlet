@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
@@ -74,47 +75,61 @@ public abstract class LobbyController extends GameController {
                 getLobbyManager().cleanWorld(stale);
         }
 
+        var attempt = session.getGeneration();
+        var hubWorld = hubAccessor.getExternalData().getWorld();
         return getLobbyManager().setupWorld(hubAccessor, sessionId).thenCompose(world -> {
-            GauntletUtils.run(hubAccessor.getExternalData().getWorld(), () -> {
-                // hop to the hub thread again to finalize the initialization of the component
+            return GauntletUtils.runAsync(hubWorld, () -> {
+                if (!session.isCurrent(attempt)) {
+                    getLobbyManager().cleanWorld(world);
+                    return CompletableFuture.<Void>failedFuture(
+                            new CancellationException("Setup attempt " + attempt + " of " + sessionId + " was abandoned"));
+                }
                 session.put(LobbyComponent.getComponentType(), new LobbyComponent(world));
-            });
-            // ensure that a weird world doesn't throw us into an odd thread, hop into the
-            // world thread
-            return GauntletUtils.runAsync(world, () -> {
-                var lobbyStore = world.getEntityStore().getStore();
-                var gameStore = GameStore.ensureStore(world, sessionId);
-
-                // register the plugins that have persistence
-                var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
-                for (var plugin : persistentPlugins) {
-                    try {
-                        plugin.setup(lobbyStore, session, gameStore, getId());
-                    } catch (Exception e) {
-                        GaiaLog.atWarning().withCause(e).withSession(session)
-                                .log("Persistent Plugin " + plugin.getId() + " failed while loading for " + getId());
-                    }
-                }
-
-                var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
-                for (var plugin : simplePlugins) {
-                    try {
-                        plugin.setup(lobbyStore, sessionId, getId());
-                    } catch (Exception e) {
-                        GaiaLog.atWarning().withCause(e).withSession(session)
-                                .log("Simple Plugin " + plugin.getId() + " failed while loading for " + getId());
-
-                    }
-                }
-
-                // dispatch event
-                MatchEventRegistry.dispatch(new ArenaLoadedEvent(sessionId, world), getId());
-
-                // players are only sent in once the game has finished preparing its arena
-                return setupGame(world, gameStore, sessionId);
+                return prepareArena(world, session);
             }).thenCompose(prepared -> prepared);
         });
     };
+
+    private CompletableFuture<Void> prepareArena(World world, GameSession session) {
+        var sessionId = session.getId();
+        return GauntletUtils.runAsync(world, () -> {
+            // an arena left behind by a crash has no session pointing at it, so the engine deletes it on the next boot
+            var worldConfig = world.getWorldConfig();
+            worldConfig.setDeleteOnUniverseStart(true);
+            worldConfig.markChanged();
+
+            var lobbyStore = world.getEntityStore().getStore();
+            var gameStore = GameStore.ensureStore(world, sessionId);
+
+            // register the plugins that have persistence
+            var persistentPlugins = GameRegistry.getPlugins(getRequiredPlugins(), PersistentGamePlugin.class);
+            for (var plugin : persistentPlugins) {
+                try {
+                    plugin.setup(lobbyStore, session, gameStore, getId());
+                } catch (Exception e) {
+                    GaiaLog.atWarning().withCause(e).withSession(session)
+                            .log("Persistent Plugin " + plugin.getId() + " failed while loading for " + getId());
+                }
+            }
+
+            var simplePlugins = GameRegistry.getPlugins(getRequiredPlugins(), SimpleGamePlugin.class);
+            for (var plugin : simplePlugins) {
+                try {
+                    plugin.setup(lobbyStore, sessionId, getId());
+                } catch (Exception e) {
+                    GaiaLog.atWarning().withCause(e).withSession(session)
+                            .log("Simple Plugin " + plugin.getId() + " failed while loading for " + getId());
+
+                }
+            }
+
+            // dispatch event
+            MatchEventRegistry.dispatch(new ArenaLoadedEvent(sessionId, world), getId());
+
+            // players are only sent in once the game has finished preparing its arena
+            return setupGame(world, gameStore, sessionId);
+        }).thenCompose(prepared -> prepared);
+    }
 
     @Override
     public CompletableFuture<Void> playerJoin(World hubWorld, String sessionId, Collection<PlayerRef> players) {

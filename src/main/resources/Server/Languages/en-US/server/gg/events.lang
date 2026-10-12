@@ -27,6 +27,10 @@ session.clean.error=Cancelling game {gameId} for session {sessionId} failed with
 session.destroy.success=<color is="#06f906">Deleted session {sessionId}</color>
 session.destroy.waiting=Session {sessionId} is busy, it will be deleted once its game {gameId} has been cleaned up
 
+session.recover.success=<color is="#06f906">Abandoned the {sessionState} attempt of {gameId} in {sessionId}. Clean the session to tear it down</color>
+session.recover.idle=Session {sessionId} is {sessionState}, there is nothing to recover
+session.stale=Ignored a late {action} result for attempt {attempt} of {gameId} in {sessionId}, it was abandoned
+
 session.game.success=<color is="#06f906">Successfully {action} in {sessionId}</color>
 session.game.removal.success=<color is="#06f906">Successfully removed {games} game(s) from {sessionId}</color>
 

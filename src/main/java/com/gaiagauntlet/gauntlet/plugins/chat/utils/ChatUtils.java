@@ -29,9 +29,13 @@ public final class ChatUtils {
 
     public static void route(@Nonnull PlayerChatEvent event) {
         var sender = event.getSender();
-        var channel = event instanceof ChannelChatEvent explicit
+        var chosen = event instanceof ChannelChatEvent explicit
                 ? explicit.getChannel()
                 : UniverseChatResource.get().channelOf(sender.getUuid());
+        // force into spectator if a spectator
+        var channel = !(chosen instanceof ChatChannel.Whisper) && ChatChannel.Spectator.confines(sender)
+                ? ChatChannel.SPECTATOR
+                : chosen;
 
         var recipients = channel.recipients(sender);
         if (recipients == null) {

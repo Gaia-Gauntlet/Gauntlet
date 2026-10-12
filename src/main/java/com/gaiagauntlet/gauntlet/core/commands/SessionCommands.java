@@ -98,6 +98,7 @@ public class SessionCommands extends AbstractCommandCollection {
         addSubCommand(new RemoveGameFromSession());
         addSubCommand(new SetupSession());
         addSubCommand(new CleanSession());
+        addSubCommand(new RecoverSession());
         addSubCommand(new JoinSession());
         addSubCommand(new LeaveSession());
     }
@@ -284,6 +285,27 @@ public class SessionCommands extends AbstractCommandCollection {
                     .param("sessionId", targetSession));
 
             GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.CLEAN, targetSession)
+                    .onMessage(msg -> ctx.sendMessage(msg.toMessage())).onComplete(message -> {
+                        ctx.sendMessage(message.toMessage());
+                    }));
+        }
+    }
+
+    private static class RecoverSession extends AbstractWorldCommand {
+        private final RequiredArg<String> sessionId;
+
+        public RecoverSession() {
+            super("recover", "Abandons a stuck setup or cleanup so the session can be cleaned");
+            sessionId = withRequiredArg("sessionId", "The session", SESSION_ID);
+        }
+
+        @Override
+        protected void execute(CommandContext ctx, World arg1, Store<EntityStore> accessor) {
+            var targetSession = sessionId.get(ctx);
+            ctx.sendMessage(msg("server.gg.commands.session.recover.pending")
+                    .param("sessionId", targetSession));
+
+            GauntletEventRegistry.dispatch(new SessionEvent(SessionOperation.RECOVER, targetSession)
                     .onMessage(msg -> ctx.sendMessage(msg.toMessage())).onComplete(message -> {
                         ctx.sendMessage(message.toMessage());
                     }));
