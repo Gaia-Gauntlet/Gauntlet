@@ -7,24 +7,31 @@ import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.hud.events.HudEvent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZGameConfig;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.utils.WeatherUtils;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
+import com.gaiagauntlet.gauntlet.plugins.career.components.CareerStats;
+import com.gaiagauntlet.gauntlet.plugins.career.utils.CareerUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.utils.MatchUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyController;
 import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.components.TeamComponent;
+import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
 import com.gaiagauntlet.gauntlet.utils.MusicUtils;
 import com.gaiagauntlet.gauntlet.utils.WorldUtils;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public final class MatchStateListeners {
@@ -75,6 +82,24 @@ public final class MatchStateListeners {
                     SpectatorComponent.clear(ref, store);
             }
         }));
+
+        var standings = game
+            .ensure(EZGameComponent.getComponentType(), EZGameComponent::new)
+            .getStandings();
+        if (!standings.isEmpty()) {
+            TeamComponent winningTeam = TeamUtils.withTeam(
+                world,
+                evt.getSessionId(),
+                standings.getFirst().getTeamId()
+            );
+            var winners = winningTeam != null
+                ? TeamUtils.getOnlinePlayers(winningTeam)
+                : new ArrayList<PlayerRef>();
+            for (var winner : winners) {
+                CareerUtils.add(winner, CareerStats.WINS, 1L);
+            }
+        }
+
     }
 
     private static void attempt(MatchStateEvent evt, String step, Runnable action) {

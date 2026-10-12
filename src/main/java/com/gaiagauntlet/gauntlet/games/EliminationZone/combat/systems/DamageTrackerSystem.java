@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.components.EZCombatComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
+import com.gaiagauntlet.gauntlet.plugins.career.components.CareerStats;
+import com.gaiagauntlet.gauntlet.plugins.career.utils.CareerUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -34,21 +36,24 @@ public final class DamageTrackerSystem extends DamageEventSystem {
     @Override
     public void handle(int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store,
             @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull Damage event) {
-        if (event.isCancelled() || !(event.getSource() instanceof Damage.EntitySource source)) {
-            return;
-        }
-        var attackerRef = source.getRef();
-        if (attackerRef == null || !attackerRef.isValid()) {
-            return;
-        }
+        if (event.isCancelled()) return;
+
+        var amount = (long) Math.round(event.getAmount());
         var victim = chunk.getComponent(index, PlayerRef.getComponentType());
+        CareerUtils.add(victim, CareerStats.DAMAGERECEIVED, amount);
+
+        if (!(event.getSource() instanceof Damage.EntitySource source)) return;
+
+        var attackerRef = source.getRef();
+        if (!attackerRef.isValid()) return;
+
         var playerComp = chunk.getComponent(index, EZPlayerComponent.getComponentType());
         var attacker = store.getComponent(attackerRef, PlayerRef.getComponentType());
-        if (victim == null || playerComp == null || attacker == null) {
-            return;
-        }
+        if (victim == null || playerComp == null || attacker == null) return;
         GameStore.withStore(store.getExternalData().getWorld(), playerComp.getSessionId())
                 .ifPresent(game -> game.ensure(EZCombatComponent.getComponentType(), EZCombatComponent::new)
                         .recordDamage(victim.getUuid(), attacker.getUuid()));
+
+        CareerUtils.add(attacker, CareerStats.DAMAGEDEALT, amount);
     }
 }

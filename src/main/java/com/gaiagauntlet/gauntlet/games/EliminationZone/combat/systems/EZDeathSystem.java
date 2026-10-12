@@ -7,6 +7,8 @@ import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerCompon
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.plugins.announcer.utils.Announcer;
+import com.gaiagauntlet.gauntlet.plugins.career.components.CareerStats;
+import com.gaiagauntlet.gauntlet.plugins.career.utils.CareerUtils;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.spectator.components.SpectatorComponent;
@@ -117,6 +119,8 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
                     .param("killMethod", damageCauseMessage)
                     .bold(true)
             );
+            CareerUtils.add(playerRef, CareerStats.DEATHS, 1L);
+            CareerUtils.add(killerRef, CareerStats.KILLS, 1L);
 
         } else {
             Announcer.chat(world,
@@ -124,6 +128,8 @@ public final class EZDeathSystem extends DeathSystems.OnDeathSystem {
                     .param("victim", Message.raw(playerRef.getUsername()))
                     .param("killMethod", damageCauseMessage)
                     .bold(true));
+            CareerUtils.add(playerRef, CareerStats.DEATHS, 1L);
+            CareerUtils.add(playerRef, CareerStats.NATURALDEATHS, 1L);
         }
         Ref<EntityStore> ref = playerRef.getReference();
         assert ref != null;
