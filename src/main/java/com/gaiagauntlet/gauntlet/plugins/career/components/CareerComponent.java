@@ -31,12 +31,12 @@ public class CareerComponent implements Component<EntityStore> {
 
     public static final BuilderCodec<@NotNull CareerComponent> CODEC = BuilderCodec.builder(CareerComponent.class,
             CareerComponent::new)
-            .append(new KeyedCodec<>("universalstats",
+            .append(new KeyedCodec<>("UniversalStats",
                     new EnumMapCodec<>(CareerStats.class, Codec.LONG, false)),
                     (config, value) -> config.universalStats = value,
                     config -> config.universalStats)
             .add()
-            .append(new KeyedCodec<>("gamestats", GAME_STATS_CODEC),
+            .append(new KeyedCodec<>("GameStats", GAME_STATS_CODEC),
                     (config, value) -> config.gameStats = value,
                     config -> config.gameStats)
             .add()

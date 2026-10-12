@@ -1,0 +1,81 @@
+{
+  "Type": "GaiaChat",
+  "MessageColor": "#FFFFFF",
+  "PartyColor": "#6CB4FF",
+  "TeamColor": "#6EE07F",
+  "WhisperColor": "#A8A8A8",
+  "Ranks": {
+    "Hytale": {
+      "Prefix": "[HYTALE]",
+      "Color": "#F55151",
+      "Priority": 300,
+      "Players": [
+        "melodicalbuild",
+        "pacificbyte",
+        "hugo",
+        "rea"
+      ]
+    },
+    "Dev": {
+      "Prefix": "[STAFF]",
+      "Color": "#C27C0E",
+      "Priority": 200,
+      "Players": [
+        "beatrix",
+        "edilan",
+        "foxycca",
+        "ggadmin",
+        "ikari",
+        "lordimass",
+        "oatman5000",
+        "oruuke",
+        "preston",
+        "riprod"
+      ]
+    },
+    "Creator": {
+      "Prefix": "[CREATOR]",
+      "Color": "#E74C3C",
+      "Priority": 100,
+      "Players": [
+        "aemilius",
+        "august",
+        "breadley",
+        "brokenminifridge",
+        "brugo",
+        "lxi",
+        "canadianflash",
+        "chayzur",
+        "cursdbirth",
+        "dinch",
+        "evee",
+        "exodusablaze",
+        "farren",
+        "gindew",
+        "gnormal",
+        "hawkon",
+        "hexvane",
+        "hytro",
+        "kaupenjoe",
+        "kerp",
+        "kweebec",
+        "madcow",
+        "matt",
+        "mizukimischief",
+        "myne",
+        "officialev0",
+        "ohrisk",
+        "redjagoon",
+        "renlay",
+        "slamma",
+        "st0rmy",
+        "syprus",
+        "taf",
+        "thedragonfox",
+        "thirtyvirus",
+        "tittybaby",
+        "xspree"
+      ]
+    }
+  }
+}

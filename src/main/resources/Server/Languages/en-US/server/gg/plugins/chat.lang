@@ -1,0 +1,28 @@
+channel.global=Global
+channel.party=Party
+channel.team=Team
+channel.whisper=Whisper
+
+tag.party=[PARTY]
+tag.team=[TEAM]
+tag.whisper=[WHISPER]
+line={name}: {message}
+line.whisper={name} to {target}: {message}
+
+selected=Now chatting in <b>{channel}</b>.
+selected.whisper=Now whispering <b>{player}</b>.
+
+unavailable.party=<color is="#ed7f77">You are not in a party.</color>
+unavailable.team=<color is="#ed7f77">You are not on a team.</color>
+unavailable.whisper=<color is="#ed7f77">That player is no longer online.</color>
+whisper.self=<color is="#ed7f77">You can't whisper yourself.</color>
+
+commands.chat.desc=Choose who your chat messages go to
+commands.global.desc=Send your messages to everyone
+commands.party.desc=Send your messages to your party
+commands.team.desc=Send your messages to your team
+commands.whisper.desc=Send your messages to one player
+commands.whisper.arg=The player to whisper
+commands.whisper.message.desc=Whisper a single message to one player
+commands.message.desc=Send a single message to this channel
+commands.message.arg=The message to send
