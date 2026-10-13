@@ -87,7 +87,12 @@ public final class AutoTab implements AdminTab {
 
     @Nullable
     @Override
-    public Message handle(@Nonnull String action, @Nonnull AdminPageEvent event, @Nullable GameSession session, @Nonnull AdminPage page) {
+    public Message handle(
+        @Nonnull String action,
+        @Nonnull AdminPageEvent event,
+        @Nullable GameSession session,
+        @Nonnull AdminPage page
+    ) {
         if (session == null) return Widgets.fail("Pick a session first");
         if (!AutoUtils.runs(session)) return Widgets.fail("Auto is not installed, so install it from the Session tab");
         return switch (action) {
@@ -129,7 +134,7 @@ public final class AutoTab implements AdminTab {
                 if (VoteUtils.isOpen(session)) yield Widgets.fail("A vote is already open");
                 if (auto != null && auto.getNextPreset() != null) yield Widgets.fail("An admin already picked the next game, so clear the pick first");
                 GauntletUtils.withHubWorld().execute(() -> {
-                    if (!AutoUtils.openVote(session)) page.pushStatus(Widgets.fail("The vote did not open, so check the rotation's pool"));
+                    if (!AutoUtils.openVote(session, page.getPlayer())) page.pushStatus(Widgets.fail("The vote did not open, so check the rotation's pool"));
                 });
                 yield Widgets.ok("Vote opened for " + session.getId());
             }

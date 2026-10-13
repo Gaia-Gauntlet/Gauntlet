@@ -34,6 +34,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
 import com.gaiagauntlet.gauntlet.plugins.timer.components.GameTimerComponent;
 import com.gaiagauntlet.gauntlet.plugins.timer.ui.TimerHud;
 import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerUtils;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 /**
@@ -273,14 +274,14 @@ public final class AutoUtils {
     }
 
     /** Opens a vote now. Only a vote rotation between games can, and not while one is open or an admin picked */
-    public static boolean openVote(@Nonnull GameSession session) {
+    public static boolean openVote(@Nonnull GameSession session, PlayerRef triggerPlayer) {
         var auto = auto(session);
         var config = auto == null ? null : config(session, auto);
         if (config == null || !(config.getRotation() instanceof VoteRotation rotation) || !session.available()
                 || VoteUtils.isOpen(session) || auto.getNextPreset() != null)
             return false;
         session.remove(VoteComponent.getComponentType());
-        rotation.open(session, auto);
+        rotation.open(session, auto, triggerPlayer);
         return VoteUtils.isOpen(session);
     }
 
