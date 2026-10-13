@@ -15,6 +15,7 @@ javadoc {
 
 group = project.group
 
+
 base {
   archivesName = project.mod_name.toString()
 }
