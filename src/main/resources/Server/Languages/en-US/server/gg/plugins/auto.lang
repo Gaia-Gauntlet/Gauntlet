@@ -3,10 +3,15 @@ vote.won=<color is="#E8A93B"><b>Voting closed. Up next: {preset} with {votes} vo
 vote.none=<color is="#878e9c">Voting closed with no votes, so the next game is picked at random</color>
 next=<color is="#E8A93B"><b>Up next: {preset}</b></color>
 
+presets.ez_basic.title=Elimination Zone: Configured
+presets.ez_basic.description=Elimination Zone: Configured
+
 presets.ez_solos.title=Elimination Zone: Solos
 presets.ez_solos.description=Every player for themselves
+
 presets.ez_doubles.title=Elimination Zone: Doubles
 presets.ez_doubles.description=Teams of two
+
 presets.ez_triples.title=Elimination Zone: Triples
 presets.ez_triples.description=Teams of three
 

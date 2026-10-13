@@ -1,0 +1,6 @@
+{
+  "Title": "server.gg.plugins.auto.presets.ez_basic.title",
+  "Description": "server.gg.plugins.auto.presets.ez_basic.description",
+  "Game": "EZGameController",
+  "Components": {}
+}

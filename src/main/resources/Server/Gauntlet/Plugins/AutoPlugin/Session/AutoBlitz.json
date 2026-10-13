@@ -1,0 +1,16 @@
+{
+  "SpinUpPlayers": 2,
+  "GatherSeconds": 15,
+  "IntermissionSeconds": 30,
+  "RetrySeconds": [
+    10,
+    15,
+    30
+  ],
+  "Rotation": {
+    "Type": "Sequential",
+    "Presets": [
+      "EZ_Basic"
+    ]
+  }
+}
