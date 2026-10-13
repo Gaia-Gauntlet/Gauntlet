@@ -71,6 +71,7 @@ public final class PartyPage extends GauntletPage {
             cmd.set("#PartyInfo.Text", (leader ? "You lead this party" : "Led by " + nameOf(party.getOwner()))
                     + ", " + (session == null ? "not in a session" : "in " + session.getId()));
         }
+        if (party != null) cmd.set("#Header.Text", "Members (" + party.size() + ")");
         cmd.set("#InviteCard.Visible", leader);
         cmd.set("#Leave.Disabled", party == null || party.size() <= 1);
 
