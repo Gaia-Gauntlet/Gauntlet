@@ -75,9 +75,9 @@ public class EZLobbyManager implements LobbyManager {
             for (PlayerRef arenaPlayer : arenaPlayers) {
                 PlayerUtils.reset(arenaPlayer);
             }
-            return arenaWorld.drainPlayersTo(GauntletUtils.withHubWorld(), arenaPlayers);
+            return arenaWorld.drainPlayersTo(GauntletUtils.withHubWorld(), arenaPlayers, null, false);
         }).thenCompose(drained -> drained)
-                .whenComplete((_, error) -> GauntletUtils.runAsync(arenaWorld,
+                .whenComplete((_, _) -> GauntletUtils.runAsync(arenaWorld,
                         () -> InstancesPlugin.safeRemoveInstance(arenaWorld)));
     }
 
