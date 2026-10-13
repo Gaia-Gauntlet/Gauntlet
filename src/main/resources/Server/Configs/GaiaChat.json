@@ -26,7 +26,6 @@
       "Priority": 200,
       "Players": [
         "beatrix",
-        "foxycca",
         "ggadmin",
         "ikari",
         "lordimass",
@@ -35,7 +34,27 @@
         "preston",
         "minimino",
         "riprod",
+        "lxi",
+        "ggadmin",
+        "alterverses",
         "farren"
+      ]
+    },
+    "Contributor": {
+      "Prefix": "[HELPER]",
+      "Color": "#4BD9D7",
+      "Priority": 150,
+      "Players": [
+        "edilan",
+        "foxycca"
+      ]
+    },
+    "Champion": {
+      "Prefix": "[CHAMP]",
+      "Color": "#EFE166",
+      "Priority": 150,
+      "Players": [
+        "tittybaby"
       ]
     },
     "Creator": {
@@ -46,10 +65,8 @@
         "aemilius",
         "august",
         "breadley",
-        "edilan",
         "brokenminifridge",
         "brugo",
-        "lxi",
         "canadianflash",
         "chayzur",
         "cursdbirth",
@@ -78,7 +95,6 @@
         "taf",
         "thedragonfox",
         "thirtyvirus",
-        "tittybaby",
         "xspree"
       ]
     }
