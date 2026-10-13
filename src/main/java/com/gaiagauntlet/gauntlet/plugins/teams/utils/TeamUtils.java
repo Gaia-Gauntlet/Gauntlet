@@ -162,7 +162,7 @@ public class TeamUtils {
         return teamSession;
     }
 
-    public static double getScore(PlayerRef player) {
+    public static double getKills(PlayerRef player) {
         if (player == null)
             return 0;
         var playerComponent = player.getComponentConcurrent(TeamPlayerComponent.getComponentType());
@@ -171,27 +171,27 @@ public class TeamUtils {
         return playerComponent.getKills();
     }
 
-    public static double getScore(UUID playerId) {
-        return getScore(PlayerUtils.get(playerId));
+    public static double getKills(UUID playerId) {
+        return getKills(PlayerUtils.get(playerId));
     }
 
-    public static double getScore(TeamListComponent team, String teamId) {
+    public static double getKills(TeamListComponent team, String teamId) {
         if (team == null || teamId == null)
             return 0d;
-        return getScore(team.get(teamId));
+        return getKills(team.get(teamId));
     }
 
-    public static double getScore(TeamComponent team) {
+    public static double getKills(TeamComponent team) {
         if (team == null)
             return 0d;
-        return team.getPlayers().stream().mapToDouble(TeamUtils::getScore).sum();
+        return team.getPlayers().stream().mapToDouble(TeamUtils::getKills).sum();
     }
 
-    public static double getScore(TeamListComponent teams) {
+    public static double getKills(TeamListComponent teams) {
         if (teams == null)
             return 0d;
         return teams.getTeams().values().stream()
-                .mapToDouble(TeamUtils::getScore).sum();
+                .mapToDouble(TeamUtils::getKills).sum();
     }
 
     /**
@@ -330,12 +330,12 @@ public class TeamUtils {
         return ref != null && ref.getComponentConcurrent(EliminatedComponent.getComponentType()) != null;
     }
 
-    public static int score(@Nonnull UUID player) {
-        return (int) Math.round(TeamUtils.getScore(player));
+    public static int kills(@Nonnull UUID player) {
+        return (int) Math.round(TeamUtils.getKills(player));
     }
 
-    public static int score(@Nonnull TeamComponent team) {
-        return (int) Math.round(TeamUtils.getScore(team));
+    public static int kills(@Nonnull TeamComponent team) {
+        return (int) Math.round(TeamUtils.getKills(team));
     }
 
     /**

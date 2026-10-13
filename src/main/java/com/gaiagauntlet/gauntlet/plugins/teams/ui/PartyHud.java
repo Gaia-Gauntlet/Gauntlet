@@ -101,14 +101,14 @@ public final class PartyHud implements HudElement {
         if (!team.isParticipant()) {
             return true;
         }
-        sent.text(cmd, "#PartyScore", Integer.toString(TeamUtils.score(team)));
+        sent.text(cmd, "#PartyScore", Integer.toString(TeamUtils.kills(team)));
         for (int i = 0; i < members.size(); i++) {
             var member = members.get(i);
             var card = "#PartyMembers[" + i + "]";
             var online = partyHud.isOnline(member);
             sent.visible(cmd, card + " #Dead", online && TeamUtils.isEliminated(member));
             sent.visible(cmd, card + " #Off", !online);
-            sent.text(cmd, card + " #Score", TeamUtils.score(member) + " pts");
+            sent.text(cmd, card + " #Score", TeamUtils.kills(member) + " kills");
         }
         return true;
     }

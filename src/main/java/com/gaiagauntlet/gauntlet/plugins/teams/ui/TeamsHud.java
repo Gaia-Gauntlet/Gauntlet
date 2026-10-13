@@ -148,10 +148,10 @@ public final class TeamsHud implements HudElement {
                 standing |= online && alive;
                 sent.visible(cmd, card + " #Dead", online && !alive);
                 sent.visible(cmd, card + " #Off", !online);
-                sent.text(cmd, card + " #Score", Integer.toString(TeamUtils.score(member)));
+                sent.text(cmd, card + " #Score", Integer.toString(TeamUtils.kills(member)));
             }
             sent.visible(cmd, row, standing);
-            sent.text(cmd, row + " #TeamScore", Integer.toString(TeamUtils.score(teams.get(t))));
+            sent.text(cmd, row + " #TeamScore", Integer.toString(TeamUtils.kills(teams.get(t))));
         }
         return true;
     }
