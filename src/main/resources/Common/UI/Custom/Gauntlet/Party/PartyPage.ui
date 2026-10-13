@@ -35,7 +35,7 @@ $Common.@PageOverlay {
                 }
             }
 
-            $G.@Header { @Text = "Members"; }
+            $G.@Header #Header { @Text = "Members"; }
             $G.@ScrollPanel #Members {}
 
             Group #InviteCard {
