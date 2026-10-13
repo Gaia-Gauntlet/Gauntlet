@@ -7,20 +7,16 @@ public enum CareerStats {
     DEATHS,
     /** Deaths due to 'natural causes' */
     NATURALDEATHS,
-    /** Deaths while in the hub */
-    HUBDEATHS,
     /** Total games played */
     GAMES,
     /** Total wins */
     WINS,
-    /** Total losses */
-    LOSSES,
     ABANDONED,
     /** Total damage received */
     DAMAGERECEIVED,
-    /** Total damage received */
+    /** Total damage dealt */
     DAMAGEDEALT,
-    /** Total damage received */
+    /** Total time played */
     PLAYTIME_MINUTES,
     /** Amount of times connected */
     CONNECTIONS,

@@ -3,6 +3,8 @@ package com.gaiagauntlet.gauntlet.plugins.auto.events;
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent.SessionOperation;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionStateEvent;
 import com.gaiagauntlet.gauntlet.core.session.constants.SessionState;
 import com.gaiagauntlet.gauntlet.plugins.auto.components.AutoComponent;
@@ -13,6 +15,11 @@ import com.hypixel.hytale.server.core.universe.world.events.AllWorldsLoadedEvent
 
 /** Every trigger only schedules Auto on a later hub task, so none of them acts inside the code that fired it */
 public class AutoSessionEvents {
+
+    public static void onSession(SessionEvent evt) {
+        if (evt.getOp() == SessionOperation.DELETE)
+            AutoUtils.scheduleAll();
+    }
 
     public static void onSessionState(SessionStateEvent evt) {
         GauntletUtils.sessionFor(evt.getSessionId())

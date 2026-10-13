@@ -71,11 +71,11 @@ public class CareerComponent implements Component<EntityStore> {
     }
 
     public Map<String, Long> get(String gameId) {
-        return gameStats.computeIfAbsent(gameId, stat -> new HashMap<>());
+        return gameStats.computeIfAbsent(gameId, _ -> new HashMap<>());
     }
 
     public Long get(@NotNull CareerStats statId) {
-        return universalStats.computeIfAbsent(statId, stat -> 0L);
+        return universalStats.computeIfAbsent(statId, _ -> 0L);
     }
 
     public Long increment(@NotNull CareerStats statId, long amount) {

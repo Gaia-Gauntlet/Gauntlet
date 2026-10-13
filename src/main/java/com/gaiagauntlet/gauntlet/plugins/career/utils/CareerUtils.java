@@ -2,11 +2,13 @@ package com.gaiagauntlet.gauntlet.plugins.career.utils;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
 import com.gaiagauntlet.gauntlet.plugins.career.components.CareerComponent;
+import com.gaiagauntlet.gauntlet.plugins.career.components.CareerStats;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 public class CareerUtils {
     public static void ensurePlayerCareer(PlayerRef player) {
         var ref = player.getReference();
+        if (ref == null) return;
         var store = ref.getStore();
         var world = store.getExternalData().getWorld();
         GauntletUtils.run(world, () -> {
@@ -19,10 +21,10 @@ public class CareerUtils {
     }
 
     public static void add(PlayerRef player, String gameId, String statId, Long amount) {
-        careerFor(player).increment(gameId, statId, amount)
+        careerFor(player).increment(gameId, statId, amount);
     }
     public static void add(PlayerRef player, CareerStats statId, Long amount) {
-        careerFor(player).increment(statId, amount)
+        careerFor(player).increment(statId, amount);
     }
 
     public static Long get(PlayerRef player, String gameId, String statId) {

@@ -6,6 +6,7 @@ import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.plugins.career.components.CareerComponent;
 import com.gaiagauntlet.gauntlet.plugins.career.systems.CareerSystems;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 public class CareerPlugin implements GamePlugin {
@@ -28,6 +29,7 @@ public class CareerPlugin implements GamePlugin {
         CareerComponent.setComponentType(
                 registry.registerComponent(CareerComponent.class, CareerComponent.ID, CareerComponent.CODEC));
         plugin.getEventRegistry().register(PlayerConnectEvent.class, CareerSystems::onPlayerConnect);
+        plugin.getEventRegistry().register(PlayerDisconnectEvent.class, CareerSystems::onPlayerDisconnect);
     }
 
 }

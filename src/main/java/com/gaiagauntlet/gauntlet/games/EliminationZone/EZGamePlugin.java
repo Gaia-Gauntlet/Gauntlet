@@ -1,29 +1,27 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.ClearMatchStateOnWorldEntry;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.listeners.MatchStateListeners;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.map.MatchMapOverlay;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.scoring.EZScoring;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.EZBosses;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.EZCombat;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.combat.components.EZCombatComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZPlayerComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.listeners.MatchStateListeners;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.ClearMatchStateOnWorldEntry;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZSpawnComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.map.MatchMapOverlay;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.scoring.EZScoring;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.EZSpawn;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EZUi;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.weather.EZWeather;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.EZZones;
 import com.gaiagauntlet.gauntlet.plugins.config.components.assets.GameConfigAsset;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.registry.GameComponentRegistry;
-import com.gaiagauntlet.gauntlet.plugins.spectator.interactions.TeamSpectateControlInteraction;
 import com.gaiagauntlet.gauntlet.plugins.timer.events.TimerCompleteEvent;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
