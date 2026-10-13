@@ -416,3 +416,4 @@ varyn.soul-mark.hint = {player}: I need to keep moving, find bright lights, or g
 deathCause.varyn-shadow-bleed = was reaped by the Varyn Shadow
 void = The Void
 items.Party_Hud_Accessor.name = Parties
+items.Session_Hud_Accessor.name = Sessions
