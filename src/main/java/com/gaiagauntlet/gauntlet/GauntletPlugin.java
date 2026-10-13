@@ -1,0 +1,128 @@
+package com.gaiagauntlet.gauntlet;
+
+import com.gaiagauntlet.gauntlet.core.GauntletCore;
+import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
+import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
+import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
+import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
+import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
+import com.gaiagauntlet.gauntlet.core.interactions.OpenGauntletPageInteraction;
+import com.gaiagauntlet.gauntlet.core.party.commands.RejoinCommand;
+import com.gaiagauntlet.gauntlet.core.party.components.PartyInvitesComponent;
+import com.gaiagauntlet.gauntlet.core.resources.UniverseGauntletResource;
+import com.gaiagauntlet.gauntlet.core.ui.pages.PartyPage;
+import com.gaiagauntlet.gauntlet.core.ui.pages.SessionsPage;
+import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.AutoPlugin;
+import com.gaiagauntlet.gauntlet.plugins.auto.utils.VoteUtils;
+import com.gaiagauntlet.gauntlet.plugins.career.CareerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.chat.ChatPlugin;
+import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
+import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
+import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
+import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
+import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
+import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorPlugin;
+import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
+import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
+import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
+import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.universe.Universe;
+import lombok.Getter;
+
+public class GauntletPlugin extends JavaPlugin {
+
+    public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
+    /** Store reference to command to allow sub-plugins to add subcommands */
+    @Getter
+    private static GauntletCommand gauntletCommand;
+
+    public GauntletPlugin(JavaPluginInit init) {
+        super(init);
+    }
+
+    @Override
+    protected void start() {
+        LOGGER.atInfo().log("Starting Gauntlet!");
+        setupCommands();
+    }
+
+    @Override
+    protected void setup() {
+        LOGGER.atInfo().log("Setting up Gauntlet!");
+        setupCore();
+        setupResources();
+        setupComponents();
+        setupPlugins();
+    }
+
+    // sets up internal or core operations like registries or event handlers
+    private void setupCore() {
+        // Setup the events
+        GauntletEventRegistry.setup(this);
+        GauntletCore.setup(this);
+
+        // Register interactions
+        getCodecRegistry(Interaction.CODEC).register(OpenGauntletPageInteraction.ID,
+            OpenGauntletPageInteraction.class,
+            OpenGauntletPageInteraction.CODEC);
+    }
+
+    private void setupResources() {
+        UniverseGauntletResource.setResourceType(
+            Universe.registerResource(UniverseGauntletResource.class, UniverseGauntletResource.ID,
+                UniverseGauntletResource.CODEC));
+    }
+
+    private void setupCommands() {
+        getCommandRegistry().registerCommand(new GauntletCommand());
+        getCommandRegistry().registerCommand(new OpenPageCommand("party", "Open the party menu", PartyPage.ID));
+        getCommandRegistry().registerCommand(new RejoinCommand());
+        getCommandRegistry()
+            .registerCommand(new OpenPageCommand("sessions", "Browse and join sessions", SessionsPage.ID));
+        getCommandRegistry()
+            .registerCommand(new OpenPageCommand("vote", "Vote for your session's next game", VoteUtils.PAGE_ID));
+    }
+
+    private void setupComponents() {
+        var entityRegistry = getEntityStoreRegistry();
+        PlayerComponent.setComponentType(
+            entityRegistry.registerComponent(
+                PlayerComponent.class,
+                PlayerComponent.ID,
+                PlayerComponent.CODEC));
+        PartyInvitesComponent.setComponentType(
+            entityRegistry.registerComponent(
+                PartyInvitesComponent.class,
+                PartyInvitesComponent.ID,
+                PartyInvitesComponent.CODEC));
+    }
+
+    private void setupPlugins() {
+        GameRegistry.registerPlugin(AnnouncerPlugin.ID, this, AnnouncerPlugin::new);
+        GameRegistry.registerPlugin(GameStatePlugin.ID, this, GameStatePlugin::new);
+        GameRegistry.registerPlugin(ConfigPlugin.ID, this, ConfigPlugin::new);
+        GameRegistry.registerPlugin(GameStorePlugin.ID, this, GameStorePlugin::new);
+        GameRegistry.registerPlugin(MatchEventsPlugin.ID, this, MatchEventsPlugin::new);
+        GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
+        GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
+        GameRegistry.registerPlugin(ChatPlugin.ID, this, ChatPlugin::new);
+        GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
+        GameRegistry.registerPlugin(SpectatorPlugin.ID, this, SpectatorPlugin::new);
+        GameRegistry.registerPlugin(TimerPlugin.ID, this, TimerPlugin::new);
+        GameRegistry.registerPlugin(AutoPlugin.ID, this, AutoPlugin::new);
+        GameRegistry.registerPlugin(CareerPlugin.ID, this, CareerPlugin::new);
+    }
+
+    private void setupEvents() {
+    }
+
+    @Override
+    protected void shutdown() {
+        LOGGER.atInfo().log("Shutting down Gauntlet!");
+    }
+}
