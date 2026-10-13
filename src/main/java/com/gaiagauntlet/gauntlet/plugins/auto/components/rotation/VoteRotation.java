@@ -8,6 +8,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.gaiagauntlet.gauntlet.core.GauntletUtils;
+import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
@@ -44,6 +47,19 @@ public final class VoteRotation extends PresetRotation {
     @Getter
     private String[] pool = new String[0];
     private int choices = 3; // hardcoded cuz i dont wanna make dynamic ui 
+
+    public void open(@Nonnull GameSession session, @Nonnull AutoComponent auto, @Nullable PlayerRef triggerPlayer) {
+        open(session, auto);
+        for (PlayerRef playerRef : GauntletUtils.playersFor(session)) {
+            // Don't open for triggering player, since it causes a UI crash
+            if (triggerPlayer != null && playerRef.getUuid().equals(triggerPlayer.getUuid())) return;
+            var ref = playerRef.getReference();
+            if (ref == null) return;
+            var store = ref.getStore();
+
+            GauntletOrchestrator.openPage(store, ref, playerRef, VoteUtils.PAGE_ID, session);
+        }
+    }
 
     @Override
     public void open(@Nonnull GameSession session, @Nonnull AutoComponent auto) {

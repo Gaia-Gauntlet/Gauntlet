@@ -161,11 +161,10 @@ public class GauntletOrchestrator {
     public static void openPage(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef,
             String pageId, @Nullable GameSession session) {
         var player = store.getComponent(ref, Player.getComponentType());
-        if (player == null)
-            return;
+        if (player == null) return;
 
         var factory = getPage(pageId);
-        if (!factory.isPresent()) {
+        if (factory.isEmpty()) {
             GaiaLog.atWarning().log("Page " + pageId + " is not registered, cannot open it!");
             return;
         }
