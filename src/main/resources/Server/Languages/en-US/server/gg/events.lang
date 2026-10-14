@@ -63,4 +63,9 @@ players.leave.success={playerName} was taken out of {sessionId}
 players.leave.new.error=Failed removing {playerName} from {sessionId}. {cause}
 players.leave.existing.error={playerName} does not own party {partyName}, so they cannot take it out of {sessionId}
 
+players.revive.warn=Players in {sessionId} were not revived because {reason}
+players.revive.success=Revived {count} player(s) in {sessionId}
+players.revive.none=No eliminated players to revive in {sessionId}
+players.revive.error=Failed reviving players in {sessionId}. {cause}
+
 players.party.joined = <b>{player}</b> <color is="#77ed7d">joined</color> {party}'s party!

@@ -116,13 +116,13 @@ public class EZLobbyManager implements LobbyManager {
             return;
         }
         if (TimerUtils.isRunning(gameStore, LobbyEventListeners.INTRO_TIMER)) {
-            compete(ref, player, accessor, team);
+            compete(ref, player, accessor);
             return;
         }
         if (state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH)
             return;
 
-        accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(team.getId()));
+        accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent());
         var ledger = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
         var teammate = ledger.isEliminated(player.getUuid()) ? null
                 : livingTeammate(team, player, accessor.getExternalData().getWorld());
@@ -160,16 +160,15 @@ public class EZLobbyManager implements LobbyManager {
                     msg("server.games.ez.lobby.full").param("max", config.getMaxPlayers()));
             return;
         }
-        compete(ref, player, accessor, team);
+        compete(ref, player, accessor);
         announce(gameStore, "server.games.ez.lobby.join", player, Set.of());
         countDown(gameStore);
     }
 
     /** Marked as competing in this match, there is a valid slot for them */
-    private static void compete(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor,
-            TeamComponent team) {
+    private static void compete(Ref<EntityStore> ref, PlayerRef player, ComponentAccessor<EntityStore> accessor) {
         accessor.tryRemoveComponent(ref, EliminatedComponent.getComponentType());
-        accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent(team.getId()));
+        accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent());
         PlayerUtils.reset(player);
     }
 
@@ -282,6 +281,39 @@ public class EZLobbyManager implements LobbyManager {
 
         EZState.checkEnd(gameStore);
         return CompletableFuture.allOf(landings.toArray(new CompletableFuture[0]));
+    }
+
+    @Override
+    public Collection<PlayerRef> onRevive(World arenaWorld, String session, Collection<PlayerRef> players) {
+        var gameStore = GameStore.withStore(arenaWorld, session).orElse(null);
+        var teams = gameStore == null ? null : TeamUtils.teamsOf(gameStore).orElse(null);
+        if (teams == null)
+            return List.of();
+        var store = arenaWorld.getEntityStore().getStore();
+        var ledger = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
+        var revived = new ArrayList<PlayerRef>();
+        for (var player : players) {
+            var ref = player.getReference();
+            if (ref == null || !ref.isValid() || ref.getStore() != store
+                    || store.getComponent(ref, EliminatedComponent.getComponentType()) == null)
+                continue;
+            TeamUtils.distributePlayers(List.of(player), teams, true);
+            var team = teams.get(player.getUuid());
+            if (team == null || !team.isParticipant()) {
+                GaiaLog.atWarning().withSession(session)
+                        .log(player.getUsername() + " has no team to compete on and was not revived");
+                continue;
+            }
+            if (store.getComponent(ref, TeamPlayerComponent.getComponentType()) == null)
+                store.addComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent());
+            ledger.revive(player.getUuid());
+            SpectatorComponent.clear(ref, store);
+            store.tryRemoveComponent(ref, EliminatedComponent.getComponentType());
+            Announcer.chat(arenaWorld,
+                    msg("gg.announcement.player-revived").param("player", Message.raw(player.getUsername())));
+            revived.add(player);
+        }
+        return revived;
     }
 
     private static void leaveTeams(GameEcs gameStore, World arena, Collection<PlayerRef> players, Set<UUID> leaving,

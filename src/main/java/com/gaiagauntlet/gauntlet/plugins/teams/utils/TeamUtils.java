@@ -25,6 +25,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.*;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -201,6 +202,11 @@ public class TeamUtils {
      * before an empty one is opened. Players stay unplaced only when every team is full.
      */
     public static void distributePlayers(@Nonnull Collection<PlayerRef> players, @Nonnull TeamListComponent teams) {
+        distributePlayers(players, teams, false);
+    }
+
+    public static void distributePlayers(@Nonnull Collection<PlayerRef> players, @Nonnull TeamListComponent teams,
+            boolean overflow) {
         var groups = new LinkedHashMap<String, List<UUID>>();
         for (var player : players) {
             var uuid = player.getUuid();
@@ -213,11 +219,14 @@ public class TeamUtils {
         ordered.sort((a, b) -> Integer.compare(b.getValue().size(), a.getValue().size()));
         for (var group : ordered) {
             var members = group.getValue();
-            var target = partyTeam(group.getKey(), teams, members.size());
+            var target = partyTeam(group.getKey(), teams, team -> hasRoom(teams, team, members.size()));
             if (target == null)
                 target = fullestWithRoom(teams, members.size());
             for (var member : members) {
                 var team = target != null ? target : fullestWithRoom(teams, 1);
+                if (team == null && overflow)
+                    team = Objects.requireNonNullElseGet(partyTeam(group.getKey(), teams, _ -> true),
+                            () -> best(teams, _ -> true, false));
                 if (team == null) {
                     GaiaLog.atWarning().log("Every team is full, " + PlayerUtils.nameFor(member) + " was not placed");
                     continue;
@@ -228,13 +237,14 @@ public class TeamUtils {
     }
 
     @Nullable
-    private static TeamComponent partyTeam(@Nonnull String partyId, @Nonnull TeamListComponent teams, int needed) {
+    private static TeamComponent partyTeam(@Nonnull String partyId, @Nonnull TeamListComponent teams,
+            @Nonnull Predicate<TeamComponent> fits) {
         var party = PartyUtils.getParty(partyId).orElse(null);
         if (party == null)
             return null;
         for (var member : party.getAllPlayers()) {
             var team = teams.get(member);
-            if (team != null && team.isParticipant() && hasRoom(teams, team, needed))
+            if (team != null && team.isParticipant() && fits.test(team))
                 return team;
         }
         return null;
@@ -243,11 +253,16 @@ public class TeamUtils {
     /** Without a team size there is nothing to fill, so players are spread across the smallest teams instead. */
     @Nullable
     private static TeamComponent fullestWithRoom(@Nonnull TeamListComponent teams, int needed) {
-        boolean fill = teams.getTeamSize() > 0;
+        return best(teams, team -> hasRoom(teams, team, needed), teams.getTeamSize() > 0);
+    }
+
+    @Nullable
+    private static TeamComponent best(@Nonnull TeamListComponent teams, @Nonnull Predicate<TeamComponent> fits,
+            boolean fullest) {
         TeamComponent best = null;
         for (var team : sortedTeams(teams)) {
-            if (team.isParticipant() && hasRoom(teams, team, needed)
-                    && (best == null || (fill ? team.getSize() > best.getSize() : team.getSize() < best.getSize())))
+            if (team.isParticipant() && fits.test(team)
+                    && (best == null || (fullest ? team.getSize() > best.getSize() : team.getSize() < best.getSize())))
                 best = team;
         }
         return best;

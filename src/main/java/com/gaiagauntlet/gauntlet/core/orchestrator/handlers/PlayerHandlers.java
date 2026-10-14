@@ -21,6 +21,7 @@ import com.gaiagauntlet.gauntlet.core.events.GauntletEventRegistry;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent.PlayerOp;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerReviveEvent;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.orchestrator.GauntletOrchestrator;
@@ -282,6 +283,33 @@ public class PlayerHandlers extends HandlerUtils {
                         .param("playerName", playerRef.getUsername())
                         .param("reason", "the game controller threw " + e.getClass().getSimpleName())));
             }
+        });
+    }
+
+    public static void handleRevivePlayers(World hub, PlayerReviveEvent evt) {
+        var sessionId = evt.getSessionId();
+        if (!(sessionFor(sessionId).orElse(null) instanceof GameSession session)) {
+            Resolve.error(evt, msg("server.gg.events.session.missing").param("sessionId", sessionId));
+            return;
+        }
+        var gameId = session.getCurrentGame();
+        if (gameId == null || gameId.isEmpty()) {
+            Resolve.error(evt, session, msg("server.gg.events.players.revive.warn").param("reason", "no game is active"));
+            return;
+        }
+        if (!(GameRegistry.getGame(gameId).orElse(null) instanceof GameController game)) {
+            Resolve.error(evt, session,
+                    msg("server.gg.events.players.revive.warn").param("reason", "game is not registered"));
+            return;
+        }
+        game.playerRevive(hub, sessionId, evt.getPlayers()).whenComplete((revived, error) -> {
+            if (error != null) {
+                Resolve.error(evt, session, msg("server.gg.events.players.revive.error"), error);
+                return;
+            }
+            Resolve.success(evt, session, revived.isEmpty()
+                    ? msg("server.gg.events.players.revive.none")
+                    : msg("server.gg.events.players.revive.success").param("count", revived.size()));
         });
     }
 

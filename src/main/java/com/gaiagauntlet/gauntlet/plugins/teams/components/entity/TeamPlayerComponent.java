@@ -21,12 +21,6 @@ public class TeamPlayerComponent implements Component<EntityStore> {
     public static BuilderCodec<@NotNull TeamPlayerComponent> CODEC = BuilderCodec
             .builder(TeamPlayerComponent.class, TeamPlayerComponent::new)
             .append(
-                    new KeyedCodec<>("Team", Codec.STRING),
-                    TeamPlayerComponent::setTeam,
-                    TeamPlayerComponent::getTeam)
-            .documentation("The team that this entity is on.")
-            .add()
-            .append(
                     new KeyedCodec<>("Kills", Codec.INTEGER),
                     TeamPlayerComponent::setKills,
                     TeamPlayerComponent::getKills)
@@ -34,7 +28,6 @@ public class TeamPlayerComponent implements Component<EntityStore> {
             .add()
             .build();
 
-    @Getter @Setter private String team;
     /** The number of players killed by this player. */
     @Getter @Setter private int kills;
     public TeamPlayerComponent() {
@@ -42,12 +35,6 @@ public class TeamPlayerComponent implements Component<EntityStore> {
     }
     public TeamPlayerComponent(TeamPlayerComponent other) {
         kills = other.kills;
-        team = other.team;
-    }
-
-    public TeamPlayerComponent(String team) {
-        this.team = team;
-        kills = 0;
     }
 
     public int incrementKills() {

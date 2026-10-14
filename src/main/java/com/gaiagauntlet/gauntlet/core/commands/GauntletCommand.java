@@ -17,6 +17,7 @@ public class GauntletCommand extends AbstractCommandCollection {
         addSubCommand(new SessionCommands());
         addSubCommand(new OrchestratorCommands());
         addSubCommand(new AdminCommand());
+        addSubCommand(new ReviveCommand());
 
         for (CommandGamePlugin plugin : GameRegistry.getPlugins(CommandGamePlugin.class)) {
             for (AbstractCommand command : plugin.getCommands()) {

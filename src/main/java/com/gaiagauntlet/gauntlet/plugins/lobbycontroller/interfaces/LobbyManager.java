@@ -29,5 +29,6 @@ public interface LobbyManager {
 
     public CompletableFuture<Void> onLeave(World hubWorld, World arenaWorld, String session, Collection<PlayerRef> player,
             boolean forfeit);
+    public Collection<PlayerRef> onRevive(World arenaWorld, String session, Collection<PlayerRef> players);
     public CompletableFuture<Transform> locationFor(PlayerRef player, World world, String sessionId);
 }

@@ -31,6 +31,10 @@ public class EZGameComponent implements GameComponent {
         eliminations.putIfAbsent(player, System.currentTimeMillis());
     }
 
+    public void revive(@Nonnull UUID player) {
+        eliminations.remove(player);
+    }
+
     public boolean isEliminated(@Nonnull UUID player) {
         return eliminations.containsKey(player);
     }
