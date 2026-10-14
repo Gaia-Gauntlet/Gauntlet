@@ -60,10 +60,6 @@ public class HandlerUtils {
     /**
      * Adds the player list to a game
      * @throws IllegalArgumentException when the game encounters an error during completion
-     * @param hub
-     * @param session
-     * @param players
-     * @return
      */
     public static CompletableFuture<Void> joinGame(World hub, GameSession session, Collection<PlayerRef> players) {
         if (session.getSessionState() != SessionState.RUNNING) {
