@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneDefinition;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
@@ -84,21 +86,30 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
         if (viewer == null)
             return;
         var team = TeamUtils.teamOf(game, viewer.getUuid()).orElse(null);
-        var standing = team != null && team.isParticipant()
+        var standing = team != null && team.isParticipant() 
                 && store.getComponentConcurrent(ref, EliminatedComponent.getComponentType()) == null
                 && store.getComponentConcurrent(ref, SpectatorComponent.getComponentType()) == null;
         if (!standing) {
+            // remove dead people and people not on a team
             sentTeammates.remove(viewer.getUuid());
             player.getWorldMapTracker().setPlayerMapFilter(null);
             return;
         }
         player.getWorldMapTracker().setPlayerMapFilter(hideStanding(game));
 
+        var suddenDeath = EZState.currentState(game) == EZStates.SUDDEN_DEATH;
+
         var sent = sentTeammates.computeIfAbsent(viewer.getUuid(), id -> new ConcurrentHashMap<>());
         for (var other : new ArrayList<>(world.getPlayerRefs())) {
             var mate = other.getUuid();
-            if (mate.equals(viewer.getUuid()) || !team.contains(mate) || !isStanding(other))
+            if (!isStanding(other))
                 continue;
+            
+
+            // if the person is self OR the on the team (when in sudden death)
+            if (mate.equals(viewer.getUuid()) || (!team.contains(mate) && !suddenDeath))
+                continue;
+
             var transform = other.getTransform();
             var position = transform.getPosition();
             var last = sent.get(mate);

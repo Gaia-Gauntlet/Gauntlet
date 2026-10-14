@@ -170,4 +170,14 @@ public abstract class LobbyController extends GameController {
                 () -> getLobbyManager().onLeave(hubWorld, arenaWorld, sessionId, players, forfeit))
                 .thenCompose(future -> future);
     }
+
+    @Override
+    public CompletableFuture<Collection<PlayerRef>> playerRevive(World hubWorld, String sessionId,
+            Collection<PlayerRef> players) {
+        var arenaWorld = withArenaWorld(sessionId).orElse(null);
+        if (arenaWorld == null)
+            return CompletableFuture.failedFuture(new IllegalStateException("No live arena for session " + sessionId));
+
+        return GauntletUtils.runAsync(arenaWorld, () -> getLobbyManager().onRevive(arenaWorld, sessionId, players));
+    }
 }

@@ -22,6 +22,7 @@ import com.gaiagauntlet.gauntlet.core.events.events.GameEndEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.GameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerGameEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.PlayerPartyEvent;
+import com.gaiagauntlet.gauntlet.core.events.events.PlayerReviveEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.NewSessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionEvent;
 import com.gaiagauntlet.gauntlet.core.events.events.SessionPluginEvent;
@@ -95,6 +96,7 @@ public class GauntletOrchestrator {
         // player event handling
         GauntletEventRegistry.on(EventPriority.LAST, PlayerGameEvent.class, wrap(PlayerHandlers::handleGamePlayer));
         GauntletEventRegistry.on(EventPriority.LAST, PlayerPartyEvent.class, wrap(PlayerHandlers::handlePartyPlayer));
+        GauntletEventRegistry.on(EventPriority.LAST, PlayerReviveEvent.class, wrap(PlayerHandlers::handleRevivePlayers));
         var registry = plugin.getEventRegistry();
         registry.register(PlayerConnectEvent.class, PlayerHandlers::onPlayerConnect);
         registry.registerGlobal(PlayerReadyEvent.class, PlayerHandlers::onPlayerReady);

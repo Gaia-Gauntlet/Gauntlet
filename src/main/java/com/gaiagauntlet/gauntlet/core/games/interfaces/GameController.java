@@ -43,6 +43,9 @@ public abstract class GameController {
     public abstract CompletableFuture<Void> playerLeave(World hubWorld, String sessionId, Collection<PlayerRef> player,
             boolean forfeit);
 
+    public abstract CompletableFuture<Collection<PlayerRef>> playerRevive(World hubWorld, String sessionId,
+            Collection<PlayerRef> players);
+
     /** Get the ID of the GameConfigAsset to use by default for this game. */
     public String getDefaultConfigAssetId() {return null;}
 
