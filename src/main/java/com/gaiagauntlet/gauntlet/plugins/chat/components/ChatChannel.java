@@ -18,6 +18,8 @@ import com.hypixel.hytale.protocol.Color;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import org.jspecify.annotations.NonNull;
+
 // Each of these should probably be it's own interface. But like. behhhhhhhhhhhhhhhhhh thats 4 files for smth we could do in one
 public sealed interface ChatChannel {
     ChatChannel GLOBAL = new Global();
@@ -43,17 +45,17 @@ public sealed interface ChatChannel {
 
     record Global() implements ChatChannel {
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "global";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getMessageColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             var worldId = sender.getWorldUuid();
             var world = worldId == null ? null : Universe.get().getWorld(worldId);
             return world == null ? null : new ArrayList<>(world.getPlayerRefs());
@@ -62,34 +64,34 @@ public sealed interface ChatChannel {
 
     record Party()implements ChatChannel {
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "party";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getPartyColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             return PartyUtils.getParty(sender).map(PartyComponent::getAllOnlinePlayers).orElse(null);
         }
     }
 
     record Team() implements ChatChannel {
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "team";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getTeamColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             var uuid = sender.getUuid();
             return GameStore.withStore(sender)
                     .flatMap(game -> TeamUtils.teamOf(game, uuid))
@@ -101,17 +103,17 @@ public sealed interface ChatChannel {
 
     record Session() implements ChatChannel {
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "session";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getSessionColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             return GauntletUtils.sessionFor(sender)
                     .<List<PlayerRef>>map(session -> new ArrayList<>(GauntletUtils.playersFor(session)))
                     .orElse(null);
@@ -122,22 +124,22 @@ public sealed interface ChatChannel {
         public static final String PERMISSION = "gaiagauntlet.chat.announce";
 
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "announcement";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getAnnouncementColor();
         }
 
         @Override
-        public Color textColor(ChatConfig config) {
+        public @NonNull Color textColor(@NonNull ChatConfig config) {
             return config.getAnnouncementColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             if (!PermissionsModule.get().hasPermission(sender.getUuid(), PERMISSION, false))
                 return null;
             return new ArrayList<>(Universe.get().getPlayers());
@@ -156,17 +158,17 @@ public sealed interface ChatChannel {
         }
 
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "spectator";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getSpectatorColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             var worldId = sender.getWorldUuid();
             var world = worldId == null ? null : Universe.get().getWorld(worldId);
             if (world == null)
@@ -182,22 +184,22 @@ public sealed interface ChatChannel {
 
     record Whisper(@Nonnull UUID target) implements ChatChannel {
         @Override
-        public String id() {
+        public @NonNull String id() {
             return "whisper";
         }
 
         @Override
-        public Color color(ChatConfig config) {
+        public @NonNull Color color(@NonNull ChatConfig config) {
             return config.getWhisperColor();
         }
 
         @Override
-        public Color textColor(ChatConfig config) {
+        public @NonNull Color textColor(@NonNull ChatConfig config) {
             return config.getWhisperColor();
         }
 
         @Override
-        public List<PlayerRef> recipients(PlayerRef sender) {
+        public List<PlayerRef> recipients(@NonNull PlayerRef sender) {
             var recipient = Universe.get().getPlayer(target);
             if (recipient == null)
                 return null;
