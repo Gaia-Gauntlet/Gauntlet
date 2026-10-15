@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = project.group
+
+base {
+    archivesName = 'GauntletEarlyPlugin'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+}
+
+repositories {
+    maven { url 'https://maven.hytale.com/release' }
+    maven { url 'https://maven.hytale.com/pre-release' }
+}
+
+dependencies {
+    compileOnly "com.hypixel.hytale:Server:$server_version"
+}
