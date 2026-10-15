@@ -22,7 +22,6 @@ import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestate.GameStatePlugin;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.GameStorePlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
-import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
