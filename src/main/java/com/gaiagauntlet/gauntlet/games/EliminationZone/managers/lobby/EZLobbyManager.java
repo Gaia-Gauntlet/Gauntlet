@@ -119,8 +119,7 @@ public class EZLobbyManager implements LobbyManager {
             compete(ref, player, accessor);
             return;
         }
-        if (state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH)
-            return;
+        if (state != EZStates.RUNNING && state != EZStates.SUDDEN_DEATH) return;
 
         accessor.putComponent(ref, TeamPlayerComponent.getComponentType(), new TeamPlayerComponent());
         var ledger = gameStore.ensure(EZGameComponent.getComponentType(), EZGameComponent::new);
