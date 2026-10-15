@@ -109,7 +109,6 @@ public class GauntletPlugin extends JavaPlugin {
         GameRegistry.registerPlugin(GameStorePlugin.ID, this, GameStorePlugin::new);
         GameRegistry.registerPlugin(MatchEventsPlugin.ID, this, MatchEventsPlugin::new);
         GameRegistry.registerPlugin(LobbyControllerPlugin.ID, this, LobbyControllerPlugin::new);
-        GameRegistry.registerPlugin(ProxyChatPlugin.ID, this, ProxyChatPlugin::new);
         GameRegistry.registerPlugin(ChatPlugin.ID, this, ChatPlugin::new);
         GameRegistry.registerPlugin(TeamsPlugin.ID, this, TeamsPlugin::new);
         GameRegistry.registerPlugin(SpectatorPlugin.ID, this, SpectatorPlugin::new);

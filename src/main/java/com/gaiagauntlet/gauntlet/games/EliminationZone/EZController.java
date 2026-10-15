@@ -1,22 +1,15 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils.LootFountains;
-import java.util.concurrent.CompletableFuture;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.core.games.registries.GameRegistry;
 import com.gaiagauntlet.gauntlet.core.hud.interfaces.HudElement;
 import com.gaiagauntlet.gauntlet.core.session.components.GameSession;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.BossesTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ScoreboardHud;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.WinnerHud;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesHud;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.TimerTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.ZonesTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.components.EZGameComponent;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.arena.EZArenaManager;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.lobby.EZLobbyManager;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.*;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.utils.LootFountains;
 import com.gaiagauntlet.gauntlet.plugins.announcer.AnnouncerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.config.ConfigPlugin;
 import com.gaiagauntlet.gauntlet.plugins.events.MatchEventsPlugin;
@@ -27,17 +20,16 @@ import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyController;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.LobbyControllerPlugin;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.ArenaManager;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.interfaces.LobbyManager;
-import com.gaiagauntlet.gauntlet.plugins.proxychat.ProxyChatPlugin;
 import com.gaiagauntlet.gauntlet.plugins.spectator.SpectatorPlugin;
 import com.gaiagauntlet.gauntlet.plugins.teams.TeamsPlugin;
 import com.gaiagauntlet.gauntlet.plugins.timer.TimerPlugin;
-import com.gaiagauntlet.gauntlet.plugins.timer.ui.TimerHud;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.universe.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class EZController extends LobbyController {
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -60,7 +52,6 @@ public class EZController extends LobbyController {
         GameStatePlugin.ID,
         GameStorePlugin.ID,
         LobbyControllerPlugin.ID,
-        ProxyChatPlugin.ID,
         SpectatorPlugin.ID,
         TeamsPlugin.ID,
         TimerPlugin.ID
