@@ -1,16 +1,8 @@
 package com.gaiagauntlet.gauntlet.games.EliminationZone.map;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.gaiagauntlet.gauntlet.games.EliminationZone.EZController;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.components.BossesComponent;
+import com.gaiagauntlet.gauntlet.games.EliminationZone.bosses.utils.BossUtils;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZState;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.managers.state.EZStates;
 import com.gaiagauntlet.gauntlet.games.EliminationZone.zones.components.ZoneComponent;
@@ -24,14 +16,25 @@ import com.gaiagauntlet.gauntlet.plugins.teams.components.entity.EliminatedCompo
 import com.gaiagauntlet.gauntlet.plugins.teams.utils.TeamUtils;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.Color;
+import com.hypixel.hytale.protocol.packets.worldmap.MapMarkerIconSize;
 import com.hypixel.hytale.protocol.packets.worldmap.PlayerMarkerComponent;
 import com.hypixel.hytale.protocol.packets.worldmap.TintComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.worldmap.WorldMapManager;
 import com.hypixel.hytale.server.core.universe.world.worldmap.markers.MapMarkerBuilder;
 import com.hypixel.hytale.server.core.universe.world.worldmap.markers.MarkersCollector;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
 
@@ -39,6 +42,7 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
     private static final String OUTLINE_IMAGE = "Coordinate.png";
     private static final String BLANK_COMPASS_IMAGE = "GG_Blank.png";
     private static final String TEAMMATE_IMAGE = "Player.png";
+    private static final String BOSS_IMAGE = "HuntSite.png";
     private static final double OUTLINE_SPACING = 8.0;
     // the client draws a moved marker where it last was, so a teammate is resent under a new id once they move this far
     private static final double TEAMMATE_RESEND_DISTANCE_SQ = 1.5 * 1.5;
@@ -73,6 +77,7 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
                         "Closing: " + active.id(), true);
             }
         });
+        bosses(game, collector);
         teammates(world, player, game, collector);
     }
 
@@ -99,7 +104,7 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
 
         var suddenDeath = EZState.currentState(game) == EZStates.SUDDEN_DEATH;
 
-        var sent = sentTeammates.computeIfAbsent(viewer.getUuid(), id -> new ConcurrentHashMap<>());
+        var sent = sentTeammates.computeIfAbsent(viewer.getUuid(), _ -> new ConcurrentHashMap<>());
         for (var other : new ArrayList<>(world.getPlayerRefs())) {
             var mate = other.getUuid();
             if (!isStanding(other))
@@ -119,9 +124,33 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
             }
             collector.addIgnoreViewDistance(
                     new MapMarkerBuilder("gg_mate_" + mate + "_" + last.generation(), TEAMMATE_IMAGE, transform)
-                            .withCustomName(other.getUsername())
-                            .withComponent(new PlayerMarkerComponent(mate))
-                            .build());
+                        .withCustomName(other.getUsername())
+                        .withComponent(new PlayerMarkerComponent(mate))
+                        .build());
+        }
+    }
+
+    private void bosses(@Nonnull GameEcs game,
+                        @Nonnull MarkersCollector collector) {
+        var bosses = game.get(BossesComponent.TYPE).orElse(null);
+        if (bosses == null) return;
+
+        for (BossesComponent.Active boss : bosses.active()) {
+            var ref = boss.ref();
+            var store = ref.getStore();
+            var transform = store.getComponentConcurrent(ref, TransformComponent.getComponentType());
+            if (transform == null) return;
+            var scaling = BossUtils.getBoss(boss.bossId());
+            collector.addIgnoreViewDistance(
+                new MapMarkerBuilder(
+                    "gg_boss_"+boss.bossId(),
+                    BOSS_IMAGE,
+                    transform.getTransform()
+                )
+                    .withIconSize(MapMarkerIconSize.Major)
+                    .withCustomName(scaling != null ? scaling.displayText() : boss.bossId())
+                    .build()
+            );
         }
     }
 
@@ -166,7 +195,7 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
     private static List<double[]> outlinePoints(@Nonnull ZoneDefinition zone, double innerRadius) {
         var points = new ArrayList<double[]>();
         double outer = zone.outerRadius();
-        double inner = Math.max(0.0, Math.min(innerRadius, outer));
+        double inner = Math.clamp(innerRadius, 0.0, outer);
         if (outer <= 0.0) {
             return points;
         }
@@ -187,7 +216,7 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
 
     private static void arc(@Nonnull List<double[]> out, @Nonnull ZoneDefinition zone, double radius, double start,
             double sweep) {
-        int count = Math.min(OUTLINE_MAX_POINTS, Math.max(4, (int) Math.ceil(radius * Math.abs(sweep) / OUTLINE_SPACING) + 1));
+        int count = Math.clamp((int) Math.ceil(radius * Math.abs(sweep) / OUTLINE_SPACING) + 1, 4, OUTLINE_MAX_POINTS);
         for (int i = 0; i < count; i++) {
             double angle = start + sweep * i / (count - 1);
             out.add(new double[] { zone.centerX() + Math.cos(angle) * radius, zone.centerZ() + Math.sin(angle) * radius });
@@ -196,7 +225,7 @@ public final class MatchMapOverlay implements WorldMapManager.MarkerProvider {
 
     private static void edge(@Nonnull List<double[]> out, @Nonnull ZoneDefinition zone, double inner, double outer,
             double angle) {
-        int count = Math.min(OUTLINE_MAX_POINTS, Math.max(2, (int) Math.ceil((outer - inner) / OUTLINE_SPACING) + 1));
+        int count = Math.clamp((int) Math.ceil((outer - inner) / OUTLINE_SPACING) + 1, 2, OUTLINE_MAX_POINTS);
         for (int i = 0; i < count; i++) {
             double radius = inner + (outer - inner) * i / (count - 1);
             out.add(new double[] { zone.centerX() + Math.cos(angle) * radius, zone.centerZ() + Math.sin(angle) * radius });
