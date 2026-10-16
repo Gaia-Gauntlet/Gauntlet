@@ -11,6 +11,7 @@ import com.gaiagauntlet.gauntlet.plugins.gamestate.events.MatchStateEvent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.ContextComponent;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.utils.BlockUtils;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
@@ -114,10 +115,18 @@ public class CornucopiaMovingPlatformsHandler {
             if (current != null) {
                 goal.setRotation(current.getRotation());
             }
-            if (store != world.getEntityStore().getStore())
-                store.putComponent(ref, PlayerMarker.getComponentType(),
-                        new PlayerMarker(sessionId, world.getWorldConfig().getUuid()));
-            store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(world, goal));
+            if (store == world.getEntityStore().getStore()) {
+                store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(world, goal));
+                return;
+            }
+            var marker = new PlayerMarker(sessionId, world.getWorldConfig().getUuid());
+            PlayerUtils.moveToWorld(player, world, goal,
+                    holder -> holder.putComponent(PlayerMarker.getComponentType(), marker))
+                    .exceptionally(error -> {
+                        EZLog.error().withCause(error)
+                                .log("Could not move " + player.getUsername() + " onto their platform");
+                        return null;
+                    });
         });
     }
 }

@@ -13,10 +13,10 @@ import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;
 import com.gaiagauntlet.gauntlet.core.config.GauntletConfig;
 import static com.gaiagauntlet.gauntlet.plugins.announcer.utils.MessageUtils.msg;
 import com.gaiagauntlet.gauntlet.plugins.lobbycontroller.components.PlayerMarker;
+import com.gaiagauntlet.gauntlet.utils.PlayerUtils;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -72,10 +72,8 @@ public class TransferUtils {
                     }
                     var refStore = ref.getStore();
                     var refWorld = refStore.getExternalData().getWorld();
-                    // hop onto the player's world thread to ensure the components are added from their thread
+                    // hop onto the player's world thread so their state is read from their thread
                     GauntletUtils.run(refWorld, () -> {
-
-                        var warpComponent = Teleport.createForPlayer(destination, transform);
 
                         if (!playerRef.isValid()) {
                             // player is no longer valid :/
@@ -86,10 +84,6 @@ public class TransferUtils {
                                             .param("reason", "player no longer being online or valid"));
                             return;
                         }
-
-                        // literally just logging right now
-                        warpComponent
-                                .setOnComplete(moveComplete(playerRef.getUsername(), sessionId, destination.getName()));
 
                         // ref.validate throws if in the wrong store :/
                         if (ref == null || !ref.isValid()) {
@@ -116,11 +110,11 @@ public class TransferUtils {
                             return;
                         }
 
-                        // put the teleport component
-                        refStore.putComponent(ref, PlayerMarker.getComponentType(),
-                                new PlayerMarker(sessionId, destination.getWorldConfig().getUuid()));
-                        refStore.tryRemoveComponent(ref, Teleport.getComponentType());
-                        refStore.addComponent(ref, Teleport.getComponentType(), warpComponent);
+                        var marker = new PlayerMarker(sessionId, destination.getWorldConfig().getUuid());
+                        PlayerUtils.moveToWorld(playerRef, destination, transform,
+                                holder -> holder.putComponent(PlayerMarker.getComponentType(), marker))
+                                .whenComplete((_, error) -> logMove(playerRef.getUsername(), sessionId,
+                                        destination.getName(), error));
                     });
                 });
             }, delay, TimeUnit.SECONDS);
@@ -128,21 +122,16 @@ public class TransferUtils {
         }
     }
 
-    // all this does for now is logging for visibility
-    private static CompletableFuture<Void> moveComplete(String playerName, String sessionId, String worldName) {
-        var future = new CompletableFuture<Void>();
-        future.whenComplete((_, error) -> {
-            if (error != null) {
-                GaiaLog.atError(error).withSession(sessionId).log(msg("server.gg.plugins.transfer.failed")
-                        .param("player", playerName)
-                        .param("world", worldName)
-                        .param("cause", MessageUtils.reason(error)));
-                return;
-            }
-            GaiaLog.atInfo().withSession(sessionId).log(msg("server.gg.plugins.transfer.success")
+    private static void logMove(String playerName, String sessionId, String worldName, Throwable error) {
+        if (error != null) {
+            GaiaLog.atError(error).withSession(sessionId).log(msg("server.gg.plugins.transfer.failed")
                     .param("player", playerName)
-                    .param("world", worldName));
-        });
-        return future;
+                    .param("world", worldName)
+                    .param("cause", MessageUtils.reason(error)));
+            return;
+        }
+        GaiaLog.atInfo().withSession(sessionId).log(msg("server.gg.plugins.transfer.success")
+                .param("player", playerName)
+                .param("world", worldName));
     }
 }
