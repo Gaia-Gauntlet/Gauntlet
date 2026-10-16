@@ -235,8 +235,9 @@ public final class PlayerUtils {
                         return;
                     }
                     var holder = player.removeFromStore();
-                    if (prepare != null)
+                    if (prepare != null) {
                         prepare.accept(holder);
+                    }
                     var added = destination.addPlayer(player, transform);
                     if (added == null) {
                         landed.completeExceptionally(
@@ -244,10 +245,11 @@ public final class PlayerUtils {
                         return;
                     }
                     added.whenComplete((_, error) -> {
-                        if (error == null)
+                        if (error == null) {
                             landed.complete(null);
-                        else
+                        } else {
                             rescue(player, destination, error, landed);
+                        }
                     });
                 } catch (Exception error) {
                     rescue(player, destination, error, landed);
