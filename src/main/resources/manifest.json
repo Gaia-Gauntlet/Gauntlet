@@ -1,7 +1,7 @@
 {
     "Group": "com.gaiagauntlet.gauntlet",
     "Name": "Gauntlet",
-    "Version": "0.0.1",
+    "Version": "1.0.0",
     "Description": "Abstracted game logic for Gaia Gauntlet.",
     "Authors": [
         {
