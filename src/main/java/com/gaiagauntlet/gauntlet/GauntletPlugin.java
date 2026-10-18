@@ -1,6 +1,7 @@
 package com.gaiagauntlet.gauntlet;
 
 import com.gaiagauntlet.gauntlet.core.GauntletCore;
+import com.gaiagauntlet.gauntlet.utils.VoiceTransferGuard;
 import com.gaiagauntlet.gauntlet.core.commands.GauntletCommand;
 import com.gaiagauntlet.gauntlet.core.commands.OpenPageCommand;
 import com.gaiagauntlet.gauntlet.core.components.PlayerComponent;
@@ -47,6 +48,7 @@ public class GauntletPlugin extends JavaPlugin {
     @Override
     protected void start() {
         LOGGER.atInfo().log("Starting Gauntlet!");
+        VoiceTransferGuard.setup(this);
         setupCommands();
     }
 
@@ -121,6 +123,7 @@ public class GauntletPlugin extends JavaPlugin {
 
     @Override
     protected void shutdown() {
+        VoiceTransferGuard.shutdown();
         LOGGER.atInfo().log("Shutting down Gauntlet!");
     }
 }

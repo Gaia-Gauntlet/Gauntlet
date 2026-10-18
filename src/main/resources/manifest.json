@@ -20,7 +20,8 @@
     "ServerVersion": ">=0.7.0 <0.8.0",
     "Dependencies": {
         "Hytale:AssetModule": "*",
-        "Hytale:EntityModule": "*"
+        "Hytale:EntityModule": "*",
+        "Hytale:VoiceModule": "*"
     },
     "OptionalDependencies": {
         "com.creditor:Creditor": "*"
