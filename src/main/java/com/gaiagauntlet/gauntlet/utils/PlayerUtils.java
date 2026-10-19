@@ -221,38 +221,51 @@ public final class PlayerUtils {
         landed.whenComplete((_, _) -> moving.remove(player.getUuid()));
 
         var origin = ref.getStore().getExternalData().getWorld();
+        landed.whenComplete((_, error) -> {
+            if (error != null) VoiceTransferGuard.cancelBeforeJoin(player);
+        });
         try {
-            origin.execute(() -> {
+            VoiceTransferGuard.quietBeforeTransfer(player).whenComplete((_, quietError) -> {
+                if (quietError != null) {
+                    landed.completeExceptionally(quietError);
+                    return;
+                }
                 try {
-                    if (player.getReference() != ref) {
-                        landed.completeExceptionally(new IllegalStateException(
-                                player.getUsername() + " left " + origin.getName() + " before the move"));
-                        return;
-                    }
-                    if (!destination.isAlive()) {
-                        landed.completeExceptionally(
-                                new IllegalStateException(destination.getName() + " is no longer running"));
-                        return;
-                    }
-                    var holder = player.removeFromStore();
-                    if (prepare != null) {
-                        prepare.accept(holder);
-                    }
-                    var added = destination.addPlayer(player, transform);
-                    if (added == null) {
-                        landed.completeExceptionally(
-                                new IllegalStateException(player.getUsername() + " disconnected during the move"));
-                        return;
-                    }
-                    added.whenComplete((_, error) -> {
-                        if (error == null) {
-                            landed.complete(null);
-                        } else {
+                    origin.execute(() -> {
+                        try {
+                            if (player.getReference() != ref) {
+                                landed.completeExceptionally(new IllegalStateException(
+                                        player.getUsername() + " left " + origin.getName() + " before the move"));
+                                return;
+                            }
+                            if (!destination.isAlive()) {
+                                landed.completeExceptionally(
+                                        new IllegalStateException(destination.getName() + " is no longer running"));
+                                return;
+                            }
+                            var holder = player.removeFromStore();
+                            if (prepare != null) {
+                                prepare.accept(holder);
+                            }
+                            var added = destination.addPlayer(player, transform);
+                            if (added == null) {
+                                landed.completeExceptionally(
+                                        new IllegalStateException(player.getUsername() + " disconnected during the move"));
+                                return;
+                            }
+                            added.whenComplete((_, error) -> {
+                                if (error == null) {
+                                    landed.complete(null);
+                                } else {
+                                    rescue(player, destination, error, landed);
+                                }
+                            });
+                        } catch (Exception error) {
                             rescue(player, destination, error, landed);
                         }
                     });
                 } catch (Exception error) {
-                    rescue(player, destination, error, landed);
+                    landed.completeExceptionally(error);
                 }
             });
         } catch (Exception error) {
