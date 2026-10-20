@@ -112,7 +112,4 @@ hytaleTools {
     injectServerJavadocsIntoSources = project.inject_server_javadocs_into_sources.toString().toBoolean()
     generateAssetsBinary = project.generateAssetsBinary.toString().toBoolean()
     patchline = project.patchline.toString()
-
-    // Prefix with underscore to exclude from Creditor.
-    subPlugin("EliminationZone", "com.gaiagauntlet.gauntlet.games.EliminationZone.EZGamePlugin", false, false)
 }
