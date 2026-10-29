@@ -7,9 +7,11 @@ import javax.annotation.Nullable;
 
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GameController;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 
 public class GameRegistry {
+    public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     // Note: these shouldn't ever change. So it can be a hashmap instead of
     // concurrent hash because there won't be any writes to the map
@@ -22,6 +24,7 @@ public class GameRegistry {
 
     public static void registerPlugin(String id, JavaPlugin host, Supplier<GamePlugin> pluginSupplier) {
         var plugin = pluginSupplier.get();
+        LOGGER.atInfo().log("Setting up Gauntlet ["+id+"]!");
         plugin.init(host);
         pluginRegistry.put(id, plugin);
     }

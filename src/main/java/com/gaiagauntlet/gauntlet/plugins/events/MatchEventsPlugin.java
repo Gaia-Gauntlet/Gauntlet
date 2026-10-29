@@ -14,7 +14,7 @@ import java.util.List;
  * receive local events with the relevant and oftentimes necessary context
  */
 public class MatchEventsPlugin implements GamePlugin, UiGamePlugin {
-    public static final String ID = "GameEventsPlugin";
+    public static final String ID = "MatchEventsPlugin";
 
     @Override
     public String getId() {
