@@ -1,4 +1,4 @@
-package com.gaiagauntlet.gauntlet.games.EliminationZone.spawn;
+package com.gaiagauntlet.gauntlet.plugins.timer.utils;
 
 import com.gaiagauntlet.gauntlet.utils.PrefabUtils;
 import com.hypixel.hytale.math.Axis;
@@ -9,13 +9,13 @@ import org.joml.Vector3i;
 import javax.annotation.Nonnull;
 
 /** The in-world block countdown display: four lightblock digits on both faces of a base prefab. Run on the world thread. */
-public final class TimerDisplay {
+public final class TimerDisplayUtils {
 
     private static final String BASE = "Timer/Timer_Base.prefab.json";
     private static final String CLEAR = "Timer/ClearTimer.prefab.json";
     private static final Vector3i BASE_OFFSET = new Vector3i(-4, -2, -2);
 
-    private TimerDisplay() {
+    private TimerDisplayUtils() {
     }
 
     public static void showBase(@Nonnull World world, @Nonnull Transform point) {

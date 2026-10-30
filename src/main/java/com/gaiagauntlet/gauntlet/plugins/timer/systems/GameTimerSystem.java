@@ -1,6 +1,6 @@
 package com.gaiagauntlet.gauntlet.plugins.timer.systems;
 
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.TimerDisplay;
+import com.gaiagauntlet.gauntlet.plugins.timer.utils.TimerDisplayUtils;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.interfaces.GameTickingSystem;
@@ -30,7 +30,7 @@ public class GameTimerSystem extends GameTickingSystem {
         if (!continueTimer) {
             // do end of timer stuff
             for (var target : targets) {
-                TimerDisplay.clear(world, target.getTransform());
+                TimerDisplayUtils.clear(world, target.getTransform());
             }
 
             var ctx = GameStore.getContext(gameStore);
@@ -50,8 +50,8 @@ public class GameTimerSystem extends GameTickingSystem {
         }
         gameTimerComponent.sync();
         for (var target : targets) {
-            TimerDisplay.showBase(world, target.getTransform());
-            TimerDisplay.showTime(world, target.getTransform(), (int) Math.floor(timeRemaining));
+            TimerDisplayUtils.showBase(world, target.getTransform());
+            TimerDisplayUtils.showTime(world, target.getTransform(), (int) Math.floor(timeRemaining));
         }
         TimerHud.update(gameStore);
     }

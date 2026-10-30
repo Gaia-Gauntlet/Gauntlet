@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.gaiagauntlet.gauntlet.core.GauntletUtils;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.spawn.TimerDisplay;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.components.GameEcs;
 import com.gaiagauntlet.gauntlet.plugins.gamestore.utils.GameStore;
@@ -65,7 +64,7 @@ public class TimerUtils {
         var world = GameStore.getContext(gameStore).getWorld();
         GauntletUtils.run(world, () -> {
             for (var poi : timer.getPois()) {
-                TimerDisplay.clear(world, poi.getTransform());
+                TimerDisplayUtils.clear(world, poi.getTransform());
             }
         });
         TimerHud.update(gameStore);

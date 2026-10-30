@@ -2,6 +2,7 @@ package com.gaiagauntlet.gauntlet.plugins.events.events;
 
 import java.util.function.Consumer;
 
+import com.hypixel.hytale.logger.HytaleLogger;
 import org.jetbrains.annotations.NotNull;
 
 import com.gaiagauntlet.gauntlet.core.admin.GaiaLog;

@@ -80,11 +80,18 @@ tasks.named('jar') {
 
 tasks.build {
     dependsOn("shadowJar")
+    dependsOn("sourcesJar")
 }
 
 tasks.named('shadowJar') {
     archiveClassifier.set('')
     configurations = [project.configurations.shadowBundle]
+}
+
+tasks.register('sourcesJar', Jar) {
+    dependsOn classes
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
 }
 
 idea {
@@ -112,7 +119,4 @@ hytaleTools {
     injectServerJavadocsIntoSources = project.inject_server_javadocs_into_sources.toString().toBoolean()
     generateAssetsBinary = project.generateAssetsBinary.toString().toBoolean()
     patchline = project.patchline.toString()
-
-    // Prefix with underscore to exclude from Creditor.
-    subPlugin("EliminationZone", "com.gaiagauntlet.gauntlet.games.EliminationZone.EZGamePlugin", false, false)
 }

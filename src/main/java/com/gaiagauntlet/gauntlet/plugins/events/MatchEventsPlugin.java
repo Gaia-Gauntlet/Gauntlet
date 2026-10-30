@@ -1,21 +1,20 @@
 package com.gaiagauntlet.gauntlet.plugins.events;
 
-import java.util.List;
-
 import com.gaiagauntlet.gauntlet.core.games.interfaces.GamePlugin;
 import com.gaiagauntlet.gauntlet.core.games.interfaces.UiGamePlugin;
 import com.gaiagauntlet.gauntlet.core.ui.interfaces.AdminTab;
-import com.gaiagauntlet.gauntlet.games.EliminationZone.ui.EventsTab;
 import com.gaiagauntlet.gauntlet.plugins.events.events.MatchEventRegistry;
 import com.gaiagauntlet.gauntlet.plugins.events.systems.EventTickSystem;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
+
+import java.util.List;
 
 /**
  * Game-wide events and event listening. Listen based on `GameId` to only
  * receive local events with the relevant and oftentimes necessary context
  */
 public class MatchEventsPlugin implements GamePlugin, UiGamePlugin {
-    public static final String ID = "GameEventsPlugin";
+    public static final String ID = "MatchEventsPlugin";
 
     @Override
     public String getId() {
